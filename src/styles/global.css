@@ -1,0 +1,18 @@
+@import "@catena/brand/tokens/all.css";
+
+/* Override Starlight's default accent with catena brand colors. */
+:root {
+  --sl-color-accent-low: color-mix(in srgb, var(--catena-accent) 18%, var(--catena-surface-bg));
+  --sl-color-accent: var(--catena-accent);
+  --sl-color-accent-high: var(--catena-primary-700);
+  --sl-color-white: var(--catena-neutral-0);
+  --sl-color-gray-1: var(--catena-neutral-100);
+  --sl-color-gray-2: var(--catena-neutral-200);
+  --sl-color-gray-3: var(--catena-neutral-400);
+  --sl-color-gray-4: var(--catena-neutral-500);
+  --sl-color-gray-5: var(--catena-neutral-700);
+  --sl-color-gray-6: var(--catena-neutral-800);
+  --sl-color-black: var(--catena-neutral-900);
+  --sl-font: var(--catena-font-sans);
+  --sl-font-mono: var(--catena-font-mono);
+}
