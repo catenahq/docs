@@ -1,0 +1,85 @@
+# J'ai supprimé quelque chose — comment le récupérer ?
+
+La plupart des situations « j'ai perdu un fichier » se règlent en
+un clic, sans contacter votre opérateur. Cette page indique quoi
+essayer en premier et quand passer à l'étape suivante.
+
+## Étape 1 : essayer la corbeille de l'application
+
+Chaque application garde sa propre corbeille pendant 30 jours par
+défaut. Commencez par là — c'est le chemin le plus rapide et vous
+n'avez besoin de personne.
+
+| Application | Où regarder |
+|---|---|
+| Nextcloud | barre latérale gauche → **Fichiers supprimés** |
+| Outline | barre latérale → **Corbeille** |
+| EspoCRM | engrenage en haut à droite → **Corbeille** |
+| Plane | barre latérale du projet → **Archivé** (tâches) / **Archive** (pages) |
+| Rocket.Chat | l'historique des messages est conservé par canal ; les messages supprimés sont récupérables par un admin via le menu kebab → « Élaguer » → annuler |
+| n8n | historique d'exécution (les **workflows** supprimés ne sont pas récupérables depuis n8n ; voir étape 2) |
+
+## Étape 2 : contacter votre opérateur
+
+Si la corbeille de l'application a été vidée, ou si l'application
+n'a pas de fonction d'annulation (workflows n8n, certains
+panneaux de configuration), la dernière sauvegarde nocturne en a
+encore une copie.
+
+Envoyez à votre opérateur :
+
+1. **Ce que** vous avez supprimé (nom du fichier, du dossier, du
+   workflow).
+2. **Où** ça vivait (quelle application, quel compte
+   utilisateur).
+3. **Quand** vous l'avez vu pour la dernière fois (aujourd'hui ?
+   hier ? la semaine dernière ?).
+
+Votre opérateur peut récupérer un seul fichier depuis n'importe
+quelle sauvegarde nocturne passée sans mettre le reste de votre
+pile hors ligne. La récupération prend typiquement 5 à 15
+minutes.
+
+## Ce qui est récupérable, ce qui ne l'est pas
+
+| Ce qui est perdu | Récupérable depuis la sauvegarde ? |
+|---|---|
+| Fichiers Nextcloud (stockés sur le système de fichiers) | Oui, jusqu'aux 30 dernières sauvegardes nocturnes |
+| Fichiers Nextcloud (stockés sur S3, déploiements volumineux) | Récupérables depuis le **versioning du bucket**, pas la sauvegarde du VPS. Votre opérateur restaure depuis le fournisseur S3 |
+| Pages Outline | Oui |
+| Enregistrements EspoCRM | Oui |
+| Messages Rocket.Chat | Oui (état complet du canal) |
+| JSON de workflow n8n | Oui |
+| Journaux d'exécution n8n | Seulement les 14 derniers jours — n8n élague son propre historique |
+| Un compte utilisateur / siège SSO | Voir [Récupération d'urgence](disaster-recovery.md) → « Perte d'accès utilisateur » |
+
+## Quelle fenêtre de récupération ?
+
+La rétention par défaut de votre sauvegarde nocturne :
+
+- 7 sauvegardes quotidiennes
+- 4 sauvegardes hebdomadaires
+- 3 sauvegardes mensuelles
+
+Donc le fichier est récupérable tant qu'il a existé dans les ~90
+derniers jours **et** qu'il était présent dans au moins une des
+sauvegardes ci-dessus. Au-delà, la sauvegarde est élaguée par la
+politique de rétention et le fichier est perdu.
+
+Des fenêtres de rétention plus longues sont possibles — demandez
+à votre opérateur.
+
+## Quand demander à l'opérateur vs faire soi-même
+
+La corbeille de l'application (étape 1) est à votre disposition
+— aucune coordination nécessaire.
+
+La récupération depuis une sauvegarde passée (étape 2) passe par
+l'opérateur volontairement. Restaurer le mauvais fichier ou la
+mauvaise version sur un volume en cours d'utilisation peut
+embrouiller l'application en cours d'exécution ; votre opérateur
+suit un guide court qui prépare la récupération avant qu'elle ne
+prenne effet, puis demande à l'application de réindexer. C'est
+rapide pour eux — moins de quinze minutes pour un fichier dans la
+plupart des cas — et ça évite le scénario « j'ai voulu réparer
+moi-même et plus rien ne marche ».

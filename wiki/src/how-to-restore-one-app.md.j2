@@ -1,0 +1,76 @@
+# I deleted something — how do I get it back?
+
+Most "I lost a file" situations have a one-click answer that does
+not need your operator. This page tells you which one to try first
+and when to escalate.
+
+## Step 1: try the app's own undelete
+
+Each app keeps its own trash for 30 days by default. Check there
+first — it is the fastest path and you do not need anyone's help.
+
+| App | Where to look |
+|---|---|
+| Nextcloud | left sidebar → **Deleted files** |
+| Outline | sidebar → **Trash** |
+| EspoCRM | top-right gear → **Recycle Bin** |
+| Plane | project sidebar → **Archived** (issues) / **Archive** (pages) |
+| Rocket.Chat | message history is preserved per channel; deleted messages are recoverable by an admin via channel kebab → "Prune" → un-prune |
+| n8n | execution history (deleted **workflows** are not recoverable from inside n8n; see step 2) |
+
+## Step 2: contact your operator
+
+If the app's trash has been emptied, or the app does not have
+undelete (n8n workflows, certain settings panels), one nightly
+backup ago still has it.
+
+Send your operator:
+
+1. **What** you deleted (file name, folder name, workflow name).
+2. **Where** it lived (which app, which user account).
+3. **When** you last saw it (today? yesterday? last week?).
+
+Your operator can recover a single file from any past nightly
+snapshot without taking the rest of your stack offline. The
+recovery typically takes 5-15 minutes.
+
+## What is and is not recoverable
+
+| Lost thing | Recoverable from backup? |
+|---|---|
+| Files in Nextcloud (filesystem-stored) | Yes, up to the last 30 nightly snapshots |
+| Files in Nextcloud (S3-stored, large deployments) | Recoverable from the **bucket's** versioning, not the VPS backup. Your operator restores from the S3 provider |
+| Outline pages | Yes |
+| EspoCRM records | Yes |
+| Rocket.Chat messages | Yes (whole channel state) |
+| n8n workflow JSON | Yes |
+| n8n execution logs | Only the last 14 days — n8n prunes its own history |
+| A user account / SSO seat | See [Disaster recovery](disaster-recovery.md) → "User access loss" |
+
+## How big a window do I have?
+
+Your nightly backup retention defaults to:
+
+- 7 daily snapshots
+- 4 weekly snapshots
+- 3 monthly snapshots
+
+So the file is recoverable as long as it existed within roughly
+the last 90 days **and** was present in at least one of the
+retained snapshots above. After that, the snapshot is pruned by
+the retention policy and the file is gone.
+
+Larger retention windows are available — ask your operator.
+
+## When to ask your operator vs do it yourself
+
+The app's own trash (step 1) is yours to use freely — no
+coordination needed.
+
+Recovery from a past snapshot (step 2) is operator-driven on
+purpose. Restoring the wrong file or the wrong version onto a
+live volume can confuse the running app; your operator follows a
+short runbook that stages the recovery before it goes live, then
+tells the app to re-scan its index. It is fast for them — under
+fifteen minutes for one file in most cases — and it avoids the
+"I tried to fix it myself and now nothing works" failure mode.
