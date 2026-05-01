@@ -80,25 +80,22 @@ ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# DEPRECATED 2026-04-29 (F5a). New deploys should use DocuSeal at
-# docs/operator/client-app-templates/docuseal.compose.yml instead.
-# This file is kept in tree for the migration window so existing
+# DEPRECATED 2026-04-29 (F5a). New deploys should use DocuSeal instead;
+# this file is kept in tree for the migration window so existing
 # clients can continue running Documenso until they cut over. The
 # catalog entry's setup_steps section also surfaces the deprecation.
-# When the last client has migrated, delete this file + remove the
-# documenso entry from dokploy_template_catalog.yml + the mkdocs nav.
 #
 # Documenso — open-source document signing (DocuSign / HelloSign / PandaDoc
-# replacement). Keycloak SSO pre-wired via env-based OIDC; dashboard-sync
-# mints the realm client + populates OIDC_* env on first converge.
+# replacement). Keycloak SSO pre-wired via env-based OIDC; the operator's
+# automation mints the realm client + populates OIDC_* env on first
+# converge.
 #
 # Signing certificate: an init container generates a self-signed PKCS12
 # cert at first boot so "click Deploy" works out of the box. For
-# legally-binding signatures the operator should replace that cert with
-# one from a trusted CA -- see docs/operator/client-app-templates/README.md
-# (Documenso section) once shipped, or upstream's signing-cert docs at
+# legally-binding signatures, ask your operator to install a CA-issued
+# cert into the signing volume; upstream's signing-cert docs are at
 # https://docs.documenso.com/developers/local-development/signing-certificate
-# for how to install a real cert into the existing volume.
+# for the volume layout.
 
 services:
   cert-init:

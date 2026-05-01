@@ -1,16 +1,27 @@
 # Fichiers et répertoires appartenant à la pile
 
-Résumé : si un fichier porte un en-tête `ansible_managed`, la prochaine
-exécution de `./catena site` par l'opérateur écrasera vos modifications.
+En bref : si un fichier sous les chemins ci-dessous est modifié à la
+main, la prochaine exécution de maintenance de votre opérateur
+écrasera vos modifications. Dites plutôt à votre opérateur ce que
+vous vouliez faire — il a presque certainement un drapeau ou un
+autre chemin prévu pour cela.
+
 Ne modifiez pas à la main :
 
 - `/etc/dokploy/traefik/dynamic/*.yml` — géré par `dashboard-sync`
-- `/etc/catena/backup.env` — géré par un rôle Ansible
-- `/etc/catena/restic.pass` — géré par un rôle Ansible
-- `/etc/systemd/system/catena-*.{service,timer}` — géré par Ansible
+- `/etc/catena/backup.env` — géré par l'automatisation de votre
+  opérateur
+- `/etc/catena/restic.pass` — géré par l'automatisation de votre
+  opérateur
+- `/etc/systemd/system/catena-*.{service,timer}` — géré par
+  l'automatisation de votre opérateur
 - `/usr/local/bin/run-backup.sh`, `/usr/local/bin/dashboard-sync`,
-  `/usr/local/bin/gatus-sync`, `/usr/local/bin/auto-update.sh` — gérés
-  par Ansible
+  `/usr/local/bin/gatus-sync`, `/usr/local/bin/auto-update.sh` —
+  gérés par l'automatisation de votre opérateur
+
+Si un fichier à l'un de ces chemins porte un en-tête indiquant
+qu'il a été généré automatiquement, traitez-le comme étant en
+lecture seule.
 
 Ce que vous POUVEZ modifier sans permission préalable :
 
