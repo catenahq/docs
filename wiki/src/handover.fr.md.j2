@@ -1,0 +1,314 @@
+# Reprise : prendre possession de votre infrastructure
+
+Quand l'engagement avec votre opérateur se termine -- que vous
+passiez à une configuration auto-gérée, changiez d'opérateur, ou
+vouliez simplement savoir que vous le pourriez -- cette page vous
+guide pour revendiquer la propriété de chaque compte externe,
+compartiment et identifiant dont dépend votre infrastructure.
+Après la reprise, vous pouvez exploiter, restaurer et migrer la
+pile sans l'implication de votre opérateur précédent.
+
+Cela complète la clause « pas d'enfermement » de votre contrat.
+Si quelque chose sur cette page ne correspond pas à ce que votre
+opérateur vous a remis, faites le point avec lui avant de signer
+la reprise.
+
+## Où vit chaque chose
+
+Votre infrastructure dépend de cinq services externes. Chacun
+est un compte séparé que vous devez posséder (pas votre
+opérateur) à la fin de la reprise :
+
+| Service | Ce qu'il fait pour vous | Coût |
+|---|---|---|
+| **Cloudflare** | DNS pour votre zone + le tunnel qui expose vos apps publiquement | gratuit pour le tunnel + DNS standard ; plan Pro optionnel |
+| **Tailscale** | Tunnel d'admin privé entre vous et le VPS (pas de SSH public) | gratuit jusqu'à 100 appareils |
+| **Fournisseur VPS** (OVH / Hetzner / DigitalOcean / etc.) | Le serveur lui-même | 5-50 $/mois selon la taille |
+| **Stockage compatible S3** (Backblaze B2 / AWS S3 / Wasabi) | Compartiment de sauvegarde hors site | ~0,005 $/Go/mois |
+| **Fournisseur SMTP** (Resend / Brevo / SES / Mailgun) | Email sortant pour réinitialisations, invitations, MFA | offre gratuite couvre les petits clients |
+
+Deux sont optionnels selon votre infrastructure :
+
+| Service | Quand | Coût |
+|---|---|---|
+| **Fournisseur IA** (OpenAI / Anthropic / Mistral) | Si vous utilisez les nœuds IA de n8n ou le générateur de workflows | à l'usage |
+| **Second fournisseur de sauvegarde** | Recommandé pour la prévention des sinistres -- voir [Prévention](disaster-prevention.md) | identique au principal |
+
+## Liste de reprise
+
+Faites cette liste avec votre opérateur en visioconférence ou en
+personne ; ne le faites pas en asynchrone. Chaque étape se
+termine par une action confirmée ; « je vois que ça marche » est
+le critère pour passer à la suivante.
+
+### 1. Compte Cloudflare
+
+Vous devez déjà avoir un compte Cloudflare à votre nom avec
+votre zone (`{{ cloudflare_zone }}`) dessus. Si votre opérateur
+possède le compte Cloudflare aujourd'hui, il faut migrer la zone
+vers le vôtre.
+
+Étapes que votre opérateur fait pendant que vous regardez :
+
+1. Dans le tableau de bord Cloudflare de l'opérateur, votre zone
+   -> Vue d'ensemble -> **Déplacer la zone** (barre latérale
+   droite). Choisir « Déplacer vers un autre compte ».
+2. Cloudflare envoie un lien de confirmation par email au
+   propriétaire du compte cible (vous). Cliquez dessus.
+3. Confirmez que la zone apparaît maintenant sous votre compte à
+   [dash.cloudflare.com](https://dash.cloudflare.com).
+4. **Vous** générez un nouveau jeton API à
+   [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
+   avec ces permissions :
+   - Zone -> DNS -> Edit (sur `{{ cloudflare_zone }}`)
+   - Account -> Cloudflare Tunnel -> Edit (sur votre compte)
+5. Donnez le jeton à votre opérateur -- il l'utilise pour une
+   dernière converge afin de remplacer l'ancien jeton sur le VPS.
+6. Après que sa converge réussisse, **votre opérateur révoque**
+   son ancien jeton. Confirmez par écrit qu'il l'a fait.
+
+Le tunnel lui-même est lié à un **jeton de tunnel** distinct
+(pas le jeton API). Votre opérateur l'a déjà créé sous votre
+compte pendant le déplacement de zone ; régénérez-le depuis
+votre tableau de bord après le déplacement sous Zero Trust ->
+Networks -> Tunnels -> votre tunnel -> Configure -> Reset.
+
+### 2. Tenant Tailscale
+
+Le compte Tailscale de votre opérateur est ce qui détient le VPS
+en tant que nœud aujourd'hui. Pour en prendre possession :
+
+1. Créez votre propre compte Tailscale sur
+   [login.tailscale.com](https://login.tailscale.com).
+2. Dans Settings -> Users -> Invite, votre opérateur vous invite
+   en tant qu'admin sur son tailnet -- OU --, plus proprement :
+   créez un NOUVEAU tailnet sous votre compte et faites-y
+   migrer le VPS par votre opérateur.
+3. L'étape de migration : votre opérateur génère un nouvel
+   OAuth client dans VOTRE tailnet (Settings -> Trust
+   Credentials -> OAuth client, scopes : Auth Keys -> Write,
+   tags : tag:vps). Il lance une converge avec le nouveau
+   client ; le VPS quitte son tailnet et rejoint le vôtre.
+4. **Votre opérateur révoque** son ancien OAuth client dans son
+   tailnet. Confirmez.
+
+Après cette étape, votre opérateur n'a aucun accès admin à votre
+VPS sauf si vous l'invitez explicitement comme utilisateur sur
+votre tailnet. C'est la garantie centrale de la reprise -- le
+chemin admin est sous votre contrôle.
+
+### 3. Compte fournisseur VPS
+
+Deux chemins selon que la facturation VPS de votre opérateur
+était sur son compte ou sur le vôtre :
+
+**Chemin A : VPS déjà facturé chez vous.** Confirmez que vous
+pouvez vous connecter au tableau de bord du fournisseur, voir la
+VM en cours d'exécution, et avoir une méthode de paiement
+enregistrée. C'est terminé pour cette étape.
+
+**Chemin B : Le compte de votre opérateur détient le VPS.**
+Votre opérateur soit transfère la VM vers votre compte
+fournisseur (la plupart des fournisseurs supportent ça -- OVH
+« Transfert de projet », Hetzner « Déplacement de compte VPS »,
+DigitalOcean « Transfert d'équipe ») SOIT vous provisionnez un
+nouveau VPS sous votre compte et migrez la pile vers lui. C'est
+ce que ferait votre opérateur si vous étiez forcé de changer de
+fournisseur ; voir le runbook de migration dans la documentation
+opérateur.
+
+D'une façon ou d'une autre, à la fin de l'étape 3, la
+facturation VPS est sur votre carte et la connexion au compte du
+fournisseur est la vôtre.
+
+### 4. Compartiment S3 de sauvegarde + clés d'accès
+
+Le compartiment que votre opérateur a créé pour les sauvegardes
+nocturnes devrait déjà être à votre nom chez le fournisseur S3.
+Pour vérifier :
+
+1. Connectez-vous au tableau de bord du fournisseur S3
+   (Backblaze B2, AWS, etc.).
+2. Confirmez que le compartiment existe sous VOTRE compte, pas
+   celui de votre opérateur.
+3. Créez une nouvelle paire clé d'accès + secret limitée à ce
+   compartiment uniquement (B2 : Application Keys avec `read` +
+   `write` + `listFiles` ; AWS : utilisateur IAM avec
+   `s3:GetObject`, `s3:PutObject`, `s3:ListBucket`,
+   `s3:DeleteObject`).
+4. Donnez la nouvelle paire à votre opérateur ; il met à jour le
+   coffre sur le VPS. Anciennes clés révoquées après une
+   sauvegarde nocturne réussie avec la nouvelle paire.
+5. **Critique : notez le mot de passe de chiffrement du dépôt
+   restic séparément.** Il est dans le coffre de votre opérateur
+   aujourd'hui. Sans lui, le contenu du compartiment est du
+   chiffrement illisible. Sauvegardez-le dans votre gestionnaire
+   de mots de passe AVANT la prochaine étape.
+
+Si votre infrastructure a aussi un compartiment miroir WORM
+configuré (par [Prévention](disaster-prevention.md) étape 4),
+répétez cette étape pour le compartiment WORM -- il est chez un
+fournisseur différent et a sa propre paire de clés d'accès.
+
+### 5. Fournisseur SMTP + clé API
+
+Votre opérateur a câblé SMTP pour le courrier sortant
+(réinitialisations de mot de passe, invitations, MFA). S'il a
+utilisé un compte personnel Resend / Brevo / etc., cette clé
+doit quitter le VPS :
+
+1. Inscrivez-vous chez le fournisseur SMTP à votre nom (offre
+   gratuite Resend : [resend.com](https://resend.com) ; Brevo
+   gratuit : [brevo.com](https://brevo.com)).
+2. Vérifiez votre domaine (`{{ cloudflare_zone }}`) en ajoutant
+   les enregistrements DNS que le fournisseur fournit. La
+   plupart des fournisseurs ont une vérification en un clic
+   après que les DNS se propagent (~15 min).
+3. Créez une clé API limitée à « envoyer des emails
+   transactionnels ».
+4. Donnez la clé à votre opérateur ; il met à jour le coffre +
+   converge. Ancienne clé révoquée après qu'un email sortant
+   confirme que la nouvelle fonctionne (testez en déclenchant
+   une réinitialisation de mot de passe Keycloak sur un
+   utilisateur de test).
+
+### 6. Clé fournisseur IA (si utilisée)
+
+Si votre infrastructure a n8n avec des nœuds IA ou un
+générateur de workflow configuré :
+
+1. Inscrivez-vous chez le fournisseur à votre nom (OpenAI,
+   Anthropic, Mistral).
+2. Définissez des limites de dépenses sur le compte pour qu'un
+   workflow incontrôlé ne puisse pas vider votre carte -- 50
+   $/mois est un plafond raisonnable au départ.
+3. Créez une clé API.
+4. Donnez-la à votre opérateur pour la mise à jour du coffre +
+   converge.
+5. Vérifiez dans l'UI de n8n qu'un workflow utilisant l'IA
+   fonctionne toujours.
+
+Si vous n'êtes pas sûr que l'IA soit câblée, demandez à votre
+opérateur. Si non, sautez cette étape.
+
+### 7. Coffre + clés de récupération
+
+Le « coffre » de votre opérateur est un fichier chiffré sur sa
+machine de contrôle qui contient chaque identifiant listé
+ci-dessus. Après les étapes 1-6, ce coffre référence VOS clés
+(pas les siennes) -- mais le fichier coffre lui-même vit
+toujours sur sa machine.
+
+Deux chemins :
+
+**Chemin A : vous prenez en charge les opérations.** Votre
+opérateur vous remet le fichier coffre + la clé privée age qui
+le déchiffre (via une clé USB chiffrée, ou une pièce jointe de
+gestionnaire de mots de passe). Vous avez aussi besoin d'une
+station de travail capable d'exécuter Ansible ; votre opérateur
+peut vous accompagner pour cette mise en place ou recommander
+un service géré.
+
+**Chemin B : vous restez en gestion mais changez d'opérateur.**
+Votre nouvel opérateur génère sa propre clé privée age. Votre
+opérateur précédent re-chiffre le coffre avec la nouvelle clé
+publique (une commande SOPS rekey d'une ligne), remet le
+fichier, et détruit sa copie.
+
+**Dans les deux cas :** cliquez sur le bouton **« Exporter les
+clés de récupération (chiffrées) »** sous Ops à
+[actions.{{ cloudflare_zone }}](https://actions.{{ cloudflare_zone }}/)
+et sauvegardez le fichier `.gpg` résultant avec une phrase de
+passe que vous choisissez. Cela vous donne une SECONDE copie de
+chaque secret, chiffrée avec une clé que vous seul contrôlez.
+Utilisez ça comme assurance : le fichier coffre est la copie de
+travail que votre opérateur utilise ; l'export de récupération
+est la copie de secours que vous gardez quel que soit le statut
+de l'opérateur.
+
+### 8. Confirmer le fonctionnement de bout en bout
+
+Avant de signer la reprise, parcourez ceci pour confirmer que
+rien n'a cassé pendant les rotations d'identifiants :
+
+- [ ] Connectez-vous à vos apps via SSO aux URLs publiques.
+      Chaque app charge, vous voyez votre utilisateur, vos
+      données sont là.
+- [ ] L'URL publique fonctionne dans une fenêtre de navigation
+      privée (tunnel CF + porte d'authentification fonctionnels).
+- [ ] Déclenchez une réinitialisation de mot de passe sur un
+      utilisateur Keycloak de test ; confirmez que l'email
+      arrive (SMTP).
+- [ ] Cliquez sur « Lancer une sauvegarde » dans OliveTin ;
+      confirmez que la sauvegarde se termine avec les nouveaux
+      identifiants du compartiment (panneau Backups dans
+      OliveTin affiche horodatage + taille de la dernière
+      exécution).
+- [ ] Si un miroir WORM est configuré : confirmez que le
+      healthcheck `catena-restic-mirror` montre un ping vert
+      depuis le dimanche le plus récent à
+      [healthchecks.{{ cloudflare_zone }}](https://healthchecks.{{ cloudflare_zone }}/).
+- [ ] Si vous avez pris le rôle d'opérateur vous-même :
+      exécutez `./catena validate --limit <votre-host>` depuis
+      votre machine de contrôle et voyez chaque Vantage en vert.
+- [ ] Si vous êtes passé à un nouvel opérateur : faites-LE
+      exécuter la commande validate et envoyez-vous la sortie.
+
+### 9. Mettre à jour les enregistrements de paiement et de propriété
+
+Assurez-vous que les adresses de facturation par compte, les
+emails de contact et les méthodes de paiement sont tous à votre
+nom -- pas à celui de votre opérateur précédent :
+
+- Cloudflare : paramètres de compte -> Members ; retirez l'email
+  de votre opérateur.
+- Tailscale : Settings -> Users ; retirez votre opérateur (s'il
+  était invité).
+- Fournisseur VPS : paramètres de compte ; confirmez contact
+  principal + paiement.
+- Fournisseur S3 : paramètres de compte ; idem.
+- Fournisseur SMTP : idem.
+- Fournisseur IA (si applicable) : idem.
+
+Cela évite le cas génant où une carte de crédit enregistrée est
+celle de votre opérateur précédent -- ça marche le premier mois
+et échoue le second. Bascule la plus propre : changement de
+carte AU moment de la reprise.
+
+## Si vous sautez une étape
+
+Chaque étape inachevée est un fil que votre opérateur précédent
+peut tirer plus tard. Les plus courantes, classées par impact :
+
+| Étape sautée | Pire cas si votre opérateur devient hostile |
+|---|---|
+| 1 (Cloudflare) | Il peut désactiver votre tunnel + supprimer les enregistrements DNS, mettant vos apps hors ligne |
+| 2 (Tailscale) | Il garde un SSH admin sur le VPS pour toujours |
+| 4 (clés S3) | Il peut supprimer chaque sauvegarde (le miroir WORM est la seule défense) |
+| 7 (coffre) | Il garde l'ensemble des clés maîtres même après les rotations |
+| 9 (facturation) | Un paiement échoué sur sa carte cause une interruption de service que vous ne pouvez pas réparer |
+
+Une reprise propre a les neuf étapes faites. Une reprise pratique
+a au minimum 1, 2 et 7 -- le reste peut être nettoyé dans les
+semaines suivantes sans risque opérationnel si votre relation
+est cordiale.
+
+## Après la reprise
+
+Mettez ces pages en signets :
+
+- Cette page (vous êtes venu pour la faire une fois ; vous
+  voudrez peut-être en refaire des parties -- changement de
+  personnel, migration de compte, etc.).
+- [Prévention des sinistres](disaster-prevention.md) -- la
+  liste trimestrielle qui maintient tout ce que vous avez mis
+  en place ici.
+- [Récupération d'urgence](disaster-recovery.md) -- l'index
+  « que faire quand X casse ».
+
+Si vous avez pris en charge les opérations vous-même, la
+documentation côté opérateur vit dans la remise du dépôt
+opérateur (cherchez un répertoire `internal_docs/operator/`
+dans le code source que vous avez reçu). Cette documentation
+est pour la personne qui exécute les converges ; ce wiki client
+est pour tous les autres.

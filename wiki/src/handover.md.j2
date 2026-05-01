@@ -1,0 +1,283 @@
+# Hand-off: taking ownership of your stack
+
+When the engagement with your operator ends -- whether you are
+moving to a self-managed setup, switching operators, or just want
+to know you could -- this page walks you through claiming
+ownership of every external account, bucket, and credential the
+stack depends on. After hand-off you can run, restore, and
+migrate the stack without your previous operator's involvement.
+
+This pairs with the contract's "no lock-in" clause. If anything on
+this page does not match what your operator handed you, follow up
+with them before signing off on the hand-off.
+
+## What lives where
+
+Your stack depends on five external services. Each is a separate
+account that you must own (not your operator) by the end of
+hand-off:
+
+| Service | What it does for you | Cost |
+|---|---|---|
+| **Cloudflare** | DNS for your zone + the tunnel that exposes your apps publicly | free for the tunnel + standard DNS; Pro plan optional |
+| **Tailscale** | Private admin tunnel between you and the VPS (no public SSH) | free up to 100 devices |
+| **VPS provider** (OVH / Hetzner / DigitalOcean / etc.) | The server itself | $5-50/mo depending on shape |
+| **S3-compatible storage** (Backblaze B2 / AWS S3 / Wasabi) | Off-site backup bucket | ~$0.005/GB/mo |
+| **SMTP provider** (Resend / Brevo / SES / Mailgun) | Outbound email for password resets, invites, MFA | free tier covers small clients |
+
+Two are optional depending on your stack:
+
+| Service | When | Cost |
+|---|---|---|
+| **AI provider** (OpenAI / Anthropic / Mistral) | If you use the n8n AI nodes or the workflow generator | pay-as-you-go |
+| **Second backup provider** | Recommended for disaster prevention -- see [Disaster prevention](disaster-prevention.md) | same as primary backup |
+
+## Hand-off checklist
+
+Walk this with your operator on a video call or in person; do not
+do it asynchronously. Each step ends with you confirming an
+action; "I see it works" is the gate for moving on.
+
+### 1. Cloudflare account
+
+You should already have a Cloudflare account in your name with
+your zone (`{{ cloudflare_zone }}`) on it. If your operator owns
+the Cloudflare account today, you need to migrate the zone to
+yours.
+
+Steps your operator does, with you watching:
+
+1. In the operator's Cloudflare dashboard, your zone -> Overview
+   -> **Move zone** (right sidebar). Pick "Move to another
+   account."
+2. Cloudflare emails the destination account owner (you) a
+   confirmation link. Click it.
+3. Confirm the zone now appears under your account at
+   [dash.cloudflare.com](https://dash.cloudflare.com).
+4. **You** generate a fresh API token at
+   [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
+   with these scopes:
+   - Zone -> DNS -> Edit (on `{{ cloudflare_zone }}`)
+   - Account -> Cloudflare Tunnel -> Edit (on your account)
+5. Hand the token to your operator -- they use it for one final
+   converge to swap the old token out of the VPS.
+6. After their converge succeeds, **your operator revokes**
+   their old token. Confirm with them in writing that they did.
+
+The tunnel itself is bound to a separate **tunnel token** (not
+the API token). Your operator already minted that under your
+account during the zone move; re-mint it from your dashboard
+after the move under Zero Trust -> Networks -> Tunnels -> your
+tunnel -> Configure -> Reset.
+
+### 2. Tailscale tenant
+
+Your operator's Tailscale account is what holds the VPS as a
+node today. To take ownership:
+
+1. Create your own Tailscale account at
+   [login.tailscale.com](https://login.tailscale.com).
+2. In Settings -> Users -> Invite, your operator invites you as
+   an admin to their tailnet -- OR --, more cleanly: create a
+   FRESH tailnet under your account and have your operator
+   migrate the VPS to it.
+3. The migration step: your operator generates a new OAuth
+   client in YOUR tailnet (Settings -> Trust Credentials -> OAuth
+   client, scopes: Auth Keys -> Write, tags: tag:vps). They run
+   one converge with the new client; the VPS leaves their tailnet
+   and joins yours.
+4. **Your operator revokes** their old OAuth client in their
+   tailnet. Confirm.
+
+After this step, your operator has no admin access to your VPS
+unless you explicitly invite them back as a user on your
+tailnet. That is the core handover guarantee -- the admin path is
+yours to control.
+
+### 3. VPS provider account
+
+Two paths depending on whether your operator's VPS billing was
+under their account or yours:
+
+**Path A: VPS already billed to you.** Confirm you can log in to
+the VPS provider dashboard, see the running VM, and have a payment
+method on file. You are done with this step.
+
+**Path B: Your operator's account holds the VPS.** Your operator
+either transfers the VM to your provider account (most providers
+support this -- OVH "Project Transfer," Hetzner "VPS Move
+Account," DigitalOcean "Team Transfer") OR you provision a new
+VPS under your account and migrate the stack to it. The latter is
+what your operator would do if you were forced to switch
+providers; see the migration runbook in your operator docs.
+
+Either way, by end of step 3, the VPS billing is on your card
+and the provider account login is yours.
+
+### 4. S3 backup bucket + access keys
+
+The bucket your operator created for nightly backups should
+already be in your name at the S3 provider. To verify:
+
+1. Log in to the S3 provider's dashboard
+   (Backblaze B2, AWS, etc.).
+2. Confirm the bucket exists under your account, not your
+   operator's.
+3. Mint a new access key + secret pair scoped to that bucket
+   only (B2: Application Keys with `read` + `write` +
+   `listFiles`; AWS: an IAM user with `s3:GetObject`,
+   `s3:PutObject`, `s3:ListBucket`, `s3:DeleteObject`).
+4. Hand the new pair to your operator; they update vault on the
+   VPS. Old keys revoked after one nightly run confirms the new
+   pair works.
+5. **Critical: write down the restic repository encryption
+   password separately.** It is in your operator's vault today.
+   Without it, the bucket contents are unreadable ciphertext.
+   Save it in your password manager BEFORE the next step.
+
+If your stack also has a WORM mirror bucket configured (per
+[Disaster prevention](disaster-prevention.md) step 4), repeat
+this step for the worm bucket -- it is at a different provider
+and has its own access key pair.
+
+### 5. SMTP provider + API key
+
+Your operator wired SMTP for outbound mail (password resets,
+invitations, MFA). If they used a personal Resend / Brevo / etc.
+account, that key needs to leave the VPS:
+
+1. Sign up for SMTP provider in your name (Resend free tier:
+   [resend.com](https://resend.com); Brevo free: [brevo.com](https://brevo.com)).
+2. Verify your domain (`{{ cloudflare_zone }}`) by adding the DNS
+   records the provider supplies. Most providers have a one-click
+   "verify" after the DNS records propagate (~15 min).
+3. Mint an API key scoped to "send transactional email."
+4. Hand the key to your operator; they update vault + converge.
+   Old key revoked after one outbound email confirms the new one
+   works (test by triggering a Keycloak password reset on a test
+   user).
+
+### 6. AI provider key (if used)
+
+If your stack has n8n with AI nodes or a workflow generator
+configured:
+
+1. Sign up for the provider in your name (OpenAI, Anthropic,
+   Mistral).
+2. Set spending limits on the account so a runaway workflow
+   cannot empty your card -- $50/month is a reasonable starting
+   cap.
+3. Mint an API key.
+4. Hand to your operator for vault update + converge.
+5. Verify in n8n's UI that an AI-using workflow still runs.
+
+If you are not sure whether AI is wired, ask your operator. If it
+is not, skip this step.
+
+### 7. Vault + recovery secrets
+
+Your operator's "vault" is an encrypted file on their controller
+that holds every credential listed above. After steps 1-6, that
+vault references YOUR keys (not theirs) -- but the vault file
+itself still lives on their machine.
+
+Two paths:
+
+**Path A: You take over operations.** Your operator hands you
+the vault file + the age private key that decrypts it (via an
+encrypted USB stick, or a password-manager attachment). You also
+need an Ansible-capable workstation; your operator can walk you
+through that setup or recommend a managed service.
+
+**Path B: You stay managed but switch operators.** Your new
+operator generates their own age private key. Your previous
+operator re-encrypts the vault with the new public key (a one-line
+SOPS rekey command), hands the file off, and shreds their copy.
+
+**Either way:** click the **"Export recovery secrets
+(encrypted)"** button under Ops at
+[actions.{{ cloudflare_zone }}](https://actions.{{ cloudflare_zone }}/)
+and save the resulting `.gpg` file with a passphrase you choose.
+That gives you a SECOND copy of every secret, encrypted with a
+key only you control. Use this as your insurance: the vault file
+is the working copy your operator uses; the recovery export is
+the breaks-glass copy you keep regardless of operator status.
+
+### 8. Confirm function end-to-end
+
+Before signing off on hand-off, run through these to confirm
+nothing broke during the credential rotations:
+
+- [ ] Log in to your apps via SSO at the public URLs. Each app
+      loads, you see your user, your data is there.
+- [ ] Public URL works in an incognito window (CF tunnel +
+      auth-gate functioning).
+- [ ] Trigger a password reset on a test Keycloak user; confirm
+      the email arrives (SMTP).
+- [ ] Click "Trigger backup now" in OliveTin; confirm the
+      backup completes against the new bucket creds (Backups
+      panel in OliveTin shows last-run timestamp + size).
+- [ ] If a WORM mirror is configured: confirm the
+      `catena-restic-mirror` healthcheck shows a green ping
+      from the most recent Sunday at
+      [healthchecks.{{ cloudflare_zone }}](https://healthchecks.{{ cloudflare_zone }}/).
+- [ ] If you took the operator role yourself: run
+      `./catena validate --limit <your-host>` from your
+      controller and see every Vantage green.
+- [ ] If you switched to a new operator: have THEM run the
+      validate command and send you the output.
+
+### 9. Update payment + ownership records
+
+Make sure the per-account billing addresses, contact emails,
+and payment methods are all in your name -- not your previous
+operator's:
+
+- Cloudflare: account settings -> Members; remove your
+  operator's email.
+- Tailscale: Settings -> Users; remove your operator (if they
+  were invited).
+- VPS provider: account settings; confirm primary contact +
+  payment.
+- S3 provider: account settings; same.
+- SMTP provider: same.
+- AI provider (if applicable): same.
+
+This prevents the awkward case where a credit card on file is
+your previous operator's -- it works for the first month and
+fails the second. Cleanest cutover: card change AT hand-off.
+
+## What if you skip a step
+
+Each unfinished step is a thread your previous operator can pull
+on later. The most common ones, ranked by impact:
+
+| Skipped step | Worst case if your operator goes hostile |
+|---|---|
+| 1 (Cloudflare) | They can disable your tunnel + delete DNS records, taking your apps offline |
+| 2 (Tailscale) | They retain admin SSH to the VPS forever |
+| 4 (S3 keys) | They can delete every backup snapshot (WORM mirror is the only defense) |
+| 7 (vault) | They retain the master key set even after credential rotations |
+| 9 (billing) | A failed payment on their card causes service interruption you cannot fix |
+
+A clean hand-off has all nine done. A practical hand-off has 1, 2,
+and 7 done at minimum -- the rest can be cleaned up over the
+following weeks without operational risk if your relationship is
+amicable.
+
+## After hand-off
+
+Bookmark these:
+
+- This page (you came here to do it once; you may want to do
+  parts of it again -- staff change, account migration, etc.).
+- [Disaster prevention](disaster-prevention.md) -- the quarterly
+  checklist that maintains everything you set up here.
+- [Disaster recovery](disaster-recovery.md) -- the index of
+  "what to do when X breaks."
+
+If you took on operations yourself, the operator-side
+documentation lives in your operator's repo handoff (look for an
+`internal_docs/operator/` directory in the codebase you received).
+That documentation is for the person who runs converges; this
+client wiki is for everyone else.
