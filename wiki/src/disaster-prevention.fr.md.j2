@@ -100,7 +100,7 @@ Si vous ne savez pas où se trouve votre compartiment de sauvegarde,
 demandez à votre opérateur. C'est une question ponctuelle avec une
 réponse simple (« eu-west-1 » / « us-east-005 » / etc.).
 
-### 4. Demandez à votre opérateur d'activer l'Object Lock sur votre compartiment de sauvegarde
+### 4. Confirmez que votre infrastructure a un instantané hebdomadaire dans un compartiment immuable
 
 Si une attaque par rançongiciel atteint votre VPS, l'attaquant a
 accès au même mot de passe restic et aux mêmes clés S3 que la
@@ -109,31 +109,39 @@ sauvegarde nocturne. Avec ça, il pourrait en principe lancer un
 de chiffrer le disque actif — transformant un incident
 récupérable en perte irréversible.
 
-L'**Object Lock** est un réglage de compartiment S3 qui empêche
-ça : une fois écrit, un objet ne peut être ni supprimé ni
-réécrit avant l'expiration d'un minuteur de rétention
-(typiquement 30 jours). La sauvegarde nocturne continue d'écrire
-de nouveaux objets normalement ; rien de ce qu'elle fait en
-fonctionnement sain ne nécessite de suppression. Mais un
-`forget --prune` déclenché par un rançongiciel échoue tout
-simplement — les sauvegardes historiques restent intactes,
-récupérables jusqu'à votre dernier bon jour.
+La défense : votre infrastructure embarque un **miroir
+hebdomadaire** qui copie votre compartiment de sauvegarde actif
+(mutable) vers un compartiment SÉPARÉ avec Object Lock / WORM
+activé. Le compartiment actif reste normal pour que l'élagage
+nocturne de restic fonctionne sans interférence ; le miroir
+hebdomadaire capture l'état du compartiment au moment de la
+synchro et le range là où il ne peut être ni supprimé ni
+écrasé avant l'expiration de la fenêtre de rétention
+(typiquement 30 jours).
 
-C'est un réglage ponctuel sur le compartiment et la plupart des
-fournisseurs le supportent (Backblaze B2, AWS S3, Wasabi,
-Cloudflare R2). Demandez à votre opérateur de confirmer que
-l'Object Lock est activé sur votre compartiment de sauvegarde
-principal — la réponse devrait être « oui, avec une rétention de
-30 jours ». S'il n'est pas activé aujourd'hui, votre opérateur
-peut soit basculer le réglage (certains fournisseurs le
-permettent en place), soit migrer vers un nouveau compartiment
-avec Object Lock activé.
+Résultat : même si l'attaquant efface tout dans le compartiment
+actif, le miroir de la semaine dernière est toujours dans le
+stockage WORM, récupérable jusqu'à votre dernière bonne
+semaine. La pire fenêtre de perte de données est d'une
+semaine, pas « tout ».
 
-Le compromis : l'Object Lock prend environ 5 % de stockage
-mensuel en plus parce que les anciens objets ne peuvent plus
-être élagués de force avant la fin de leur minuteur. Ce coût
-est le prix de la survie face à un rançongiciel qui compromet
-votre VPS.
+Demandez à votre opérateur de confirmer deux choses :
+
+1. Le miroir WORM hebdomadaire est configuré (le minuteur
+   systemd `catena-restic-mirror.timer` est activé, le
+   compartiment WORM a ses identifiants dans le coffre, et le
+   healthcheck de la dernière semaine a pingé vert).
+2. Le compartiment WORM vit chez un **fournisseur différent**
+   de votre compartiment de sauvegarde actif. Si le fournisseur
+   du compartiment actif est celui qui est compromis, mettre le
+   WORM au même endroit annule l'effet.
+
+Le miroir tourne une fois par semaine, avant toute fenêtre de
+mise à jour, sur un horaire fixe qui ne dépend pas du fait que
+les mises à jour soient déclenchées cette semaine ou non. Il
+échoue en douceur : un compartiment WORM mal configuré ne peut
+pas bloquer la sauvegarde quotidienne — le run quotidien ne
+touche que le compartiment actif.
 
 ### 5. Envisagez un second emplacement de sauvegarde
 
@@ -235,8 +243,10 @@ répondre « oui » à tout cela :
       récupération**, ce qui est correct.)
 - [ ] Je sais dans quelle ville vit mon compartiment de sauvegarde
       (et ce n'est pas la même ville que mon VPS).
-- [ ] Mon compartiment de sauvegarde a l'Object Lock activé (avec au
-      moins 30 jours de rétention) — confirmé avec mon opérateur.
+- [ ] Mon infrastructure a un miroir WORM hebdomadaire configuré
+      (fournisseur différent du compartiment de sauvegarde actif,
+      dernier run hebdomadaire a pingé vert) — confirmé avec mon
+      opérateur.
 - [ ] J'ai décidé si j'ai besoin d'un second emplacement de
       sauvegarde — si oui, mon opérateur l'a configuré.
 - [ ] J'ai cliqué sur le bouton « Exporter les clés de récupération »

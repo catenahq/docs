@@ -120,6 +120,8 @@ Timers/services installed by the stack. Check status with
 
 - `catena-backup.service`
 - `catena-backup.timer`
+- `catena-restic-mirror.service`
+- `catena-restic-mirror.timer`
 
 ### `dokploy/`
 

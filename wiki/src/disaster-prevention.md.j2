@@ -88,7 +88,7 @@ If you're not sure where your backup bucket is, ask your operator.
 This is a one-time question with a simple answer ("eu-west-1" /
 "us-east-005" / etc.).
 
-### 4. Ask your operator to enable Object Lock on your backup bucket
+### 4. Confirm your stack has a weekly immutable-bucket snapshot
 
 If a ransomware attack reaches your VPS, the attacker has access
 to the same restic password and S3 keys the nightly backup uses.
@@ -96,26 +96,34 @@ With those, they could in principle issue a `forget --prune` and
 delete your historical snapshots before encrypting the live disk
 — turning a recoverable incident into an unrecoverable one.
 
-**Object Lock** is an S3 bucket setting that prevents this: once
-written, an object cannot be deleted or overwritten until a
-retention timer expires (commonly 30 days). The nightly backup
-keeps writing new objects normally; nothing it would do during a
-healthy run requires deletion. But a ransomware-driven `forget
---prune` simply fails — the historical snapshots stay intact,
-recoverable to your last good day.
+The defence: your stack ships a **weekly mirror** that copies
+your live (mutable) backup bucket to a SEPARATE bucket with
+Object Lock / WORM enabled. The live bucket stays normal so the
+nightly backup's prune step works without interference; the
+weekly mirror takes a snapshot of the bucket at sync time and
+stores it where it cannot be deleted or overwritten until the
+retention window (typically 30 days) expires.
 
-This is a one-time setting on the bucket and most providers
-support it (Backblaze B2, AWS S3, Wasabi, Cloudflare R2). Ask
-your operator to confirm Object Lock is enabled on your primary
-backup bucket — the answer should be "yes, with a 30-day
-retention." If it's not enabled today, your operator can either
-flip the setting (some providers allow this in-place) or rotate
-to a new bucket with Object Lock turned on.
+The result: even if the attacker successfully wipes everything
+in the live bucket, last week's mirror is still in WORM storage,
+recoverable to your last good week. Worst case data-loss window
+is one week, not "everything."
 
-The trade-off: Object Lock takes about 5% more storage per month
-because old objects can no longer be force-pruned ahead of their
-retention timer. That cost is the price of survival against
-ransomware that compromises your VPS.
+Ask your operator to confirm two things:
+
+1. The weekly WORM mirror is configured (the systemd timer
+   `catena-restic-mirror.timer` is enabled, the WORM bucket has
+   credentials in vault, and last week's healthcheck pinged
+   green).
+2. The WORM bucket lives at a **different provider** from the
+   live backup bucket. If the live bucket's provider is the one
+   compromised, putting the WORM at the same place defeats the
+   point.
+
+The mirror runs once a week, before any update window, on a
+fixed schedule that does not depend on whether updates fire that
+week. It is fail-soft: a misconfigured WORM bucket cannot block
+the daily backup — the daily run only touches the live bucket.
 
 ### 5. Consider a second backup location
 
@@ -209,8 +217,9 @@ When prevention is in place, a three-month-from-now you can answer
       fine.)
 - [ ] I know which city my backup bucket lives in (and it's not the
       same city as my VPS).
-- [ ] My backup bucket has Object Lock enabled (with at least a 30-day
-      retention) — confirmed with my operator.
+- [ ] My stack has a weekly WORM-bucket mirror configured (separate
+      provider from the live backup bucket, last weekly run pinged
+      green) — confirmed with my operator.
 - [ ] I have decided whether I need a second backup location — if yes,
       my operator has set it up.
 - [ ] I've run the "Export recovery secrets" button at least once
