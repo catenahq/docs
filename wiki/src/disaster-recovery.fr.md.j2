@@ -13,6 +13,28 @@ accidentel ne puisse à lui seul vous mettre à la porte**. Il faut un
 concours de circonstances pour vraiment perdre l'accès, et pour chaque
 scénario, il existe un chemin de récupération.
 
+## Scénarios de perte de données — FAQ rapide
+
+Si vous parcourez la page à la recherche de la seule chose qui
+correspond à votre situation actuelle, voici l'index. Chaque entrée
+renvoie à la page ou la section qui détaille la récupération.
+
+| Situation | Premier réflexe | Où en lire plus |
+|---|---|---|
+| **J'ai supprimé un fichier par accident** (un utilisateur, un fichier/dossier) | Essayez la corbeille de l'application. Si vide, contactez votre opérateur. | [J'ai supprimé quelque chose — comment le récupérer ?](how-to-restore-one-app.md) |
+| **J'ai perdu mon mot de passe ou mon 2FA** (juste moi) | Réinitialisation libre-service ; pour le 2FA, contactez votre opérateur. | [J'ai perdu mon mot de passe (ou mon 2FA)](i-lost-my-password.md) |
+| **Tous les administrateurs sont verrouillés en même temps** (email perdu, tableau de bord perdu) | Contactez votre opérateur — il a un chemin de récupération séparé qui ne dépend ni de l'email ni du tableau de bord. | [J'ai perdu mon mot de passe (ou mon 2FA)](i-lost-my-password.md) |
+| **Le VPS entier est chiffré par un rançongiciel** | Contactez votre opérateur immédiatement. La récupération se fait depuis votre dernière sauvegarde saine, antérieure au rançongiciel. | Carte de récupération ci-dessous (« Disque VPS entier ») |
+| **Le VPS lui-même est compromis par un malware / accès non autorisé** | Contactez votre opérateur. Le chemin est : effacement + restauration depuis un snapshot pré-compromis + rotation de tous les secrets. Votre opérateur s'en charge ; vous recevez une mise à jour à chaque phase. | Carte de récupération ci-dessous (« Disque VPS entier ») |
+| **Le centre de données du fournisseur VPS brûle** (ou panne matérielle) | Contactez votre opérateur. Il restaure votre infrastructure sur un nouveau VPS chez le même ou un autre fournisseur, depuis le compartiment de sauvegarde hors site. | Carte de récupération ci-dessous (« Disque VPS entier ») + [Restaurer sur un nouveau VPS](self-restore.md) |
+| **Le fournisseur VPS donne un préavis de 48 h / suspend le compte** | Contactez votre opérateur. Il migre vers un nouveau fournisseur dans un délai serré ; comptez ~30-60 min d'indisponibilité publique pendant la bascule. | Carte de récupération ci-dessous (« Le fournisseur VPS fait faillite ») |
+| **Le fournisseur de sauvegarde donne un préavis de 48 h** | Contactez votre opérateur. Il re-cible les sauvegardes vers un nouveau compartiment ; les données sur le VPS ne sont pas affectées. | Carte de récupération ci-dessous (« Le fournisseur S3 fait faillite ») |
+| **Je crois que quelqu'un d'autre a mon mot de passe / mon jeton API** | N'attendez pas — contactez votre opérateur et faites tourner la clé. | Carte de récupération ci-dessous (lignes par identifiant) |
+
+La carte de récupération ci-dessous contient le tableau complet, y
+compris les rotations d'identifiants d'infrastructure (jeton
+Cloudflare, compte Tailscale, etc.) — continuez à lire.
+
 ## Le seul bouton dont vous aurez peut-être besoin : « Exporter les clés de récupération »
 
 Sur [actions.{{ cloudflare_zone }}](https://actions.{{ cloudflare_zone }}/),
