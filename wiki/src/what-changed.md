@@ -31,8 +31,6 @@ any hand-edits. If you need to change one, ask the operator.
 
 - `auto-update.env`
 - `catena-auto-update-resume.service`
-- `health-baseline.sh`
-- `provider-snapshot.py`
 
 ### `backup/`
 
@@ -56,7 +54,6 @@ any hand-edits. If you need to change one, ask the operator.
 - `catena-stack-update.service`
 - `catena-stack-update.timer`
 - `dashboard-sync.env`
-- `dashboard-sync.py`
 - `dashboard-sync.service`
 - `dashboard-sync.timer`
 - `gatus-base.yaml`
@@ -64,7 +61,6 @@ any hand-edits. If you need to change one, ask the operator.
 - `gatus-sync.service`
 - `gatus-sync.timer`
 - `gatus.compose.yml`
-- `healthchecks-seed.py`
 - `healthchecks.compose.yml`
 - `homepage.bookmarks.yaml`
 - `homepage.compose.yml`
@@ -73,8 +69,8 @@ any hand-edits. If you need to change one, ask the operator.
 - `homepage.settings.yaml`
 - `homepage.widgets.yaml`
 - `managed-services.json`
+- `olivetin-actions`
 - `olivetin-allowed.yaml`
-- `olivetin-runner.sh`
 - `olivetin-ssh-config`
 - `olivetin.compose.yml`
 - `olivetin.config.yaml`
@@ -82,7 +78,6 @@ any hand-edits. If you need to change one, ask the operator.
 - `recovery.compose.yml`
 - `semaphore.compose.yml`
 - `stack-update.env`
-- `stack-update.sh`
 - `vps-docs.compose.yml`
 
 ### `keycloak/`
