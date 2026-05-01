@@ -88,7 +88,36 @@ If you're not sure where your backup bucket is, ask your operator.
 This is a one-time question with a simple answer ("eu-west-1" /
 "us-east-005" / etc.).
 
-### 4. Consider a second backup location
+### 4. Ask your operator to enable Object Lock on your backup bucket
+
+If a ransomware attack reaches your VPS, the attacker has access
+to the same restic password and S3 keys the nightly backup uses.
+With those, they could in principle issue a `forget --prune` and
+delete your historical snapshots before encrypting the live disk
+— turning a recoverable incident into an unrecoverable one.
+
+**Object Lock** is an S3 bucket setting that prevents this: once
+written, an object cannot be deleted or overwritten until a
+retention timer expires (commonly 30 days). The nightly backup
+keeps writing new objects normally; nothing it would do during a
+healthy run requires deletion. But a ransomware-driven `forget
+--prune` simply fails — the historical snapshots stay intact,
+recoverable to your last good day.
+
+This is a one-time setting on the bucket and most providers
+support it (Backblaze B2, AWS S3, Wasabi, Cloudflare R2). Ask
+your operator to confirm Object Lock is enabled on your primary
+backup bucket — the answer should be "yes, with a 30-day
+retention." If it's not enabled today, your operator can either
+flip the setting (some providers allow this in-place) or rotate
+to a new bucket with Object Lock turned on.
+
+The trade-off: Object Lock takes about 5% more storage per month
+because old objects can no longer be force-pruned ahead of their
+retention timer. That cost is the price of survival against
+ransomware that compromises your VPS.
+
+### 5. Consider a second backup location
 
 For deployments where losing a week of data would be genuinely bad,
 set up a second backup path that writes to a **different cloud
@@ -101,7 +130,7 @@ weekly timer. Walk-through:
 [Add a second backup bucket](how-to-add-second-backup-bucket.md). It's
 an additive change with no downtime.
 
-### 5. Run the "Export recovery secrets" button proactively
+### 6. Run the "Export recovery secrets" button proactively
 
 On [actions.{{ cloudflare_zone }}](https://actions.{{ cloudflare_zone }}/),
 in the **Ops** section, there's a button called **"Export recovery
@@ -124,7 +153,7 @@ ever lose your master password file. You still need the passphrase to
 decrypt it, but you chose the passphrase yourself and you saved it in
 a place you control.
 
-### 6. Test your recovery path once
+### 7. Test your recovery path once
 
 At some quiet point in the first six months, do a "does this
 actually work" dry run:
@@ -180,6 +209,8 @@ When prevention is in place, a three-month-from-now you can answer
       fine.)
 - [ ] I know which city my backup bucket lives in (and it's not the
       same city as my VPS).
+- [ ] My backup bucket has Object Lock enabled (with at least a 30-day
+      retention) — confirmed with my operator.
 - [ ] I have decided whether I need a second backup location — if yes,
       my operator has set it up.
 - [ ] I've run the "Export recovery secrets" button at least once

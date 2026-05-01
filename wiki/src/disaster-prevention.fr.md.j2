@@ -100,7 +100,42 @@ Si vous ne savez pas où se trouve votre compartiment de sauvegarde,
 demandez à votre opérateur. C'est une question ponctuelle avec une
 réponse simple (« eu-west-1 » / « us-east-005 » / etc.).
 
-### 4. Envisagez un second emplacement de sauvegarde
+### 4. Demandez à votre opérateur d'activer l'Object Lock sur votre compartiment de sauvegarde
+
+Si une attaque par rançongiciel atteint votre VPS, l'attaquant a
+accès au même mot de passe restic et aux mêmes clés S3 que la
+sauvegarde nocturne. Avec ça, il pourrait en principe lancer un
+`forget --prune` et supprimer vos sauvegardes historiques avant
+de chiffrer le disque actif — transformant un incident
+récupérable en perte irréversible.
+
+L'**Object Lock** est un réglage de compartiment S3 qui empêche
+ça : une fois écrit, un objet ne peut être ni supprimé ni
+réécrit avant l'expiration d'un minuteur de rétention
+(typiquement 30 jours). La sauvegarde nocturne continue d'écrire
+de nouveaux objets normalement ; rien de ce qu'elle fait en
+fonctionnement sain ne nécessite de suppression. Mais un
+`forget --prune` déclenché par un rançongiciel échoue tout
+simplement — les sauvegardes historiques restent intactes,
+récupérables jusqu'à votre dernier bon jour.
+
+C'est un réglage ponctuel sur le compartiment et la plupart des
+fournisseurs le supportent (Backblaze B2, AWS S3, Wasabi,
+Cloudflare R2). Demandez à votre opérateur de confirmer que
+l'Object Lock est activé sur votre compartiment de sauvegarde
+principal — la réponse devrait être « oui, avec une rétention de
+30 jours ». S'il n'est pas activé aujourd'hui, votre opérateur
+peut soit basculer le réglage (certains fournisseurs le
+permettent en place), soit migrer vers un nouveau compartiment
+avec Object Lock activé.
+
+Le compromis : l'Object Lock prend environ 5 % de stockage
+mensuel en plus parce que les anciens objets ne peuvent plus
+être élagués de force avant la fin de leur minuteur. Ce coût
+est le prix de la survie face à un rançongiciel qui compromet
+votre VPS.
+
+### 5. Envisagez un second emplacement de sauvegarde
 
 Pour les déploiements où la perte d'une semaine de données serait
 vraiment grave, configurez une seconde voie de sauvegarde qui écrit
@@ -114,7 +149,7 @@ et tourne sur un minuteur hebdomadaire. Marche à suivre :
 [Ajouter un second compartiment de sauvegarde](how-to-add-second-backup-bucket.md).
 C'est un changement additif, sans temps d'arrêt.
 
-### 5. Utilisez le bouton « Exporter les clés de récupération » de manière proactive
+### 6. Utilisez le bouton « Exporter les clés de récupération » de manière proactive
 
 Sur [actions.{{ cloudflare_zone }}](https://actions.{{ cloudflare_zone }}/),
 dans la section **Ops / divers**, il y a un bouton intitulé
@@ -141,7 +176,7 @@ faut toujours la phrase de passe pour le déchiffrer, mais c'est vous
 qui l'avez choisie et qui l'avez sauvegardée à un endroit que vous
 contrôlez.
 
-### 6. Testez votre chemin de récupération une fois
+### 7. Testez votre chemin de récupération une fois
 
 À un moment calme des six premiers mois, faites un essai « est-ce que
 ça fonctionne vraiment » :
@@ -200,6 +235,8 @@ répondre « oui » à tout cela :
       récupération**, ce qui est correct.)
 - [ ] Je sais dans quelle ville vit mon compartiment de sauvegarde
       (et ce n'est pas la même ville que mon VPS).
+- [ ] Mon compartiment de sauvegarde a l'Object Lock activé (avec au
+      moins 30 jours de rétention) — confirmé avec mon opérateur.
 - [ ] J'ai décidé si j'ai besoin d'un second emplacement de
       sauvegarde — si oui, mon opérateur l'a configuré.
 - [ ] J'ai cliqué sur le bouton « Exporter les clés de récupération »
