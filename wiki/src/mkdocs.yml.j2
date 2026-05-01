@@ -158,10 +158,13 @@ extra:
   catena_version: "{{ catena_version | default('unknown') }}"
   catena_version_date: "{{ catena_version_date | default('') }}"
 
-# Material renders `copyright` as left-aligned footer text. Used here to
-# surface the exact catena commit that produced this site so an issue
-# report traces back to a specific converge. Kept generic — no client name,
+# Material renders `copyright` as left-aligned footer text. HTML is
+# allowed. Used here to (a) surface the exact catena commit that
+# produced this site so an issue report traces back to a specific
+# converge, and (b) link to vps-docs-html.zip for offline reading
+# (e.g. when the VPS is down). Kept generic — no client name,
 # no "© <company>" claim.
 copyright: >-
   catena {{ catena_version | default('unknown') }}
   · converged {{ catena_version_date | default('(date unknown)') }}
+  · <a href="/vps-docs-html.zip" download>Download offline copy (.zip)</a>
