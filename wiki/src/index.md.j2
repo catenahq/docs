@@ -1,0 +1,46 @@
+# {{ cloudflare_zone }} — your VPS, your docs
+
+This wiki is auto-generated every time your operator pushes an
+update to `{{ inventory_hostname }}`. Every page here reflects the
+actual state of **this machine** — the hostnames, paths, and groups
+are not generic placeholders.
+
+## Where to start
+
+- **[How this stack works](how-this-stack-works.md)** — a plain-language
+  tour of the services and how they fit together. Start here if this is
+  your first time.
+- **[What changed on your VPS](what-changed.md)** — the authoritative
+  list of files, services, networks, and DNS records the stack owns.
+- **[Files you should not touch](do-not-touch.md)** — hand-edits get
+  overwritten the next time your operator pushes an update. Here's
+  what to leave alone.
+- **[Where your data lives](where-is-my-data.md)** — what's on the VPS,
+  what's in your S3 backup bucket, what's lost if the VPS burns down.
+
+## Day-to-day tasks
+
+- **[Add / remove users](how-to-add-users.md)** — Keycloak walkthrough
+  for staff onboarding + password resets.
+- **[Deploy apps (per-department access)](how-to-deploy-apps.md)** —
+  how to gate new apps to specific teams using compose labels.
+- **[What you can do yourself](self-service.md)** — day-to-day tasks
+  that never need your operator; the ones that do.
+
+## Your subdomains
+
+| URL | Service |
+|---|---|
+| [`{{ keycloak_hostname }}`](https://{{ keycloak_hostname }}) | Keycloak (identity + SSO) |
+| [`{{ dokploy_admin_hostname }}`](https://{{ dokploy_admin_hostname }}) | Dokploy (app deployment) |
+| [`{{ infrastructure_monitor_hostname }}`](https://{{ infrastructure_monitor_hostname }}) | Gatus (service health) |
+| [`{{ infrastructure_dash_hostname }}`](https://{{ infrastructure_dash_hostname }}) | Homepage (dashboard) |
+| [`{{ infrastructure_actions_hostname }}`](https://{{ infrastructure_actions_hostname }}) | OliveTin (one-click actions) |
+| [`{{ healthchecks_hostname }}`](https://{{ healthchecks_hostname }}) | Healthchecks (cron / dead-man) |
+| [`{{ vps_docs_hostname }}`](https://{{ vps_docs_hostname }}) | This wiki |
+
+---
+
+_Something out of date or unclear? Ask your operator — every page
+here is generated from the same source they update, so corrections
+made upstream show up on the next push._

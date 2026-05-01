@@ -1,0 +1,28 @@
+# Comment ajouter des utilisateurs
+
+Version abrégée :
+
+1. Rendez-vous sur `https://{{ keycloak_hostname }}` et connectez-vous
+   en tant qu'administrateur.
+2. Interface d'administration → Directory → Users → « Create ».
+3. Remplissez le nom d'utilisateur et le courriel. Définissez un mot de
+   passe fort OU envoyez une invitation (Keycloak expédie par SMTP un
+   lien pour définir le mot de passe — suppose que l'opérateur a
+   configuré SMTP).
+4. Attribuez le groupe `client-staff` (accès de base aux applications
+   protégées). Pour un contrôle plus fin, utilisez un groupe par
+   département (consultez la documentation de déploiement de votre
+   opérateur).
+5. L'utilisateur peut alors se connecter à n'importe quel sous-domaine
+   d'application (`{{ dokploy_admin_hostname }}`,
+   `{{ infrastructure_monitor_hostname }}`,
+   `{{ infrastructure_actions_hostname }}`,
+   `{{ infrastructure_dash_hostname }}`) avec son courriel et son mot
+   de passe.
+
+Les flux en libre-service qui fonctionnent sans intervention de
+l'opérateur :
+
+- Réinitialisation du mot de passe (lien par courriel).
+- Modification du profil (nom affiché, courriel).
+- Activation de l'authentification multifacteur sur son propre compte.

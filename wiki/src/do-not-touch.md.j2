@@ -1,0 +1,21 @@
+# Files and directories the stack owns
+
+TODO. For each path below: what it is, why the operator owns it, what
+happens if you edit it by hand.
+
+Short answer: if a file has an `ansible_managed` header, the operator's
+next `./catena site` run will overwrite your edits. Don't hand-edit these:
+
+- `/etc/dokploy/traefik/dynamic/*.yml` — managed by `dashboard-sync`
+- `/etc/catena/backup.env` — managed by Ansible role
+- `/etc/catena/restic.pass` — managed by Ansible role
+- `/etc/systemd/system/catena-*.{service,timer}` — managed by Ansible
+- `/usr/local/bin/run-backup.sh`, `/usr/local/bin/dashboard-sync`,
+  `/usr/local/bin/gatus-sync`, `/usr/local/bin/auto-update.sh` — managed
+  by Ansible
+
+What you CAN touch without asking:
+
+- Apps deployed through Dokploy's UI (those are yours)
+- Your Keycloak users/groups (that's the point of self-service SSO)
+- Anything in `/home/<your-users>/` (the operator doesn't touch home dirs)

@@ -1,0 +1,27 @@
+# Libre-service — ce que vous pouvez faire sans l'opérateur
+
+Règle empirique : tout ce que les interfaces web exposent, vous pouvez
+le faire vous-même. Tout ce qui requiert un accès SSH et sudo passe par
+l'opérateur.
+
+## Oui, faites-le vous-même
+
+- Ajouter / retirer des comptes d'employés : interface Keycloak
+  (`{{ keycloak_hostname }}`).
+- Déployer de nouvelles applications : interface Dokploy
+  (`{{ dokploy_admin_hostname }}`).
+- Vérifier la santé des services : Gatus
+  (`{{ infrastructure_monitor_hostname }}`) ou Homepage
+  (`{{ infrastructure_dash_hostname }}`).
+- Lancer des sauvegardes ponctuelles, consulter l'historique des
+  sauvegardes : OliveTin (`{{ infrastructure_actions_hostname }}`).
+- Voir les alertes actives : Healthchecks (`{{ healthchecks_hostname }}`).
+
+## Passez par l'opérateur
+
+- Mises à niveau majeures d'Keycloak, de Dokploy ou de Postgres.
+- Changements à la topologie CF Tunnel ou DNS.
+- Restauration à partir d'une sauvegarde (destructif ; exige le VPS en
+  état suspendu).
+- Migration vers un autre fournisseur de VPS.
+- Toute opération impliquant SSH.

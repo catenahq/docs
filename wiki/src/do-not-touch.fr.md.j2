@@ -1,0 +1,21 @@
+# Fichiers et répertoires appartenant à la pile
+
+Résumé : si un fichier porte un en-tête `ansible_managed`, la prochaine
+exécution de `./catena site` par l'opérateur écrasera vos modifications.
+Ne modifiez pas à la main :
+
+- `/etc/dokploy/traefik/dynamic/*.yml` — géré par `dashboard-sync`
+- `/etc/catena/backup.env` — géré par un rôle Ansible
+- `/etc/catena/restic.pass` — géré par un rôle Ansible
+- `/etc/systemd/system/catena-*.{service,timer}` — géré par Ansible
+- `/usr/local/bin/run-backup.sh`, `/usr/local/bin/dashboard-sync`,
+  `/usr/local/bin/gatus-sync`, `/usr/local/bin/auto-update.sh` — gérés
+  par Ansible
+
+Ce que vous POUVEZ modifier sans permission préalable :
+
+- Les applications déployées via l'interface de Dokploy (elles vous
+  appartiennent).
+- Vos utilisateurs et groupes Keycloak (c'est le propre du libre-service).
+- Tout ce qui se trouve dans `/home/<vos-utilisateurs>/` (l'opérateur
+  ne touche pas aux répertoires personnels).

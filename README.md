@@ -45,7 +45,7 @@ vps_docs.yml` has two flows:
   matching tarball from GitHub Releases, extract into
   `vps_docs_host_site_dir`, served by the existing nginx sidecar.
   No Jinja, no per-host customization.
-- **Legacy / Jinja**: render `docs/client/src/*.md.j2` per-host with
+- **Legacy / Jinja**: render `apps/docs/wiki/src/*.md.j2` per-host with
   Ansible vars + `mkdocs build`. The historical path; default while
   the migration of templated pages -> apps/docs content collection
   is still in flight.
@@ -64,12 +64,12 @@ the old behaviour.
 - [x] Index pages (EN + FR) -- generic public-friendly content.
 - [ ] **Body content** for the 11 sub-pages. Each page currently
       ships a "migration in progress" banner pointing at the
-      per-host Jinja source under `docs/client/src/` for
+      per-host Jinja source under `apps/docs/wiki/src/` for
       definitive content. Migration commits will replace each banner
       with the rewritten generic version, one page (or one batch)
       at a time.
 - [x] Per-template catalog index. The 16 individual app catalog
-      pages remain in `docs/client/src/catalog/*.md.j2` until
+      pages remain in `apps/docs/wiki/src/catalog/*.md.j2` until
       migrated -- they describe per-installed-app specifics that
       currently use Jinja substitution for hostnames, so the
       migration also needs to define what the public version looks
@@ -82,7 +82,7 @@ the old behaviour.
 - [ ] First `docs-v0.1.0` tag, after which `automation/ansible/
       inventory/dev/.env` flips to use the artifact path and the
       legacy Jinja flow goes through one final dev1 verify run.
-- [ ] Delete `docs/client/` once every inventory has migrated.
+- [ ] Delete `apps/docs/wiki/` once every inventory has migrated.
 
 ## Adding a page
 

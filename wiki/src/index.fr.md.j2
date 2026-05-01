@@ -1,0 +1,52 @@
+# {{ cloudflare_zone }} — votre VPS, votre documentation
+
+Ce wiki est régénéré automatiquement à chaque mise à jour poussée par
+votre opérateur sur `{{ inventory_hostname }}`. Chaque page ci-dessous
+reflète l'état réel de **cette machine** — les noms d'hôtes, chemins et
+groupes ne sont pas des exemples génériques.
+
+## Par où commencer
+
+- **[Comment fonctionne cette pile](how-this-stack-works.md)** — une
+  visite guidée, en langage clair, des services et de la façon dont ils
+  s'assemblent. Commencez ici si c'est votre première fois.
+- **[Ce qui a changé sur votre VPS](what-changed.md)** — la liste
+  exhaustive des fichiers, services, réseaux et enregistrements DNS
+  gérés par la pile.
+- **[Fichiers à ne pas modifier](do-not-touch.md)** — les modifications
+  manuelles sont écrasées à la prochaine mise à jour poussée par votre
+  opérateur. Voici ce qu'il faut laisser tel quel.
+- **[Où sont vos données](where-is-my-data.md)** — ce qui se trouve sur
+  le VPS, ce qui est dans votre seau S3 de sauvegarde, ce qui est perdu
+  si le VPS part en fumée.
+
+## Tâches courantes
+
+- **[Ajouter / retirer des utilisateurs](how-to-add-users.md)** —
+  procédure Keycloak pour l'embauche du personnel et les
+  réinitialisations de mot de passe.
+- **[Déployer des applications (accès par département)](how-to-deploy-apps.md)** —
+  comment restreindre l'accès à de nouvelles applications à des équipes
+  précises au moyen d'étiquettes compose.
+- **[Ce que vous pouvez faire vous-même](self-service.md)** — les
+  tâches quotidiennes qui ne requièrent jamais votre opérateur, et
+  celles qui l'exigent.
+
+## Vos sous-domaines
+
+| URL | Service |
+|---|---|
+| [`{{ keycloak_hostname }}`](https://{{ keycloak_hostname }}) | Keycloak (identité et authentification unique) |
+| [`{{ dokploy_admin_hostname }}`](https://{{ dokploy_admin_hostname }}) | Dokploy (déploiement d'applications) |
+| [`{{ infrastructure_monitor_hostname }}`](https://{{ infrastructure_monitor_hostname }}) | Gatus (santé des services) |
+| [`{{ infrastructure_dash_hostname }}`](https://{{ infrastructure_dash_hostname }}) | Homepage (tableau de bord) |
+| [`{{ infrastructure_actions_hostname }}`](https://{{ infrastructure_actions_hostname }}) | OliveTin (actions en un clic) |
+| [`{{ healthchecks_hostname }}`](https://{{ healthchecks_hostname }}) | Healthchecks (cron et surveillance de tâches) |
+| [`{{ vps_docs_hostname }}`](https://{{ vps_docs_hostname }}) | Ce wiki |
+
+---
+
+_Une information est périmée ou peu claire ? Demandez à votre opérateur —
+chaque page est générée à partir de la même source qu'il met à jour, et
+les corrections faites en amont apparaissent lors de la prochaine
+poussée._
