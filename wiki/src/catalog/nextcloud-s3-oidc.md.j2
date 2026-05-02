@@ -115,6 +115,10 @@ services:
     volumes:
       - nc-config:/var/www/html/config
       - nc-apps:/var/www/html/custom_apps
+    configs:
+      - source: nc_loglevel
+        target: /var/www/html/config/zz-loglevel.config.php
+        mode: 0644
     labels:
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
@@ -171,6 +175,10 @@ services:
     volumes:
       - nc-config:/var/www/html/config
       - nc-apps:/var/www/html/custom_apps
+    configs:
+      - source: nc_loglevel
+        target: /var/www/html/config/zz-loglevel.config.php
+        mode: 0644
     networks:
       - default
 
@@ -178,6 +186,19 @@ volumes:
   nc-config:
   nc-apps:
   db-data:
+
+configs:
+  # Default Nextcloud loglevel = info (1). The Nextcloud config loader
+  # merges any *.config.php sibling of config.php; this file stays a
+  # read-only mount, separate from the nc-config volume, so it cannot
+  # be lost on volume restore and the level is reasserted every boot.
+  # 0=debug 1=info 2=warning 3=error 4=fatal.
+  nc_loglevel:
+    content: |
+      <?php
+      $CONFIG = array(
+        'loglevel' => 1,
+      );
 
 networks:
   dokploy-network:
