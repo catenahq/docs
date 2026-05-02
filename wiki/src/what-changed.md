@@ -165,6 +165,12 @@ The operator's controller makes these calls to your CF account
 during `./catena site`. Token is kept local; never on the VPS.
 
 
+### `cloudflare_tunnel_regenerate/`
+
+- CF regen: clean up stale connectors (refuses delete on tunnels with active connections)
+- CF regen: delete existing tunnel(s)
+- CF regen: list existing tunnels matching this host
+
 ### `infrastructure/`
 
 - CF DNS: create wildcard CNAME if absent

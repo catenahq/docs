@@ -1,159 +1,143 @@
-# Bring your own keys: rotating credentials
+# Rotating credentials
 
-Your stack uses external services (Cloudflare, Tailscale, your
-SMTP provider, your S3 backup bucket, your Nextcloud bucket).
-Each one is reached via a credential -- an API token, a key pair,
-or a password -- that lives in your installation's encrypted
-vault.
+Each credential on your stack has its own rotation surface. There
+is no master "rotate everything" button -- and no central vault
+file -- because each app owns its own credential and rotating it
+in one place is enough.
 
-You can rotate any of these at your own pace from the portal. You
-can also start a managed installation with operator-supplied
-credentials and migrate to your own credentials gradually as you
-take ownership of each external account.
+This page lists every credential, where it lives, and how to
+rotate it. None of these flows require operator action: you
+control all the surfaces below directly.
 
-## Where credentials live
+## Per-credential rotation matrix
 
-Two encrypted files per installation:
+### SMTP relay password (Keycloak emails, etc.)
 
-- `vault-operator.sops.yml` -- credentials your operator owns.
-  Decrypts with the operator age key only. You cannot read it.
-- `vault-client.sops.yml` -- credentials you own. Decrypts with
-  your age key (and the operator's, while you are still engaged).
+- **Where it lives**: Dokploy admin UI (`apps.{{ cloudflare_zone }}`)
+  -> Keycloak compose -> Environment tab -> `SMTP_PASSWORD`.
+- **How to rotate**: mint a new SMTP credential at your provider
+  (Brevo / Resend / SES). Edit `SMTP_PASSWORD` in the Environment
+  tab. Click `Redeploy` on the Keycloak service. Test with
+  Keycloak admin UI -> Realm settings -> Email -> `Test connection`.
+- **Operator-side?** No. Your edit survives the next operator
+  converge -- the catena role uses a "reconcile-not-overwrite"
+  filter that preserves credential-shaped env vars when they are
+  already set.
 
-A "managed" installation starts with vendor credentials in
-`vault-operator.sops.yml`. The first time you rotate one, the new
-value lands in `vault-client.sops.yml` and from then on the
-client copy wins. The shadowed value in
-`vault-operator.sops.yml` stays around as a recovery fallback
-until handover.
+### App admin / database passwords (Nextcloud admin, etc.)
 
-A BYOK installation starts with vendor credentials directly in
-`vault-client.sops.yml` -- you supplied them at order time.
+- **Where it lives**: Dokploy admin UI -> the app's compose ->
+  Environment tab.
+- **How to rotate**: same flow as SMTP. Edit the env var,
+  redeploy.
 
-## How to rotate a credential
+### OIDC client secrets
 
-1. Sign in to the portal and open `Credentials` for the
-   installation you want to rotate.
-2. Pick the credential. Each card has the steps to mint a new
-   value at the upstream provider (Cloudflare dashboard, Tailscale
-   admin, your SMTP provider, ...).
-3. Mint the new value upstream. Do NOT revoke the old one yet --
-   wait until the new one is verified working.
-4. Paste the new value (or values, for credentials with both an
-   ID and a secret) into the portal form and submit.
-5. The portal encrypts the value to your operator's public key
-   and stores the ciphertext. The cleartext does not stay on the
-   portal -- only the encrypted blob does.
-6. Your operator picks up the rotation: they decrypt the blob
-   with their age key, write it into your `vault-client.sops.yml`,
-   and run a tagged Ansible converge that propagates the new
-   value to the live VPS.
-7. Verify the application that uses the credential still works
-   (e.g. for SMTP, send yourself a password reset email; for
-   Cloudflare, request a converge and watch the tunnel come up).
-8. Revoke the OLD value upstream now that the new one is verified.
-
-## Per-credential notes
+- **Where it lives**: Keycloak admin UI (`auth.{{ cloudflare_zone }}`)
+  -> Clients -> the relevant client -> Credentials.
+- **How to rotate**: click `Regenerate Secret`, copy the new
+  value, paste into the consuming app's Dokploy env. Redeploy
+  the app.
 
 ### Cloudflare API token
 
-Mint at
-[dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens).
-Scope: `Zone -> DNS:Edit` and `Zone -> Zone:Read` on
-`{{ cloudflare_zone }}`. The token does NOT need account-level
-scopes.
+- **Where it lives**: in your password manager (1Password,
+  Bitwarden, etc.). Catena does NOT store your CF API token --
+  it is consumed once at install + each tunnel regeneration,
+  never persisted on the VPS or in our portal.
+- **How to rotate**:
+  1. Mint a new token at
+     [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens).
+     Scope: Zone -> DNS:Edit + Zone:Read on `{{ cloudflare_zone }}`.
+  2. Save in your password manager.
+  3. Open the portal at `/installations/<id>/regenerate-tunnel`,
+     paste the new token, click `Regenerate tunnel`. The portal
+     deletes the old tunnel and creates a new one in your CF
+     account using your new token. cloudflared on the VPS
+     restarts with the new tunnel JSON.
+  4. Delete the old token at Cloudflare once the regeneration
+     succeeds.
 
-Low-risk rotation. The old token keeps working until you delete
-it from the dashboard.
+### Tailscale per-node key (operations access)
 
-### Tailscale OAuth client
+- **Where it lives**: tailscaled state on the VPS (you don't
+  edit this directly).
+- **How to rotate**: from the Tailscale dashboard, expire the
+  node key for this VPS. The VPS automatically re-authenticates
+  on its next tailnet check-in (DIY tier: with your OAuth
+  client; Managed tier: with the operator's). No portal
+  involvement.
 
-Mint at
-[login.tailscale.com](https://login.tailscale.com) -> Settings ->
-OAuth clients. Scope: `devices:write`.
+### S3 backup keys (restic)
 
-Both fields (ID + secret) are required. The OAuth client lets the
-VPS mint per-node auth keys; already-joined nodes keep their own
-keys, so rotation only affects future bootstrap until the next
-converge succeeds.
+- **Where it lives**: `/etc/catena/backup.env` on the VPS (mode
+  0600 root).
+- **Routine rotation**: do not. Long-lived IAM keys are the norm
+  for backup workloads.
+- **Incident response**: if you have a confirmed compromise,
+  open a `requests` row in the portal asking the operator to
+  rotate. Operator runs the
+  [rotate-s3-backup-keys runbook](https://docs.catena.run/runbooks/rotate-s3-backup-keys)
+  on your behalf.
 
-### SMTP password
+### Restic password
 
-Mint at your SMTP provider (Resend, SES, SMTP2GO, Mailgun, ...).
-The provider's queue tolerates a brief swap, but if you have a
-password-reset or invitation flow running at the moment of
-rotation it may show a small delay until the converge confirms
-the new credential.
+- **Where it lives**: `/etc/catena/restic-password` on the VPS
+  (mode 0600 root).
+- **Routine rotation**: do not. The restic password is the
+  symmetric key for the entire backup repo; a botched rotation
+  can leave snapshots unreadable.
+- **Incident response**: open a `requests` row in the portal.
+  The operator follows the multi-step add/verify/remove runbook.
+  Coordinate timing -- do not rotate while a restore is in
+  flight.
 
-### S3 backup keys
+## Backup-vault export (cold storage)
 
-Mint at your S3 provider (Backblaze, Wasabi, AWS, OVH Object
-Storage, ...). Scope to the backup bucket only. Restic picks up
-the new keys on the next nightly snapshot; verify the next
-snapshot completes before revoking the old keys.
+For a one-time snapshot of every credential currently on your
+VPS, encrypted with a passphrase you provide:
 
-### Nextcloud S3 keys
+1. Sign into OliveTin at `actions.{{ cloudflare_zone }}`.
+2. Click `Export recovery secrets (encrypted)`.
+3. Paste a passphrase you will remember.
+4. Download the resulting `.gpg` file from the link OliveTin
+   provides.
+5. Store the file in cold storage (offline drive, USB key,
+   physical safe) alongside the passphrase in your password
+   manager.
 
-Mint at the same provider as your Nextcloud bucket. Pure key
-rotation (same bucket) is safe via this flow. If you also want
-to migrate the bucket itself (e.g. because the bucket is in your
-operator's account and you want it in yours), that is a separate
-operation -- file a request and your operator runs the bucket
-migration playbook.
+This is recovery insurance. It is NOT a routine backup -- the
+nightly restic snapshots cover that. Re-export only when you
+think your VPS may be lost AND your restic credentials may
+ALSO be lost (provider account compromised, multi-region
+outage).
 
-### Restic password (HIGH RISK)
+## What to keep in your password manager
 
-Restic encrypts each snapshot with a key derived from this
-password. Rotating it is a multi-step procedure: add a new
-password, verify both passwords work, switch to the new one, then
-remove the old one.
+Per the catena security model, you are the source of truth for
+every operator-impossible-to-replace credential. Save these in a
+password manager you control:
 
-If the new password is committed BEFORE verification works, the
-repository is unreadable. The portal flags this rotation as high
-risk and the operator's pickup tool refuses to proceed without
-explicit confirmation.
+- Cloudflare API token (zone-scoped to `{{ cloudflare_zone }}`).
+- VPS provider API key (OVH / Hetzner / etc.).
+- SMTP relay credentials (Brevo / Resend username + password).
+- S3 backup IAM access key + secret (DIY tier only -- Managed
+  tier creds live operator-side).
+- Tailscale OAuth client + secret (DIY tier only).
+- Bookmark for `apps.{{ cloudflare_zone }}` (Dokploy admin),
+  `actions.{{ cloudflare_zone }}` (OliveTin), `auth.{{ cloudflare_zone }}`
+  (Keycloak admin).
 
-Coordinate with your operator before submitting a new restic
-password. Do not submit one in isolation.
+Pair the password manager with a hardware key (YubiKey,
+Solokey, Titan). These are 1-time setup, $25-50 each, and
+make the credentials unstealable in practice -- without the
+hardware key, an attacker with your master password still
+cannot unlock the vault.
 
-## Taking over operations (handover)
-
-When you are ready to fully run the installation yourself:
-
-1. Make sure every operator-classified credential has been
-   rotated (the handover page lists which still need attention).
-2. On `Handover`, acknowledge what changes (the operator can no
-   longer run Ansible against this installation without a support
-   pass) and submit.
-3. Your operator picks up the handover request. They drop their
-   age public key from your vault's recipient list and run a
-   re-key. After that, only your age key decrypts the vault.
-
-You can keep ordering work from your operator after handover by
-authorizing a support pass (see below).
-
-## Asking the operator for help (support pass)
-
-After handover, the operator can no longer reach into your vault
-or run Ansible against your VPS. To get them back in for a
-specific piece of work:
-
-1. Open `Support pass` and pick a TTL (4 hours, 24 hours, 3 days,
-   or 7 days max).
-2. The portal queues a re-key request. The operator pulls the
-   request, re-keys your vault to add their public key as a
-   recipient (this needs your age private key briefly -- you
-   paste it into a single-use field that is never persisted), and
-   then runs whatever you asked for.
-3. When the work is done, click `End support pass`. The operator
-   runs another re-key that drops their pubkey, and the vault
-   goes back to client-only.
-
-The TTL is a hard cap. After it expires, the operator's pickup
-tool refuses to run rotate-pickup or converge against your
-inventory until you authorize a fresh pass.
-
-If you would rather not paste your private key into the portal,
-you can run the re-key locally on your laptop instead. Open a
-support request asking for the local-rekey workflow and your
-operator will walk you through it.
+If you lose all of the above, every operator-impossible-to-
+replace credential can be re-minted at the upstream provider
+(re-mint the CF token at Cloudflare; re-mint the SMTP password
+at Brevo; etc.). The only IRRECOVERABLE loss is the restic
+password -- which you do not hold and cannot mint, but which
+encrypts your backups. Coordinate with your operator if you
+suspect that has been compromised.

@@ -1,178 +1,153 @@
-# Apportez vos propres clés : rotation des identifiants
+# Rotation des identifiants
 
-Votre infrastructure utilise des services externes (Cloudflare,
-Tailscale, votre fournisseur SMTP, votre compartiment S3 de
-sauvegarde, votre compartiment Nextcloud). Chacun s'utilise via
-un identifiant -- jeton d'API, paire de clés, ou mot de passe --
-qui se trouve dans le coffre chiffré de votre installation.
+Chaque identifiant de votre infrastructure a sa propre interface
+de rotation. Il n'y a pas de bouton « tout rotater » -- ni de
+fichier vault central -- parce que chaque application possède son
+propre identifiant et le rotater à un seul endroit suffit.
 
-Vous pouvez faire pivoter chacun de ces identifiants à votre
-rythme depuis le portail. Vous pouvez aussi démarrer une
-installation gérée avec des identifiants fournis par l'opérateur
-et migrer progressivement vers vos propres identifiants au fur et
-à mesure que vous reprenez les comptes externes.
+Cette page liste chaque identifiant, où il vit et comment le
+rotater. Aucun de ces flux ne nécessite une intervention de
+l'opérateur : vous contrôlez toutes les surfaces ci-dessous
+directement.
 
-## Où vivent les identifiants
+## Matrice de rotation par identifiant
 
-Deux fichiers chiffrés par installation :
+### Mot de passe SMTP (courriels Keycloak, etc.)
 
-- `vault-operator.sops.yml` -- identifiants détenus par votre
-  opérateur. Déchiffrable uniquement avec la clé age de
-  l'opérateur. Vous ne pouvez pas le lire.
-- `vault-client.sops.yml` -- identifiants que vous détenez.
-  Déchiffrable avec votre clé age (et avec celle de l'opérateur,
-  tant que vous êtes en phase d'engagement).
+- **Où il vit** : interface admin Dokploy (`apps.{{ cloudflare_zone }}`)
+  -> compose Keycloak -> onglet Environment -> `SMTP_PASSWORD`.
+- **Comment rotater** : générez un nouvel identifiant SMTP chez
+  votre fournisseur (Brevo / Resend / SES). Modifiez
+  `SMTP_PASSWORD` dans l'onglet Environment. Cliquez sur
+  `Redeploy` sur le service Keycloak. Testez via interface admin
+  Keycloak -> Realm settings -> Email -> `Test connection`.
+- **Côté opérateur ?** Non. Votre modification survit à la
+  prochaine convergence opérateur -- le rôle catena utilise un
+  filtre « réconcilier sans écraser » qui préserve les variables
+  d'environnement de type identifiant lorsqu'elles sont déjà
+  définies.
 
-Une installation « gérée » démarre avec les identifiants des
-fournisseurs dans `vault-operator.sops.yml`. Lors de la première
-rotation, la nouvelle valeur atterrit dans
-`vault-client.sops.yml` et c'est désormais la copie cliente qui
-prime. La valeur masquée dans `vault-operator.sops.yml` reste
-disponible comme filet de secours jusqu'à la reprise.
+### Mots de passe admin / base de données des applications
 
-Une installation BYOK démarre avec les identifiants des
-fournisseurs directement dans `vault-client.sops.yml` -- vous les
-avez fournis lors de la commande.
+- **Où ils vivent** : interface admin Dokploy -> compose de
+  l'application -> onglet Environment.
+- **Comment rotater** : même flux que SMTP. Modifier la variable,
+  redéployer.
 
-## Comment faire pivoter un identifiant
+### Secrets clients OIDC
 
-1. Connectez-vous au portail et ouvrez `Identifiants` pour
-   l'installation à faire pivoter.
-2. Choisissez l'identifiant. Chaque carte indique les étapes pour
-   créer une nouvelle valeur côté fournisseur (tableau de bord
-   Cloudflare, console Tailscale, votre fournisseur SMTP, ...).
-3. Créez la nouvelle valeur côté fournisseur. NE révoquez PAS
-   encore l'ancienne -- attendez d'avoir vérifié que la nouvelle
-   fonctionne.
-4. Collez la nouvelle valeur (ou les valeurs, pour les
-   identifiants comportant un ID et un secret) dans le formulaire
-   du portail et soumettez.
-5. Le portail chiffre la valeur avec la clé publique de votre
-   opérateur et stocke le texte chiffré. Le texte clair ne
-   subsiste pas sur le portail -- seul le blob chiffré demeure.
-6. Votre opérateur récupère la rotation : il déchiffre le blob
-   avec sa clé age, l'écrit dans votre `vault-client.sops.yml` et
-   exécute un converge Ansible étiqueté qui propage la nouvelle
-   valeur sur le VPS.
-7. Vérifiez que l'application qui utilise l'identifiant
-   fonctionne toujours (par exemple pour SMTP, envoyez-vous un
-   email de réinitialisation de mot de passe ; pour Cloudflare,
-   demandez un converge et observez la remontée du tunnel).
-8. Révoquez l'ANCIENNE valeur côté fournisseur maintenant que la
-   nouvelle est vérifiée.
+- **Où ils vivent** : interface admin Keycloak
+  (`auth.{{ cloudflare_zone }}`) -> Clients -> le client concerné
+  -> Credentials.
+- **Comment rotater** : cliquez sur `Regenerate Secret`, copiez
+  la nouvelle valeur, collez-la dans l'environnement Dokploy de
+  l'application consommatrice. Redéployez l'application.
 
-## Notes par identifiant
+### Jeton API Cloudflare
 
-### Jeton d'API Cloudflare
+- **Où il vit** : dans votre gestionnaire de mots de passe
+  (1Password, Bitwarden, etc.). Catena ne stocke PAS votre jeton
+  API CF -- il est consommé une fois à l'installation et à
+  chaque régénération de tunnel, jamais persisté sur le VPS ou
+  dans notre portail.
+- **Comment rotater** :
+  1. Générez un nouveau jeton sur
+     [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens).
+     Portée : Zone -> DNS:Edit + Zone:Read sur
+     `{{ cloudflare_zone }}`.
+  2. Sauvegardez dans votre gestionnaire de mots de passe.
+  3. Ouvrez le portail à `/installations/<id>/regenerate-tunnel`,
+     collez le nouveau jeton, cliquez sur `Regenerate tunnel`.
+     Le portail supprime l'ancien tunnel et en crée un nouveau
+     dans votre compte CF avec votre nouveau jeton. cloudflared
+     redémarre sur le VPS avec le nouveau JSON de tunnel.
+  4. Supprimez l'ancien jeton chez Cloudflare une fois la
+     régénération réussie.
 
-Créez-le sur
-[dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens).
-Portée : `Zone -> DNS:Edit` et `Zone -> Zone:Read` sur
-`{{ cloudflare_zone }}`. Le jeton n'a PAS besoin de portées
-au niveau du compte.
+### Clé Tailscale par nœud (accès opérations)
 
-Rotation à faible risque. L'ancien jeton continue de fonctionner
-tant que vous ne le supprimez pas du tableau de bord.
+- **Où elle vit** : état de tailscaled sur le VPS (vous ne la
+  modifiez pas directement).
+- **Comment rotater** : depuis le tableau de bord Tailscale,
+  expirez la clé du nœud pour ce VPS. Le VPS se réauthentifie
+  automatiquement à sa prochaine vérification du tailnet (palier
+  DIY : avec votre client OAuth ; palier géré : avec celui de
+  l'opérateur). Aucune intervention du portail.
 
-### Client OAuth Tailscale
+### Clés S3 de sauvegarde (restic)
 
-Créez-le sur
-[login.tailscale.com](https://login.tailscale.com) -> Settings ->
-OAuth clients. Portée : `devices:write`.
+- **Où elles vivent** : `/etc/catena/backup.env` sur le VPS
+  (mode 0600 root).
+- **Rotation routine** : non. Les clés IAM longue durée sont la
+  norme pour les charges de sauvegarde.
+- **Réponse à incident** : en cas de compromission confirmée,
+  ouvrez une demande dans le portail et demandez à l'opérateur
+  de rotater. L'opérateur exécute le
+  [runbook rotate-s3-backup-keys](https://docs.catena.run/runbooks/rotate-s3-backup-keys)
+  pour vous.
 
-Les deux champs (ID + secret) sont obligatoires. Le client OAuth
-permet au VPS de générer des clés d'authentification par nœud ;
-les nœuds déjà connectés conservent leurs propres clés, donc la
-rotation n'affecte que les futurs amorçages jusqu'au prochain
-converge réussi.
+### Mot de passe restic
 
-### Mot de passe SMTP
+- **Où il vit** : `/etc/catena/restic-password` sur le VPS
+  (mode 0600 root).
+- **Rotation routine** : non. Le mot de passe restic est la clé
+  symétrique de tout le dépôt de sauvegarde ; une rotation ratée
+  peut rendre les snapshots illisibles.
+- **Réponse à incident** : ouvrez une demande dans le portail.
+  L'opérateur suit le runbook multi-étapes ajout/vérification/
+  retrait. Coordonnez le moment -- ne pas rotater pendant une
+  restauration en cours.
 
-Créez-le chez votre fournisseur SMTP (Resend, SES, SMTP2GO,
-Mailgun, ...). La file d'attente du fournisseur tolère un bref
-basculement, mais si un flux de réinitialisation de mot de passe
-ou d'invitation est en cours au moment de la rotation, il peut
-afficher un petit délai jusqu'à ce que le converge confirme le
-nouvel identifiant.
+## Export du coffre de sauvegarde (stockage à froid)
 
-### Clés S3 de sauvegarde
+Pour un instantané unique de tous les identifiants présents sur
+votre VPS, chiffré avec une phrase de passe que vous fournissez :
 
-Créez-les chez votre fournisseur S3 (Backblaze, Wasabi, AWS, OVH
-Object Storage, ...). Limitez la portée au compartiment de
-sauvegarde. Restic prend les nouvelles clés à la prochaine
-sauvegarde nocturne ; vérifiez que la prochaine snapshot se
-complète avant de révoquer les anciennes clés.
+1. Connectez-vous à OliveTin sur `actions.{{ cloudflare_zone }}`.
+2. Cliquez sur `Export recovery secrets (encrypted)`.
+3. Collez une phrase de passe dont vous vous souviendrez.
+4. Téléchargez le fichier `.gpg` depuis le lien fourni par
+   OliveTin.
+5. Stockez le fichier hors-ligne (disque externe, clé USB,
+   coffre physique) ainsi que la phrase de passe dans votre
+   gestionnaire de mots de passe.
 
-### Clés S3 Nextcloud
+C'est une assurance de récupération. Ce n'est PAS une sauvegarde
+routine -- les snapshots restic nocturnes couvrent cela.
+Réexportez seulement si vous pensez que votre VPS pourrait être
+perdu ET que vos identifiants restic pourraient ÉGALEMENT être
+perdus (compte fournisseur compromis, panne multi-région).
 
-Créez-les chez le même fournisseur que votre compartiment
-Nextcloud. La rotation pure des clés (même compartiment) est sûre
-via ce flux. Si vous voulez aussi migrer le compartiment lui-même
-(par exemple parce qu'il se trouve dans le compte de votre
-opérateur et que vous le voulez dans le vôtre), il s'agit d'une
-opération distincte -- déposez une demande et votre opérateur
-exécutera le playbook de migration de compartiment.
+## Ce qu'il faut conserver dans votre gestionnaire de mots de passe
 
-### Mot de passe Restic (À HAUT RISQUE)
+Selon le modèle de sécurité catena, vous êtes la source de vérité
+pour chaque identifiant qu'aucun opérateur ne peut remplacer.
+Sauvegardez ceux-ci dans un gestionnaire de mots de passe que
+vous contrôlez :
 
-Restic chiffre chaque snapshot avec une clé dérivée de ce mot de
-passe. Sa rotation est une procédure en plusieurs étapes :
-ajouter un nouveau mot de passe, vérifier que les deux
-fonctionnent, basculer sur le nouveau, puis retirer l'ancien.
+- Jeton API Cloudflare (portée zone sur
+  `{{ cloudflare_zone }}`).
+- Clé API du fournisseur de VPS (OVH / Hetzner / etc.).
+- Identifiants de relais SMTP (utilisateur + mot de passe Brevo
+  / Resend).
+- Clé d'accès et secret S3 de sauvegarde (palier DIY uniquement
+  -- les identifiants gérés vivent côté opérateur).
+- Client OAuth + secret Tailscale (palier DIY uniquement).
+- Marque-pages pour `apps.{{ cloudflare_zone }}` (admin
+  Dokploy), `actions.{{ cloudflare_zone }}` (OliveTin),
+  `auth.{{ cloudflare_zone }}` (admin Keycloak).
 
-Si le nouveau mot de passe est validé AVANT que la vérification
-soit concluante, le dépôt devient illisible. Le portail signale
-cette rotation comme à haut risque et l'outil de récupération de
-l'opérateur refuse de continuer sans confirmation explicite.
+Couplez le gestionnaire de mots de passe avec une clé matérielle
+(YubiKey, Solokey, Titan). Configuration unique, 25-50 $ pièce,
+et rendent les identifiants inutilisables en pratique -- sans la
+clé matérielle, un attaquant ayant votre mot de passe maître ne
+peut toujours pas déverrouiller le coffre.
 
-Coordonnez-vous avec votre opérateur avant de soumettre un
-nouveau mot de passe restic. Ne le soumettez pas isolément.
-
-## Reprendre les opérations (handover)
-
-Quand vous êtes prêt à exploiter pleinement l'installation
-vous-même :
-
-1. Assurez-vous que tous les identifiants classés côté opérateur
-   ont été pivotés (la page Reprise indique ceux qui restent à
-   traiter).
-2. Sur `Reprise`, reconnaissez ce qui change (l'opérateur ne peut
-   plus exécuter Ansible contre cette installation sans laissez-
-   passer de support) et soumettez.
-3. Votre opérateur récupère la demande de reprise. Il retire sa
-   clé publique age de la liste des destinataires de votre coffre
-   et exécute un re-chiffrement. Après cela, seule votre clé age
-   déchiffre le coffre.
-
-Vous pouvez continuer à commander du travail à votre opérateur
-après la reprise en autorisant un laissez-passer de support (voir
-ci-dessous).
-
-## Demander de l'aide à l'opérateur (laissez-passer de support)
-
-Après la reprise, l'opérateur ne peut plus accéder à votre coffre
-ni exécuter Ansible contre votre VPS. Pour le réintroduire pour
-une tâche précise :
-
-1. Ouvrez `Laissez-passer de support` et choisissez un TTL
-   (4 heures, 24 heures, 3 jours ou 7 jours maximum).
-2. Le portail met en file d'attente une demande de
-   re-chiffrement. L'opérateur récupère la demande,
-   re-chiffre votre coffre pour ajouter sa clé publique comme
-   destinataire (ce qui requiert brièvement votre clé privée
-   age -- vous la collez dans un champ à usage unique qui n'est
-   jamais persisté), puis exécute ce que vous avez demandé.
-3. Quand le travail est terminé, cliquez sur `Terminer le
-   laissez-passer`. L'opérateur exécute un autre re-chiffrement
-   qui retire sa clé publique, et le coffre redevient
-   client uniquement.
-
-Le TTL est un plafond strict. Après son expiration, l'outil de
-récupération de l'opérateur refuse d'exécuter rotate-pickup ou
-converge contre votre installation tant que vous n'avez pas
-autorisé un nouveau laissez-passer.
-
-Si vous préférez ne pas coller votre clé privée dans le portail,
-vous pouvez exécuter le re-chiffrement localement sur votre
-ordinateur portable. Ouvrez une demande de support pour le flux
-de re-chiffrement local et votre opérateur vous guidera.
+Si vous perdez tout ce qui précède, chaque identifiant
+qu'aucun opérateur ne peut remplacer peut être regénéré chez le
+fournisseur (regénérer le jeton CF chez Cloudflare ; regénérer
+le mot de passe SMTP chez Brevo ; etc.). La SEULE perte
+IRRÉCUPÉRABLE est le mot de passe restic -- que vous ne
+détenez pas et ne pouvez pas regénérer, mais qui chiffre vos
+sauvegardes. Coordonnez avec votre opérateur si vous soupçonnez
+qu'il a été compromis.
