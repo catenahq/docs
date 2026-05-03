@@ -115,6 +115,16 @@ services:
     volumes:
       - nc-config:/var/www/html/config
       - nc-apps:/var/www/html/custom_apps
+      # Even with S3 primary storage, /var/www/html/data still holds
+      # appdata_<instance>/ residue, nextcloud.log, audit.log, .ocdata,
+      # sqlite caches for some apps -- everything Nextcloud writes
+      # outside the objectstore driver. Explicit named volume so the
+      # path lives at /mnt/data/docker/volumes/<compose>_nc-data/_data
+      # (predictable, visible in `docker volume ls`, captured by
+      # restic's docker/volumes/ rule). Without this mount, Docker
+      # creates an anonymous volume from the image's VOLUME directive
+      # -- still backed up but with an opaque sha256 name.
+      - nc-data:/var/www/html/data
     configs:
       - source: nc_loglevel
         target: /var/www/html/config/zz-loglevel.config.php
@@ -175,6 +185,10 @@ services:
     volumes:
       - nc-config:/var/www/html/config
       - nc-apps:/var/www/html/custom_apps
+      # Cron and app must share the data volume -- background jobs
+      # (file scanning, preview generation, etc.) write to the same
+      # /var/www/html/data tree the app reads from.
+      - nc-data:/var/www/html/data
     configs:
       - source: nc_loglevel
         target: /var/www/html/config/zz-loglevel.config.php
@@ -185,6 +199,7 @@ services:
 volumes:
   nc-config:
   nc-apps:
+  nc-data:
   db-data:
 
 configs:
