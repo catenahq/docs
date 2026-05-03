@@ -115,6 +115,8 @@ Timers/services installed by the stack. Check status with
 
 - `catena-backup.service`
 - `catena-backup.timer`
+- `catena-nextcloud-mirror.service`
+- `catena-nextcloud-mirror.timer`
 - `catena-restic-mirror.service`
 - `catena-restic-mirror.timer`
 
