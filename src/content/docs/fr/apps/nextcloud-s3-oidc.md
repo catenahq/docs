@@ -162,6 +162,10 @@ services:
       # creates an anonymous volume from the image's VOLUME directive
       # -- still backed up but with an opaque sha256 name.
       - nc-data:/var/www/html/data
+    configs:
+      - source: nc_loglevel
+        target: /var/www/html/config/zz-loglevel.config.php
+        mode: 0644
     labels:
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
@@ -222,6 +226,10 @@ services:
       # (file scanning, preview generation, etc.) write to the same
       # /var/www/html/data tree the app reads from.
       - nc-data:/var/www/html/data
+    configs:
+      - source: nc_loglevel
+        target: /var/www/html/config/zz-loglevel.config.php
+        mode: 0644
     networks:
       - default
 
@@ -230,6 +238,27 @@ volumes:
   nc-apps:
   nc-data:
   db-data:
+
+configs:
+  # Default Nextcloud loglevel = info (1). The Nextcloud config loader
+  # merges any *.config.php sibling of config.php; this file stays a
+  # read-only mount, separate from the nc-config volume, so it cannot
+  # be lost on volume restore and the level is reasserted every boot.
+  # 0=debug 1=info 2=warning 3=error 4=fatal.
+  nc_loglevel:
+    # `$$CONFIG` is intentional: docker-compose runs env-var substitution
+    # over inline config `content:` blocks. A bare `$CONFIG` resolves to
+    # an empty string (no env var of that name is set) and the file
+    # lands as `<?php\n = array(...)`, which trips a PHP parse error on
+    # every request -- Nextcloud serves HTTP 500 on /, on every WebDAV
+    # path, on /status.php, etc. The doubled `$$` collapses to a single
+    # literal `$` after substitution, producing the intended `$CONFIG =
+    # array(...)` PHP variable assignment.
+    content: |
+      <?php
+      $$CONFIG = array(
+        'loglevel' => 1,
+      );
 
 networks:
   dokploy-network:
