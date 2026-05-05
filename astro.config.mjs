@@ -70,6 +70,12 @@ export default defineConfig({
             { slug: "how-to-add-second-backup-bucket" },
           ],
         },
+        {
+          label: "Apps",
+          translations: { fr: "Applications" },
+          autogenerate: { directory: "apps" },
+          collapsed: true,
+        },
       ],
     }),
   ],

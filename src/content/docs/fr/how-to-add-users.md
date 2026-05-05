@@ -1,13 +1,31 @@
 ---
-title: "Ajouter ou retirer des utilisateurs"
-description: "Marche-à-suivre pour ajouter du personnel à Keycloak afin qu'il puisse se connecter à toutes les applications déployées par catena."
+title: "Comment ajouter des utilisateurs"
+description: "Version abrégée :"
 ---
 
-> **Migration en cours.** Le corps complet de cette page est en
-> cours de migration depuis la source Jinja par-hôte à
-> [apps/docs/wiki/src/](https://github.com/ma-lalonde/catena/tree/main/apps/docs/wiki/src)
-> vers une version générique et publiable. Jusqu'à la fin de la
-> migration, la source de vérité reste la copie rendue par-VPS à
-> `vps-docs.<votre-zone>` -- consultez-la pour le contenu
-> définitif.
+Version abrégée :
 
+1. Rendez-vous sur `https://auth.yourdomain.com` et connectez-vous
+   en tant qu'administrateur.
+2. Interface d'administration → Directory → Users → « Create ».
+3. Remplissez le nom d'utilisateur et le courriel. Définissez un mot de
+   passe fort OU envoyez une invitation (Keycloak expédie par SMTP un
+   lien pour définir le mot de passe — suppose que l'opérateur a
+   configuré SMTP).
+4. Attribuez le groupe `client-staff` (accès de base aux applications
+   protégées). Pour un contrôle plus fin, utilisez un groupe par
+   département (consultez la documentation de déploiement de votre
+   opérateur).
+5. L'utilisateur peut alors se connecter à n'importe quel sous-domaine
+   d'application (`admin.yourdomain.com`,
+   `monitor.yourdomain.com`,
+   `actions.yourdomain.com`,
+   `dash.yourdomain.com`) avec son courriel et son mot
+   de passe.
+
+Les flux en libre-service qui fonctionnent sans intervention de
+l'opérateur :
+
+- Réinitialisation du mot de passe (lien par courriel).
+- Modification du profil (nom affiché, courriel).
+- Activation de l'authentification multifacteur sur son propre compte.

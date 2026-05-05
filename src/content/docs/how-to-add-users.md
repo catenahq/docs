@@ -1,13 +1,27 @@
 ---
-title: "Add or remove users"
-description: "Walkthrough for adding staff to Keycloak so they can sign into every catena-deployed app."
+title: "How to add users"
+description: "TODO — Keycloak UI walkthrough with screenshots."
 ---
 
-> **Migration in progress.** This page's full body is being
-> migrated from the per-host Jinja-templated source at
-> [apps/docs/wiki/src/](https://github.com/ma-lalonde/catena/tree/main/apps/docs/wiki/src)
-> into a generic, public-friendly version. Until the migration
-> completes, the source-of-truth is still the per-VPS rendered
-> copy at `vps-docs.<your-zone>` -- check there for the
-> definitive content.
+TODO — Keycloak UI walkthrough with screenshots.
 
+Short version:
+
+1. Go to `https://auth.yourdomain.com` and log in as admin.
+2. Admin interface → Directory → Users → "Create"
+3. Fill in username + email. Set a strong password OR send an invite
+   (Keycloak emails a set-password link via SMTP — requires operator
+   to have wired up SMTP).
+4. Assign to `client-staff` group (default access to gated apps).
+   For finer-grained access, use a per-department group (see your
+   operator's deployment docs).
+5. User can now log in at any app subdomain (`admin.yourdomain.com`,
+   `monitor.yourdomain.com`,
+   `actions.yourdomain.com`,
+   `dash.yourdomain.com`) with their email + password.
+
+Self-service flows that work without operator involvement:
+
+- Password reset (email link)
+- Profile edits (display name, email)
+- Enabling MFA on own account

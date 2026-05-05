@@ -1,0 +1,147 @@
+---
+title: "Rocket.Chat"
+description: "Messagerie d'équipe — canaux, messages directs, partage de fichiers, apps mobiles, appels vidéo. Keycloak SSO pré-câblé."
+---
+
+Messagerie d'équipe — canaux, messages directs, partage de fichiers, apps mobiles, appels vidéo. Keycloak SSO pré-câblé.
+
+- **Projet original :** <https://www.rocket.chat/>
+- **Remplace :** **Slack**, **Microsoft Teams**, **Discord (en usage pro)**
+- **Connexion (SSO) :** Pré-câblé — la page de connexion affiche « Se connecter avec Keycloak » d'emblée, aucune étape post-déploiement.
+
+## Étapes de configuration
+
+1. Cliquez **Deploy**. Rien à remplir dans l'onglet Environment sauf si vous voulez un autre nom de domaine.
+2. Patientez ~5 min pour la synchro initiale. La page de connexion affichera **Se connecter avec Keycloak**.
+3. Connectez-vous. Le premier utilisateur devient l'admin du workspace.
+4. *(Optionnel, ~30 s)* Joindre des fichiers Nextcloud : Administration → Apps → Marketplace → cherchez `Nextcloud` → installez → indiquez votre domaine Nextcloud. Les utilisateurs tapent ensuite `/nextcloud` dans un chat pour parcourir et joindre leurs fichiers.
+
+### Applications mobiles
+
+Les apps iOS et Android de Rocket.Chat se connectent directement à votre serveur. Les utilisateurs collent `https://chat.<votre-domaine>` au premier lancement et se connectent via Keycloak.
+
+## Variables d'environnement
+
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
+
+| Variable | Valeur par défaut |
+|---|---|
+| `ROCKETCHAT_HOSTNAME` | `chat.yourdomain.com` |
+| `OIDC_BASE_URL` | `https://auth.yourdomain.com` |
+
+## Domaine
+
+- **Service et port :** `rocketchat:3000`
+- **Nom d'hôte :** `chat.yourdomain.com`
+
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
+
+## Fichier compose
+
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
+
+```yaml
+# Rocket.Chat — team chat + Keycloak SSO.
+#
+# All values come from the Environment tab. Sign-in with Keycloak
+# is pre-wired via OVERWRITE_SETTING_* env vars; no admin-UI steps
+# needed after deploy (unlike Nextcloud's user_oidc which needs the
+# DB-stored config).
+
+services:
+  mongodb:
+    image: mongo:7.0.31
+    restart: unless-stopped
+    # Rocket.Chat tails the oplog, which requires a replica set. Starting
+    # mongod with --replSet enables the rs; the healthcheck calls
+    # rs.initiate() on first boot (idempotent: subsequent runs hit the
+    # catch branch and just report status). Single-node rs is fine for
+    # small SMB deployments.
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--oplogSize", "128"]
+    healthcheck:
+      test: |
+        mongosh --quiet --eval "
+          try { rs.status().ok }
+          catch (e) {
+            rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'mongodb:27017'}]}).ok
+          }
+        "
+      interval: 10s
+      start_period: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+    labels:
+      - "vps.auto-update=patch"
+    networks:
+      default:
+        aliases:
+          - mongodb
+
+  rocketchat:
+    image: docker.io/rocketchat/rocket.chat:8.3.2
+    restart: unless-stopped
+    environment:
+      ROOT_URL: https://${ROCKETCHAT_HOSTNAME}
+      PORT: "3000"
+      MONGO_URL: mongodb://mongodb:27017/rocketchat?replicaSet=rs0
+      MONGO_OPLOG_URL: mongodb://mongodb:27017/local?replicaSet=rs0
+      DEPLOY_METHOD: docker
+
+      # Keycloak OIDC, wired via OVERWRITE_SETTING_* env vars. Rocket.Chat
+      # reads these on boot and writes them into its Settings collection,
+      # overriding any admin-UI changes — lets us ship a working SSO out of
+      # the box without a post-deploy config step. To take manual control
+      # after deploy, remove the relevant OVERWRITE_SETTING_* line here.
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak: "true"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-url: ${OIDC_BASE_URL}
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-authorize_path: "/realms/vps/protocol/openid-connect/auth"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-token_path: "/realms/vps/protocol/openid-connect/token"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-identity_path: "/realms/vps/protocol/openid-connect/userinfo"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-scope: "openid email profile groups"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-id: ${OIDC_CLIENT_ID}
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-secret: ${OIDC_CLIENT_SECRET}
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-login_style: "redirect"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-button_label_text: "Sign in with Keycloak"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-username_field: "preferred_username"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-email_field: "email"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-name_field: "name"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-groups_claim: "groups"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-merge_users: "true"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    labels:
+      - "vps.auth.mode=public"
+      - "vps.auth.oidc=true"
+      - "vps.auth.groups=client-staff"
+      - "vps.auth.oidc.redirect_uris=https://${ROCKETCHAT_HOSTNAME}/_oauth/keycloak"
+      - "vps.auth.oidc.scopes=openid email profile groups"
+      - "vps.auto-update=patch"
+    networks:
+      dokploy-network:
+        aliases:
+          - rocketchat
+      default: {}
+
+volumes:
+  mongodb-data:
+  mongodb-config:
+
+networks:
+  dokploy-network:
+    external: true
+```
+
+---
+
+[← Retour au catalogue des applications pré-configurées](./)

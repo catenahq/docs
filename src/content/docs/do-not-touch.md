@@ -1,13 +1,29 @@
 ---
-title: "Files you should not touch"
-description: "Files and directories the catena stack owns. Hand-edits here get overwritten on the next push."
+title: "Files and directories the stack owns"
+description: "Short answer: if a file under the paths below is hand-edited, your"
 ---
 
-> **Migration in progress.** This page's full body is being
-> migrated from the per-host Jinja-templated source at
-> [apps/docs/wiki/src/](https://github.com/ma-lalonde/catena/tree/main/apps/docs/wiki/src)
-> into a generic, public-friendly version. Until the migration
-> completes, the source-of-truth is still the per-VPS rendered
-> copy at `vps-docs.<your-zone>` -- check there for the
-> definitive content.
+Short answer: if a file under the paths below is hand-edited, your
+operator's next maintenance run will overwrite the change. Tell your
+operator what you wanted to do instead — they almost certainly have
+a flag or a different path for it.
 
+Don't hand-edit these:
+
+- `/etc/dokploy/traefik/dynamic/*.yml` — managed by `dashboard-sync`
+- `/etc/catena/backup.env` — managed by your operator's automation
+- `/etc/catena/restic.pass` — managed by your operator's automation
+- `/etc/systemd/system/catena-*.{service,timer}` — managed by your
+  operator's automation
+- `/usr/local/bin/run-backup.sh`, `/usr/local/bin/dashboard-sync`,
+  `/usr/local/bin/gatus-sync`, `/usr/local/bin/auto-update.sh` —
+  managed by your operator's automation
+
+If a file at one of these paths carries a header that says it was
+machine-rendered, treat it as read-only.
+
+What you CAN touch without asking:
+
+- Apps deployed through Dokploy's UI (those are yours)
+- Your Keycloak users/groups (that's the point of self-service SSO)
+- Anything in `/home/<your-users>/` (the operator doesn't touch home dirs)

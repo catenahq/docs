@@ -1,13 +1,30 @@
 ---
-title: "Ce que vous pouvez faire vous-même"
-description: "Tâches quotidiennes qui n'ont jamais besoin de votre opérateur."
+title: "Libre-service — ce que vous pouvez faire sans l'opérateur"
+description: "Règle empirique : tout ce que les interfaces web exposent, vous pouvez"
 ---
 
-> **Migration en cours.** Le corps complet de cette page est en
-> cours de migration depuis la source Jinja par-hôte à
-> [apps/docs/wiki/src/](https://github.com/ma-lalonde/catena/tree/main/apps/docs/wiki/src)
-> vers une version générique et publiable. Jusqu'à la fin de la
-> migration, la source de vérité reste la copie rendue par-VPS à
-> `vps-docs.<votre-zone>` -- consultez-la pour le contenu
-> définitif.
+Règle empirique : tout ce que les interfaces web exposent, vous pouvez
+le faire vous-même. Tout ce qui requiert un accès SSH et sudo passe par
+l'opérateur.
 
+## Oui, faites-le vous-même
+
+- Ajouter / retirer des comptes d'employés : interface Keycloak
+  (`auth.yourdomain.com`).
+- Déployer de nouvelles applications : interface Dokploy
+  (`admin.yourdomain.com`).
+- Vérifier la santé des services : Gatus
+  (`monitor.yourdomain.com`) ou Homepage
+  (`dash.yourdomain.com`).
+- Lancer des sauvegardes ponctuelles, consulter l'historique des
+  sauvegardes : OliveTin (`actions.yourdomain.com`).
+- Voir les alertes actives : Healthchecks (`checks.yourdomain.com`).
+
+## Passez par l'opérateur
+
+- Mises à niveau majeures d'Keycloak, de Dokploy ou de Postgres.
+- Changements à la topologie CF Tunnel ou DNS.
+- Restauration à partir d'une sauvegarde (destructif ; exige le VPS en
+  état suspendu).
+- Migration vers un autre fournisseur de VPS.
+- Toute opération impliquant SSH.
