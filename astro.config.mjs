@@ -1,28 +1,30 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 
-// docs.catena.run -- public client docs.
+// catena.run/docs -- public client docs.
 //
 // Content lives under src/content/docs/{en,fr}/. Starlight handles
 // the sidebar nav + EN/FR routing automatically.
 //
-// On-VPS deployment: the same static dist/ ships as a release
-// tarball (build with `npm run build`, package as
-// catena-docs-<version>.tar.gz, attach to a `docs-v<version>` GitHub
-// release). The Ansible vps_docs role downloads the pinned tarball
-// per `catena_docs_version` instead of templating Jinja per-host.
+// Deployment: this is a sub-build of apps/website. The website
+// build script chains `astro build` here with base="/docs", then
+// copies dist/* into apps/website/dist/docs/ so a single nginx
+// container serves both surfaces. There is no standalone deploy.
 export default defineConfig({
-  site: "https://docs.catena.run",
+  site: "https://catena.run",
+  base: "/docs",
   trailingSlash: "ignore",
+  i18n: {
+    locales: ["en", "fr"],
+    defaultLocale: "en",
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
   integrations: [
     starlight({
       title: "catena docs",
       logo: { src: "./src/assets/logo.svg", replacesTitle: false },
-      defaultLocale: "en",
-      locales: {
-        en: { label: "English", lang: "en" },
-        fr: { label: "Français", lang: "fr" },
-      },
       customCss: ["./src/styles/global.css"],
       social: [
         {

@@ -10,32 +10,32 @@ bucket) are surfaced in the [client portal](https://app.catena.run).
 
 ## Where to start
 
-- **[How this stack works](/en/how-this-stack-works/)** -- a
+- **[How this stack works](/docs/how-this-stack-works/)** -- a
   plain-language tour of the services and how they fit together.
   Start here if this is your first time.
-- **[Where your data lives](/en/where-is-my-data/)** -- what's on
+- **[Where your data lives](/docs/where-is-my-data/)** -- what's on
   the VPS, what's in your S3 backup bucket, what's lost if the VPS
   burns down.
-- **[Files you should not touch](/en/do-not-touch/)** -- hand-edits
+- **[Files you should not touch](/docs/do-not-touch/)** -- hand-edits
   get overwritten the next time your operator pushes an update.
   Here's what to leave alone.
 
 ## Day-to-day tasks
 
-- **[Add / remove users](/en/how-to-add-users/)** -- Keycloak
+- **[Add / remove users](/docs/how-to-add-users/)** -- Keycloak
   walkthrough for staff onboarding + password resets.
-- **[Deploy apps (per-department access)](/en/how-to-deploy-apps/)**
+- **[Deploy apps (per-department access)](/docs/how-to-deploy-apps/)**
   -- gate new apps to specific teams using compose labels.
-- **[What you can do yourself](/en/self-service/)** -- day-to-day
+- **[What you can do yourself](/docs/self-service/)** -- day-to-day
   tasks that never need your operator.
 
 ## Disaster handling
 
-- **[Disaster prevention](/en/disaster-prevention/)** -- how the
+- **[Disaster prevention](/docs/disaster-prevention/)** -- how the
   stack reduces the blast radius of common failures.
-- **[Disaster recovery](/en/disaster-recovery/)** -- what happens
+- **[Disaster recovery](/docs/disaster-recovery/)** -- what happens
   when the VPS is lost.
-- **[Self-restore](/en/self-restore/)** -- the one-script flow you
+- **[Self-restore](/docs/self-restore/)** -- the one-script flow you
   can run yourself to spin up a replacement.
 
 ## Your subdomains
