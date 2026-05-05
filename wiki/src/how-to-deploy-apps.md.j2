@@ -448,7 +448,7 @@ documentation**:
 labels:
   - "vps.auth.oidc=true"
   - "vps.auth.groups=staff"       # who can sign in via this app
-  - "vps.auth.oidc.redirect_uris=https://myapp.example.com/login/generic_oauth"
+  - "vps.auth.oidc.redirect_uris=https://myapp.yourdomain.com/login/generic_oauth"
 ```
 
 - `vps.auth.oidc=true` — enables OIDC provisioning for this
@@ -486,7 +486,7 @@ services:
     labels:
       - "vps.auth.oidc=true"
       - "vps.auth.groups=staff"
-      - "vps.auth.oidc.redirect_uris=https://grafana.example.com/login/generic_oauth"
+      - "vps.auth.oidc.redirect_uris=https://grafana.yourdomain.com/login/generic_oauth"
       - "vps.auto-update=patch"
     environment:
       # Grafana's own OIDC config, sourced from the sync-injected vars:
