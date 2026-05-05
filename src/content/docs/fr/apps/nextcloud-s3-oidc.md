@@ -33,35 +33,6 @@ dérive (après une rotation de secret, un redéploiement
 destructif, etc.). Il est idempotent — relancer ne fait que
 rafraîchir l'enregistrement du fournisseur.
 
-### Le partage de fichiers par lien courriel fonctionne toujours
-
-L'authentification Keycloak gouverne la **connexion des utilisateurs**
-à Nextcloud. Elle ne restreint **pas** les liens de partage publics
-anonymes — les URL `/s/<jeton>` que votre équipe génère depuis
-Nextcloud restent accessibles aux destinataires qui n'ont pas de
-compte Keycloak.
-
-Le flux courant fonctionne donc tel quel :
-
-1. Un membre de votre équipe (utilisateur connecté) crée un lien de
-   partage dans Nextcloud, avec un mot de passe et une date
-   d'expiration s'il le souhaite.
-2. Nextcloud envoie le lien par courriel au destinataire.
-3. Le destinataire clique le lien. Cloudflare Tunnel achemine la
-   requête directement à Nextcloud ; Nextcloud sert la page de
-   partage publique (ou l'invite de mot de passe, si vous en avez
-   défini un). Pas de redirection Keycloak, pas de connexion requise.
-
-Cela fonctionne parce que Nextcloud est atteint via son propre code
-d'authentification, pas via un proxy forward-auth. Le module
-`user_oidc` ne gère que le flux de connexion pour *les membres de
-votre équipe* ; les points d'accès des partages publics restent
-anonymes par conception.
-
-Si vous souhaitez verrouiller complètement les partages publics, le
-bon contrôle est à l'intérieur de Nextcloud (Paramètres → Partage →
-« Autoriser le partage par lien public »), pas au niveau réseau.
-
 ## Variables d'environnement
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose

@@ -32,32 +32,6 @@ Re-click the button any time the OIDC configuration drifts
 is idempotent — re-running just refreshes the provider
 record.
 
-### Sharing files by email link still works
-
-Keycloak SSO governs **user login** to Nextcloud. It does **not**
-restrict anonymous public share links — `/s/<token>` URLs your team
-generates from inside Nextcloud are reachable by recipients who have
-no Keycloak account.
-
-So the common workflow stays intact:
-
-1. A signed-in user (your team member) creates a share link in
-   Nextcloud, optionally with a password and expiry date.
-2. Nextcloud emails the link to the recipient.
-3. The recipient clicks the link. Cloudflare Tunnel routes the
-   request straight to Nextcloud; Nextcloud serves the public share
-   page (or the password prompt, if you set one). No Keycloak
-   redirect, no login required.
-
-This works because Nextcloud is reached via Nextcloud's own auth
-code, not a forward-auth proxy. The `user_oidc` plugin only handles
-the login flow for *your team members*; the public-share endpoints
-remain anonymous-by-design.
-
-If you ever need to lock down public shares entirely, the right
-control is inside Nextcloud (Settings → Sharing → "Allow share via
-public link"), not at the network layer.
-
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
