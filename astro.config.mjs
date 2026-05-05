@@ -26,6 +26,12 @@ export default defineConfig({
       title: "catena docs",
       logo: { src: "./src/assets/logo.svg", replacesTitle: false },
       customCss: ["./src/styles/global.css"],
+      head: [
+        {
+          tag: "script",
+          attrs: { src: "/docs/domain-rewriter.js", defer: true },
+        },
+      ],
       social: [
         {
           icon: "github",
