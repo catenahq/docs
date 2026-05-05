@@ -1,6 +1,6 @@
 ---
 title: "How big a VPS do I need?"
-description: "Resource footprint of every pre-configured app, so you can pick a VPS"
+description: "Per-app resource footprint to size your VPS. Last measured: 2026-04-29."
 ---
 
 Resource footprint of every pre-configured app, so you can pick a VPS
@@ -32,7 +32,7 @@ tier that matches what you plan to deploy.
 
 CPU is normalized to one core: 100% means one full vCPU is busy. Peak
 values are what we observed while exercising the app the way the
-[setup steps](/apps/index/) describe (the first mass-upload to
+[setup steps](/docs/apps/) describe (the first mass-upload to
 Nextcloud, the first wizard pass on ERPNext, etc.).
 
 ## Tier guidance

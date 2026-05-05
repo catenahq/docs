@@ -1,6 +1,6 @@
 ---
 title: "Applications pré-configurées à activer"
-description: "Dokploy est livré avec un projet **Templates** sur votre VPS. Chaque"
+description: "Catalogue d'applications à un clic que votre opérateur peut amorcer dans Dokploy : auth, réseau, SSO, stockage et SSL pré-configurés."
 ---
 
 Dokploy est livré avec un projet **Templates** sur votre VPS. Chaque
@@ -25,52 +25,52 @@ vers une page de référence complète avec les étapes, les variables
 d'environnement, le domaine et le fichier compose.
 
 ### 1. Nextcloud — remplace Google Drive, Dropbox, OneDrive Entreprise
-Partage de fichiers et collaboration auto-hébergés — le hub auquel d'autres templates se connectent. [→ Voir les détails](/nextcloud-s3-oidc/)
+Partage de fichiers et collaboration auto-hébergés — le hub auquel d'autres templates se connectent. [→ Voir les détails](nextcloud-s3-oidc.md)
 
 ### 2. OnlyOffice — remplace Microsoft Office Online, Google Docs (éditeur embarqué)
-Édition collaborative DOCX/XLSX/PPTX — s'intègre à Nextcloud pour la co-édition temps réel avec une haute fidélité aux formats MS Office. [→ Voir les détails](/onlyoffice/)
+Édition collaborative DOCX/XLSX/PPTX — s'intègre à Nextcloud pour la co-édition temps réel avec une haute fidélité aux formats MS Office. [→ Voir les détails](onlyoffice.md)
 
 ### 3. Rocket.Chat — remplace Slack, Microsoft Teams, Discord (en usage pro)
-Messagerie d'équipe — canaux, messages directs, partage de fichiers, apps mobiles, appels vidéo. Keycloak SSO pré-câblé. [→ Voir les détails](/rocketchat-oidc/)
+Messagerie d'équipe — canaux, messages directs, partage de fichiers, apps mobiles, appels vidéo. Keycloak SSO pré-câblé. [→ Voir les détails](rocketchat-oidc.md)
 
 ### 4. DocuSeal — remplace DocuSign, HelloSign, PandaDoc, Adobe Sign
-Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées. [→ Voir les détails](/docuseal/)
+Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées. [→ Voir les détails](docuseal.md)
 
 ### 5. Documenso (déprécié) — remplace DocuSign, HelloSign, PandaDoc, Adobe Sign
-**DÉPRÉCIÉ** depuis 2026-04-29 — conservé au catalogue le temps de la migration. Les nouveaux déploiements doivent utiliser **DocuSeal**. Signature électronique de documents open-source — téléversez un PDF, placez les champs de signature, envoyez pour signature. Keycloak SSO pré-câblé. [→ Voir les détails](/documenso/)
+**DÉPRÉCIÉ** depuis 2026-04-29 — conservé au catalogue le temps de la migration. Les nouveaux déploiements doivent utiliser **DocuSeal**. Signature électronique de documents open-source — téléversez un PDF, placez les champs de signature, envoyez pour signature. Keycloak SSO pré-câblé. [→ Voir les détails](documenso.md)
 
 ### 6. Outline — remplace Notion, Confluence, Google Sites
-Wiki d'équipe / base de connaissances. Pages façon Notion, collections, documents imbriqués. Keycloak SSO pré-câblé. [→ Voir les détails](/outline/)
+Wiki d'équipe / base de connaissances. Pages façon Notion, collections, documents imbriqués. Keycloak SSO pré-câblé. [→ Voir les détails](outline.md)
 
 ### 7. EspoCRM — remplace Salesforce, HubSpot, Zoho CRM, Pipedrive
-CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation. OIDC natif via un bouton post-déploiement. [→ Voir les détails](/espocrm/)
+CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation. OIDC natif via un bouton post-déploiement. [→ Voir les détails](espocrm.md)
 
 ### 8. Twenty — remplace Salesforce, HubSpot, Pipedrive
-CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation email, pipelines. Alternative à EspoCRM (le CRM par défaut). [→ Voir les détails](/twenty/)
+CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation email, pipelines. Alternative à EspoCRM (le CRM par défaut). [→ Voir les détails](twenty.md)
 
 ### 9. Plane — remplace Jira, Linear, Asana, ClickUp
-Gestion de projet open-source — issues, cycles, modules, pages, workspaces. [→ Voir les détails](/plane/)
+Gestion de projet open-source — issues, cycles, modules, pages, workspaces. [→ Voir les détails](plane.md)
 
 ### 10. Zammad — remplace Zendesk, Freshdesk, Jira Service Desk
-Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connaissances. OIDC natif. [→ Voir les détails](/zammad/)
+Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connaissances. OIDC natif. [→ Voir les détails](zammad.md)
 
 ### 11. Chatwoot — remplace Intercom, Front, Help Scout (canaux de chat)
-Boîte de réception omnicanale orientée conversation. Email, widget de chat, WhatsApp, Facebook, Instagram, Twitter/X en une seule vue. [→ Voir les détails](/chatwoot/)
+Boîte de réception omnicanale orientée conversation. Email, widget de chat, WhatsApp, Facebook, Instagram, Twitter/X en une seule vue. [→ Voir les détails](chatwoot.md)
 
 ### 12. WordPress — remplace Wix, Squarespace, Drupal auto-hébergé
-Plateforme CMS / site web public prête pour la production, avec cache FastCGI, cache d'objets Redis et un ensemble de plugins gratuits curatés pré-installés. Le site est accessible anonymement ; la connexion admin sur /wp-admin peut être câblée à Keycloak via un plugin. [→ Voir les détails](/wordpress/)
+Plateforme CMS / site web public prête pour la production, avec cache FastCGI, cache d'objets Redis et un ensemble de plugins gratuits curatés pré-installés. Le site est accessible anonymement ; la connexion admin sur /wp-admin peut être câblée à Keycloak via un plugin. [→ Voir les détails](wordpress.md)
 
 ### 13. n8n — remplace Zapier, Make (Integromat), Tray.io
-Automatisation de flux de travail — enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code. [→ Voir les détails](/n8n/)
+Automatisation de flux de travail — enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code. [→ Voir les détails](n8n.md)
 
 ### 14. ERPNext — remplace SAP Business One, Odoo, Oracle NetSuite
-Suite ERP open-source complète — comptabilité, inventaire, RH/paie, CRM, production, projets, et un module site web / e-commerce intégré. [→ Voir les détails](/erpnext/)
+Suite ERP open-source complète — comptabilité, inventaire, RH/paie, CRM, production, projets, et un module site web / e-commerce intégré. [→ Voir les détails](erpnext.md)
 
 ### 15. Actual Budget — remplace YNAB (You Need A Budget), Mint, EveryDollar
-Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro bancaire via SimpleFIN ou GoCardless, chiffré de bout en bout. [→ Voir les détails](/actualbudget/)
+Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro bancaire via SimpleFIN ou GoCardless, chiffré de bout en bout. [→ Voir les détails](actualbudget.md)
 
 ### 16. Postiz — remplace Buffer, Hootsuite, Later
-Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, et d'autres. [→ Voir les détails](/postiz/)
+Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, et d'autres. [→ Voir les détails](postiz.md)
 
 ## À propos de la connexion (SSO)
 
