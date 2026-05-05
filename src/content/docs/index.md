@@ -46,16 +46,14 @@ deployment. The shape:
 
 | Service | Subdomain |
 |---|---|
-| Keycloak (identity + SSO) | `auth.<your-zone>` |
-| Dokploy (app deployment) | `admin.<your-zone>` |
-| Gatus (service health) | `monitor.<your-zone>` |
-| Homepage (dashboard) | `dash.<your-zone>` |
-| OliveTin (one-click actions) | `actions.<your-zone>` |
-| Healthchecks (cron / dead-man) | `checks.<your-zone>` |
-| Per-VPS wiki (this site, served from your VPS) | `vps-docs.<your-zone>` |
+| Keycloak (identity + SSO) | `auth.yourdomain.com` |
+| Dokploy (app deployment) | `admin.yourdomain.com` |
+| Gatus (service health) | `monitor.yourdomain.com` |
+| Homepage (dashboard) | `dash.yourdomain.com` |
+| OliveTin (one-click actions) | `actions.yourdomain.com` |
+| Healthchecks (cron / dead-man) | `checks.yourdomain.com` |
 
-> **Note:** This site is also served from your own VPS at
-> `vps-docs.<your-zone>`. The VPS-served copy is byte-identical to
-> docs.catena.run -- both come from the same release artifact. The
-> on-VPS copy is a sovereignty + offline fallback; treat them as
-> interchangeable.
+> **Note:** Throughout the docs, `yourdomain.com` is the business
+> domain you provided at onboarding -- the input pill at the top of
+> this page rewrites every occurrence on the fly so the URLs you
+> see match your installation.

@@ -49,16 +49,15 @@ sous votre zone. Votre portail affiche les valeurs réelles pour
 
 | Service | Sous-domaine |
 |---|---|
-| Keycloak (identité + SSO) | `auth.<votre-zone>` |
-| Dokploy (déploiement d'applications) | `admin.<votre-zone>` |
-| Gatus (santé des services) | `monitor.<votre-zone>` |
-| Homepage (tableau de bord) | `dash.<votre-zone>` |
-| OliveTin (actions à un clic) | `actions.<votre-zone>` |
-| Healthchecks (cron / homme mort) | `checks.<votre-zone>` |
-| Wiki par-VPS (ce site, servi depuis votre VPS) | `vps-docs.<votre-zone>` |
+| Keycloak (identité + SSO) | `auth.yourdomain.com` |
+| Dokploy (déploiement d'applications) | `admin.yourdomain.com` |
+| Gatus (santé des services) | `monitor.yourdomain.com` |
+| Homepage (tableau de bord) | `dash.yourdomain.com` |
+| OliveTin (actions à un clic) | `actions.yourdomain.com` |
+| Healthchecks (cron / homme mort) | `checks.yourdomain.com` |
 
-> **Note :** Ce site est aussi servi depuis votre propre VPS à
-> `vps-docs.<votre-zone>`. La copie VPS est identique au bit près à
-> docs.catena.run -- les deux proviennent du même artefact de
-> publication. La copie sur-VPS est un repli souveraineté +
-> hors-ligne ; traitez-les comme interchangeables.
+> **Note :** Dans toute la documentation, `yourdomain.com` représente
+> le domaine d'entreprise que vous avez fourni à l'intégration --
+> la pastille en haut de cette page réécrit chaque occurrence à la
+> volée afin que les URL affichées correspondent à votre
+> installation.

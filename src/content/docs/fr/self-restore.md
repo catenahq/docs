@@ -230,10 +230,13 @@ passe Postgres automatiquement, redéploie les composes et
 reprovisionne le tunnel Cloudflare seul. S'il est joignable, ses
 playbooks sont plus rapides et plus fiables que la procédure manuelle.
 
-## Télécharger votre documentation
+## Garder une copie hors ligne
 
-Le paquet complet de la documentation (chaque page de ce site en
-Markdown brut) est disponible à
-[/vps-docs-source.tar.gz](/vps-docs-source.tar.gz) pour garder une copie
-hors ligne — utile si le VPS est tombé et que vous avez besoin de cette
-page pour le relever.
+Si votre VPS est tombé et que vous avez besoin de cette page pour
+le relever, le site de documentation ne vous aidera pas. Enregistrez
+les pages que vous utiliseriez lors d'un sinistre (celle-ci +
+[Reprise après sinistre](/docs/fr/disaster-recovery/) +
+[Où vivent vos données](/docs/fr/where-is-my-data/)) sur votre poste
+avec « Enregistrer sous... » de votre navigateur (ou imprimez-les en
+PDF) à la prise en charge, et rafraîchissez la copie une fois par
+an.

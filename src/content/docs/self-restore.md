@@ -222,9 +222,11 @@ Postgres-password alignment, the Dokploy redeploys, and the Cloudflare
 tunnel re-provisioning automatically. If you can reach your operator,
 their playbooks are faster and less error-prone than the manual path.
 
-## Download your documentation
+## Keep an offline copy
 
-The full docs bundle (every page on this site as plain Markdown) is
-available at [/vps-docs-source.tar.gz](/vps-docs-source.tar.gz) so you
-can keep an offline copy — useful if the VPS is down and you need this
-page to bring it back up.
+If your VPS is down and you need this page to bring it back up, the
+docs site won't help. Save the pages you'd actually use during a
+disaster (this one + [Disaster recovery](/docs/disaster-recovery/) +
+[Where is my data](/docs/where-is-my-data/)) to your laptop with
+your browser's "Save Page As..." (or print them to PDF) at hand-off
+and refresh once a year.
