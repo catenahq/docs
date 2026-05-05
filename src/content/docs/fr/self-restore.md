@@ -136,7 +136,7 @@ Dokploy se reconnecte au volume Postgres existant au démarrage.
         -c "ALTER USER dokploy WITH PASSWORD '$NEW_PW';"
     ```
 
-    (Les playbooks de votre opérateur évitent cette étape en
+    (L'automatisation de votre opérateur évite cette étape en
     pré-positionnant le secret depuis leur coffre.)
 
 ## Étape 5 — Rejouer les dumps Postgres par application
@@ -181,8 +181,8 @@ attaché au réseau `dokploy-network` pour atteindre les noms d'hôte
 internes de vos applis ; la commande standalone
 `cloudflared service install <jeton>` ci-dessus tourne comme service
 système et passe par le réseau de l'hôte. Les deux fonctionnent ; la
-version Swarm est celle que les playbooks de votre opérateur
-reconstruisent, à privilégier si vous comptez lui rendre le VPS plus
+version Swarm est celle que l'automatisation de votre opérateur
+reconstruit, à privilégier si vous comptez lui rendre le serveur plus
 tard.
 
 ## Étape 7 — Vérifications
@@ -227,8 +227,8 @@ Cette page existe pour qu'aucune situation ne vous bloque. Mais le
 flux scripté (`./catena restore && ./catena site`) de votre opérateur
 remplace chaque étape ci-dessus par deux commandes, aligne le mot de
 passe Postgres automatiquement, redéploie les composes et
-reprovisionne le tunnel Cloudflare seul. S'il est joignable, ses
-playbooks sont plus rapides et plus fiables que la procédure manuelle.
+reprovisionne le tunnel Cloudflare seul. S'il est joignable, son
+automatisation est plus rapide et plus fiable que la procédure manuelle.
 
 ## Garder une copie hors ligne
 

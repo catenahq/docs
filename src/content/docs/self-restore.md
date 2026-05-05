@@ -131,8 +131,8 @@ startup.
         -c "ALTER USER dokploy WITH PASSWORD '$NEW_PW';"
     ```
 
-    (Your operator's playbooks avoid this step by pre-seeding the secret
-    from their vault.)
+    (Your operator's automation avoids this step by pre-seeding the
+    secret from their vault.)
 
 ## Step 5 — Replay per-app Postgres dumps
 
@@ -176,8 +176,8 @@ baked in. Note that the Swarm-deployed variant runs as a Docker service
 attached to the `dokploy-network` so it can reach your apps' internal
 hostnames; the standalone `cloudflared service install <token>` above
 runs as a system service and reaches them via the host network. Either
-works; the Swarm version is what your operator's playbooks rebuild and
-the one to pick if you plan to hand the VPS back to them later.
+works; the Swarm version is what your operator's automation rebuilds and
+the one to pick if you plan to hand the server back to them later.
 
 ## Step 7 — Sanity check
 
@@ -220,12 +220,12 @@ This page exists so you are never stuck. But the scripted flow
 step above with a single two-command sequence and handles the
 Postgres-password alignment, the Dokploy redeploys, and the Cloudflare
 tunnel re-provisioning automatically. If you can reach your operator,
-their playbooks are faster and less error-prone than the manual path.
+their automation is faster and less error-prone than the manual path.
 
 ## Keep an offline copy
 
-If your VPS is down and you need this page to bring it back up, the
-docs site won't help. Save the pages you'd actually use during a
+If your server is down and you need this page to bring it back up, the
+docs site won't help. Save the pages you'd want during a
 disaster (this one + [Disaster recovery](/docs/disaster-recovery/) +
 [Where is my data](/docs/where-is-my-data/)) to your laptop with
 your browser's "Save Page As..." (or print them to PDF) at hand-off

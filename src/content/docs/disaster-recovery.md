@@ -12,7 +12,7 @@ secret exports live.
 
 The short version: your stack is designed so that **no single
 accidental click can lock you out**. It takes a combination of events
-to actually lose access, and for every scenario there's a recovery
+to lose access, and for every scenario there's a recovery
 path.
 
 ## Data-loss scenarios — quick FAQ

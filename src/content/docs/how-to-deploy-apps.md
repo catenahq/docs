@@ -259,7 +259,7 @@ Unless you have a reason to change it, leaving the label unset on
 your apps is the right call. You'll get security patches
 automatically.
 
-### What "auto-rollback" actually does
+### What "auto-rollback" does in practice
 
 After each bumped service, the updater runs a health baseline (same
 check the nightly drill uses): is the container responding, is the
@@ -610,7 +610,7 @@ ask your operator; those need operator-side configuration.
 
 By default, the Gatus card for your app shows the container image's
 short name plus its version — e.g., `paperless-ngx 2.12.3`. When the
-image's short name doesn't reflect what your app actually *is*
+image's short name doesn't reflect what your app *is*
 (common when a container wraps something else — e.g., nginx serving a
 pre-rendered static site), set a compose label:
 

@@ -167,7 +167,7 @@ a place you control.
 ### 7. Test your recovery path once
 
 At some quiet point in the first six months, do a "does this
-actually work" dry run:
+work end-to-end" dry run:
 
 - Pick a throwaway directory on your laptop.
 - Decrypt one of the proactive exports from step 5 — pick the command
