@@ -163,9 +163,9 @@ services:
       # -- still backed up but with an opaque sha256 name.
       - nc-data:/var/www/html/data
     configs:
-      - source: nc_loglevel
-        target: /var/www/html/config/zz-loglevel.config.php
-        mode: 0644
+      - source: nc_loglevel_hook
+        target: /docker-entrypoint-hooks.d/before-starting/zz-loglevel.sh
+        mode: 0755
     labels:
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
@@ -226,10 +226,10 @@ services:
       # (file scanning, preview generation, etc.) write to the same
       # /var/www/html/data tree the app reads from.
       - nc-data:/var/www/html/data
-    configs:
-      - source: nc_loglevel
-        target: /var/www/html/config/zz-loglevel.config.php
-        mode: 0644
+    # No before-starting hook here: cron's entrypoint is /cron.sh,
+    # which does not process /docker-entrypoint-hooks.d. The app
+    # service writes zz-loglevel.config.php into the shared nc-config
+    # volume on its own startup; cron picks it up via the shared mount.
     networks:
       - default
 
@@ -240,25 +240,46 @@ volumes:
   db-data:
 
 configs:
-  # Default Nextcloud loglevel = info (1). The Nextcloud config loader
-  # merges any *.config.php sibling of config.php; this file stays a
-  # read-only mount, separate from the nc-config volume, so it cannot
-  # be lost on volume restore and the level is reasserted every boot.
-  # 0=debug 1=info 2=warning 3=error 4=fatal.
-  nc_loglevel:
-    # `$$CONFIG` is intentional: docker-compose runs env-var substitution
-    # over inline config `content:` blocks. A bare `$CONFIG` resolves to
-    # an empty string (no env var of that name is set) and the file
-    # lands as `<?php\n = array(...)`, which trips a PHP parse error on
-    # every request -- Nextcloud serves HTTP 500 on /, on every WebDAV
-    # path, on /status.php, etc. The doubled `$$` collapses to a single
-    # literal `$` after substitution, producing the intended `$CONFIG =
-    # array(...)` PHP variable assignment.
+  # Default Nextcloud loglevel = info (1). 0=debug 1=info 2=warning
+  # 3=error 4=fatal. Nextcloud's config loader merges any *.config.php
+  # sibling of config.php at /var/www/html/config/.
+  #
+  # Delivery shape: an entrypoint hook script, NOT a direct file mount
+  # at /var/www/html/config/zz-loglevel.config.php. Mounting a single
+  # config file into the same path as the nc-config NAMED VOLUME left
+  # the volume containing ONLY the mounted file at runtime: the
+  # upstream entrypoint's "populate config from /usr/src/nextcloud/
+  # config" routine sees the dir non-empty and skips, and nothing
+  # ever lands config.php / the *.config.php template defaults. Result
+  # was every request 500 with "Cannot write into config directory".
+  #
+  # The hook lives at /docker-entrypoint-hooks.d/before-starting/, a
+  # PURE IMAGE PATH (no named volume), so the configs bind mount
+  # works cleanly. The script writes the loglevel file into the
+  # nc-config volume on every container start -- restoring the
+  # original "reasserted every boot" intent without fighting the
+  # volume mount semantics.
+  #
+  # `$$CONFIG` is intentional: docker-compose runs env-var
+  # substitution over inline config `content:` blocks before writing
+  # to disk. A bare `$CONFIG` resolves to empty (no env var of that
+  # name is set) and the script body lands as `cat ... = array(...)`,
+  # which dumps a broken PHP file. The doubled `$$` collapses to a
+  # literal `$` post-substitution. The heredoc's quoted delimiter
+  # ('PHPEOF') prevents the SHELL from also expanding it at run time.
+  nc_loglevel_hook:
     content: |
+      #!/bin/sh
+      set -e
+      mkdir -p /var/www/html/config
+      cat > /var/www/html/config/zz-loglevel.config.php <<'PHPEOF'
       <?php
       $$CONFIG = array(
         'loglevel' => 1,
       );
+      PHPEOF
+      chown www-data:www-data /var/www/html/config/zz-loglevel.config.php
+      chmod 0644 /var/www/html/config/zz-loglevel.config.php
 
 networks:
   dokploy-network:
