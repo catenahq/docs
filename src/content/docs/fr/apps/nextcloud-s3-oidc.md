@@ -88,6 +88,10 @@ premier semi du template — vous n'avez pas à les générer vous-même.
 | `OIDC_DISCOVERY_URL` | `https://auth.yourdomain.com/realms/catena/.well-known/openid-configuration` |
 | `OIDC_ISSUER_URL` | `https://auth.yourdomain.com/realms/catena` |
 | `OIDC_REDIRECT_URL` | `https://nextcloud.yourdomain.com/apps/user_oidc/code` |
+| `SIGNALING_SECRET` | `<your-nextcloud_talk_signaling_secret>` |
+| `JANUS_API_KEY` | `<your-nextcloud_talk_janus_api_key>` |
+| `VPS_PUBLIC_IP` | `{{ public_ip }}` |
+| `TURN_STATIC_AUTH_SECRET` | `<your-turn_static_auth_secret>` |
 
 ## Domaine
 
@@ -277,6 +281,93 @@ services:
     # on its own startup; cron picks it up via the shared mount.
     networks:
       - default
+
+  # === HPB BEGIN -- Talk High-Performance Backend ==========================
+  # Comment out this entire block (signaling + janus + nats) to disable
+  # Talk + HPB. Use automation/operator-tools/toggle-nextcloud-talk-hpb.py
+  # for a hands-off toggle that pushes the diff via Dokploy API.
+  #
+  # When the block is live the wire script catena-wire-nextcloud-talk-hpb
+  # detects signaling on dokploy-network and runs:
+  #   occ talk:turn:add  turn turn.<base>:5349 udp,tcp <secret>
+  #   occ talk:stun:add  stun.<base>:3478
+  #   occ talk:signaling:add https://signaling.<NEXTCLOUD_HOSTNAME> <secret>
+  #   occ config:app:set spreed external_signaling_only --value=yes
+  # When commented out the wire script logs "HPB not deployed" and exits
+  # 0 -- Nextcloud + Talk run in built-in P2P mode, calls degrade beyond
+  # ~5 participants but no stack changes are required.
+  #
+  # The shared coturn lives at turn.<base>:5349 (DNS A record gray-cloud,
+  # cert via DNS-01) and is deployed by roles/coturn -- not here. Janus
+  # talks UDP directly to clients in the 49160-49200/udp range published
+  # in mode: host below; coturn is the restrictive-network fallback.
+
+  signaling:
+    # Public WSS signaling endpoint. Bearer-secret authed (no oauth2-
+    # proxy gate); Talk and the signaling server validate `SIGNALING_SECRET`
+    # on every request.
+    image: ghcr.io/strukturag/nextcloud-spreed-signaling:1.3.4
+    restart: unless-stopped
+    environment:
+      NEXTCLOUD_URL: https://${NEXTCLOUD_HOSTNAME}
+      SIGNALING_SECRET: ${SIGNALING_SECRET}
+      JANUS_API_KEY: ${JANUS_API_KEY}
+      JANUS_URL: ws://janus:8188
+      NATS_URL: nats://nats:4222
+    labels:
+      - "vps.auth.mode=public"
+      - "vps.auto-update=patch"
+    networks:
+      dokploy-network:
+        aliases:
+          - signaling
+      default: {}
+    depends_on:
+      - nats
+      - janus
+
+  janus:
+    # WebRTC SFU. Media UDP ports MUST be host-published so Janus's ICE
+    # candidates carry a routable IP. mode: host bypasses Swarm's
+    # routing mesh (which would NAT and break ICE) and binds directly
+    # to the VPS public IP.
+    image: canyan/janus-gateway:1.3.0
+    restart: unless-stopped
+    environment:
+      JANUS_API_SECRET: ${JANUS_API_KEY}
+      JANUS_NAT_1_1_MAPPING: ${VPS_PUBLIC_IP}
+      JANUS_RTP_PORT_RANGE: "49160-49200"
+    ports:
+      # Span the ufw-permitted range. Each entry is a single port; a
+      # range entry like "49160-49200:49160-49200/udp" works in
+      # docker-compose v2 + Swarm mode.
+      - target: 49160
+        published: 49160
+        protocol: udp
+        mode: host
+        # Range form. Swarm honors `target` + `published` as ranges
+        # only when both bounds are specified explicitly. Some Swarm
+        # builds reject the range syntax silently; if Janus reports
+        # "no available media port" on dev1, expand this to 41 single-
+        # port entries via a generator in the Ansible task that pushes
+        # the compose.
+      - target: 49200
+        published: 49200
+        protocol: udp
+        mode: host
+    labels:
+      - "vps.auto-update=patch"
+    networks:
+      - default
+
+  nats:
+    image: nats:2.10-alpine
+    restart: unless-stopped
+    labels:
+      - "vps.auto-update=patch"
+    networks:
+      - default
+  # === HPB END =============================================================
 
 volumes:
   nc-config:
