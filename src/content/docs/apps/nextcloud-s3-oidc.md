@@ -108,6 +108,38 @@ services:
   app:
     image: nextcloud:33.0.2-apache
     restart: unless-stopped
+    # Entrypoint wrapper writes the loglevel override config BEFORE
+    # exec'ing the upstream entrypoint. Runs on every container start
+    # so the file is recreated if the volume is wiped. cp -arn in the
+    # upstream populate skips existing files, so our zz-loglevel
+    # survives the populate step on a fresh volume.
+    #
+    # Why not the official `before-starting` hook system + compose
+    # `configs:` block? The compose-v2 inline content delivery path
+    # produced a script that exited 2 with no script-side stderr on
+    # every container start through Dokploy -- consistent with a
+    # CRLF-corrupted shebang or a byte mangled in the delivery
+    # pipeline. We could not surface the root cause from outside
+    # the container; the entrypoint wrapper sidesteps the entire
+    # delivery path.
+    #
+    # `$$CONFIG` -> `$CONFIG` after compose interpolation; the
+    # single-quoted heredoc tag preserves it literally inside the
+    # PHP body.
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        mkdir -p /var/www/html/config
+        cat > /var/www/html/config/zz-loglevel.config.php <<'PHP'
+        <?php
+        $$CONFIG = [
+          'loglevel' => 1,
+        ];
+        PHP
+        exec /entrypoint.sh "$$@"
+      - --
+    command: ["apache2-foreground"]
     environment:
       NEXTCLOUD_TRUSTED_DOMAINS: ${NEXTCLOUD_HOSTNAME}
       NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
@@ -154,10 +186,6 @@ services:
       # creates an anonymous volume from the image's VOLUME directive
       # -- still backed up but with an opaque sha256 name.
       - nc-data:/var/www/html/data
-    configs:
-      - source: nc_loglevel_hook
-        target: /docker-entrypoint-hooks.d/before-starting/zz-loglevel.sh
-        mode: 0755
     labels:
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
@@ -230,38 +258,6 @@ volumes:
   nc-apps:
   nc-data:
   db-data:
-
-configs:
-  # Default Nextcloud loglevel = info (1). 0=debug 1=info 2=warning
-  # 3=error 4=fatal. Nextcloud's config loader merges any *.config.php
-  # sibling of config.php at /var/www/html/config/.
-  #
-  # Delivered as a before-starting hook script (NOT a direct mount of
-  # the .config.php file): mounting a single config file into the
-  # nc-config NAMED VOLUME left the volume containing only the
-  # mounted file at runtime, breaking Nextcloud's first-install. The
-  # hook lives at /docker-entrypoint-hooks.d/before-starting/, a pure
-  # image path with no volume interaction; it runs AFTER the upstream
-  # entrypoint's populate step and BEFORE Apache binds the listen
-  # socket, so the file lands in a fully-installed config dir on
-  # every container start.
-  #
-  # Heredoc-free body: a previous version used `cat > file <<'EOF'`,
-  # and the hook runner reported `Exit code: 2` with no output from
-  # the leading echo -- a shell parse failure somewhere in the
-  # heredoc-via-compose-config pipeline. The brace-group + echo
-  # form is straight POSIX.
-  #
-  # `$$CONFIG` -> `$CONFIG` after compose interpolation; single-quoted
-  # echo arg preserves the literal `$` at runtime.
-  # MINIMAL DIAGNOSTIC HOOK -- if this exits 2 we know the failure is
-  # in compose's content-delivery pipeline, not in our script body.
-  # Restore the real loglevel-writing script once delivery is verified.
-  nc_loglevel_hook:
-    content: |
-      #!/bin/sh
-      echo "loglevel hook ran" >&2
-      exit 0
 
 networks:
   dokploy-network:
