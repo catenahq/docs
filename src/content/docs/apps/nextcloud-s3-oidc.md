@@ -254,18 +254,13 @@ configs:
   #
   # `$$CONFIG` -> `$CONFIG` after compose interpolation; single-quoted
   # echo arg preserves the literal `$` at runtime.
+  # MINIMAL DIAGNOSTIC HOOK -- if this exits 2 we know the failure is
+  # in compose's content-delivery pipeline, not in our script body.
+  # Restore the real loglevel-writing script once delivery is verified.
   nc_loglevel_hook:
     content: |
       #!/bin/sh
-      mkdir -p /var/www/html/config 2>/dev/null
-      {
-        echo '<?php'
-        echo '$$CONFIG = array('
-        echo "  'loglevel' => 1,"
-        echo ');'
-      } > /var/www/html/config/zz-loglevel.config.php
-      chown www-data:www-data /var/www/html/config/zz-loglevel.config.php 2>/dev/null
-      chmod 0644 /var/www/html/config/zz-loglevel.config.php 2>/dev/null
+      echo "loglevel hook ran" >&2
       exit 0
 
 networks:
