@@ -154,31 +154,10 @@ services:
       # creates an anonymous volume from the image's VOLUME directive
       # -- still backed up but with an opaque sha256 name.
       - nc-data:/var/www/html/data
-    # Wrap the upstream CMD (apache2-foreground) so the loglevel
-    # config file is written into nc-config AFTER /entrypoint.sh has
-    # finished its setup (populate, install, version-upgrade), and
-    # BEFORE Apache starts serving requests. The override does not
-    # touch ENTRYPOINT, so the upstream entrypoint's full bootstrap
-    # logic still runs.
-    #
-    # `$$CONFIG` is intentional -- compose substitutes `$$` -> `$`
-    # before the docker daemon receives the command, so the on-disk
-    # PHP file ends up with the correct `$CONFIG = array(...)`
-    # variable assignment.
-    command:
-      - sh
-      - -c
-      - |
-        mkdir -p /var/www/html/config 2>/dev/null || true
-        {
-          echo '<?php'
-          echo '$$CONFIG = array('
-          echo "  'loglevel' => 1,"
-          echo ');'
-        } > /var/www/html/config/zz-loglevel.config.php
-        chown www-data:www-data /var/www/html/config/zz-loglevel.config.php 2>/dev/null || true
-        chmod 0644 /var/www/html/config/zz-loglevel.config.php 2>/dev/null || true
-        exec apache2-foreground
+    configs:
+      - source: nc_loglevel_hook
+        target: /docker-entrypoint-hooks.d/before-starting/zz-loglevel.sh
+        mode: 0755
     labels:
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
@@ -251,6 +230,43 @@ volumes:
   nc-apps:
   nc-data:
   db-data:
+
+configs:
+  # Default Nextcloud loglevel = info (1). 0=debug 1=info 2=warning
+  # 3=error 4=fatal. Nextcloud's config loader merges any *.config.php
+  # sibling of config.php at /var/www/html/config/.
+  #
+  # Delivered as a before-starting hook script (NOT a direct mount of
+  # the .config.php file): mounting a single config file into the
+  # nc-config NAMED VOLUME left the volume containing only the
+  # mounted file at runtime, breaking Nextcloud's first-install. The
+  # hook lives at /docker-entrypoint-hooks.d/before-starting/, a pure
+  # image path with no volume interaction; it runs AFTER the upstream
+  # entrypoint's populate step and BEFORE Apache binds the listen
+  # socket, so the file lands in a fully-installed config dir on
+  # every container start.
+  #
+  # Heredoc-free body: a previous version used `cat > file <<'EOF'`,
+  # and the hook runner reported `Exit code: 2` with no output from
+  # the leading echo -- a shell parse failure somewhere in the
+  # heredoc-via-compose-config pipeline. The brace-group + echo
+  # form is straight POSIX.
+  #
+  # `$$CONFIG` -> `$CONFIG` after compose interpolation; single-quoted
+  # echo arg preserves the literal `$` at runtime.
+  nc_loglevel_hook:
+    content: |
+      #!/bin/sh
+      mkdir -p /var/www/html/config 2>/dev/null
+      {
+        echo '<?php'
+        echo '$$CONFIG = array('
+        echo "  'loglevel' => 1,"
+        echo ');'
+      } > /var/www/html/config/zz-loglevel.config.php
+      chown www-data:www-data /var/www/html/config/zz-loglevel.config.php 2>/dev/null
+      chmod 0644 /var/www/html/config/zz-loglevel.config.php 2>/dev/null
+      exit 0
 
 networks:
   dokploy-network:
