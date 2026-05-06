@@ -1,0 +1,37 @@
+---
+// Override of Starlight's default SiteTitle to add a "back to
+// catena.run" link before the docs title. The link forwards to the
+// FR marketing home when the docs locale is FR; it is otherwise the
+// EN marketing home.
+//
+// Starlight's component contract: receive the same props as the
+// default and render alongside / instead of it. We embed the default
+// after our back-link.
+
+import type { Props } from "@astrojs/starlight/props";
+import Default from "@astrojs/starlight/components/SiteTitle.astro";
+
+const lang = (Astro.props as Props).locale ?? "en";
+const homeHref = lang === "fr" ? "https://catena.run/fr/" : "https://catena.run/";
+const backLabel = lang === "fr" ? "← catena.run" : "← catena.run";
+---
+<a class="catena-back" href={homeHref} aria-label={lang === "fr" ? "Retour à catena.run" : "Back to catena.run"}>
+  {backLabel}
+</a>
+<Default {...Astro.props}><slot /></Default>
+
+<style>
+  .catena-back {
+    display: inline-block;
+    margin-right: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--sl-color-gray-3);
+    text-decoration: none;
+  }
+  .catena-back:hover {
+    color: var(--sl-color-text-accent);
+  }
+  @media (max-width: 50rem) {
+    .catena-back { display: none; }
+  }
+</style>

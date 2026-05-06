@@ -25,6 +25,9 @@ export default defineConfig({
     starlight({
       title: "catena docs",
       logo: { src: "./src/assets/logo.svg", replacesTitle: false },
+      components: {
+        SiteTitle: "./src/components/SiteTitle.astro",
+      },
       customCss: ["./src/styles/global.css"],
       head: [
         {
