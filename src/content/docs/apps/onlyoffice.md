@@ -12,11 +12,10 @@ Collaborative DOCX/XLSX/PPTX editing — bolts into Nextcloud for real-time co-e
 ## Setup steps
 
 1. Click **Deploy**. Wait ~1 min for the document server to boot.
-2. Sign in to Nextcloud as admin → **Apps** → search `ONLYOFFICE` → **Install**.
-3. **Admin settings** → **ONLYOFFICE**. Set:
-   - **Document Editing Service address:** `https://office.<your-domain>`
-   - **Secret key (leave blank for unsecure):** paste `JWT_SECRET` from this template's Environment tab
-4. Save. Nextcloud now opens DOCX/XLSX/PPTX files in the embedded OnlyOffice editor.
+2. From the operator dashboard, click the **Wire Nextcloud OnlyOffice** button. The button installs the Nextcloud OnlyOffice app, reads the JWT secret from this template, points the app at this server, and -- if you previously had Collabora wired -- removes the Collabora Nextcloud app cleanly.
+3. Open any DOCX/XLSX/PPTX file in Nextcloud. It opens in the embedded OnlyOffice editor.
+
+Switching to Collabora later is one click: stop this OnlyOffice compose, deploy `collabora`, then click the **Wire Nextcloud Collabora** button.
 
 Don't visit the OnlyOffice domain directly in a browser — it has no UI of its own. Users only ever see it through Nextcloud when they open a document.
 

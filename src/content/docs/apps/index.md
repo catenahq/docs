@@ -24,49 +24,52 @@ setup steps, environment variables, domain, and compose file.
 ### 1. Nextcloud — replaces Google Drive, Dropbox, OneDrive for Business
 Self-hosted file sharing and collaboration — the file hub that other templates plug into. [→ Full details](nextcloud-s3-oidc.md)
 
-### 2. OnlyOffice — replaces Microsoft Office Online, Google Docs (as embedded editor)
+### 2. Collabora Online (CODE) — replaces Microsoft Office Online, Google Docs (as embedded editor)
+Collaborative ODT/DOCX/XLSX/PPTX editing — bolts into Nextcloud for real-time co-editing. LibreOffice-based; lighter than OnlyOffice; better fidelity for ODF formats. [→ Full details](collabora.md)
+
+### 3. OnlyOffice — replaces Microsoft Office Online, Google Docs (as embedded editor)
 Collaborative DOCX/XLSX/PPTX editing — bolts into Nextcloud for real-time co-editing with high MS Office fidelity. [→ Full details](onlyoffice.md)
 
-### 3. Rocket.Chat — replaces Slack, Microsoft Teams, Discord (for work)
+### 4. Rocket.Chat — replaces Slack, Microsoft Teams, Discord (for work)
 Team chat — channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired. [→ Full details](rocketchat-oidc.md)
 
-### 4. DocuSeal — replaces DocuSign, HelloSign, PandaDoc, Adobe Sign
+### 5. DocuSeal — replaces DocuSign, HelloSign, PandaDoc, Adobe Sign
 Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in. [→ Full details](docuseal.md)
 
-### 5. Documenso (deprecated) — replaces DocuSign, HelloSign, PandaDoc, Adobe Sign
+### 6. Documenso (deprecated) — replaces DocuSign, HelloSign, PandaDoc, Adobe Sign
 **DEPRECATED** as of 2026-04-29 — kept in catalog for the migration window. New deploys should use **DocuSeal** instead. Open-source document signing — upload a PDF, place signature fields, send for signature. Keycloak SSO pre-wired. [→ Full details](documenso.md)
 
-### 6. Outline — replaces Notion, Confluence, Google Sites
+### 7. Outline — replaces Notion, Confluence, Google Sites
 Team wiki / knowledge base. Notion-style pages, collections, nested docs. Keycloak SSO pre-wired. [→ Full details](outline.md)
 
-### 7. EspoCRM — replaces Salesforce, HubSpot, Zoho CRM, Pipedrive
+### 8. EspoCRM — replaces Salesforce, HubSpot, Zoho CRM, Pipedrive
 Default CRM in the stack. Contacts, accounts, opportunities, leads, calendar, email integration, mass mail, workflow automation. Native OIDC via post-deploy toggle. [→ Full details](espocrm.md)
 
-### 8. Twenty — replaces Salesforce, HubSpot, Pipedrive
+### 9. Twenty — replaces Salesforce, HubSpot, Pipedrive
 Modern open-source CRM. Contacts, companies, opportunities, email sync, pipelines. Alternative to EspoCRM (the default CRM). [→ Full details](twenty.md)
 
-### 9. Plane — replaces Jira, Linear, Asana, ClickUp
+### 10. Plane — replaces Jira, Linear, Asana, ClickUp
 Open-source project management — issues, cycles, modules, pages, workspaces. [→ Full details](plane.md)
 
-### 10. Zammad — replaces Zendesk, Freshdesk, Jira Service Desk
+### 11. Zammad — replaces Zendesk, Freshdesk, Jira Service Desk
 Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. Native OIDC. [→ Full details](zammad.md)
 
-### 11. Chatwoot — replaces Intercom, Front, Help Scout (for chat channels)
+### 12. Chatwoot — replaces Intercom, Front, Help Scout (for chat channels)
 Conversation-first omnichannel inbox. Email, live-chat widget, WhatsApp, Facebook, Instagram, Twitter/X in one inbox. [→ Full details](chatwoot.md)
 
-### 12. WordPress — replaces Wix, Squarespace, self-hosted Drupal
+### 13. WordPress — replaces Wix, Squarespace, self-hosted Drupal
 Production-ready public CMS / website platform with FastCGI cache, Redis object cache, and a curated free-tier plugin set pre-installed. The site serves anonymously; admin sign-in runs on /wp-admin and can be wired to Keycloak via a plugin. [→ Full details](wordpress.md)
 
-### 13. n8n — replaces Zapier, Make (Integromat), Tray.io
+### 14. n8n — replaces Zapier, Make (Integromat), Tray.io
 Workflow automation — visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows. [→ Full details](n8n.md)
 
-### 14. ERPNext — replaces SAP Business One, Odoo, Oracle NetSuite
+### 15. ERPNext — replaces SAP Business One, Odoo, Oracle NetSuite
 Full open-source ERP suite — accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module. [→ Full details](erpnext.md)
 
-### 15. Actual Budget — replaces YNAB (You Need A Budget), Mint, EveryDollar
+### 16. Actual Budget — replaces YNAB (You Need A Budget), Mint, EveryDollar
 Self-hosted personal finance. Envelope budgeting, bank account syncing via SimpleFIN or GoCardless, encrypted end-to-end. [→ Full details](actualbudget.md)
 
-### 16. Postiz — replaces Buffer, Hootsuite, Later
+### 17. Postiz — replaces Buffer, Hootsuite, Later
 Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, and more. [→ Full details](postiz.md)
 
 ## A note on sign-in (SSO)

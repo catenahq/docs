@@ -12,11 +12,10 @@ description: "Édition collaborative DOCX/XLSX/PPTX — s'intègre à Nextcloud 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min le démarrage du Document Server.
-2. Connectez-vous à Nextcloud en admin → **Apps** → cherchez `ONLYOFFICE` → **Installer**.
-3. **Paramètres d'administration** → **ONLYOFFICE**. Renseignez :
-   - **Adresse du Document Editing Service :** `https://office.<votre-domaine>`
-   - **Clé secrète :** collez `JWT_SECRET` depuis l'onglet Environment de ce template
-4. Validez. Nextcloud ouvre désormais les fichiers DOCX/XLSX/PPTX dans l'éditeur embarqué OnlyOffice.
+2. Depuis le tableau de bord opérateur, cliquez le bouton **Wire Nextcloud OnlyOffice**. Le bouton installe l'application Nextcloud OnlyOffice, lit la clé JWT depuis ce template, pointe l'application vers ce serveur, et -- si Collabora était précédemment câblé -- retire proprement l'application Nextcloud Collabora.
+3. Ouvrez n'importe quel fichier DOCX/XLSX/PPTX dans Nextcloud. Il s'ouvre dans l'éditeur OnlyOffice embarqué.
+
+Pour passer à Collabora plus tard : arrêtez ce conteneur OnlyOffice, déployez `collabora`, puis cliquez le bouton **Wire Nextcloud Collabora**.
 
 N'accédez pas au domaine OnlyOffice directement dans un navigateur — il n'a pas d'interface utilisateur. Les utilisateurs ne le voient qu'à travers Nextcloud.
 
