@@ -90,7 +90,7 @@ premier semi du template — vous n'avez pas à les générer vous-même.
 | `OIDC_REDIRECT_URL` | `https://nextcloud.yourdomain.com/apps/user_oidc/code` |
 | `SIGNALING_SECRET` | `<your-nextcloud_talk_signaling_secret>` |
 | `JANUS_API_KEY` | `<your-nextcloud_talk_janus_api_key>` |
-| `VPS_PUBLIC_IP` | `{{ public_ip }}` |
+| `VPS_PUBLIC_IP` | `<your-server-public-ip>` |
 | `TURN_STATIC_AUTH_SECRET` | `<your-turn_static_auth_secret>` |
 
 ## Domaine

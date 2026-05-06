@@ -33,7 +33,7 @@ you don't need to generate them yourself.
 | `OIDC_BASE_URL` | `https://auth.yourdomain.com` |
 | `ADMIN_USERNAME` | `admin` |
 | `ADMIN_PASS` | `<your-admin_password>` |
-| `VPS_PUBLIC_IP` | `{{ public_ip }}` |
+| `VPS_PUBLIC_IP` | `<your-server-public-ip>` |
 | `TURN_STATIC_AUTH_SECRET` | `<your-turn_static_auth_secret>` |
 | `JITSI_PROSODY_PASSWORD` | `<your-jitsi_prosody_password>` |
 | `JITSI_JICOFO_AUTH_PASSWORD` | `<your-jitsi_jicofo_auth_password>` |
