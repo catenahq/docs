@@ -29,7 +29,16 @@ premier semi du template — vous n'avez pas à les générer vous-même.
 | Variable | Valeur par défaut |
 |---|---|
 | `ROCKETCHAT_HOSTNAME` | `chat.yourdomain.com` |
+| `ROCKETCHAT_HOSTNAME_BASE` | `yourdomain.com` |
 | `OIDC_BASE_URL` | `https://auth.yourdomain.com` |
+| `ADMIN_USERNAME` | `admin` |
+| `ADMIN_PASS` | `<your-admin_password>` |
+| `VPS_PUBLIC_IP` | `{{ public_ip }}` |
+| `TURN_STATIC_AUTH_SECRET` | `<your-turn_static_auth_secret>` |
+| `JITSI_PROSODY_PASSWORD` | `<your-jitsi_prosody_password>` |
+| `JITSI_JICOFO_AUTH_PASSWORD` | `<your-jitsi_jicofo_auth_password>` |
+| `JITSI_JICOFO_COMPONENT_SECRET` | `<your-jitsi_jicofo_component_secret>` |
+| `JITSI_JVB_AUTH_PASSWORD` | `<your-jitsi_jvb_auth_password>` |
 
 ## Domaine
 
@@ -132,6 +141,156 @@ services:
         aliases:
           - rocketchat
       default: {}
+
+  # === JITSI BEGIN -- bundled on-server video conferencing ================
+  # Always-on. The catena.run product story requires sovereign video --
+  # no calls leave the server, no fallback to public meet.jit.si.
+  # The shared coturn at turn.<base> (roles/coturn) handles
+  # restrictive-network media relay; JVB advertises ${VPS_PUBLIC_IP}
+  # in ICE candidates so direct peer-to-JVB UDP works for the typical
+  # case (no relay needed).
+  #
+  # Wire-up: rocketchat-jitsi-wire.sh (OliveTin button) hits
+  # https://rocketchat.<base>/api/v1/settings/Jitsi_* with the bootstrap
+  # admin credentials and flips Jitsi_Enabled=true,
+  # Jitsi_Domain=meet.<base>, etc. Idempotent.
+
+  prosody:
+    image: jitsi/prosody:stable-9457
+    restart: unless-stopped
+    expose:
+      - "5222"
+      - "5347"
+      - "5280"
+    environment:
+      AUTH_TYPE: internal
+      ENABLE_AUTH: "1"
+      ENABLE_GUESTS: "1"
+      GLOBAL_MODULES: ""
+      GLOBAL_CONFIG: ""
+      LDAP_URL: ""
+      LDAP_BASE: ""
+      XMPP_DOMAIN: meet.jitsi
+      XMPP_AUTH_DOMAIN: auth.meet.jitsi
+      XMPP_GUEST_DOMAIN: guest.meet.jitsi
+      XMPP_MUC_DOMAIN: muc.meet.jitsi
+      XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+      XMPP_MODULES: ""
+      XMPP_MUC_MODULES: ""
+      XMPP_INTERNAL_MUC_MODULES: ""
+      XMPP_RECORDER_DOMAIN: recorder.meet.jitsi
+      JICOFO_AUTH_USER: focus
+      JICOFO_AUTH_PASSWORD: ${JITSI_JICOFO_AUTH_PASSWORD}
+      JICOFO_COMPONENT_SECRET: ${JITSI_JICOFO_COMPONENT_SECRET}
+      JVB_AUTH_USER: jvb
+      JVB_AUTH_PASSWORD: ${JITSI_JVB_AUTH_PASSWORD}
+      TZ: Etc/UTC
+    labels:
+      - "vps.auto-update=patch"
+    networks:
+      default:
+        aliases:
+          # The jicofo + jvb compose images expect to resolve these
+          # XMPP virtual hosts via DNS to a single host that runs
+          # prosody. Aliasing the prosody container under all the
+          # XMPP_*_DOMAIN names lets the bundled config defaults
+          # work without further wiring.
+          - meet.jitsi
+          - auth.meet.jitsi
+          - guest.meet.jitsi
+          - muc.meet.jitsi
+          - internal-muc.meet.jitsi
+          - recorder.meet.jitsi
+
+  jicofo:
+    image: jitsi/jicofo:stable-9457
+    restart: unless-stopped
+    environment:
+      XMPP_DOMAIN: meet.jitsi
+      XMPP_AUTH_DOMAIN: auth.meet.jitsi
+      XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+      XMPP_MUC_DOMAIN: muc.meet.jitsi
+      XMPP_SERVER: prosody
+      JICOFO_COMPONENT_SECRET: ${JITSI_JICOFO_COMPONENT_SECRET}
+      JICOFO_AUTH_USER: focus
+      JICOFO_AUTH_PASSWORD: ${JITSI_JICOFO_AUTH_PASSWORD}
+      TZ: Etc/UTC
+    depends_on:
+      - prosody
+    labels:
+      - "vps.auto-update=patch"
+    networks:
+      - default
+
+  jvb:
+    image: jitsi/jvb:stable-9457
+    restart: unless-stopped
+    # Media UDP MUST be host-published. mode: host bypasses Swarm's
+    # routing mesh so packets carry the real public source IP and
+    # JVB's ICE candidates point at a routable address.
+    ports:
+      - target: 10000
+        published: 10000
+        protocol: udp
+        mode: host
+    environment:
+      XMPP_AUTH_DOMAIN: auth.meet.jitsi
+      XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+      XMPP_SERVER: prosody
+      JVB_AUTH_USER: jvb
+      JVB_AUTH_PASSWORD: ${JITSI_JVB_AUTH_PASSWORD}
+      JVB_BREWERY_MUC: jvbbrewery
+      JVB_PORT: "10000"
+      JVB_ADVERTISE_IPS: ${VPS_PUBLIC_IP}
+      # Restrictive-network fallback. JVB hands clients an `iceServers`
+      # list pointing at the shared coturn; clients that cannot reach
+      # JVB on UDP/10000 directly relay through turn.<base>:5349.
+      JVB_TURN_HOST: turn.${ROCKETCHAT_HOSTNAME_BASE}
+      JVB_TURN_PORT: "5349"
+      JVB_TURN_TRANSPORT: tcp
+      JVB_TURN_SECRET: ${TURN_STATIC_AUTH_SECRET}
+      TZ: Etc/UTC
+    depends_on:
+      - prosody
+    labels:
+      - "vps.auto-update=patch"
+    networks:
+      - default
+
+  jitsi-web:
+    image: jitsi/web:stable-9457
+    restart: unless-stopped
+    expose:
+      - "80"
+    environment:
+      ENABLE_LETSENCRYPT: "0"
+      ENABLE_HTTP_REDIRECT: "0"
+      ENABLE_HSTS: "0"
+      DISABLE_HTTPS: "1"
+      PUBLIC_URL: https://meet.${ROCKETCHAT_HOSTNAME_BASE}
+      XMPP_DOMAIN: meet.jitsi
+      XMPP_AUTH_DOMAIN: auth.meet.jitsi
+      XMPP_BOSH_URL_BASE: http://prosody:5280
+      XMPP_GUEST_DOMAIN: guest.meet.jitsi
+      XMPP_MUC_DOMAIN: muc.meet.jitsi
+      XMPP_RECORDER_DOMAIN: recorder.meet.jitsi
+      TZ: Etc/UTC
+    depends_on:
+      - prosody
+    labels:
+      # Routed via Traefik on meet.<base>; HTTP only on the container
+      # side, TLS terminates at cloudflared/Traefik upstream like every
+      # other dokploy app. vps.auth.mode=public so room URLs work for
+      # anonymous participants (Jitsi rooms are by-link, not
+      # Keycloak-gated for v1).
+      - "vps.auth.mode=public"
+      - "vps.auto-update=patch"
+    networks:
+      dokploy-network:
+        aliases:
+          - jitsi-web
+      default: {}
+  # === JITSI END ============================================================
 
 volumes:
   mongodb-data:
