@@ -108,35 +108,52 @@ services:
   app:
     image: nextcloud:33.0.2-apache
     restart: unless-stopped
-    # Entrypoint wrapper writes the loglevel override config BEFORE
-    # exec'ing the upstream entrypoint. Runs on every container start
-    # so the file is recreated if the volume is wiped. cp -arn in the
-    # upstream populate skips existing files, so our zz-loglevel
-    # survives the populate step on a fresh volume.
+    # Two-stage delivery for the loglevel override:
     #
-    # Why not the official `before-starting` hook system + compose
-    # `configs:` block? The compose-v2 inline content delivery path
-    # produced a script that exited 2 with no script-side stderr on
-    # every container start through Dokploy -- consistent with a
-    # CRLF-corrupted shebang or a byte mangled in the delivery
-    # pipeline. We could not surface the root cause from outside
-    # the container; the entrypoint wrapper sidesteps the entire
-    # delivery path.
+    #   1. The entrypoint wrapper writes a `before-starting` hook
+    #      script into the container's writable layer (image-baked
+    #      path /docker-entrypoint-hooks.d/before-starting/).
+    #   2. Wrapper exec's the upstream /entrypoint.sh apache2-foreground.
+    #   3. Upstream entrypoint populates /var/www/html/config (rsync
+    #      from /usr/src/nextcloud/config/), runs occ install / occ
+    #      upgrade, then iterates `before-starting/*.sh` -- our hook
+    #      runs as www-data and drops zz-loglevel.config.php into the
+    #      already-populated config dir.
     #
-    # `$$CONFIG` -> `$CONFIG` after compose interpolation; the
-    # single-quoted heredoc tag preserves it literally inside the
-    # PHP body.
+    # Why this dance instead of writing the .config.php from the
+    # wrapper directly? Upstream's populate.sh skips rsync'ing
+    # /var/www/html/config when the dir is already non-empty
+    # (`directory_empty` check). A wrapper that writes our file in
+    # /var/www/html/config BEFORE the upstream runs makes the dir
+    # non-empty -> populate skips -> autoconfig.php / redis.config.php
+    # / s3.config.php / etc. never land in the volume -> Apache 503s.
+    # Running our writer in a before-starting HOOK sidesteps that
+    # check entirely.
+    #
+    # Why not the compose-v2 `configs:` block? Through Dokploy the
+    # inline content-delivery pipeline produced a script that exited 2
+    # with no script-side stderr on every start. Materializing the
+    # hook ourselves via the wrapper bypasses that delivery path.
+    #
+    # `$$CONFIG` / `$$@` -> `$CONFIG` / `$@` after compose
+    # interpolation. The outer `<<'HOOK'` and inner `<<'PHP'` are
+    # both single-quoted heredoc tags, so neither shell expansion
+    # round mangles the literal `$CONFIG`.
     entrypoint:
       - /bin/sh
       - -ec
       - |
-        mkdir -p /var/www/html/config
+        cat > /docker-entrypoint-hooks.d/before-starting/zz-loglevel.sh <<'HOOK'
+        #!/bin/sh
+        set -e
         cat > /var/www/html/config/zz-loglevel.config.php <<'PHP'
         <?php
         $$CONFIG = [
           'loglevel' => 1,
         ];
         PHP
+        HOOK
+        chmod 0755 /docker-entrypoint-hooks.d/before-starting/zz-loglevel.sh
         exec /entrypoint.sh "$$@"
       - --
     command: ["apache2-foreground"]
