@@ -88,9 +88,10 @@ premier semi du template — vous n'avez pas à les générer vous-même.
 | `OIDC_DISCOVERY_URL` | `https://auth.yourdomain.com/realms/catena/.well-known/openid-configuration` |
 | `OIDC_ISSUER_URL` | `https://auth.yourdomain.com/realms/catena` |
 | `OIDC_REDIRECT_URL` | `https://nextcloud.yourdomain.com/apps/user_oidc/code` |
+| `SIGNALING_HOSTNAME` | `signaling.yourdomain.com` |
 | `SIGNALING_SECRET` | `<your-nextcloud_talk_signaling_secret>` |
-| `JANUS_API_KEY` | `<your-nextcloud_talk_janus_api_key>` |
-| `VPS_PUBLIC_IP` | `<your-server-public-ip>` |
+| `TALK_INTERNAL_SECRET` | `<your-nextcloud_talk_internal_secret>` |
+| `TURN_HOSTNAME` | `turn.yourdomain.com` |
 | `TURN_STATIC_AUTH_SECRET` | `<your-turn_static_auth_secret>` |
 
 ## Domaine
@@ -202,6 +203,15 @@ services:
       NEXTCLOUD_OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       NEXTCLOUD_OIDC_ISSUER_URL: ${OIDC_ISSUER_URL}
       NEXTCLOUD_OIDC_REDIRECT_URL: ${OIDC_REDIRECT_URL}
+
+      # Talk + HPB wire script (Wire Nextcloud Talk + HPB OliveTin
+      # button) reads these at click time. Auto-detects HPB-off state
+      # by probing http://signaling:8081 first; safe to leave unset
+      # when the talk-hpb service is commented out.
+      SIGNALING_HOSTNAME: ${SIGNALING_HOSTNAME}
+      SIGNALING_SECRET: ${SIGNALING_SECRET}
+      TURN_HOSTNAME: ${TURN_HOSTNAME}
+      TURN_STATIC_AUTH_SECRET: ${TURN_STATIC_AUTH_SECRET}
     volumes:
       - nc-config:/var/www/html/config
       - nc-apps:/var/www/html/custom_apps
@@ -283,10 +293,32 @@ services:
       - default
 
   # === HPB BEGIN -- Talk High-Performance Backend ==========================
-  # Disabled in the catalog: the prior block referenced upstream image
-  # tags that do not exist (signaling :1.3.4, canyan/janus 1.3.0).
-  # Calls fall back to built-in P2P (works up to ~5 participants).
-  # Re-enable once a working janus image is selected.
+  # Single-container HPB bundle (signaling + janus + nats + internal
+  # eturnal under supervisord). Comment out to disable; Talk falls
+  # back to built-in P2P (works up to ~5 participants).
+  talk-hpb:
+    image: ghcr.io/nextcloud-releases/aio-talk:20260409_094910
+    init: true
+    restart: unless-stopped
+    environment:
+      NC_DOMAIN: ${NEXTCLOUD_HOSTNAME}
+      TALK_HOST: ${SIGNALING_HOSTNAME}
+      TURN_DOMAIN: ${TURN_HOSTNAME}
+      TALK_PORT: "5349"
+      TURN_SECRET: ${TURN_STATIC_AUTH_SECRET}
+      SIGNALING_SECRET: ${SIGNALING_SECRET}
+      INTERNAL_SECRET: ${TALK_INTERNAL_SECRET}
+      AIO_LOG_LEVEL: warn
+      TALK_MAX_STREAM_BITRATE: "1048576"
+      TALK_MAX_SCREEN_BITRATE: "2097152"
+    labels:
+      - "vps.auth.mode=public"
+      - "vps.auto-update=patch"
+    networks:
+      dokploy-network:
+        aliases:
+          - signaling
+      default: {}
   # === HPB END =============================================================
 
 volumes:
