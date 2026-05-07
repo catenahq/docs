@@ -3,6 +3,14 @@ title: "Applications pré-configurées à activer"
 description: "Catalogue d'applications à un clic que votre opérateur peut amorcer dans Dokploy : auth, réseau, SSO, stockage et SSL pré-configurés."
 ---
 
+:::note[Référence de configuration]
+Cette page et toutes les pages par-application qu'elle pointe sont
+des **références de configuration**. Au quotidien, votre opérateur
+gère les déploiements et les mises à jour. Si vous voulez déployer
+vous-même une application du catalogue éprouvé, consultez
+[Libre-service](/docs/fr/self-service/).
+:::
+
 Dokploy est livré avec un projet **Templates** sur votre VPS. Chaque
 entrée est une application compose entièrement câblée, à l'état
 non-déployé — authentification, réseau, SSO, stockage et SSL sont
