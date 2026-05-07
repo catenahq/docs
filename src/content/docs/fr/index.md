@@ -3,11 +3,17 @@ title: Votre VPS, votre documentation
 description: Documentation de référence publique pour la suite logicielle auto-hébergée catena. Les spécificités par-VPS vivent dans le portail client.
 ---
 
-Ce wiki documente la suite logicielle catena telle que déployée sur votre VPS.
-Chaque page s'applique à **toute installation catena** ; les
-spécificités par-installation (vos noms de domaine, votre hôte
-d'inventaire, votre seau S3) apparaissent dans le
-[portail client](https://app.catena.run).
+Voici la documentation de référence publique pour la suite logicielle
+catena telle que déployée sur votre VPS. Chaque page s'applique à
+**toute installation catena** ; les spécificités par-installation
+(vos noms de domaine, votre hôte d'inventaire, votre seau S3)
+apparaissent dans le [portail client](https://app.catena.run).
+
+Si vous évaluez catena, commencez par
+[Comment fonctionne cette suite logicielle](/docs/fr/how-this-stack-works/)
+pour la visite en langage clair. Si vous êtes déjà client, votre
+portail vous renvoie ici en contexte pour les tâches opérationnelles
+du quotidien.
 
 ## Par où commencer
 
