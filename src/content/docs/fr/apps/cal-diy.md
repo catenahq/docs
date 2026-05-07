@@ -108,8 +108,8 @@ services:
       # ALLOWED_HOSTNAMES: comma-separated, JSON-quoted hostnames.
       # Cal.com wraps the value in [] then JSON.parses, so the env var
       # must hold only the array CONTENTS (no surrounding brackets).
-      # Single host: '"cal.example.com"'. Multiple:
-      # '"a.example.com","b.example.com"'. Without this set, Cal.com
+      # Single host: '"cal.yourdomain.com"'. Multiple:
+      # '"a.yourdomain.com","b.yourdomain.com"'. Without this set, Cal.com
       # warns "Match of WEBAPP_URL with ALLOWED_HOSTNAMES failed" on
       # every request and gates parts of the auth flow (org dispatch).
       # Bare unquoted strings throw JSON.parse errors; surrounding []

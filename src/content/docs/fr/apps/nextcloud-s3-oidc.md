@@ -91,7 +91,7 @@ premier semi du template — vous n'avez pas à les générer vous-même.
 | `SIGNALING_HOSTNAME` | `signaling.yourdomain.com` |
 | `SIGNALING_SECRET` | `<your-nextcloud_talk_signaling_secret>` |
 | `TALK_INTERNAL_SECRET` | `<your-nextcloud_talk_internal_secret>` |
-| `TURN_HOSTNAME` | `{{ coturn_hostname }}` |
+| `TURN_HOSTNAME` | `turn.yourdomain.com` |
 | `TURN_STATIC_AUTH_SECRET` | `<your-turn_static_auth_secret>` |
 
 ## Domaine

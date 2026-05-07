@@ -197,7 +197,7 @@ guide. État final :
 
 - Un nom de compartiment (par ex. `acme-vps-backup-2`).
 - Un code de région (par ex. `ca-central-1`).
-- Une URL de point d'accès (par ex. `s3.ca-central-1.example.com`).
+- Une URL de point d'accès (par ex. `s3.ca-central-1.amazonaws.com`).
 - Une clé d'accès + secrète limitée à l'écriture dans ce
   compartiment.
 - **Object Lock activé à la création** en mode compliance ou

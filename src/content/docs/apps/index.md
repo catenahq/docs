@@ -3,13 +3,6 @@ title: "Pre-configured apps you can enable"
 description: "Catalog of one-click apps your operator can seed into Dokploy: each is fully wired (auth, networking, SSO, storage, SSL)."
 ---
 
-:::note[Configuration reference]
-This page and every per-app page linked from it are **configuration
-references**. Day-to-day, your operator handles deployments and
-upgrades. If you want to deploy a vetted-catalog app yourself, see
-[Self-service](/docs/self-service/).
-:::
-
 Dokploy ships with a **Templates** project on your VPS. Each entry is
 a fully-wired compose app in an un-deployed state — authentication,
 networking, SSO hooks, storage, and SSL are pre-configured.

@@ -172,7 +172,7 @@ state:
 
 - A bucket name (e.g. `acme-vps-backup-2`).
 - A region code (e.g. `ca-central-1`).
-- An endpoint URL (e.g. `s3.ca-central-1.example.com`).
+- An endpoint URL (e.g. `s3.ca-central-1.amazonaws.com`).
 - An access key + secret scoped to write into the bucket.
 - **Object Lock enabled at creation** in compliance or governance
   mode (compliance is stronger — even the bucket owner cannot
