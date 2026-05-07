@@ -72,6 +72,9 @@ Self-hosted personal finance. Envelope budgeting, bank account syncing via Simpl
 ### 17. Postiz — replaces Buffer, Hootsuite, Later
 Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, and more. [→ Full details](postiz.md)
 
+### 18. Easy!Appointments — replaces Calendly, Acuity, SimplyBook, Setmore
+Customer-facing booking app for one or many providers (clinic, salon, lessons, repair shop). Public booking page; staff calendars; email + SMS reminders; ICS export. [→ Full details](easyappointments.md)
+
 ## A note on sign-in (SSO)
 
 Each template's reference page declares its SSO status (pre-wired, post-deploy UI, one-time curl, or not available). Apps without native OIDC just mean each user maintains a per-app login — the app itself is still reachable, backed up, and secured by its own login wall. It just doesn't participate in the "one login for everything" flow.

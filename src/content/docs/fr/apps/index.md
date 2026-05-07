@@ -75,6 +75,9 @@ Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro b
 ### 17. Postiz — remplace Buffer, Hootsuite, Later
 Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, et d'autres. [→ Voir les détails](postiz.md)
 
+### 18. Easy!Appointments — remplace Calendly, Acuity, SimplyBook, Setmore
+Application de réservation côté client pour un ou plusieurs prestataires (clinique, salon, cours, atelier de réparation). Page de réservation publique ; calendriers du personnel ; rappels courriel + SMS ; export ICS. [→ Voir les détails](easyappointments.md)
+
 ## À propos de la connexion (SSO)
 
 La page de référence de chaque template indique son statut SSO (pré-câblé, via l'UI admin, curl unique, ou non disponible). Les apps sans OIDC natif signifient simplement que chaque utilisateur garde une connexion par app — l'app reste accessible, sauvegardée, et protégée par son propre écran de connexion. Elle ne participe simplement pas au flux « une connexion pour tout ».

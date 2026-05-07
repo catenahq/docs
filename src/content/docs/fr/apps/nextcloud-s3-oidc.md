@@ -91,7 +91,7 @@ premier semi du template — vous n'avez pas à les générer vous-même.
 | `SIGNALING_HOSTNAME` | `signaling.yourdomain.com` |
 | `SIGNALING_SECRET` | `<your-nextcloud_talk_signaling_secret>` |
 | `TALK_INTERNAL_SECRET` | `<your-nextcloud_talk_internal_secret>` |
-| `TURN_HOSTNAME` | `turn.yourdomain.com` |
+| `TURN_HOSTNAME` | `{{ coturn_hostname }}` |
 | `TURN_STATIC_AUTH_SECRET` | `<your-turn_static_auth_secret>` |
 
 ## Domaine
@@ -204,10 +204,13 @@ services:
       NEXTCLOUD_OIDC_ISSUER_URL: ${OIDC_ISSUER_URL}
       NEXTCLOUD_OIDC_REDIRECT_URL: ${OIDC_REDIRECT_URL}
 
-      # Talk + HPB wire script (Wire Nextcloud Talk + HPB OliveTin
-      # button) reads these at click time. Auto-detects HPB-off state
-      # by probing http://signaling:8081 first; safe to leave unset
-      # when the talk-hpb service is commented out.
+      # Talk + HPB wire script (catena-wire-nextcloud-talk-hpb) reads
+      # these from the running container at click time and feeds them
+      # to `occ talk:turn:add` / `occ talk:signaling:add`. They live
+      # alongside the OIDC + S3 envs because both go through the same
+      # docker-exec pattern. Empty / unset is fine -- the wire script
+      # auto-detects HPB-disabled state via an http probe to
+      # signaling:8081 first and exits 0 when the service is absent.
       SIGNALING_HOSTNAME: ${SIGNALING_HOSTNAME}
       SIGNALING_SECRET: ${SIGNALING_SECRET}
       TURN_HOSTNAME: ${TURN_HOSTNAME}
@@ -237,6 +240,9 @@ services:
         aliases:
           - nextcloud
       default: {}
+    # Gate Nextcloud's first-boot install on postgres being ready to
+    # accept connections. See the db service's healthcheck block for
+    # the failure mode this prevents.
     depends_on:
       db:
         condition: service_healthy
@@ -252,6 +258,15 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db-data:/var/lib/postgresql/data
+    # pg_isready health-check is what `app` and `cron` gate on via
+    # `depends_on: { db: { condition: service_healthy } }`. Without
+    # it, both services launch in parallel with the db, the upstream
+    # nextcloud entrypoint runs `occ maintenance:install` before
+    # postgres has accepted its first connection, install retries 10x
+    # 10s, exhausts the budget, container exits rc=1, Dokploy auto-
+    # restarts. The restart finds /var/www/html/version.php already
+    # written by the previous populate.sh run -> entrypoint takes the
+    # UPGRADE path -> no-op -> NC stuck reporting installed=false.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U nextcloud -d nextcloud"]
       interval: 5s
@@ -302,6 +317,8 @@ services:
     # on its own startup; cron picks it up via the shared mount.
     networks:
       - default
+    # Cron is also a Nextcloud entrypoint variant (runs /cron.sh) so
+    # it gates on postgres readiness for the same reason `app` does.
     depends_on:
       db:
         condition: service_healthy
@@ -309,30 +326,91 @@ services:
         condition: service_started
 
   # === HPB BEGIN -- Talk High-Performance Backend ==========================
-  # Single-container HPB bundle (signaling + janus + nats + internal
-  # eturnal under supervisord). Comment out to disable; Talk falls
-  # back to built-in P2P (works up to ~5 participants).
+  # Comment out this single service to disable Talk + HPB. The wire
+  # script catena-wire-nextcloud-talk-hpb already handles the
+  # "HPB not deployed -> exit 0" path so leaving it commented does
+  # NOT break the rest of the stack -- Talk falls back to built-in
+  # P2P mode (works up to ~5 participants).
+  #
+  # Image is the Nextcloud team's official All-In-One HPB bundle:
+  # signaling + janus + nats + an internal eturnal TURN, all under
+  # supervisord in one container. We deliberately KEEP the standalone
+  # roles/coturn (TURN/STUN at turn.<base>:5349) because Rocket.Chat's
+  # bundled Jitsi (rocketchat-oidc template) shares the same coturn
+  # via JVB_TURN_*. Two design choices follow from that:
+  #
+  #   1. Janus inside aio-talk is configured (via TURN_DOMAIN +
+  #      TALK_PORT) to use the EXTERNAL standalone coturn for its
+  #      own ICE relay. Janus's start.sh inside aio-talk mints
+  #      ephemeral HMAC-SHA1 creds against TURN_SECRET (which we
+  #      set to vault_turn_static_auth_secret -- the same secret
+  #      coturn validates with). Clients dialing Talk get TURN
+  #      coordinates pointing at the same coturn (set by the
+  #      catena-wire-nextcloud-talk-hpb wire script via
+  #      `occ talk:turn:add`), so all media converges through one
+  #      shared TURN provider.
+  #   2. aio-talk's bundled eturnal still binds TALK_PORT inside
+  #      the container netns -- start.sh has no skip flag for it.
+  #      That binding is harmless: TALK_PORT=5349 lives only in the
+  #      container's private netns; nothing on the host competes.
+  #      The bundled eturnal stays unused.
+  #
+  # Public exposure: only the signaling HTTP endpoint (port 8081
+  # inside the container) needs to be reachable. The catalog entry
+  # in dokploy_template_catalog.yml declares signaling.<base>:8081
+  # as an extra_domain so Dokploy auto-injects the Traefik labels.
+  #
+  # Tag: pinned to a dated upstream build. Bump by listing
+  # `ghcr.io/nextcloud-releases/aio-talk` tags and picking the
+  # most recent stable one (the upstream tag scheme is YYYYMMDD_HHMMSS).
   talk-hpb:
     image: ghcr.io/nextcloud-releases/aio-talk:20260409_094910
     init: true
     restart: unless-stopped
     environment:
+      # NEXTCLOUD_HOSTNAME owns the public Nextcloud URL; aio-talk
+      # advertises this to clients as the parent app's identity.
       NC_DOMAIN: ${NEXTCLOUD_HOSTNAME}
+      # Public hostname clients dial for the WSS signaling channel.
+      # Routed through Cloudflare Tunnel + Traefik to this container's
+      # port 8081.
       TALK_HOST: ${SIGNALING_HOSTNAME}
+      # TURN coordinates Janus uses for its own ICE candidates.
+      # Pointed at the standalone coturn (turn.<base>:5349) so
+      # restrictive-network clients reach Janus through the same
+      # shared TURN that the wire script advertises to Talk.
       TURN_DOMAIN: ${TURN_HOSTNAME}
       TALK_PORT: "5349"
       TURN_SECRET: ${TURN_STATIC_AUTH_SECRET}
+      # Bearer secret between the signaling service and the Talk
+      # backend. The wire script (catena-wire-nextcloud-talk-hpb)
+      # passes this same value to `occ talk:signaling:add`, so the
+      # two endpoints share the secret.
       SIGNALING_SECRET: ${SIGNALING_SECRET}
+      # Internal secret between the signaling frontend and its
+      # backend store. Never leaves the container; aio-talk requires
+      # it set at startup but clients never see it.
       INTERNAL_SECRET: ${TALK_INTERNAL_SECRET}
+      # Quiet the supervisord log to warn-level by default; bump to
+      # debug temporarily when troubleshooting.
       AIO_LOG_LEVEL: warn
+      # Optional bitrate ceilings. aio-talk defaults to 1 Mbps audio +
+      # 2 Mbps screen-share when these are unset; ship the defaults
+      # explicitly so a UI edit lands in the catalog managed-keys.
       TALK_MAX_STREAM_BITRATE: "1048576"
       TALK_MAX_SCREEN_BITRATE: "2097152"
     labels:
+      # Public via Traefik (the Domain entry in catalog adds the
+      # router/service labels at deploy time). Bearer-secret authed
+      # by aio-talk's signaling layer; no oauth2-proxy gate.
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
       dokploy-network:
         aliases:
+          # Wire script's auto-detect probe hits http://signaling:8081
+          # from inside the Nextcloud container; keep this alias so
+          # the existing probe URL continues to resolve.
           - signaling
       default: {}
   # === HPB END =============================================================
