@@ -20,15 +20,12 @@ tier that matches what you plan to deploy.
 | EspoCRM | 240 MB | 480 MB | 1% | 40% | 200 MB |
 | Twenty | 580 MB | 920 MB | 4% | 55% | 220 MB |
 | Plane | 720 MB | 1040 MB | 4% | 50% | 380 MB |
-| Zammad | 1850 MB | 2200 MB | 6% | 60% | 520 MB |
-| Chatwoot | 540 MB | 780 MB | 2% | 45% | 240 MB |
 | WordPress | 320 MB | 600 MB | 1% | 70% | 180 MB |
 | n8n | 280 MB | 700 MB | 2% | 80% | 150 MB |
 | ERPNext | 2100 MB | 2900 MB | 8% | 90% | 850 MB |
 | Actual Budget | 80 MB | 180 MB | 1% | 15% | 30 MB |
 | Postiz | 480 MB | 680 MB | 2% | 35% | 200 MB |
 | DocuSeal | 320 MB | 540 MB | 1% | 35% | 140 MB |
-| Documenso (deprecated) | 380 MB | 620 MB | 2% | 30% | 160 MB |
 
 CPU is normalized to one core: 100% means one full vCPU is busy. Peak
 values are what we observed while exercising the app the way the
@@ -40,13 +37,15 @@ Nextcloud, the first wizard pass on ERPNext, etc.).
 These are starting points; your real numbers depend on how many users
 log in and how heavy the workload is.
 
-- **2 GB VPS:** a single light app (Nextcloud, EspoCRM, WordPress,
-  n8n, Outline, Actual Budget) or two-three of the lightweights
-  together. Don't run Zammad / ERPNext / Plane here.
-- **4 GB VPS:** a comfortable productivity bundle (Nextcloud + EspoCRM
-  + Rocket.Chat + Outline) or a single heavy template (Zammad, Plane).
-- **8 GB VPS:** required for ERPNext alongside any other meaningful
-  template, or any productivity bundle that includes Zammad.
+- **6 GB VPS (starting tier):** comfortable for the productivity bundle
+  (Nextcloud + EspoCRM + Rocket.Chat + Outline) plus one mid-weight
+  template (Plane, Twenty, Postiz, Outline). Don't run ERPNext on
+  this tier.
+- **8 GB VPS:** required for ERPNext beside one other meaningful
+  template, or for any combination that adds a second mid-weight
+  template to the productivity bundle.
+- **12 GB+ VPS:** ERPNext alongside the full productivity bundle, or
+  any combination of two heavy templates.
 
 ## Notes per template
 
@@ -59,8 +58,8 @@ disk on the VPS stays roughly constant -- bucket grows instead.
 ### Rocket.Chat
 
 MongoDB replica set + Rocket.Chat node process. MongoDB's WiredTiger
-cache is the dominant cost; cap WIRED_TIGER_CACHE_SIZE_GB if you
-run on a 2 GB VPS.
+cache is the dominant cost; default settings fit comfortably on the
+6 GB starting tier.
 ### OnlyOffice
 
 Idle is light; a single editing session spawns per-document worker
@@ -85,16 +84,7 @@ EspoCRM for tighter footprint.
 
 Multi-container stack (api + worker + beat + frontend + space +
 MinIO + Postgres + Redis). Heavy idle RAM; budget 1 GB
-headroom over the rest of your stack.
-### Zammad
-
-Bundles Elasticsearch which reserves ~1.5 GB heap on its own. Plan
-for a >=4 GB VPS. The setup wizard's first migration adds another
-300 MB transiently.
-### Chatwoot
-
-Rails + Sidekiq + Postgres + Redis. Lighter than Zammad (no
-Elasticsearch). Conversation-first; fits a 2 GB VPS comfortably.
+headroom over the rest of your suite.
 ### WordPress
 
 nginx + php-fpm + MariaDB + Redis. FastCGI cache absorbs
@@ -108,8 +98,8 @@ should size for the peak, not the idle.
 ### ERPNext
 
 ~10 containers. Heaviest template in the catalog. Plan for a
-dedicated >=4 GB VPS; do not co-locate with Nextcloud + Rocket.Chat
-on a 2 GB VPS.
+dedicated 8 GB+ VPS; co-locating ERPNext with the full productivity
+bundle wants a 12 GB tier.
 ### Actual Budget
 
 Single Node container, sqlite-backed. Negligible footprint;
@@ -122,10 +112,6 @@ Sharp library hard during scheduling.
 
 Rails + Postgres. Light at idle; signing flow's PDF cert-stamping
 is the peak workload.
-### Documenso (deprecated)
-
-DEPRECATED -- use DocuSeal instead. Kept here so existing clients
-who haven't migrated still see accurate sizing.
 
 ---
 

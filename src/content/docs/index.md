@@ -1,16 +1,16 @@
 ---
 title: Your VPS, your docs
-description: Public reference docs for the catena self-hosted stack. Per-VPS specifics live in the client portal.
+description: Public reference docs for the catena self-hosted software suite. Per-VPS specifics live in the client portal.
 ---
 
-This wiki documents the catena stack as deployed on your VPS. Every
+This wiki documents the catena software suite as deployed on your VPS. Every
 page applies to **every catena installation**; the per-installation
 specifics (your domain names, your inventory hostname, your S3
 bucket) are surfaced in the [client portal](https://app.catena.run).
 
 ## Where to start
 
-- **[How this stack works](/docs/how-this-stack-works/)** -- a
+- **[How this software suite works](/docs/how-this-stack-works/)** -- a
   plain-language tour of the services and how they fit together.
   Start here if this is your first time.
 - **[Where your data lives](/docs/where-is-my-data/)** -- what's on
@@ -32,7 +32,7 @@ bucket) are surfaced in the [client portal](https://app.catena.run).
 ## Disaster handling
 
 - **[Disaster prevention](/docs/disaster-prevention/)** -- how the
-  stack reduces the blast radius of common failures.
+  suite reduces the blast radius of common failures.
 - **[Disaster recovery](/docs/disaster-recovery/)** -- what happens
   when the VPS is lost.
 - **[Self-restore](/docs/self-restore/)** -- the one-script flow you

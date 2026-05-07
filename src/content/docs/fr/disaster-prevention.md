@@ -146,19 +146,99 @@ les mises à jour soient déclenchées cette semaine ou non. Il
 pas bloquer la sauvegarde quotidienne — le run quotidien ne
 touche que le compartiment actif.
 
-### 5. Envisagez un second emplacement de sauvegarde
+### 5. Optionnel — ajoutez un second compartiment de sauvegarde dont vous êtes propriétaire
 
-Pour les déploiements où la perte d'une semaine de données serait
-vraiment grave, configurez une seconde voie de sauvegarde qui écrit
-chez un **fournisseur cloud entièrement différent**. Si votre
-compartiment principal est chez Backblaze B2, le secondaire pourrait
-être chez OVH Object Storage ou AWS S3. Si un fournisseur a une panne
-prolongée, l'autre a toujours vos données.
+Le miroir WORM de la section 4 est configuré et exécuté par votre
+opérateur sur un calendrier fixe. Si vous voulez une seconde voie
+de sauvegarde dont **vous** êtes propriétaire — facturation
+distincte, fournisseur distinct, identifiants entièrement sous
+votre contrôle — vous pouvez ajouter un second compartiment
+vous-même.
 
-Cela coûte à peu près la même chose que votre compartiment principal
-et tourne sur un minuteur hebdomadaire. Marche à suivre :
-[Ajouter un second compartiment de sauvegarde](/how-to-add-second-backup-bucket/).
-C'est un changement additif, sans temps d'arrêt.
+C'est superflu pour la plupart des déploiements (le miroir WORM de
+la section 4 protège déjà contre les rançongiciels et la prise de
+contrôle de compte). À envisager quand :
+
+- Vous voulez que le mot de passe de chiffrement et les clés S3
+  soient entièrement sous votre contrôle, sans intervention de
+  l'opérateur dans le chemin de récupération.
+- Une obligation de conformité ou contractuelle exige une copie
+  hors-site explicitement détenue par le client.
+- Vous voulez une redondance géographique au-delà du fournisseur
+  du miroir WORM (par ex. un compartiment au Canada, un dans l'UE,
+  un aux États-Unis).
+
+**Choisissez un fournisseur qui prend en charge Object Lock.** Le
+fournisseur doit prendre en charge **S3 Object Lock + versionnage**.
+Les snapshots écrits dans un compartiment Object Lock ne peuvent
+pas être supprimés ni écrasés avant la fin de la fenêtre de
+rétention, même par quelqu'un qui détient des identifiants valides
+— c'est la même ligne de défense sur laquelle s'appuie le miroir
+WORM de la section 4.
+
+Quelques options décentes :
+
+- **eazybackup** — Canadien, ca-central-1, Object Lock +
+  versionnage pris en charge. Recommandation par défaut quand le
+  compartiment principal est aussi canadien et que vous voulez une
+  séparation juridictionnelle.
+- **AWS S3** — Object Lock + versionnage, le plus éprouvé, le plus
+  cher.
+- **Backblaze B2** — bon marché, Object Lock + versionnage, US.
+- **OVH Object Storage** — tarification fixe, UE ; vérifiez la
+  disponibilité d'Object Lock dans votre région cible.
+- **Cloudflare R2** — pas de frais d'égress, Object Lock +
+  versionnage, US.
+
+Évitez de mettre les deux compartiments chez la même société-mère.
+
+**Créez le compartiment.** La documentation du fournisseur vous
+guide. État final :
+
+- Un nom de compartiment (par ex. `acme-vps-backup-2`).
+- Un code de région (par ex. `ca-central-1`).
+- Une URL de point d'accès (par ex. `s3.ca-central-1.example.com`).
+- Une clé d'accès + secrète limitée à l'écriture dans ce
+  compartiment.
+- **Object Lock activé à la création** en mode compliance ou
+  governance (compliance est plus fort — même le propriétaire ne
+  peut pas raccourcir la rétention).
+- **Versionnage des objets activé** (Object Lock l'exige).
+- Une période de rétention par défaut correspondant à votre
+  rétention de snapshots (typique : 30 à 90 jours).
+
+La plupart des fournisseurs cachent Object Lock derrière une case
+à cocher au moment de la création. Si vous oubliez de la cocher,
+il faut supprimer le compartiment et recommencer — Object Lock ne
+peut pas être activé rétroactivement chez la plupart des
+fournisseurs.
+
+Assurez-vous que le compartiment est dans une autre ville — et
+idéalement un autre pays — que votre VPS et votre compartiment de
+sauvegarde principal.
+
+**Transmettez les identifiants à votre opérateur** via le canal
+chiffré que vous utilisez d'habitude (ne les collez pas dans un
+courriel ou un Slack en clair). Votre opérateur intègre le second
+compartiment au calendrier de sauvegarde et confirme que la
+prochaine exécution y écrit bien.
+
+**Sauvegardez les identifiants dans votre gestionnaire de mots de
+passe**, à côté de l'entrée du compartiment principal, étiquetée
+clairement. Utilisez le même mot de passe de chiffrement restic que
+pour le principal — un seul mot de passe ouvrant les deux
+compartiments suffit.
+
+**Une fois par an**, confirmez : le second compartiment reçoit
+toujours les snapshots, vos identifiants stockés correspondent à ce
+qui est installé sur le VPS, et le fournisseur n'a pas modifié le
+comportement d'Object Lock ou la tarification d'une façon qui vous
+concerne.
+
+Si vous devez un jour restaurer depuis le compartiment secondaire,
+la page [Restaurer sur un nouveau VPS](/self-restore/) couvre la
+procédure — c'est la même que pour le principal, juste avec les
+identifiants du secondaire dans les variables d'environnement.
 
 ### 6. Utilisez le bouton « Exporter les clés de récupération » de manière proactive
 

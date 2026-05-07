@@ -102,7 +102,7 @@ separate "what if" plus the mitigation already in place.
 | Bucket credentials leaked, attacker writes/deletes objects | Some or all files in the bucket | Object versioning + 30-day retention rule on the bucket means deleted objects are recoverable for 30 days | Contact your operator immediately; they rotate credentials and roll back the affected objects |
 | You accidentally delete the bucket from the provider console | Everything in the bucket once the provider's grace period ends | Most providers have a 7-90 day account-level grace period | Contact provider support immediately to recover the bucket within the grace window; contact your operator |
 | Nextcloud database (on the VPS) is restored from yesterday's backup but bucket has today's writes | New files added today appear as orphans in the bucket | Nextcloud's `occ files:scan` rebuilds the database-to-file mapping from what's in the bucket | Tell your operator to run a file scan after the restore; they handle the technical part |
-| Provider terminates your account | Everything in that bucket | Only a second backup bucket at a different provider protects you here | If you've set up a second backup bucket (see [Add a second backup bucket](/how-to-add-second-backup-bucket/)), you're covered. If not — this is the worst case |
+| Provider terminates your account | Everything in that bucket | Only a second backup bucket at a different provider protects you here | If you've set up a [second backup bucket](/disaster-prevention/#5-optional-add-a-client-owned-second-backup-bucket), you're covered. If not — this is the worst case |
 
 The takeaway: the Nextcloud-S3 bucket is independent of the VPS,
 which is good (the VPS dying doesn't take it with) and risky (the
@@ -121,7 +121,7 @@ on your VPS:
   account.
 - **Tailscale tenant + ACL rules** — at Tailscale, in your operator's
   Tailscale account (the operator owns this for the persistent ops
-  back-door — see [How this stack works](/how-this-stack-works/)).
+  back-door — see [How this software suite works](/how-this-stack-works/)).
 - **SMTP provider account** — at your transactional email provider
   (Resend / Brevo / etc.) — controls who can send mail "from" your
   domain.

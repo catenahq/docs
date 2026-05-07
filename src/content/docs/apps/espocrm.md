@@ -1,9 +1,9 @@
 ---
 title: "EspoCRM"
-description: "Default CRM in the stack. Contacts, accounts, opportunities, leads, calendar, email integration, mass mail, workflow automation."
+description: "Default CRM in the suite. Contacts, accounts, opportunities, leads, calendar, email integration, mass mail, workflow automation."
 ---
 
-Default CRM in the stack. Contacts, accounts, opportunities, leads, calendar, email integration, mass mail, workflow automation. Native OIDC via post-deploy toggle.
+Default CRM in the suite. Contacts, accounts, opportunities, leads, calendar, email integration, mass mail, workflow automation. Native OIDC via post-deploy toggle.
 
 - **Upstream project:** <https://www.espocrm.com/>
 - **Replaces:** **Salesforce**, **HubSpot**, **Zoho CRM**, **Pipedrive**

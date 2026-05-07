@@ -5,9 +5,7 @@ description: "Decision tree for picking the right open-source scheduling app for
 
 Scheduling needs are too varied for a single default app to fit every
 business. This guide walks you through a short decision tree, then
-recommends one app you can deploy on your server. v1 ships
-**Easy!Appointments** for customer bookings; the other branches are
-coming as real client demand surfaces.
+recommends one app you can deploy on your server.
 
 ## What are you scheduling?
 
@@ -16,53 +14,54 @@ recommended app + a setup guide.
 
 ### Customers booking time with my team (clinic, salon, repair shop, lessons)
 
-**Recommended:** [Easy!Appointments](/docs/apps/easyappointments/) (shipped).
+**Recommended:** [Easy!Appointments](/docs/apps/easyappointments/).
 
 One public booking page; independent provider calendars; email
 reminders; ICS export. Local staff sign-in (no SSO yet upstream).
 
 ### Just me taking bookings (one provider, paid or unpaid)
 
-**Recommended:** Easy!Appointments single-provider (shipped; paid
-bookings on roadmap).
+**Recommended:** cal.com / cal.diy.
 
-Same app, configured for one provider. Stripe-paid bookings ride a
-small bridge until cal.diy upstream stabilizes; talk to your operator
-if paid is blocking your launch.
+For a single-provider booking page with Stripe-paid bookings out of
+the box, cal.com (self-hosted via cal.diy) is the right fit. The
+template is being re-stabilized — talk to your operator if paid
+single-provider bookings are blocking your launch.
 
 ### Reserving rooms, equipment, or other shared resources
 
-**Recommended:** LibreBooking (coming when a real client asks).
+**Recommended:** LibreBooking.
 
-Resource booking is a narrow lane in the SMB segment. Reach out if
-you have a concrete need; the picker will route you here once the
-catalog entry lands.
+Resource booking is a narrow lane in the SMB segment. Reach out to
+your operator with the concrete need so the picker can route you
+here.
 
 ### Finding a meeting time across N people, one-shot
 
-**Recommended:** Rallly (coming when a real client asks).
+**Recommended:** [Nextcloud Polls](/docs/nextcloud-apps-vs-suite/).
 
-For internal team polls, Nextcloud Polls already covers this. Rallly
-fills the gap when external participants without accounts need to
-vote on a meeting time.
+Nextcloud Polls covers this — date pickers and multiple-choice polls
+with a public link, no account required for participants. Enable it
+under Apps → Your apps inside Nextcloud.
 
 ### Public event RSVP / community events listing
 
-**Recommended:** Mobilizon or Gancio (coming when a real client asks).
+**Recommended:** Mobilizon or Gancio.
 
 Two candidates: Mobilizon for federated multi-region orgs; Gancio for
-hyperlocal listings. Reach out so the picker can ship the right fit.
+hyperlocal listings. Reach out to your operator so the picker can
+ship the right fit.
 
 ### Class / cohort signups (yoga, lessons, fitness)
 
-**Recommended:** [Easy!Appointments group sessions](/docs/apps/easyappointments/) (shipped).
+**Recommended:** [Easy!Appointments group sessions](/docs/apps/easyappointments/).
 
 Easy!Appointments supports group-session scheduling out of the box;
 same setup as the customer-bookings flow with capacity per slot.
 
 ### Internal staff calendar only (no customer-facing page)
 
-**Recommended:** [EspoCRM calendar](/docs/apps/espocrm/) (shipped).
+**Recommended:** [EspoCRM calendar](/docs/apps/espocrm/).
 
 Already in the suite as part of the CRM. No separate scheduler
 needed.

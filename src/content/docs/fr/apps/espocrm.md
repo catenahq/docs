@@ -1,9 +1,9 @@
 ---
 title: "EspoCRM"
-description: "CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation."
+description: "CRM par défaut de la suite. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation."
 ---
 
-CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation. OIDC natif via un bouton post-déploiement.
+CRM par défaut de la suite. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation. OIDC natif via un bouton post-déploiement.
 
 - **Projet original :** <https://www.espocrm.com/>
 - **Remplace :** **Salesforce**, **HubSpot**, **Zoho CRM**, **Pipedrive**

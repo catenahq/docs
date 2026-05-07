@@ -10,7 +10,7 @@ incident, the companion page is [Disaster prevention](/disaster-prevention/)
 — that's where the off-laptop backups, off-site bucket, and proactive
 secret exports live.
 
-The short version: your stack is designed so that **no single
+The short version: your software suite is designed so that **no single
 accidental click can lock you out**. It takes a combination of events
 to lose access, and for every scenario there's a recovery
 path.
@@ -28,7 +28,7 @@ section that walks the recovery in detail.
 | **All admins are locked out at once** (lost email, lost dashboard) | Contact your operator — they have a separate recovery path that doesn't depend on email or the dashboard. | [I lost my password (or my 2FA)](/i-lost-my-password/) |
 | **The whole VPS is encrypted by ransomware** | Contact your operator immediately. Recovery is from your last clean backup, before the ransomware reached the disk. | Recovery map below ("Entire VPS disk") |
 | **The VPS itself is compromised by malware / unauthorized access** | Contact your operator. The path is wipe + restore from a pre-compromise snapshot + rotate every secret. Your operator owns this; you receive a status update at each phase. | Recovery map below ("Entire VPS disk") |
-| **VPS provider's datacenter burns down** (or hardware failure) | Contact your operator. They restore your stack to a fresh VPS at the same or different provider, using the off-site backup bucket. | Recovery map below ("Entire VPS disk") + [Restore to a fresh VPS](/self-restore/) |
+| **VPS provider's datacenter burns down** (or hardware failure) | Contact your operator. They restore your software suite to a fresh VPS at the same or different provider, using the off-site backup bucket. | Recovery map below ("Entire VPS disk") + [Restore to a fresh VPS](/self-restore/) |
 | **VPS provider gives 48h notice / suspends the account** | Contact your operator. They migrate you to a new provider on a tight timeline; expect ~30-60 minutes of public-URL downtime during cutover. | Recovery map below ("VPS provider goes bankrupt") |
 | **Backup provider gives 48h notice** | Contact your operator. They re-target backups at a new bucket; existing data on the VPS is unaffected. | Recovery map below ("S3 backup provider goes bankrupt") |
 | **I think someone else has my password / API token** | Don't wait — contact your operator and rotate the credential. | Recovery map below (per-credential rows) |

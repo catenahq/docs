@@ -4,7 +4,7 @@ description: "Si votre opérateur n'est pas disponible et que vous devez déplac
 ---
 
 Si votre opérateur n'est pas disponible et que vous devez déplacer votre
-pile vers un autre VPS, cette page détaille la procédure manuelle, avec
+suite logicielle vers un autre VPS, cette page détaille la procédure manuelle, avec
 les mêmes outils qu'utilise votre opérateur. Comptez quelques heures.
 Vos données vous appartiennent — ceci est la voie de secours.
 
@@ -35,11 +35,11 @@ procédure manuelle suit.
 ## Ce qu'il vous faut avant de commencer
 
 - Un nouveau VPS (n'importe quel fournisseur — OVH, Hetzner,
-  DigitalOcean, AWS). 2 vCPU / 4 Go de RAM / 40 Go de disque est le
-  **strict minimum** pour faire tourner la pile de base. Avec plus de
-  services déployés ou sous charge soutenue, doublez ces valeurs
-  (4 vCPU / 8 Go de RAM / 80 Go de disque). Les apps lourdes comme
-  ERPNext ou Zammad méritent le palier supérieur à elles seules.
+  DigitalOcean, AWS). 2 vCPU / 6 Go de RAM / 40 Go de disque
+  correspond au palier de départ et fait tourner la suite de base.
+  Avec plus de services déployés ou sous charge soutenue, passez à
+  4 vCPU / 8 Go de RAM / 80 Go de disque. Les apps lourdes comme
+  ERPNext méritent le palier supérieur à elles seules.
 - Un accès SSH `root` sur ce VPS.
 - Depuis votre gestionnaire de mots de passe ou votre opérateur :
   - le **mot de passe de chiffrement du dépôt restic**

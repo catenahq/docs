@@ -117,7 +117,7 @@ place.
 | Identifiants du compartiment fuités, un attaquant écrit/supprime des objets | Une partie ou l'ensemble des fichiers du compartiment | Versionnage des objets + règle de rétention de 30 jours sur le compartiment : les objets supprimés sont récupérables pendant 30 jours | Contactez votre opérateur immédiatement ; il fait tourner les identifiants et restaure les objets affectés |
 | Vous supprimez par accident le compartiment depuis la console du fournisseur | Tout ce qui est dans le compartiment une fois la période de grâce du fournisseur écoulée | La plupart des fournisseurs ont une période de grâce au niveau du compte de 7 à 90 jours | Contactez le support du fournisseur immédiatement pour récupérer le compartiment dans la fenêtre de grâce ; contactez votre opérateur |
 | La base Nextcloud (sur le VPS) est restaurée depuis la sauvegarde d'hier mais le compartiment a les écritures d'aujourd'hui | Les nouveaux fichiers ajoutés aujourd'hui apparaissent comme orphelins dans le compartiment | `occ files:scan` de Nextcloud reconstruit la correspondance base→fichier à partir de ce qui est dans le compartiment | Demandez à votre opérateur de lancer un scan des fichiers après la restauration ; il s'occupe de la partie technique |
-| Le fournisseur résilie votre compte | Tout ce qui est dans ce compartiment | Seul un second compartiment de sauvegarde chez un autre fournisseur vous protège ici | Si vous avez configuré un second compartiment (voir [Ajouter un second compartiment de sauvegarde](/how-to-add-second-backup-bucket/)), vous êtes couvert. Sinon — c'est le pire cas |
+| Le fournisseur résilie votre compte | Tout ce qui est dans ce compartiment | Seul un second compartiment de sauvegarde chez un autre fournisseur vous protège ici | Si vous avez configuré un [second compartiment de sauvegarde](/disaster-prevention/#5-optionnel-ajoutez-un-second-compartiment-de-sauvegarde-dont-vous-etes-proprietaire), vous êtes couvert. Sinon — c'est le pire cas |
 
 À retenir : le compartiment Nextcloud-S3 est indépendant du VPS, ce
 qui est bon (la mort du VPS ne l'emporte pas avec lui) et risqué
@@ -139,7 +139,7 @@ de tiers plutôt que sur votre VPS :
 - **Tenant Tailscale + règles ACL** — chez Tailscale, dans le
   compte Tailscale de votre opérateur (l'opérateur le possède pour
   la porte dérobée d'administration permanente — voir
-  [Comment fonctionne cette pile](/how-this-stack-works/)).
+  [Comment fonctionne cette suite logicielle](/how-this-stack-works/)).
 - **Compte du fournisseur SMTP** — chez votre fournisseur d'e-mails
   transactionnels (Resend / Brevo / etc.) — contrôle qui peut
   envoyer du courrier « depuis » votre domaine.

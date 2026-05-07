@@ -1,5 +1,5 @@
 ---
-title: "How this stack works"
+title: "How this software suite works"
 description: "A plain-language tour of what's running on `your VPS`"
 ---
 
@@ -109,7 +109,7 @@ Gatus runs two probes per service every minute:
   app is misbehaving — a DNS record, the tunnel, the sign-in layer.
 
 Two probes, two different failure stories. When you see an alert, the
-one that fires tells you which half of the stack to look at first.
+one that fires tells you which half of the suite to look at first.
 
 ## How alerts reach you
 

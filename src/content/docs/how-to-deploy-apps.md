@@ -4,7 +4,7 @@ description: "When you deploy a new app through Dokploy, you can control who can
 ---
 
 When you deploy a new app through Dokploy, you can control who can reach
-it by adding labels to the compose file. The stack reads those labels
+it by adding labels to the compose file. The suite reads those labels
 and provisions the right Keycloak groups + policies automatically —
 you never touch Keycloak's API directly.
 
@@ -26,7 +26,7 @@ browse when you're deciding what to self-host:
   GitHub-stars + recent-activity per entry, so you can tell at a glance
   which projects are healthy + popular. Broadest of the three.
 
-Whatever you pick, the stack's labels (`vps.auth.groups`,
+Whatever you pick, the suite's labels (`vps.auth.groups`,
 `vps.auth.mode`, `vps.auth.oidc`, `vps.auto-update`, `vps.homepage.*`)
 apply on top — they gate access, wire SSO, tag updates, and populate
 the dashboard regardless of where the compose came from.
@@ -212,7 +212,7 @@ health check, and rolls back if the health check fails. You don't do
 anything — it runs at 3 a.m., alerts the operator only if something
 broke.
 
-**But only apps pinned to a full version are managed.** The stack
+**But only apps pinned to a full version are managed.** The suite
 refuses to touch anything where the image tag doesn't fully specify a
 version. That's deliberate: an auto-update that can't roll back to a
 known-good value is worse than no auto-update.
@@ -280,7 +280,7 @@ OliveTin has `Show managed-update status` for the full rollup
 Ship a real `X.Y.Z` tag on every public-facing service. If your
 upstream only publishes `:latest` or `:stable`, either pin to a
 digest + bump manually, or accept that you're opting out of the
-safety net. The stack's `compose-lint` catches non-semver tags at
+safety net. The suite's `compose-lint` catches non-semver tags at
 deploy time and reminds you; the Gatus status page shows the
 concrete running version per service so drift is easy to spot.
 

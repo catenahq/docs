@@ -1,9 +1,9 @@
 ---
 title: Votre VPS, votre documentation
-description: Documentation de référence publique pour la pile auto-hébergée catena. Les spécificités par-VPS vivent dans le portail client.
+description: Documentation de référence publique pour la suite logicielle auto-hébergée catena. Les spécificités par-VPS vivent dans le portail client.
 ---
 
-Ce wiki documente la pile catena telle que déployée sur votre VPS.
+Ce wiki documente la suite logicielle catena telle que déployée sur votre VPS.
 Chaque page s'applique à **toute installation catena** ; les
 spécificités par-installation (vos noms de domaine, votre hôte
 d'inventaire, votre seau S3) apparaissent dans le
@@ -11,7 +11,7 @@ d'inventaire, votre seau S3) apparaissent dans le
 
 ## Par où commencer
 
-- **[Comment fonctionne cette pile](/docs/fr/how-this-stack-works/)** --
+- **[Comment fonctionne cette suite logicielle](/docs/fr/how-this-stack-works/)** --
   une visite en langage clair des services et de comment ils
   s'assemblent. Commencez ici si c'est votre première fois.
 - **[Où vivent vos données](/docs/fr/where-is-my-data/)** -- ce qui est
@@ -34,7 +34,7 @@ d'inventaire, votre seau S3) apparaissent dans le
 
 ## Gestion des sinistres
 
-- **[Prévention](/docs/fr/disaster-prevention/)** -- comment la pile
+- **[Prévention](/docs/fr/disaster-prevention/)** -- comment la suite
   réduit l'impact des défaillances courantes.
 - **[Reprise](/docs/fr/disaster-recovery/)** -- ce qui se passe quand le
   VPS est perdu.

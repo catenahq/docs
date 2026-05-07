@@ -58,7 +58,6 @@ export default defineConfig({
           items: [
             { slug: "how-to-add-users" },
             { slug: "how-to-deploy-apps" },
-            { slug: "how-to-pick-a-scheduler" },
             { slug: "self-service" },
           ],
         },
@@ -77,7 +76,8 @@ export default defineConfig({
           items: [
             { slug: "do-not-touch" },
             { slug: "sizing" },
-            { slug: "how-to-add-second-backup-bucket" },
+            { slug: "how-to-pick-a-scheduler" },
+            { slug: "nextcloud-apps-vs-suite" },
           ],
         },
         {

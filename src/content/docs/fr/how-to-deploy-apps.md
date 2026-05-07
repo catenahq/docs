@@ -5,7 +5,7 @@ description: "Lorsque vous déployez une nouvelle application via Dokploy, vous"
 
 Lorsque vous déployez une nouvelle application via Dokploy, vous
 contrôlez qui peut y accéder en ajoutant des étiquettes au fichier
-compose. La pile lit ces étiquettes et provisionne automatiquement les
+compose. La suite lit ces étiquettes et provisionne automatiquement les
 bons groupes et politiques Keycloak — vous ne touchez jamais à l'API
 d'Keycloak directement.
 
@@ -31,7 +31,7 @@ utiles pour choisir ce que vous auto-hébergez :
   entrée, pour repérer d'un coup d'œil les projets vivants et
   populaires. La sélection la plus large des trois.
 
-Quoi que vous choisissiez, les étiquettes de la stack
+Quoi que vous choisissiez, les étiquettes de la suite
 (`vps.auth.groups`, `vps.auth.mode`, `vps.auth.oidc`,
 `vps.auto-update`, `vps.homepage.*`) s'appliquent par-dessus —
 elles filtrent l'accès, câblent le SSO, marquent les mises à jour
@@ -226,7 +226,7 @@ votre politique, redéploie, fait un contrôle de santé et annule
 à 3 h du matin, l'opérateur n'est alerté qu'en cas de problème.
 
 **Mais seules les applications épinglées à une version complète sont
-gérées.** Le stack refuse de toucher à toute image dont le tag
+gérées.** La suite refuse de toucher à toute image dont le tag
 n'identifie pas complètement une version. C'est volontaire : une mise à
 jour automatique incapable de revenir en arrière sur une valeur connue
 est pire que pas de mise à jour du tout.
@@ -300,7 +300,7 @@ versions en quarantaine, prochaine exécution planifiée).
 Utilisez un vrai tag `X.Y.Z` sur chaque service public. Si votre
 éditeur ne publie que `:latest` ou `:stable`, soit vous épinglez à un
 digest et mettez à jour manuellement, soit vous assumez de sortir du
-filet de sécurité. Le `compose-lint` du stack détecte les tags
+filet de sécurité. Le `compose-lint` de la suite détecte les tags
 non-semver au moment du déploiement et vous le rappelle ; la page
 d'état Gatus affiche la version concrète en cours d'exécution par
 service, ce qui rend toute dérive facile à repérer.

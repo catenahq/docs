@@ -1,37 +1,68 @@
 ---
 // Override of Starlight's default SiteTitle to add a "back to
-// catena.run" link before the docs title. The link forwards to the
-// FR marketing home when the docs locale is FR; it is otherwise the
-// EN marketing home.
+// catena.run" breadcrumb above the docs title. The link forwards to
+// the FR marketing home when the docs locale is FR; it is otherwise
+// the EN marketing home.
 //
-// Starlight's component contract: receive the same props as the
-// default and render alongside / instead of it. We embed the default
-// after our back-link.
+// Layout: small breadcrumb row above the logo+title row, brand-
+// accent colored, full-width clickable. Visually anchors the docs as
+// a sub-site of catena.run rather than a standalone surface.
 
 import type { Props } from "@astrojs/starlight/props";
 import Default from "@astrojs/starlight/components/SiteTitle.astro";
 
 const lang = (Astro.props as Props).locale ?? "en";
 const homeHref = lang === "fr" ? "https://catena.run/fr/" : "https://catena.run/";
-const backLabel = lang === "fr" ? "← catena.run" : "← catena.run";
+const backLabel = lang === "fr" ? "catena.run" : "catena.run";
+const backAria = lang === "fr" ? "Retour à catena.run" : "Back to catena.run";
 ---
-<a class="catena-back" href={homeHref} aria-label={lang === "fr" ? "Retour à catena.run" : "Back to catena.run"}>
-  {backLabel}
-</a>
-<Default {...Astro.props}><slot /></Default>
+<div class="catena-site-title">
+  <a class="catena-back" href={homeHref} aria-label={backAria}>
+    <svg class="catena-back-arrow" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+      <path
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M10 3 5 8l5 5"
+      />
+    </svg>
+    <span>{backLabel}</span>
+  </a>
+  <Default {...Astro.props}><slot /></Default>
+</div>
 
 <style>
+  .catena-site-title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    line-height: 1.1;
+  }
   .catena-back {
-    display: inline-block;
-    margin-right: 0.75rem;
-    font-size: 0.85rem;
-    color: var(--sl-color-gray-3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--sl-color-text-accent, var(--sl-color-accent));
+    background: var(--sl-color-accent-low);
     text-decoration: none;
+    transition: background-color 120ms ease, color 120ms ease;
   }
-  .catena-back:hover {
-    color: var(--sl-color-text-accent);
+  .catena-back:hover,
+  .catena-back:focus-visible {
+    background: var(--sl-color-accent);
+    color: var(--sl-color-white);
+    outline: none;
   }
-  @media (max-width: 50rem) {
-    .catena-back { display: none; }
+  .catena-back-arrow {
+    display: block;
+    flex: none;
   }
 </style>

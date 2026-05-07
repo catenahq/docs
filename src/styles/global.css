@@ -1,6 +1,9 @@
 @import "@catena/brand/tokens/all.css";
 
-/* Override Starlight's default accent with catena brand colors. */
+/* Override Starlight's default accent with catena brand colors.
+   Light theme keeps the deep brand blue; dark theme bumps to a
+   lighter primary so links and accent text stay readable on the
+   dark navy background. */
 :root {
   --sl-color-accent-low: color-mix(in srgb, var(--catena-accent) 18%, var(--catena-surface-bg));
   --sl-color-accent: var(--catena-accent);
@@ -15,4 +18,77 @@
   --sl-color-black: var(--catena-neutral-900);
   --sl-font: var(--catena-font-sans);
   --sl-font-mono: var(--catena-font-mono);
+}
+
+:root[data-theme="dark"] {
+  --sl-color-accent-low: color-mix(in srgb, var(--catena-primary-400) 22%, var(--catena-neutral-900));
+  --sl-color-accent: var(--catena-primary-400);
+  --sl-color-accent-high: var(--catena-primary-200);
+  --sl-color-text-accent: var(--catena-primary-300);
+}
+
+/* Domain pill mounted at the top of the left sidebar by
+   public/domain-rewriter.js. Sized to fit inside the sidebar
+   gutter; never overflows into adjacent surfaces. */
+.catena-domain-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0 0 0.75rem;
+  padding: 0.55rem 0.65rem 0.6rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.5rem;
+  background: var(--sl-color-bg-nav, transparent);
+  font-size: 0.8rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+.catena-domain-pill__label {
+  font-weight: 600;
+  color: var(--sl-color-gray-2);
+  letter-spacing: 0.01em;
+}
+.catena-domain-pill__row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.35rem;
+  background: var(--sl-color-black);
+  padding: 0.2rem 0.35rem;
+}
+.catena-domain-pill__row:focus-within {
+  border-color: var(--sl-color-accent);
+}
+.catena-domain-pill__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  font: inherit;
+  font-size: 0.9em;
+  color: var(--sl-color-white);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0.1rem 0.2rem;
+}
+.catena-domain-pill__input::placeholder {
+  color: var(--sl-color-gray-4);
+}
+.catena-domain-pill__clear {
+  flex: none;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--sl-color-gray-3);
+  font-size: 1.1em;
+  line-height: 1;
+  padding: 0 0.25rem;
+  border-radius: 0.25rem;
+}
+.catena-domain-pill__clear:hover,
+.catena-domain-pill__clear:focus-visible {
+  color: var(--sl-color-white);
+  background: var(--sl-color-gray-6);
+  outline: none;
 }

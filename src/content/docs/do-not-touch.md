@@ -1,5 +1,5 @@
 ---
-title: "Files and directories the stack owns"
+title: "Files and directories the software suite owns"
 description: "Short answer: if a file under the paths below is hand-edited, your"
 ---
 

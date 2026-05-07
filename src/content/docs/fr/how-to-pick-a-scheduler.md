@@ -3,7 +3,7 @@ title: "Comment choisir votre outil de réservation"
 description: "Arbre de décision pour choisir la bonne application open-source de réservation pour votre entreprise : prises de rendez-vous clients, réservation de ressources, sondages de groupe, événements publics, inscriptions aux classes, ou calendrier interne."
 ---
 
-Les besoins en réservation sont trop variés pour qu'une seule application par défaut convienne à toutes les entreprises. Ce guide parcourt un court arbre de décision, puis recommande une application à déployer sur votre serveur. La v1 livre **Easy!Appointments** pour les prises de rendez-vous clients ; les autres branches arriveront au fil des demandes réelles.
+Les besoins en réservation sont trop variés pour qu'une seule application par défaut convienne à toutes les entreprises. Ce guide parcourt un court arbre de décision, puis recommande une application à déployer sur votre serveur.
 
 ## Que voulez-vous gérer ?
 
@@ -11,43 +11,43 @@ Choisissez la ligne qui correspond à votre situation. Chaque branche aboutit à
 
 ### Des clients qui réservent du temps avec mon équipe (clinique, salon, atelier, cours)
 
-**Recommandé :** [Easy!Appointments](/docs/fr/apps/easyappointments/) (livré).
+**Recommandé :** [Easy!Appointments](/docs/fr/apps/easyappointments/).
 
 Une page de réservation publique ; calendriers indépendants par prestataire ; rappels par courriel ; export ICS. Connexion locale du personnel (pas de SSO côté upstream pour l'instant).
 
 ### Juste moi qui prends les réservations (un seul prestataire, payant ou non)
 
-**Recommandé :** Easy!Appointments mono-prestataire (livré ; réservations payantes en feuille de route).
+**Recommandé :** cal.com / cal.diy.
 
-Même application, configurée pour un prestataire. Les réservations payantes via Stripe utilisent un petit pont en attendant que cal.diy se stabilise upstream ; parlez à votre opérateur si le paiement est bloquant pour votre lancement.
+Pour une page de réservation mono-prestataire avec paiements Stripe d'emblée, cal.com (auto-hébergé via cal.diy) est le bon choix. Le template est en cours de re-stabilisation — parlez à votre opérateur si les réservations payantes mono-prestataire sont bloquantes pour votre lancement.
 
 ### Réserver des salles, du matériel, ou d'autres ressources partagées
 
-**Recommandé :** LibreBooking (à venir lors d'une demande réelle).
+**Recommandé :** LibreBooking.
 
-La réservation de ressources est une voie étroite dans le segment PME. Contactez-nous si vous avez un besoin concret ; le picker vous y dirigera dès que l'entrée au catalogue arrive.
+La réservation de ressources est une voie étroite dans le segment PME. Parlez à votre opérateur du besoin concret pour que le picker vous y dirige.
 
 ### Trouver un moment de réunion à plusieurs, ponctuel
 
-**Recommandé :** Rallly (à venir lors d'une demande réelle).
+**Recommandé :** [Nextcloud Polls](/docs/fr/nextcloud-apps-vs-suite/).
 
-Pour les sondages d'équipe internes, Nextcloud Polls couvre déjà le besoin. Rallly comble la zone où des participants externes sans compte doivent voter sur un moment de rencontre.
+Nextcloud Polls couvre le besoin — sélecteurs de date et sondages à choix multiples avec un lien public, sans compte requis pour les participants. Activez l'application sous Applications → Vos applications dans Nextcloud.
 
 ### Inscription aux événements publics / annuaire d'événements communautaires
 
-**Recommandé :** Mobilizon ou Gancio (à venir lors d'une demande réelle).
+**Recommandé :** Mobilizon ou Gancio.
 
-Deux candidats : Mobilizon pour les organisations multi-régions fédérées ; Gancio pour les annuaires hyperlocaux. Contactez-nous pour que le picker livre le bon outil.
+Deux candidats : Mobilizon pour les organisations multi-régions fédérées ; Gancio pour les annuaires hyperlocaux. Parlez à votre opérateur pour que le picker livre le bon outil.
 
 ### Inscriptions aux classes / cohortes (yoga, cours, fitness)
 
-**Recommandé :** [Easy!Appointments en mode groupe](/docs/fr/apps/easyappointments/) (livré).
+**Recommandé :** [Easy!Appointments en mode groupe](/docs/fr/apps/easyappointments/).
 
 Easy!Appointments gère les séances de groupe d'emblée ; même configuration que le flux réservations clients, avec capacité par créneau.
 
 ### Calendrier interne du personnel uniquement (pas de page client)
 
-**Recommandé :** [Calendrier EspoCRM](/docs/fr/apps/espocrm/) (livré).
+**Recommandé :** [Calendrier EspoCRM](/docs/fr/apps/espocrm/).
 
 Déjà dans la suite via le CRM. Pas besoin d'un outil séparé.
 

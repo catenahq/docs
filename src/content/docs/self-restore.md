@@ -1,9 +1,9 @@
 ---
 title: "Restore to a fresh VPS (without the operator)"
-description: "If your operator is unavailable and you need to move your stack to a"
+description: "If your operator is unavailable and you need to move your software suite to a"
 ---
 
-If your operator is unavailable and you need to move your stack to a
+If your operator is unavailable and you need to move your software suite to a
 different VPS, this page walks you through doing it manually with the
 same building blocks your operator uses. It takes a few hours. You own
 your data; this is the fallback path.
@@ -33,10 +33,10 @@ follows.
 ## What you need before you start
 
 - A fresh VPS (any provider — OVH, Hetzner, DigitalOcean, AWS). 2 vCPU /
-  4 GB RAM / 40 GB disk is the **bare minimum** to run the base stack.
-  With more services deployed or under sustained load, double these
-  (4 vCPU / 8 GB RAM / 80 GB disk). Heavy apps like ERPNext or Zammad
-  want the larger tier on their own.
+  6 GB RAM / 40 GB disk matches the starting tier and runs the base
+  suite. With more services deployed or under sustained load, step up
+  to 4 vCPU / 8 GB RAM / 80 GB disk. Heavy apps like ERPNext want the
+  larger tier on their own.
 - Root SSH access to that VPS.
 - From your password manager or your operator:
   - the **restic repository encryption password**

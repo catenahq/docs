@@ -21,7 +21,7 @@ recovery so you know what the prevention is protecting you against.
 
 ## The principle: two independent paths, two independent backups
 
-Your stack is designed so that the **public path** (Cloudflare Tunnel
+Your software suite is designed so that the **public path** (Cloudflare Tunnel
 → your apps) and the **ops path** (Tailscale → SSH) are independent
 of each other. Breaking one doesn't break the other. Similarly, your
 **VPS** and your **backup bucket** should be at different companies,
@@ -36,7 +36,7 @@ about **not collapsing those independences**.
 
 At hand-off your operator gave you a small kit of credentials. The
 exact contents depend on whether your operator is also managing the
-stack day-to-day, but every kit includes these four:
+suite day-to-day, but every kit includes these four:
 
 - The **restic repository encryption password** — without it, every
   byte in your backup bucket is unreadable ciphertext.
@@ -91,7 +91,7 @@ If you're not sure where your backup bucket is, ask your operator.
 This is a one-time question with a simple answer ("eu-west-1" /
 "us-east-005" / etc.).
 
-### 4. Confirm your stack has a weekly immutable-bucket snapshot
+### 4. Confirm your software suite has a weekly immutable-bucket snapshot
 
 If a ransomware attack reaches your VPS, the attacker has access
 to the same restic password and S3 keys the nightly backup uses.
@@ -99,7 +99,7 @@ With those, they could in principle issue a `forget --prune` and
 delete your historical snapshots before encrypting the live disk
 — turning a recoverable incident into an unrecoverable one.
 
-The defence: your stack ships a **weekly mirror** that copies
+The defence: your software suite ships a **weekly mirror** that copies
 your live (mutable) backup bucket to a SEPARATE bucket with
 Object Lock / WORM enabled. The live bucket stays normal so the
 nightly backup's prune step works without interference; the
@@ -128,18 +128,86 @@ fixed schedule that does not depend on whether updates fire that
 week. It is fail-soft: a misconfigured WORM bucket cannot block
 the daily backup — the daily run only touches the live bucket.
 
-### 5. Consider a second backup location
+### 5. Optional — add a client-owned second backup bucket
 
-For deployments where losing a week of data would be genuinely bad,
-set up a second backup path that writes to a **different cloud
-provider** entirely. If your primary bucket is at Backblaze B2, the
-secondary could be at OVH Object Storage or AWS S3. If one provider
-has an extended outage, the other still has your data.
+The WORM mirror in section 4 is configured and run by your operator
+on a fixed schedule. If you want a second backup line that **you**
+own outright — separate billing, separate provider, credentials in
+your own custody — you can add a second backup bucket yourself.
 
-This costs roughly the same as your primary bucket and runs on a
-weekly timer. Walk-through:
-[Add a second backup bucket](/how-to-add-second-backup-bucket/). It's
-an additive change with no downtime.
+This is overkill for most deployments (the operator-managed WORM
+mirror in section 4 already protects against ransomware and
+account-takeover). Worth doing when:
+
+- You want the encryption password and S3 credentials entirely in
+  your custody, with no operator involvement in the recovery path.
+- Compliance or contractual obligations require an explicitly
+  client-owned off-site copy.
+- You want geographic redundancy beyond the WORM mirror's provider
+  (e.g. one bucket in Canada, one in the EU, one in the US).
+
+**Pick a provider that supports Object Lock.** The provider must
+support **S3 Object Lock + versioning**. Snapshots written to an
+Object Lock bucket cannot be deleted or overwritten before the
+retention window expires, even by someone with valid credentials —
+the same line of defense the section 4 WORM mirror relies on.
+
+Decent options:
+
+- **eazybackup** — Canadian-owned, ca-central-1, Object Lock +
+  versioning supported. Default recommendation when the primary
+  bucket is also Canadian and you want jurisdictional separation.
+- **AWS S3** — Object Lock + versioning, most battle-tested, most
+  expensive.
+- **Backblaze B2** — cheap, Object Lock + versioning, US-based.
+- **OVH Object Storage** — flat pricing, EU-based; verify Object
+  Lock availability in your target region.
+- **Cloudflare R2** — no egress fees, Object Lock + versioning,
+  US-based.
+
+Avoid putting both buckets at the same parent company.
+
+**Create the bucket.** The provider's docs walk you through it. End
+state:
+
+- A bucket name (e.g. `acme-vps-backup-2`).
+- A region code (e.g. `ca-central-1`).
+- An endpoint URL (e.g. `s3.ca-central-1.example.com`).
+- An access key + secret scoped to write into the bucket.
+- **Object Lock enabled at creation** in compliance or governance
+  mode (compliance is stronger — even the bucket owner cannot
+  shorten retention).
+- **Object versioning enabled** (Object Lock requires it).
+- A default retention period matching your snapshot retention
+  (typical: 30-90 days).
+
+Most providers gate Object Lock behind a checkbox at creation time.
+If you forget to tick it, you have to delete the bucket and start
+over — Object Lock cannot be enabled retroactively at most
+providers.
+
+Make sure the bucket lives in a different city — and ideally a
+different country — from your VPS and your primary backup bucket.
+
+**Hand the credentials to your operator** through whatever
+encrypted channel you've used before (do not paste them in plain
+email or Slack). Your operator wires the second bucket into the
+backup schedule and confirms the next run is writing to it.
+
+**Save the credentials in your password manager**, alongside the
+primary bucket entry, labelled clearly. Use the same restic
+encryption password as the primary bucket — a single password
+unlocking both is enough.
+
+**Once a year**, confirm: the second bucket is still receiving
+snapshots, your stored credentials match what's installed on the
+VPS, and the provider has not changed Object Lock behaviour or
+pricing in a way that matters.
+
+If you ever need to restore from the secondary bucket, the
+[Restore to a fresh VPS](/self-restore/) page covers it — same
+procedure, just with the secondary's credentials in the environment
+variables.
 
 ### 6. Run the "Export recovery secrets" button proactively
 
@@ -220,7 +288,7 @@ When prevention is in place, a three-month-from-now you can answer
       fine.)
 - [ ] I know which city my backup bucket lives in (and it's not the
       same city as my VPS).
-- [ ] My stack has a weekly WORM-bucket mirror configured (separate
+- [ ] My software suite has a weekly WORM-bucket mirror configured (separate
       provider from the live backup bucket, last weekly run pinged
       green) — confirmed with my operator.
 - [ ] I have decided whether I need a second backup location — if yes,

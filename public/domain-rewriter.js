@@ -182,30 +182,42 @@
     }
   }
 
+  const STRINGS = {
+    en: {
+      label: "Your domain",
+      clearTitle: "Clear and restore placeholder",
+    },
+    fr: {
+      label: "Votre domaine",
+      clearTitle: "Effacer et restaurer le texte par défaut",
+    },
+  };
+
+  function getLocale() {
+    const lang = (document.documentElement.lang || "en").toLowerCase();
+    return lang.startsWith("fr") ? "fr" : "en";
+  }
+
   function injectPill() {
+    const t = STRINGS[getLocale()];
     const pill = document.createElement("div");
     pill.setAttribute("data-no-domain-rewrite", "");
-    pill.style.cssText = [
-      "display:inline-flex",
-      "align-items:center",
-      "gap:0.4em",
-      "margin:0.4em 0",
-      "padding:0.35em 0.6em",
-      "border:1px solid var(--sl-color-gray-5, #444)",
-      "border-radius:0.4em",
-      "background:var(--sl-color-bg-nav, transparent)",
-      "font-size:0.85em",
-    ].join(";");
+    pill.className = "catena-domain-pill";
     pill.innerHTML = `
-      <label for="catena-domain-input" style="white-space:nowrap;font-weight:500;">
-        Your domain:
+      <label for="catena-domain-input" class="catena-domain-pill__label">
+        ${t.label}
       </label>
-      <input id="catena-domain-input" type="text"
-             placeholder="yourdomain.com"
-             style="font-family:inherit;font-size:0.95em;border:none;background:transparent;color:inherit;outline:none;min-width:14ch;"/>
-      <button type="button" data-clear
-              title="Clear and restore placeholder"
-              style="cursor:pointer;border:none;background:transparent;color:inherit;padding:0 0.3em;font-size:1em;">×</button>
+      <div class="catena-domain-pill__row">
+        <input id="catena-domain-input" type="text"
+               placeholder="yourdomain.com"
+               autocomplete="off"
+               spellcheck="false"
+               class="catena-domain-pill__input"/>
+        <button type="button" data-clear
+                title="${t.clearTitle}"
+                aria-label="${t.clearTitle}"
+                class="catena-domain-pill__clear">&times;</button>
+      </div>
     `;
     const input = pill.querySelector("input");
     const clear = pill.querySelector("[data-clear]");
@@ -225,14 +237,20 @@
   }
 
   function mountPill() {
-    // Prefer the Starlight header right side; fall back to the page
-    // sidebar; last-ditch, prepend to <main>.
-    const target =
-      document.querySelector("header .right-group, header .actions, header") ||
-      document.querySelector("main");
+    // Mount inside the left sidebar so the input flows with the nav
+    // instead of crowding the header. Fallback to <main> only if the
+    // sidebar is absent (some Starlight pages render without one).
+    const sidebar = document.querySelector(
+      "nav.sidebar .sidebar-content, #starlight__sidebar .sidebar-content, .sidebar-content"
+    );
+    const target = sidebar || document.querySelector("main");
     if (!target) return;
     const pill = injectPill();
-    target.appendChild(pill);
+    if (sidebar) {
+      sidebar.insertBefore(pill, sidebar.firstChild);
+    } else {
+      target.appendChild(pill);
+    }
   }
 
   function installPagefindHook() {

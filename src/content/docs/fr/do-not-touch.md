@@ -1,5 +1,5 @@
 ---
-title: "Fichiers et répertoires appartenant à la pile"
+title: "Fichiers et répertoires appartenant à la suite logicielle"
 description: "En bref : si un fichier sous les chemins ci-dessous est modifié à la"
 ---
 

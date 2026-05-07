@@ -1,5 +1,5 @@
 ---
-title: "Comment fonctionne cette pile"
+title: "Comment fonctionne cette suite logicielle"
 description: "Une visite guidée, en langage clair, de ce qui tourne sur"
 ---
 
@@ -113,7 +113,7 @@ Gatus exécute deux sondes par service chaque minute :
   un enregistrement DNS, le tunnel, la couche de connexion.
 
 Deux sondes, deux scénarios de panne distincts. Quand une alerte
-tombe, celle qui se déclenche vous indique quelle moitié de la pile
+tombe, celle qui se déclenche vous indique quelle moitié de la suite
 regarder en premier.
 
 ## Comment les alertes vous parviennent
