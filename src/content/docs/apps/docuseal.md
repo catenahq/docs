@@ -1,9 +1,9 @@
 ---
 title: "DocuSeal"
-description: "Default document-signing app in the suite (replaces Documenso). Upload a PDF, place signature fields, send for signature."
+description: "Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature."
 ---
 
-Default document-signing app in the suite (replaces Documenso). Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in.
+Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in.
 
 - **Upstream project:** <https://www.docuseal.com/>
 - **Replaces:** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**

@@ -1,9 +1,9 @@
 ---
 title: "DocuSeal"
-description: "Application de signature électronique par défaut de la suite (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature."
+description: "Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature."
 ---
 
-Application de signature électronique par défaut de la suite (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées.
+Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées.
 
 - **Projet original :** <https://www.docuseal.com/>
 - **Remplace :** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**

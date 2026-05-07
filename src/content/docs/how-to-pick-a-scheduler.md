@@ -21,12 +21,12 @@ reminders; ICS export. Local staff sign-in (no SSO yet upstream).
 
 ### Just me taking bookings (one provider, paid or unpaid)
 
-**Recommended:** cal.com / cal.diy.
+**Recommended:** [cal.diy](/docs/apps/cal-com/).
 
-For a single-provider booking page with Stripe-paid bookings out of
-the box, cal.com (self-hosted via cal.diy) is the right fit. The
-template is being re-stabilized — talk to your operator if paid
-single-provider bookings are blocking your launch.
+Single-provider booking page with native Stripe-paid bookings, a
+calendar app store (Google / Outlook / Apple / CalDAV), and a
+polished customer-facing booking flow. Self-hosted build of
+Cal.com.
 
 ### Reserving rooms, equipment, or other shared resources
 

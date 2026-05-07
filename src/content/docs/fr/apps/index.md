@@ -37,36 +37,48 @@ Partage de fichiers et collaboration auto-hébergés — le hub auquel d'autres 
 Messagerie d'équipe — canaux, messages directs, partage de fichiers, apps mobiles, appels vidéo. Keycloak SSO pré-câblé. [→ Voir les détails](rocketchat-oidc.md)
 
 ### 5. DocuSeal — remplace DocuSign, HelloSign, PandaDoc, Adobe Sign
-Application de signature électronique de la suite. Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées. [→ Voir les détails](docuseal.md)
+Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées. [→ Voir les détails](docuseal.md)
 
-### 6. Outline — remplace Notion, Confluence, Google Sites
+### 6. Documenso (déprécié) — remplace DocuSign, HelloSign, PandaDoc, Adobe Sign
+**DÉPRÉCIÉ** depuis 2026-04-29 — conservé au catalogue le temps de la migration. Les nouveaux déploiements doivent utiliser **DocuSeal**. Signature électronique de documents open-source — téléversez un PDF, placez les champs de signature, envoyez pour signature. Keycloak SSO pré-câblé. [→ Voir les détails](documenso.md)
+
+### 7. Outline — remplace Notion, Confluence, Google Sites
 Wiki d'équipe / base de connaissances. Pages façon Notion, collections, documents imbriqués. Keycloak SSO pré-câblé. [→ Voir les détails](outline.md)
 
-### 7. EspoCRM — remplace Salesforce, HubSpot, Zoho CRM, Pipedrive
-CRM par défaut de la suite. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation. OIDC natif via un bouton post-déploiement. [→ Voir les détails](espocrm.md)
+### 8. EspoCRM — remplace Salesforce, HubSpot, Zoho CRM, Pipedrive
+CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation. OIDC natif via un bouton post-déploiement. [→ Voir les détails](espocrm.md)
 
-### 8. Twenty — remplace Salesforce, HubSpot, Pipedrive
+### 9. Twenty — remplace Salesforce, HubSpot, Pipedrive
 CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation email, pipelines. Alternative à EspoCRM (le CRM par défaut). [→ Voir les détails](twenty.md)
 
-### 9. Plane — remplace Jira, Linear, Asana, ClickUp
+### 10. Plane — remplace Jira, Linear, Asana, ClickUp
 Gestion de projet open-source — issues, cycles, modules, pages, workspaces. [→ Voir les détails](plane.md)
 
-### 10. WordPress — remplace Wix, Squarespace, Drupal auto-hébergé
+### 11. cal.diy — remplace Calendly, Acuity, SavvyCal, Cal.com Cloud
+Page de réservation mono-prestataire avec paiements Stripe, magasin d'apps calendrier (Google / Outlook / Apple / CalDAV), et un parcours de réservation public soigné. Version auto-hébergée de Cal.com. [→ Voir les détails](cal-com.md)
+
+### 12. Zammad — remplace Zendesk, Freshdesk, Jira Service Desk
+Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connaissances. OIDC natif. [→ Voir les détails](zammad.md)
+
+### 13. Chatwoot — remplace Intercom, Front, Help Scout (canaux de chat)
+Boîte de réception omnicanale orientée conversation. Email, widget de chat, WhatsApp, Facebook, Instagram, Twitter/X en une seule vue. [→ Voir les détails](chatwoot.md)
+
+### 14. WordPress — remplace Wix, Squarespace, Drupal auto-hébergé
 Plateforme CMS / site web public prête pour la production, avec cache FastCGI, cache d'objets Redis et un ensemble de plugins gratuits curatés pré-installés. Le site est accessible anonymement ; la connexion admin sur /wp-admin peut être câblée à Keycloak via un plugin. [→ Voir les détails](wordpress.md)
 
-### 11. n8n — remplace Zapier, Make (Integromat), Tray.io
+### 15. n8n — remplace Zapier, Make (Integromat), Tray.io
 Automatisation de flux de travail — enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code. [→ Voir les détails](n8n.md)
 
-### 12. ERPNext — remplace SAP Business One, Odoo, Oracle NetSuite
+### 16. ERPNext — remplace SAP Business One, Odoo, Oracle NetSuite
 Suite ERP open-source complète — comptabilité, inventaire, RH/paie, CRM, production, projets, et un module site web / e-commerce intégré. [→ Voir les détails](erpnext.md)
 
-### 13. Actual Budget — remplace YNAB (You Need A Budget), Mint, EveryDollar
+### 17. Actual Budget — remplace YNAB (You Need A Budget), Mint, EveryDollar
 Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro bancaire via SimpleFIN ou GoCardless, chiffré de bout en bout. [→ Voir les détails](actualbudget.md)
 
-### 14. Postiz — remplace Buffer, Hootsuite, Later
+### 18. Postiz — remplace Buffer, Hootsuite, Later
 Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, et d'autres. [→ Voir les détails](postiz.md)
 
-### 15. Easy!Appointments — remplace Calendly, Acuity, SimplyBook, Setmore
+### 19. Easy!Appointments — remplace Calendly, Acuity, SimplyBook, Setmore
 Application de réservation côté client pour un ou plusieurs prestataires (clinique, salon, cours, atelier de réparation). Page de réservation publique ; calendriers du personnel ; rappels courriel + SMS ; export ICS. [→ Voir les détails](easyappointments.md)
 
 ## À propos de la connexion (SSO)

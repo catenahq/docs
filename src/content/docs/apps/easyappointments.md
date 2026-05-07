@@ -60,9 +60,10 @@ client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# Easy!Appointments -- open-source customer-facing booking app. Default
-# scheduler in the stack as of 2026-05-06 (F11 v1 pick: Branch A
-# multi-provider). cal.diy stays deferred (D9) until upstream stabilizes.
+# Easy!Appointments -- open-source customer-facing booking app. F11 v1
+# pick for Branch A multi-provider (clinic / salon / repair shop) as of
+# 2026-05-06. cal.diy covers Branch A single-provider with native Stripe
+# paid bookings; pick on a per-client basis at deploy time.
 #
 # Auth: Easy!Appointments v1.5.2 has no native OIDC. Login is local
 # email/password (or optional Google OAuth at the EA level). The booking

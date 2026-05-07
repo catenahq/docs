@@ -15,7 +15,7 @@ CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation e
 2. Visitez votre domaine Twenty et créez le compte initial (workspace + admin).
 3. *(Optionnel)* Activez Keycloak SSO : **Settings** → **Security** → **Single sign-on** → collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
 
-**EspoCRM vs Twenty.** EspoCRM est le CRM par défaut de cette suite (mature, OIDC natif, apps mobiles). Twenty est offert comme alternative pour les clients qui préfèrent son UI façon Notion ; les deux peuvent cohabiter. Le domaine par défaut `crm.<votre-domaine>` est réservé à EspoCRM — Twenty utilise par défaut `twenty.<votre-domaine>`.
+**EspoCRM vs Twenty.** EspoCRM est le CRM par défaut de cette stack (mature, OIDC natif, apps mobiles). Twenty est offert comme alternative pour les clients qui préfèrent son UI façon Notion ; les deux peuvent cohabiter. Le domaine par défaut `crm.<votre-domaine>` est réservé à EspoCRM — Twenty utilise par défaut `twenty.<votre-domaine>`.
 
 ## Variables d'environnement
 
