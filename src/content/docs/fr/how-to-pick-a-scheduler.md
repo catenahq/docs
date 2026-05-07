@@ -17,7 +17,7 @@ Une page de réservation publique ; calendriers indépendants par prestataire ; 
 
 ### Juste moi qui prends les réservations (un seul prestataire, payant ou non)
 
-**Recommandé :** [cal.diy](/docs/fr/apps/cal-com/).
+**Recommandé :** [cal.diy](/docs/fr/apps/cal-diy/).
 
 Page de réservation mono-prestataire avec paiements Stripe natifs, un magasin d'apps calendrier (Google / Outlook / Apple / CalDAV), et un parcours de réservation client soigné. Version auto-hébergée de Cal.com.
 

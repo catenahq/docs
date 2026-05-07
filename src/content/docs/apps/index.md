@@ -52,7 +52,7 @@ Modern open-source CRM. Contacts, companies, opportunities, email sync, pipeline
 Open-source project management — issues, cycles, modules, pages, workspaces. [→ Full details](plane.md)
 
 ### 11. cal.diy — replaces Calendly, Acuity, SavvyCal, Cal.com Cloud
-Single-provider booking page with Stripe-paid bookings, calendar app store (Google / Outlook / Apple / CalDAV), and a polished public booking flow. Self-hosted build of Cal.com. [→ Full details](cal-com.md)
+Single-provider booking page with Stripe-paid bookings, calendar app store (Google / Outlook / Apple / CalDAV), and a polished public booking flow. Self-hosted build of Cal.com. [→ Full details](cal-diy.md)
 
 ### 12. Zammad — replaces Zendesk, Freshdesk, Jira Service Desk
 Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. Native OIDC. [→ Full details](zammad.md)

@@ -21,7 +21,7 @@ reminders; ICS export. Local staff sign-in (no SSO yet upstream).
 
 ### Just me taking bookings (one provider, paid or unpaid)
 
-**Recommended:** [cal.diy](/docs/apps/cal-com/).
+**Recommended:** [cal.diy](/docs/apps/cal-diy/).
 
 Single-provider booking page with native Stripe-paid bookings, a
 calendar app store (Google / Outlook / Apple / CalDAV), and a

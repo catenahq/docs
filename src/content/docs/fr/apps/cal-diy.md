@@ -49,14 +49,14 @@ premier semi du template — vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
-| `CALCOM_HOSTNAME` | `cal.yourdomain.com` |
+| `CALDIY_HOSTNAME` | `cal.yourdomain.com` |
 | `NEXTAUTH_SECRET` | _valeur aléatoire auto-générée_ |
 | `CALENDSO_ENCRYPTION_KEY` | _valeur aléatoire auto-générée_ |
 | `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
 
 ## Domaine
 
-- **Service et port :** `calcom:3000`
+- **Service et port :** `caldiy:3000`
 - **Nom d'hôte :** `cal.yourdomain.com`
 
 Le nom d'hôte est attaché automatiquement au semi du template ;
@@ -92,16 +92,16 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 # setup_steps (demote to USER → 2FA → re-promote).
 
 services:
-  calcom:
+  caldiy:
     image: calcom/cal.com:v6.2.0
     restart: unless-stopped
     environment:
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       CALENDSO_ENCRYPTION_KEY: ${CALENDSO_ENCRYPTION_KEY}
-      DATABASE_URL: postgres://calcom:${DB_PASSWORD}@db:5432/calcom
-      DATABASE_DIRECT_URL: postgres://calcom:${DB_PASSWORD}@db:5432/calcom
-      NEXT_PUBLIC_WEBAPP_URL: https://${CALCOM_HOSTNAME}
-      NEXTAUTH_URL: https://${CALCOM_HOSTNAME}
+      DATABASE_URL: postgres://caldiy:${DB_PASSWORD}@db:5432/caldiy
+      DATABASE_DIRECT_URL: postgres://caldiy:${DB_PASSWORD}@db:5432/caldiy
+      NEXT_PUBLIC_WEBAPP_URL: https://${CALDIY_HOSTNAME}
+      NEXTAUTH_URL: https://${CALDIY_HOSTNAME}
       NEXT_PUBLIC_LICENSE_CONSENT: agree
       LICENSE: agree
       NODE_ENV: production
@@ -114,13 +114,16 @@ services:
       # every request and gates parts of the auth flow (org dispatch).
       # Bare unquoted strings throw JSON.parse errors; surrounding []
       # produces a nested array that fails the match.
-      ALLOWED_HOSTNAMES: '"${CALCOM_HOSTNAME}"'
+      ALLOWED_HOSTNAMES: '"${CALDIY_HOSTNAME}"'
       # Cookie domain MUST match the exact hostname (no leading dot)
       # for a single-host deploy. A leading dot makes the cookie valid
       # for sub-subdomains too, but NextAuth treats the dotted form
       # inconsistently across versions and can fail to set the session
       # cookie on the auth callback round-trip.
-      NEXTAUTH_COOKIE_DOMAIN: ${CALCOM_HOSTNAME}
+      NEXTAUTH_COOKIE_DOMAIN: ${CALDIY_HOSTNAME}
+      # Upstream env var read by the cal.com source; the name stays
+      # CALCOM_TELEMETRY_DISABLED because that is what the binary
+      # checks for, regardless of the cal.diy rebrand.
       CALCOM_TELEMETRY_DISABLED: "1"
     depends_on:
       db:
@@ -131,20 +134,20 @@ services:
     networks:
       dokploy-network:
         aliases:
-          - calcom
+          - caldiy
       default: {}
 
   db:
     image: postgres:16.13-alpine3.22
     restart: unless-stopped
     environment:
-      POSTGRES_USER: calcom
+      POSTGRES_USER: caldiy
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: calcom
+      POSTGRES_DB: caldiy
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U calcom"]
+      test: ["CMD-SHELL", "pg_isready -U caldiy"]
       interval: 10s
       timeout: 5s
       retries: 5
