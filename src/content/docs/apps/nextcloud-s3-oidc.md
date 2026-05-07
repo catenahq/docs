@@ -229,6 +229,11 @@ services:
         aliases:
           - nextcloud
       default: {}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   db:
     image: postgres:16.13-alpine
@@ -239,6 +244,12 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nextcloud -d nextcloud"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
     labels:
       - "vps.auto-update=patch"
     networks:
@@ -283,6 +294,11 @@ services:
     # on its own startup; cron picks it up via the shared mount.
     networks:
       - default
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   # === HPB BEGIN -- Talk High-Performance Backend ==========================
   # Single-container HPB bundle (signaling + janus + nats + internal
