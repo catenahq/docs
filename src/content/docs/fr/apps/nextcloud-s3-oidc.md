@@ -119,7 +119,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 
 services:
   app:
-    image: nextcloud:33.0.2-apache
+    image: nextcloud:33.0.3-apache
     restart: unless-stopped
     # Two-stage delivery for the loglevel override:
     #
@@ -279,7 +279,7 @@ services:
       - default
 
   redis:
-    image: redis:7.4.8-alpine
+    image: redis:7.4.9-alpine
     restart: unless-stopped
     labels:
       - "vps.auto-update=patch"
@@ -287,7 +287,7 @@ services:
       - default
 
   cron:
-    image: nextcloud:33.0.2-apache
+    image: nextcloud:33.0.3-apache
     restart: unless-stopped
     entrypoint: /cron.sh
     environment:
