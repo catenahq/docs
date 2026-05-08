@@ -86,7 +86,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 
 services:
   docuseal:
-    image: docuseal/docuseal:1.8.4
+    image: docuseal/docuseal:2.5.2
     restart: unless-stopped
     environment:
       HOST: https://${DOCUSEAL_HOSTNAME}
@@ -129,7 +129,7 @@ services:
       default: {}
 
   db:
-    image: postgres:16.13-alpine3.22
+    image: postgres:16.13-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: docuseal
