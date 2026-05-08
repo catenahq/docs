@@ -8,37 +8,59 @@ suite logicielle vers un autre VPS, cette page détaille la procédure manuelle,
 les mêmes outils qu'utilise votre opérateur. Comptez quelques heures.
 Vos données vous appartiennent — ceci est la voie de secours.
 
-## Voie rapide — script de récupération préchargé (recommandée)
+## Voie rapide — archive de récupération préchargée (recommandée)
 
 La récupération la plus rapide est celle où vous n'avez aucun
-identifiant à taper. Votre opérateur peut générer un script de
-récupération unique avec tous les identifiants de bucket pour *ce*
-VPS déjà intégrés — il est chiffré avec un mot de passe à usage
-unique, et vous le déchiffrez sur le nouveau VPS avec ce mot de
-passe.
+identifiant à taper. Votre opérateur peut générer un fichier zip
+unique protégé par mot de passe contenant tout ce qu'il faut pour
+remettre ce VPS en marche : un script prêt à exécuter, tous les
+identifiants de bucket de *ce* VPS, et une copie candidate du
+coffre-fort de secrets. Le zip est chiffré en AES-256, ouvrable par
+n'importe quel système moderne (macOS Finder, Windows Explorer,
+Linux unzip) lorsque vous fournissez le mot de passe.
 
 **Ce que votre opérateur vous remet, hors ligne :**
 
-1. Le script de récupération (téléchargé depuis `recovery.<zone>`
-   après avoir cliqué sur l'action « Générer un script de
-   récupération » — voir la page
+1. L'archive de récupération (téléchargée depuis `recovery.<zone>`
+   après avoir cliqué sur l'action « Générer l'archive de
+   récupération (chiffrée) » — voir la page
    [Prévention des sinistres](/fr/disaster-prevention/) pour ce
-   qu'il faut configurer au préalable).
-2. Le mot de passe à usage unique de ce script.
+   qu'il faut configurer au préalable). Le fichier ressemble à
+   `recovery-<horodatage>.zip`.
+2. Le mot de passe à usage unique de cette archive.
+
+**Sur votre poste :**
+
+Double-cliquez sur le zip. Votre OS demande le mot de passe ;
+tapez-le. Six fichiers apparaissent dans le dossier extrait :
+
+- `README.txt` (anglais) et `LISEZ-MOI.txt` (français) — ces
+  instructions.
+- `recover.sh` — le wrapper à lancer sur le nouveau VPS.
+- `restore.sh` — le script de récupération (aucun accès Internet
+  requis au moment de la reprise ; l'archive est entièrement
+  autonome).
+- `envelope.env` — les identifiants pour les buckets de *ce* VPS.
+- `vault.recovered.yml` — copie de référence des secrets
+  récupérables depuis l'hôte vivant, pour votre opérateur si votre
+  coffre principal est aussi perdu. À traiter comme un fichier de
+  mots de passe.
 
 **Sur le nouveau VPS, en root :**
 
 ```
-chmod +x restore.sh
-sudo ./restore.sh
+# scp le dossier extrait sur le nouveau VPS, puis :
+cd catena-recovery   # ou là où vous l'avez extrait
+chmod +x recover.sh restore.sh
+sudo ./recover.sh
 ```
 
-Le script demande le mot de passe une fois, déchiffre son
-enveloppe d'identifiants intégrée et exécute les huit étapes de
-récupération de bout en bout : préparer l'hôte, vérifier le dépôt
-restic, restaurer le dernier snapshot, installer Dokploy, rejouer
-les dumps Postgres par application, réparer le bucket S3 Nextcloud
-si nécessaire, installer cloudflared, résumé.
+`recover.sh` source `envelope.env` (pour que les identifiants
+soient en portée) puis exécute `restore.sh` de bout en bout :
+préparer l'hôte, vérifier le dépôt restic, restaurer le dernier
+snapshot, installer Dokploy, rejouer les dumps Postgres par
+application, réparer le bucket S3 Nextcloud si nécessaire,
+installer cloudflared, résumé.
 
 Idempotent en cas d'échec partiel — relancez-le après avoir
 corrigé le problème, il reprend où il s'est arrêté.
@@ -50,6 +72,11 @@ automatiquement sur le miroir froid. Si vous utilisez Nextcloud
 avec stockage S3 et que le bucket Nextcloud chaud est vide ou
 manquant, le script recopie le miroir froid vers le bucket chaud
 avant que les utilisateurs Nextcloud ne se reconnectent.
+
+Une fois la récupération terminée, supprimez le dossier extrait et
+le zip d'origine de votre poste et du VPS. Les identifiants qu'ils
+contiennent sont sensibles et n'ont besoin d'exister que le temps
+de la reprise.
 
 ## Voie rapide brute — invites interactives pour les identifiants
 
@@ -264,8 +291,8 @@ cette façon :
   n'importe quel outil compatible S3 (`aws s3 sync`, `rclone`) avec
   les mêmes identifiants.
 - Si le bucket Nextcloud chaud lui-même n'est plus là (supprimé, ou
-  ses identifiants ont été révoqués), le script de récupération
-  chiffré gère cela automatiquement : lorsque les identifiants
+  ses identifiants ont été révoqués), l'archive de récupération
+  chiffrée gère cela automatiquement : lorsque les identifiants
   côté froid sont présents dans l'enveloppe, le script recopie
   chaque objet du miroir froid vers un nouveau bucket chaud avant
   que les utilisateurs ne se reconnectent. La page
