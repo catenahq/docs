@@ -53,7 +53,7 @@ Domains tabs (described above), never in the compose itself.
 
 services:
   postiz:
-    image: ghcr.io/gitroomhq/postiz-app:v2.21.6
+    image: ghcr.io/gitroomhq/postiz-app:v2.21.7
     restart: unless-stopped
     environment:
       NOT_SECURED: "false"
@@ -87,7 +87,7 @@ services:
       default: {}
 
   db:
-    image: postgres:16.13-alpine3.22
+    image: postgres:16.13-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: postiz
@@ -106,7 +106,7 @@ services:
       - default
 
   redis:
-    image: redis:8.4.2-alpine3.22
+    image: redis:8.6.3-alpine3.23
     restart: unless-stopped
     labels:
       - "vps.auto-update=patch"
