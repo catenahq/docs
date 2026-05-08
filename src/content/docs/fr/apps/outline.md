@@ -53,7 +53,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 
 services:
   outline:
-    image: outlinewiki/outline:1.6.1
+    image: outlinewiki/outline:1.7.1
     restart: unless-stopped
     command: >-
       sh -c "yarn db:migrate --env production-ssl-disabled && yarn start"
@@ -102,7 +102,7 @@ services:
       default: {}
 
   db:
-    image: postgres:16.13-alpine3.22
+    image: postgres:16.13-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: outline
@@ -121,7 +121,7 @@ services:
       - default
 
   redis:
-    image: redis:8.4.2-alpine3.22
+    image: redis:8.6.3-alpine3.23
     restart: unless-stopped
     labels:
       - "vps.auto-update=patch"
