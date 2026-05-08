@@ -54,7 +54,7 @@ Domains tabs (described above), never in the compose itself.
 
 services:
   server:
-    image: twentycrm/twenty:v1.23.9
+    image: twentycrm/twenty:v2.3.2
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -90,7 +90,7 @@ services:
       default: {}
 
   worker:
-    image: twentycrm/twenty:v1.23.9
+    image: twentycrm/twenty:v2.3.2
     restart: unless-stopped
     command: ["yarn", "worker:prod"]
     environment:
@@ -111,7 +111,7 @@ services:
       - default
 
   db:
-    image: postgres:16.13-alpine3.22
+    image: postgres:16.13-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
@@ -130,7 +130,7 @@ services:
       - default
 
   redis:
-    image: redis:8.4.2-alpine3.22
+    image: redis:8.6.3-alpine3.23
     restart: unless-stopped
     labels:
       - "vps.auto-update=patch"
