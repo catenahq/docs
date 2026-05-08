@@ -112,7 +112,7 @@ services:
       - default
 
   db:
-    image: postgres:16.13-alpine3.22
+    image: postgres:16.13-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: chatwoot
@@ -131,7 +131,7 @@ services:
       - default
 
   redis:
-    image: redis:8.4.2-alpine3.22
+    image: redis:8.6.3-alpine3.23
     restart: unless-stopped
     labels:
       - "vps.auto-update=patch"
