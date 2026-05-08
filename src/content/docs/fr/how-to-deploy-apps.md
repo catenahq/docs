@@ -110,7 +110,7 @@ cron :
 ```yaml
 services:
   app:
-    image: nextcloud:30.0.2-apache
+    image: nextcloud:33.0.3-apache
     environment:
       POSTGRES_HOST: db
       POSTGRES_DB: nextcloud
@@ -130,7 +130,7 @@ services:
       default: {}               # atteindre db, redis, cron via les noms voisins
 
   db:
-    image: postgres:16.4-alpine
+    image: postgres:16.13-alpine
     environment:
       POSTGRES_DB: nextcloud
       POSTGRES_USER: nextcloud
@@ -141,12 +141,12 @@ services:
       - default                 # PAS sur dokploy-network — interne uniquement
 
   redis:
-    image: redis:7.4.1-alpine
+    image: redis:7.4.9-alpine
     networks:
       - default
 
   cron:
-    image: nextcloud:30.0.2-apache
+    image: nextcloud:33.0.3-apache
     entrypoint: /cron.sh        # exécute php -f cron.php toutes les 5 min
     volumes:
       - nc-data:/var/www/html

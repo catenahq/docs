@@ -100,7 +100,7 @@ sidecar:
 ```yaml
 services:
   app:
-    image: nextcloud:30.0.2-apache
+    image: nextcloud:33.0.3-apache
     environment:
       POSTGRES_HOST: db
       POSTGRES_DB: nextcloud
@@ -120,7 +120,7 @@ services:
       default: {}               # reach db, redis, cron via sibling names
 
   db:
-    image: postgres:16.4-alpine
+    image: postgres:16.13-alpine
     environment:
       POSTGRES_DB: nextcloud
       POSTGRES_USER: nextcloud
@@ -131,12 +131,12 @@ services:
       - default                 # NOT on dokploy-network — internal only
 
   redis:
-    image: redis:7.4.1-alpine
+    image: redis:7.4.9-alpine
     networks:
       - default
 
   cron:
-    image: nextcloud:30.0.2-apache
+    image: nextcloud:33.0.3-apache
     entrypoint: /cron.sh        # runs php -f cron.php every 5 min
     volumes:
       - nc-data:/var/www/html
