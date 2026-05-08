@@ -79,7 +79,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 
 services:
   espocrm:
-    image: espocrm/espocrm:8.4.2
+    image: espocrm/espocrm:9.3.6
     restart: unless-stopped
     environment:
       ESPOCRM_DATABASE_PLATFORM: Mysql
@@ -117,7 +117,7 @@ services:
       default: {}
 
   cron:
-    image: espocrm/espocrm:8.4.2
+    image: espocrm/espocrm:9.3.6
     restart: unless-stopped
     entrypoint: docker-cron.sh
     environment:
