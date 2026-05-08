@@ -103,7 +103,7 @@ services:
     # exits 0 immediately if /signing/cert.p12 already exists, so an
     # operator who replaced the cert with a real CA-issued one is not
     # overwritten.
-    image: alpine:3.22
+    image: alpine:3.23
     restart: "no"
     command: >-
       sh -c "set -eu;
@@ -125,7 +125,7 @@ services:
       - default
 
   documenso:
-    image: documenso/documenso:1.10.2
+    image: documenso/documenso:v2.10.1
     restart: unless-stopped
     environment:
       PORT: "3000"
@@ -181,7 +181,7 @@ services:
       default: {}
 
   db:
-    image: postgres:16.13-alpine3.22
+    image: postgres:16.13-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: documenso
