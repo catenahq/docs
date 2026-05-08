@@ -8,11 +8,50 @@ different VPS, this page walks you through doing it manually with the
 same building blocks your operator uses. It takes a few hours. You own
 your data; this is the fallback path.
 
-## Fast path — automated recovery script
+## Fast path — pre-filled recovery script (recommended)
 
-If you have the credentials listed in the next section ready, you can
-skip the manual steps below and run a single script that does steps 1
-through 7 in sequence. From the fresh VPS as root:
+The fastest recovery is the one where you do not have to type any
+credentials. Your operator can generate a single recovery script with
+all the bucket credentials for *this* VPS already baked in — it is
+encrypted with a one-time password, and you decrypt it on the new VPS
+with that password.
+
+**What your operator hands you, out of band:**
+
+1. The recovery script (downloaded from `recovery.<zone>` after they
+   click the "Generate recovery script" action — see the
+   [Disaster prevention](/disaster-prevention/) page for what to set
+   up beforehand).
+2. The one-time password for that script.
+
+**On the fresh VPS as root:**
+
+```
+chmod +x restore.sh
+sudo ./restore.sh
+```
+
+The script prompts for the password once, decrypts its embedded
+credential envelope, and runs the eight recovery steps end to end:
+prepare host, verify the restic repo, restore the latest snapshot,
+install Dokploy, replay per-app Postgres dumps, repair the Nextcloud
+S3 bucket if needed, install cloudflared, summary.
+
+It is idempotent on partial failures — re-run after fixing whatever
+broke and it picks up where it left off.
+
+If the hot backup bucket is unreachable (rare, e.g. the bucket itself
+was deleted) and the envelope also carries cold-bucket credentials,
+the script automatically falls back to the cold mirror. If you also
+use Nextcloud with S3 storage and the hot Nextcloud bucket is
+empty/missing, the script replays the cold copy back to hot before
+Nextcloud users get logged in.
+
+## Plain fast path — interactive credential prompts
+
+If you have the credentials listed in the next section but no
+pre-filled script, you can run the unencrypted version that prompts
+for each credential interactively. From the fresh VPS as root:
 
 ```
 curl -fsSLo restore.sh https://docs.yourdomain.com/restore.sh
@@ -20,11 +59,11 @@ chmod +x restore.sh
 sudo ./restore.sh
 ```
 
-The script prompts for each credential, checks the restic repo is
-reachable, restores the latest snapshot, installs Dokploy, replays
-per-app Postgres dumps, and (optionally) installs cloudflared with
-your tunnel token. Idempotent on partial failures — re-run after
-fixing whatever broke and it picks up where it left off.
+It walks the same eight steps. Cold-bucket fallback and Nextcloud
+S3 repair only run when their corresponding environment variables
+are exported before the call (`RESTIC_REPOSITORY_COLD`,
+`AWS_ACCESS_KEY_ID_COLD`, `AWS_SECRET_ACCESS_KEY_COLD`,
+`NEXTCLOUD_S3_HOT_*`, `NEXTCLOUD_S3_COLD_*`).
 
 If you prefer to walk through the steps by hand (or you hit
 something the script doesn't handle cleanly), the manual procedure
@@ -212,6 +251,13 @@ operator deployed Nextcloud this way:
   wanted to download every file manually, the bucket is readable
   with any S3-compatible tool (`aws s3 sync`, `rclone`) using those
   same credentials.
+- If the hot Nextcloud bucket itself is gone (deleted, or its
+  credentials were revoked), the encrypted recovery script handles
+  this automatically: when the cold-side credentials are present in
+  the envelope, the script copies every object from the cold mirror
+  back into a fresh hot bucket before users log in. The
+  [Disaster prevention](/disaster-prevention/) page lists what your
+  operator must enable for the cold mirror to exist.
 
 ## When in doubt — call your operator back
 

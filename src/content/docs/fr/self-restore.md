@@ -8,12 +8,55 @@ suite logicielle vers un autre VPS, cette page détaille la procédure manuelle,
 les mêmes outils qu'utilise votre opérateur. Comptez quelques heures.
 Vos données vous appartiennent — ceci est la voie de secours.
 
-## Voie rapide — script de récupération automatisé
+## Voie rapide — script de récupération préchargé (recommandée)
 
-Si vous avez les identifiants listés à la section suivante, vous
-pouvez sauter les étapes manuelles et lancer un script unique qui
-exécute les étapes 1 à 7 en séquence. Depuis le nouveau VPS, en
-root :
+La récupération la plus rapide est celle où vous n'avez aucun
+identifiant à taper. Votre opérateur peut générer un script de
+récupération unique avec tous les identifiants de bucket pour *ce*
+VPS déjà intégrés — il est chiffré avec un mot de passe à usage
+unique, et vous le déchiffrez sur le nouveau VPS avec ce mot de
+passe.
+
+**Ce que votre opérateur vous remet, hors ligne :**
+
+1. Le script de récupération (téléchargé depuis `recovery.<zone>`
+   après avoir cliqué sur l'action « Générer un script de
+   récupération » — voir la page
+   [Prévention des sinistres](/fr/disaster-prevention/) pour ce
+   qu'il faut configurer au préalable).
+2. Le mot de passe à usage unique de ce script.
+
+**Sur le nouveau VPS, en root :**
+
+```
+chmod +x restore.sh
+sudo ./restore.sh
+```
+
+Le script demande le mot de passe une fois, déchiffre son
+enveloppe d'identifiants intégrée et exécute les huit étapes de
+récupération de bout en bout : préparer l'hôte, vérifier le dépôt
+restic, restaurer le dernier snapshot, installer Dokploy, rejouer
+les dumps Postgres par application, réparer le bucket S3 Nextcloud
+si nécessaire, installer cloudflared, résumé.
+
+Idempotent en cas d'échec partiel — relancez-le après avoir
+corrigé le problème, il reprend où il s'est arrêté.
+
+Si le bucket de sauvegarde « chaud » est injoignable (rare, p. ex.
+le bucket lui-même a été supprimé) et que l'enveloppe contient
+aussi les identifiants du bucket « froid », le script bascule
+automatiquement sur le miroir froid. Si vous utilisez Nextcloud
+avec stockage S3 et que le bucket Nextcloud chaud est vide ou
+manquant, le script recopie le miroir froid vers le bucket chaud
+avant que les utilisateurs Nextcloud ne se reconnectent.
+
+## Voie rapide brute — invites interactives pour les identifiants
+
+Si vous avez les identifiants listés à la section suivante mais pas
+de script préchargé, vous pouvez exécuter la version non chiffrée
+qui demande chaque identifiant interactivement. Depuis le nouveau
+VPS, en root :
 
 ```
 curl -fsSLo restore.sh https://docs.yourdomain.com/restore.sh
@@ -21,12 +64,12 @@ chmod +x restore.sh
 sudo ./restore.sh
 ```
 
-Le script demande chaque identifiant, vérifie que le dépôt restic
-est joignable, restaure le dernier snapshot, installe Dokploy,
-rejoue les dumps Postgres par application et (facultatif) installe
-cloudflared avec votre jeton de tunnel. Idempotent en cas
-d'échec partiel — relancez-le après avoir corrigé le problème, il
-reprend où il s'est arrêté.
+Il déroule les mêmes huit étapes. La bascule sur le bucket froid
+et la réparation du bucket Nextcloud S3 ne tournent que lorsque
+les variables d'environnement correspondantes sont exportées
+avant l'appel (`RESTIC_REPOSITORY_COLD`,
+`AWS_ACCESS_KEY_ID_COLD`, `AWS_SECRET_ACCESS_KEY_COLD`,
+`NEXTCLOUD_S3_HOT_*`, `NEXTCLOUD_S3_COLD_*`).
 
 Si vous préférez dérouler les étapes à la main (ou si le script
 trébuche sur quelque chose qu'il ne gère pas proprement), la
@@ -220,6 +263,14 @@ cette façon :
   télécharger tous vos fichiers manuellement, le bucket se lit avec
   n'importe quel outil compatible S3 (`aws s3 sync`, `rclone`) avec
   les mêmes identifiants.
+- Si le bucket Nextcloud chaud lui-même n'est plus là (supprimé, ou
+  ses identifiants ont été révoqués), le script de récupération
+  chiffré gère cela automatiquement : lorsque les identifiants
+  côté froid sont présents dans l'enveloppe, le script recopie
+  chaque objet du miroir froid vers un nouveau bucket chaud avant
+  que les utilisateurs ne se reconnectent. La page
+  [Prévention des sinistres](/fr/disaster-prevention/) liste ce que
+  votre opérateur doit activer pour que le miroir froid existe.
 
 ## En cas de doute — rappelez votre opérateur
 
