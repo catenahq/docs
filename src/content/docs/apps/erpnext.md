@@ -75,7 +75,7 @@ x-common: &frappe-env
 services:
   # One-shot: render common_site_config.json from the env above.
   configurator:
-    image: frappe/erpnext:v15.104.3
+    image: frappe/erpnext:v15.107.0
     restart: "no"
     entrypoint:
       - bash
@@ -103,7 +103,7 @@ services:
   # One-shot: create the ERPNext site on first run (idempotent: bench
   # new-site no-ops when the site already exists).
   create-site:
-    image: frappe/erpnext:v15.104.3
+    image: frappe/erpnext:v15.107.0
     restart: "no"
     entrypoint:
       - bash
@@ -133,7 +133,7 @@ services:
       - configurator
 
   backend:
-    image: frappe/erpnext:v15.104.3
+    image: frappe/erpnext:v15.107.0
     restart: unless-stopped
     environment: *frappe-env
     volumes:
@@ -147,7 +147,7 @@ services:
       - default
 
   frontend:
-    image: frappe/erpnext:v15.104.3
+    image: frappe/erpnext:v15.107.0
     restart: unless-stopped
     command: ["nginx-entrypoint.sh"]
     environment:
@@ -175,7 +175,7 @@ services:
       default: {}
 
   websocket:
-    image: frappe/erpnext:v15.104.3
+    image: frappe/erpnext:v15.107.0
     restart: unless-stopped
     command: ["node", "/home/frappe/frappe-bench/apps/frappe/socketio.js"]
     environment: *frappe-env
@@ -190,7 +190,7 @@ services:
       - default
 
   queue-default:
-    image: frappe/erpnext:v15.104.3
+    image: frappe/erpnext:v15.107.0
     restart: unless-stopped
     command: ["bench", "worker", "--queue", "default"]
     environment: *frappe-env
@@ -205,7 +205,7 @@ services:
       - default
 
   queue-short:
-    image: frappe/erpnext:v15.104.3
+    image: frappe/erpnext:v15.107.0
     restart: unless-stopped
     command: ["bench", "worker", "--queue", "short,default"]
     environment: *frappe-env
@@ -220,7 +220,7 @@ services:
       - default
 
   queue-long:
-    image: frappe/erpnext:v15.104.3
+    image: frappe/erpnext:v15.107.0
     restart: unless-stopped
     command: ["bench", "worker", "--queue", "long,default,short"]
     environment: *frappe-env
@@ -235,7 +235,7 @@ services:
       - default
 
   scheduler:
-    image: frappe/erpnext:v15.104.3
+    image: frappe/erpnext:v15.107.0
     restart: unless-stopped
     command: ["bench", "schedule"]
     environment: *frappe-env
@@ -273,7 +273,7 @@ services:
       - default
 
   redis-cache:
-    image: redis:8.4.2-alpine3.22
+    image: redis:8.6.3-alpine3.23
     restart: unless-stopped
     labels:
       - "vps.auto-update=patch"
@@ -281,7 +281,7 @@ services:
       - default
 
   redis-queue:
-    image: redis:8.4.2-alpine3.22
+    image: redis:8.6.3-alpine3.23
     restart: unless-stopped
     volumes:
       - redis-queue-data:/data
