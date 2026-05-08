@@ -50,7 +50,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 
 services:
   actual:
-    image: actualbudget/actual-server:26.4.0-alpine
+    image: actualbudget/actual-server:26.5.1-alpine
     restart: unless-stopped
     environment:
       ACTUAL_HTTPS: "false"               # TLS terminated by Traefik
