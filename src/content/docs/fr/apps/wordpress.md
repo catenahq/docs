@@ -135,7 +135,7 @@ services:
       - default
 
   nginx:
-    image: nginx:1.27-alpine
+    image: nginx:1.29.8-alpine
     restart: unless-stopped
     # Add www-data uid 82 (matches php-fpm-alpine) before starting nginx
     # so workers can read/write the FastCGI cache that NPP unlinks from
@@ -193,7 +193,7 @@ services:
       - default
 
   redis:
-    image: redis:7.4.8-alpine
+    image: redis:7.4.9-alpine
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
