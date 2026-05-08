@@ -138,7 +138,7 @@ services:
       default: {}
 
   db:
-    image: postgres:16.13-alpine3.22
+    image: postgres:16.13-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: caldiy
