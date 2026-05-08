@@ -68,7 +68,7 @@ x-zammad-env: &zammad-env
 
 services:
   zammad-init:
-    image: zammad/zammad:7.0.1-0019
+    image: zammad/zammad:7.0.1-0035
     restart: on-failure
     command: ["zammad-init"]
     environment: *zammad-env
@@ -83,7 +83,7 @@ services:
       - default
 
   zammad-railsserver:
-    image: zammad/zammad:7.0.1-0019
+    image: zammad/zammad:7.0.1-0035
     restart: unless-stopped
     command: ["zammad-railsserver"]
     environment: *zammad-env
@@ -97,7 +97,7 @@ services:
       - default
 
   zammad-websocket:
-    image: zammad/zammad:7.0.1-0019
+    image: zammad/zammad:7.0.1-0035
     restart: unless-stopped
     command: ["zammad-websocket"]
     environment: *zammad-env
@@ -109,7 +109,7 @@ services:
       - default
 
   zammad-scheduler:
-    image: zammad/zammad:7.0.1-0019
+    image: zammad/zammad:7.0.1-0035
     restart: unless-stopped
     command: ["zammad-scheduler"]
     environment: *zammad-env
@@ -124,7 +124,7 @@ services:
 
   # Public-facing: fronts railsserver + websocket under a single vhost.
   zammad-nginx:
-    image: zammad/zammad:7.0.1-0019
+    image: zammad/zammad:7.0.1-0035
     restart: unless-stopped
     command: ["zammad-nginx"]
     environment:
@@ -148,7 +148,7 @@ services:
       default: {}
 
   db:
-    image: postgres:16.13-alpine3.22
+    image: postgres:16.13-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: zammad
@@ -167,7 +167,7 @@ services:
       - default
 
   redis:
-    image: redis:8.4.2-alpine3.22
+    image: redis:8.6.3-alpine3.23
     restart: unless-stopped
     labels:
       - "vps.auto-update=patch"
@@ -184,7 +184,7 @@ services:
       - default
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.19.15
     restart: unless-stopped
     environment:
       discovery.type: single-node
