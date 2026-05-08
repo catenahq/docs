@@ -55,7 +55,7 @@ Domains tabs (described above), never in the compose itself.
 
 services:
   n8n:
-    image: n8nio/n8n:2.17.3
+    image: n8nio/n8n:2.19.5
     restart: unless-stopped
     environment:
       N8N_HOST: ${N8N_HOSTNAME}
@@ -90,7 +90,7 @@ services:
       default: {}
 
   db:
-    image: postgres:16.13-alpine3.22
+    image: postgres:16.13-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: n8n
