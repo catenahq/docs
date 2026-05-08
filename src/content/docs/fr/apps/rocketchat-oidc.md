@@ -66,7 +66,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 
 services:
   mongodb:
-    image: mongo:7.0.31
+    image: mongo:7.0.32
     restart: unless-stopped
     # Rocket.Chat tails the oplog, which requires a replica set. Starting
     # mongod with --replSet enables the rs; the healthcheck calls
@@ -97,7 +97,7 @@ services:
           - mongodb
 
   rocketchat:
-    image: docker.io/rocketchat/rocket.chat:8.3.2
+    image: docker.io/rocketchat/rocket.chat:8.4.1
     restart: unless-stopped
     environment:
       ROOT_URL: https://${ROCKETCHAT_HOSTNAME}
@@ -156,7 +156,7 @@ services:
   # Jitsi_Domain=meet.<base>, etc. Idempotent.
 
   prosody:
-    image: jitsi/prosody:stable-9457
+    image: jitsi/prosody:stable-10888
     restart: unless-stopped
     expose:
       - "5222"
@@ -203,7 +203,7 @@ services:
           - recorder.meet.jitsi
 
   jicofo:
-    image: jitsi/jicofo:stable-9457
+    image: jitsi/jicofo:stable-10888
     restart: unless-stopped
     environment:
       XMPP_DOMAIN: meet.jitsi
@@ -223,7 +223,7 @@ services:
       - default
 
   jvb:
-    image: jitsi/jvb:stable-9457
+    image: jitsi/jvb:stable-10888
     restart: unless-stopped
     # Media UDP MUST be host-published. mode: host bypasses Swarm's
     # routing mesh so packets carry the real public source IP and
@@ -258,7 +258,7 @@ services:
       - default
 
   jitsi-web:
-    image: jitsi/web:stable-9457
+    image: jitsi/web:stable-10888
     restart: unless-stopped
     expose:
       - "80"
