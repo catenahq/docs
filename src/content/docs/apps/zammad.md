@@ -1,48 +1,48 @@
 ---
 title: "Zammad"
-description: "Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. Native OIDC."
+description: "Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connaissances. OIDC natif."
 ---
 
-Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. Native OIDC.
+Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connaissances. OIDC natif.
 
-- **Upstream project:** <https://zammad.com/>
-- **Replaces:** **Zendesk**, **Freshdesk**, **Jira Service Desk**
-- **Sign-in (SSO):** Enable via the app's admin UI — paste the `OIDC_*` values from the Environment tab once.
+- **Projet original :** <https://zammad.com/>
+- **Remplace :** **Zendesk**, **Freshdesk**, **Jira Service Desk**
+- **Connexion (SSO) :** À activer via l'interface admin — collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
 
-## Setup steps
+## Étapes de configuration
 
-1. Click **Deploy**. First boot is slow (2-3 min) — Elasticsearch and Rails migrations run on startup.
-2. Visit your Zammad domain. Complete the setup wizard (admin account, organization name).
-3. *(Optional)* Enable Keycloak SSO: **Settings** → **Security** → **Third-party authentication** → **OpenID Connect** → paste `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` from the Environment tab. Save.
+1. Cliquez **Deploy**. Le premier démarrage est lent (2-3 min) — Elasticsearch et les migrations Rails se lancent au démarrage.
+2. Visitez votre domaine Zammad. Complétez l'assistant de configuration (compte admin, nom d'organisation).
+3. *(Optionnel)* Activez Keycloak SSO : **Settings** → **Security** → **Third-party authentication** → **OpenID Connect** → collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
 
-**Resource note:** Zammad bundles Elasticsearch which reserves ~1.5 GB RAM. Plan for a ≥4 GB VPS if you run Zammad alongside other apps.
+**Ressources :** Zammad intègre Elasticsearch qui réserve ~1,5 GB de RAM. Prévoyez un VPS ≥4 GB si vous lancez Zammad avec d'autres apps.
 
-## Environment variables
+## Variables d'environnement
 
-These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
-you don't need to generate them yourself.
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
 
-| Variable | Default |
+| Variable | Valeur par défaut |
 |---|---|
 | `ZAMMAD_HOSTNAME` | `help.yourdomain.com` |
-| `DB_PASSWORD` | _auto-generated random value_ |
+| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
 
-## Domain
+## Domaine
 
-- **Service and port:** `zammad-nginx:8080`
-- **Hostname:** `help.yourdomain.com`
+- **Service et port :** `zammad-nginx:8080`
+- **Nom d'hôte :** `help.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
 
-## Compose file
+## Fichier compose
 
-For reference — this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
 # Zammad — ticket-first help desk / omnichannel support. Native OIDC
@@ -215,4 +215,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Retour au catalogue des applications pré-configurées](./)

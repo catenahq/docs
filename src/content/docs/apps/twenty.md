@@ -1,49 +1,49 @@
 ---
 title: "Twenty"
-description: "Modern open-source CRM. Contacts, companies, opportunities, email sync, pipelines. Alternative to EspoCRM (the default CRM)."
+description: "CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation email, pipelines. Alternative à EspoCRM (le CRM par défaut)."
 ---
 
-Modern open-source CRM. Contacts, companies, opportunities, email sync, pipelines. Alternative to EspoCRM (the default CRM).
+CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation email, pipelines. Alternative à EspoCRM (le CRM par défaut).
 
-- **Upstream project:** <https://twenty.com/>
-- **Replaces:** **Salesforce**, **HubSpot**, **Pipedrive**
-- **Sign-in (SSO):** Enable via the app's admin UI — paste the `OIDC_*` values from the Environment tab once.
+- **Projet original :** <https://twenty.com/>
+- **Remplace :** **Salesforce**, **HubSpot**, **Pipedrive**
+- **Connexion (SSO) :** À activer via l'interface admin — collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
 
-## Setup steps
+## Étapes de configuration
 
-1. Click **Deploy**. Wait ~1 min.
-2. Visit your Twenty domain and sign up to create the initial workspace + admin user.
-3. *(Optional)* Enable Keycloak SSO: **Settings** → **Security** → **Single sign-on** → paste `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` from the Environment tab. Save.
+1. Cliquez **Deploy**. Patientez ~1 min.
+2. Visitez votre domaine Twenty et créez le compte initial (workspace + admin).
+3. *(Optionnel)* Activez Keycloak SSO : **Settings** → **Security** → **Single sign-on** → collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
 
-**EspoCRM vs Twenty.** EspoCRM is this stack's default CRM (mature, native OIDC, mobile apps). Twenty is offered as an alternative for clients who prefer its Notion-style UI; both can be deployed side-by-side. The default `crm.<your-domain>` host is reserved for EspoCRM — Twenty defaults to `twenty.<your-domain>`.
+**EspoCRM vs Twenty.** EspoCRM est le CRM par défaut de cette stack (mature, OIDC natif, apps mobiles). Twenty est offert comme alternative pour les clients qui préfèrent son UI façon Notion ; les deux peuvent cohabiter. Le domaine par défaut `crm.<votre-domaine>` est réservé à EspoCRM — Twenty utilise par défaut `twenty.<votre-domaine>`.
 
-## Environment variables
+## Variables d'environnement
 
-These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
-you don't need to generate them yourself.
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
 
-| Variable | Default |
+| Variable | Valeur par défaut |
 |---|---|
 | `TWENTY_HOSTNAME` | `twenty.yourdomain.com` |
-| `TWENTY_APP_SECRET` | _auto-generated random value_ |
-| `DB_PASSWORD` | _auto-generated random value_ |
+| `TWENTY_APP_SECRET` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
 
-## Domain
+## Domaine
 
-- **Service and port:** `server:3000`
-- **Hostname:** `twenty.yourdomain.com`
+- **Service et port :** `server:3000`
+- **Nom d'hôte :** `twenty.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
 
-## Compose file
+## Fichier compose
 
-For reference — this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
 # Twenty — modern open-source CRM. Email/password login out of the box;
@@ -148,4 +148,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Retour au catalogue des applications pré-configurées](./)

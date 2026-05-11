@@ -1,67 +1,67 @@
 ---
 title: "EspoCRM"
-description: "Default CRM in the stack. Contacts, accounts, opportunities, leads, calendar, email integration, mass mail, workflow automation."
+description: "CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation."
 ---
 
-Default CRM in the stack. Contacts, accounts, opportunities, leads, calendar, email integration, mass mail, workflow automation. Native OIDC via post-deploy toggle.
+CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation. OIDC natif via un bouton post-déploiement.
 
-- **Upstream project:** <https://www.espocrm.com/>
-- **Replaces:** **Salesforce**, **HubSpot**, **Zoho CRM**, **Pipedrive**
-- **Sign-in (SSO):** Enable via the app's admin UI — paste the `OIDC_*` values from the Environment tab once.
+- **Projet original :** <https://www.espocrm.com/>
+- **Remplace :** **Salesforce**, **HubSpot**, **Zoho CRM**, **Pipedrive**
+- **Connexion (SSO) :** À activer via l'interface admin — collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
 
-## Setup steps
+## Étapes de configuration
 
-1. Click **Deploy**. Wait ~1 min.
-2. Visit your EspoCRM domain. Sign in as `ESPOCRM_ADMIN_USERNAME` / `ESPOCRM_ADMIN_PASSWORD` from the Environment tab.
-3. *(Optional)* Enable Keycloak SSO: **Administration** → **Authentication** → set **Method** to **OIDC** → paste:
-   - **Client ID:** `OIDC_CLIENT_ID` from Environment (`espocrm`)
-   - **Client Secret:** `OIDC_CLIENT_SECRET` from Environment (ask your operator to mint one in Keycloak if blank)
-   - **Authorization Endpoint:** `<OIDC_ISSUER_URL>/protocol/openid-connect/auth`
-   - **Token Endpoint:** `<OIDC_ISSUER_URL>/protocol/openid-connect/token`
-   - **JSON Web Key Set Endpoint:** `<OIDC_ISSUER_URL>/protocol/openid-connect/certs`
-   - **Username Claim:** `preferred_username`
-   - Save. The login page gains a **Sign in with Keycloak** button. Local admin login keeps working as a break-glass.
+1. Cliquez **Deploy**. Patientez ~1 min.
+2. Visitez votre domaine EspoCRM. Connectez-vous avec `ESPOCRM_ADMIN_USERNAME` / `ESPOCRM_ADMIN_PASSWORD` de l'onglet Environment.
+3. *(Optionnel)* Activez Keycloak SSO : **Administration** → **Authentication** → réglez **Method** sur **OIDC** → collez :
+   - **Client ID :** `OIDC_CLIENT_ID` depuis Environment (`espocrm`)
+   - **Client Secret :** `OIDC_CLIENT_SECRET` depuis Environment (demandez à votre opérateur de le générer côté Keycloak si vide)
+   - **Authorization Endpoint :** `<OIDC_ISSUER_URL>/protocol/openid-connect/auth`
+   - **Token Endpoint :** `<OIDC_ISSUER_URL>/protocol/openid-connect/token`
+   - **JSON Web Key Set Endpoint :** `<OIDC_ISSUER_URL>/protocol/openid-connect/certs`
+   - **Username Claim :** `preferred_username`
+   - Validez. La page de connexion affiche **Sign in with Keycloak**. La connexion admin locale continue de fonctionner comme issue de secours.
 
-### Why EspoCRM is the default
+### Pourquoi EspoCRM est le CRM par défaut
 
-It is the only fully open-source CRM in this catalog with native OIDC in the community edition (no Pro tier upgrade), pre-built mobile apps, and an established record of stable upgrades. Twenty is the alternative if you prefer its modern Notion-like UI; both are kept in the catalog so you can pick.
+C'est le seul CRM entièrement open-source du catalogue avec OIDC natif en édition communautaire (sans palier Pro), des apps mobiles existantes et un historique stable de mises à jour. Twenty est l'alternative si vous préférez son UI moderne façon Notion ; les deux restent au catalogue pour vous laisser choisir.
 
-### Resource note
+### Ressources
 
-EspoCRM runs as PHP-Apache + MariaDB + a cron sidecar. Plan for ~1 GB RAM at idle, ~2 GB under bulk-import or mass-email workloads.
+EspoCRM tourne en PHP-Apache + MariaDB + un cron sidecar. Prévoyez ~1 GB RAM au repos, ~2 GB sous import en masse ou envoi mass-email.
 
-## Environment variables
+## Variables d'environnement
 
-These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
-you don't need to generate them yourself.
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
 
-| Variable | Default |
+| Variable | Valeur par défaut |
 |---|---|
 | `ESPOCRM_HOSTNAME` | `crm.yourdomain.com` |
 | `ESPOCRM_ADMIN_USERNAME` | `admin` |
-| `ESPOCRM_ADMIN_PASSWORD` | _auto-generated random value_ |
-| `DB_PASSWORD` | _auto-generated random value_ |
-| `DB_ROOT_PASSWORD` | _auto-generated random value_ |
+| `ESPOCRM_ADMIN_PASSWORD` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
+| `DB_ROOT_PASSWORD` | _valeur aléatoire auto-générée_ |
 | `OIDC_CLIENT_ID` | `espocrm` |
-| `OIDC_CLIENT_SECRET` | _(set before deploy)_ |
+| `OIDC_CLIENT_SECRET` | _(à définir avant déploiement)_ |
 | `OIDC_ISSUER_URL` | `https://auth.yourdomain.com/realms/catena` |
 
-## Domain
+## Domaine
 
-- **Service and port:** `espocrm:80`
-- **Hostname:** `crm.yourdomain.com`
+- **Service et port :** `espocrm:80`
+- **Nom d'hôte :** `crm.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
 
-## Compose file
+## Fichier compose
 
-For reference — this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
 # EspoCRM -- open-source CRM. Default CRM in this stack as of 2026-04-29
@@ -168,4 +168,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Retour au catalogue des applications pré-configurées](./)

@@ -1,46 +1,46 @@
 ---
 title: "Actual Budget"
-description: "Self-hosted personal finance. Envelope budgeting, bank account syncing via SimpleFIN or GoCardless, encrypted end-to-end."
+description: "Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro bancaire via SimpleFIN ou GoCardless, chiffré de bout en bout."
 ---
 
-Self-hosted personal finance. Envelope budgeting, bank account syncing via SimpleFIN or GoCardless, encrypted end-to-end.
+Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro bancaire via SimpleFIN ou GoCardless, chiffré de bout en bout.
 
-- **Upstream project:** <https://actualbudget.org/>
-- **Replaces:** **YNAB (You Need A Budget)**, **Mint**, **EveryDollar**
-- **Sign-in (SSO):** Not available — this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
+- **Projet original :** <https://actualbudget.org/>
+- **Remplace :** **YNAB (You Need A Budget)**, **Mint**, **EveryDollar**
+- **Connexion (SSO) :** Non disponible — l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
 
-## Setup steps
+## Étapes de configuration
 
-1. Click **Deploy**. Wait ~30 s.
-2. Visit your Actual Budget domain. Set a server password on first visit (it's stored locally; remember it — no recovery).
-3. Create a new budget or import an existing one (file menu → Import from YNAB4 / YNAB5 / nYNAB).
-4. *(Optional)* Connect bank accounts via **Settings** → **Connected Accounts** → SimpleFIN (USD/CAD, paid) or GoCardless (EUR/GBP, free).
+1. Cliquez **Deploy**. Patientez ~30 s.
+2. Visitez votre domaine Actual Budget. Définissez un mot de passe serveur au premier accès (stocké localement ; retenez-le — pas de récupération).
+3. Créez un nouveau budget ou importez-en un existant (menu fichier → Importer depuis YNAB4 / YNAB5 / nYNAB).
+4. *(Optionnel)* Connectez des comptes bancaires via **Settings** → **Connected Accounts** → SimpleFIN (USD/CAD, payant) ou GoCardless (EUR/GBP, gratuit).
 
-**Note on sign-in.** Actual Budget uses a single shared server password to unlock the UI, not per-user logins. Multi-user is supported at the budget level (share the budget file) but the server auth is a single secret. This matches how the upstream project is designed: typically one household per server. OIDC/SSO isn't supported.
+**À propos de la connexion.** Actual Budget utilise un mot de passe serveur partagé pour déverrouiller l'UI, pas des connexions par utilisateur. Le multi-utilisateurs fonctionne au niveau du budget (partage de fichier budget) mais l'auth serveur est un secret unique. C'est la conception upstream : typiquement un foyer par serveur. OIDC/SSO non supporté.
 
-## Environment variables
+## Variables d'environnement
 
-These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
-you don't need to generate them yourself.
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
 
-_(no environment variables to configure)_
+_(aucune variable d'environnement à configurer)_
 
-## Domain
+## Domaine
 
-- **Service and port:** `actual:5006`
-- **Hostname:** `budget.yourdomain.com`
+- **Service et port :** `actual:5006`
+- **Nom d'hôte :** `budget.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
 
-## Compose file
+## Fichier compose
 
-For reference — this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
 # Actual Budget — self-hosted personal finance (YNAB / Mint alternative).
@@ -77,4 +77,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Retour au catalogue des applications pré-configurées](./)

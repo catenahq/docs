@@ -1,82 +1,86 @@
 ---
-title: "Documenso (deprecated)"
-description: "**DEPRECATED** as of 2026-04-29 — kept in catalog for the migration window. New deploys should use **DocuSeal** instead."
+title: "Documenso (déprécié)"
+description: "**DÉPRÉCIÉ** depuis 2026-04-29 — conservé au catalogue le temps de la migration. Les nouveaux déploiements doivent utiliser **DocuSeal**."
 ---
 
-**DEPRECATED** as of 2026-04-29 — kept in catalog for the migration window. New deploys should use **DocuSeal** instead. Open-source document signing — upload a PDF, place signature fields, send for signature. Keycloak SSO pre-wired.
+**DÉPRÉCIÉ** depuis 2026-04-29 — conservé au catalogue le temps de la migration. Les nouveaux déploiements doivent utiliser **DocuSeal**. Signature électronique de documents open-source — téléversez un PDF, placez les champs de signature, envoyez pour signature. Keycloak SSO pré-câblé.
 
-- **Upstream project:** <https://documenso.com/>
-- **Replaces:** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**
-- **Sign-in (SSO):** Pre-wired — the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
+- **Projet original :** <https://documenso.com/>
+- **Remplace :** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**
+- **Connexion (SSO) :** Pré-câblé — la page de connexion affiche « Se connecter avec Keycloak » d'emblée, aucune étape post-déploiement.
 
-## Setup steps
+## Étapes de configuration
 
-> **Deprecated:** new deploys should use **DocuSeal** at `sign.<your-domain>`. This entry is retained at `sign-legacy.<your-domain>` for the migration window. To migrate, deploy DocuSeal, recreate your templates there, then delete this Documenso compose.
+> **Déprécié :** les nouveaux déploiements doivent utiliser **DocuSeal** à `sign.<votre-domaine>`. Cette entrée est conservée à `sign-legacy.<votre-domaine>` le temps de la migration. Pour migrer : déployez DocuSeal, recréez vos templates, puis supprimez ce compose Documenso.
 
-1. Click **Deploy**. Environment defaults are pre-filled; the first boot mints a self-signed signing certificate automatically (~30 s).
-2. Visit your Documenso domain → click **Sign in with Keycloak**. The first user to sign in becomes the team admin.
-3. *(Optional)* Replace the auto-generated signing certificate with one issued by a trusted Certificate Authority for legally-binding signatures. Until then, signed PDFs render correctly but Adobe / Acrobat / browsers will mark the signature as "issued by an untrusted root." Contact your operator to install a real cert into the `documenso-signing` Docker volume.
+1. Cliquez **Deploy**. Les valeurs par défaut sont pré-remplies ; le premier démarrage génère automatiquement un certificat de signature auto-signé (~30 s).
+2. Visitez votre domaine Documenso → cliquez **Se connecter avec Keycloak**. Le premier utilisateur devient l'admin de l'équipe.
+3. *(Optionnel)* Remplacez le certificat auto-signé par un certificat émis par une autorité de certification de confiance pour les signatures à valeur légale. En attendant, les PDF signés s'affichent correctement, mais Adobe / Acrobat / les navigateurs marqueront la signature comme « émise par une racine non fiable ». Contactez votre opérateur pour installer un vrai certificat dans le volume Docker `documenso-signing`.
 
-### Self-signed cert vs trusted-CA cert
+### Certificat auto-signé vs certificat d'une AC de confiance
 
-The first deploy mints a 10-year self-signed PKCS12 cert so
-Documenso starts out of the box. Documents you sign with this
-cert are cryptographically valid (the math works) but the
-signing identity is **your VPS hostname**, not your business
-identity, and Adobe Acrobat / browsers display a yellow
-warning banner ("not from a trusted root CA") on every
-verification.
+Le premier déploiement génère un certificat PKCS12
+auto-signé valide 10 ans pour que Documenso démarre tel
+quel. Les documents signés avec ce certificat sont
+cryptographiquement valides (la mathématique fonctionne),
+mais l'identité de signature est **le nom d'hôte de votre
+VPS**, pas l'identité de votre entreprise, et Adobe Acrobat
+et les navigateurs affichent un bandeau jaune (« pas d'une
+racine de confiance ») à chaque vérification.
 
-For internal-only workflows (HR forms, vendor intake, NDAs
-between parties who already trust each other), the self-
-signed cert is fine. For client-facing signed contracts,
-contact your operator to install a CA-issued cert. The
-upgrade is non-disruptive — replace `cert.p12` in the
-`documenso-signing` volume, restart the Documenso container.
+Pour les workflows internes (formulaires RH, prise en
+charge fournisseur, NDA entre parties déjà en confiance), le
+certificat auto-signé suffit. Pour les contrats signés
+face client, contactez votre opérateur pour installer un
+certificat émis par une AC. La mise à niveau ne perturbe
+rien — remplacez `cert.p12` dans le volume
+`documenso-signing`, redémarrez le conteneur Documenso.
 
 ### SMTP
 
-Without SMTP configured, signature-request emails are not
-sent. Recipients still see pending requests in their
-Documenso dashboard if they sign in. To enable email, fill
-the `SMTP_*` env vars (your transactional-email provider's
-documentation has the host/port/credentials).
+Sans SMTP configuré, les e-mails de demande de signature
+ne sont pas envoyés. Les destinataires voient quand même
+les demandes en attente dans leur tableau de bord Documenso
+s'ils s'y connectent. Pour activer les e-mails, renseignez
+les variables `SMTP_*` (la documentation de votre
+fournisseur d'e-mails transactionnels a l'hôte, le port et
+les identifiants).
 
-## Environment variables
+## Variables d'environnement
 
-These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
-you don't need to generate them yourself.
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
 
-| Variable | Default |
+| Variable | Valeur par défaut |
 |---|---|
 | `DOCUMENSO_HOSTNAME` | `sign.yourdomain.com` |
-| `NEXTAUTH_SECRET` | _auto-generated random value_ |
-| `DB_PASSWORD` | _auto-generated random value_ |
-| `SIGNING_PASSPHRASE` | _auto-generated random value_ |
-| `SMTP_TRANSPORT` | _(set before deploy)_ |
-| `SMTP_HOST` | _(set before deploy)_ |
+| `NEXTAUTH_SECRET` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
+| `SIGNING_PASSPHRASE` | _valeur aléatoire auto-générée_ |
+| `SMTP_TRANSPORT` | _(à définir avant déploiement)_ |
+| `SMTP_HOST` | _(à définir avant déploiement)_ |
 | `SMTP_PORT` | `587` |
-| `SMTP_USERNAME` | _(set before deploy)_ |
-| `SMTP_PASSWORD` | _(set before deploy)_ |
+| `SMTP_USERNAME` | _(à définir avant déploiement)_ |
+| `SMTP_PASSWORD` | _(à définir avant déploiement)_ |
 | `SMTP_FROM_NAME` | `Documenso` |
-| `SMTP_FROM_ADDRESS` | _(set before deploy)_ |
+| `SMTP_FROM_ADDRESS` | _(à définir avant déploiement)_ |
 
-## Domain
+## Domaine
 
-- **Service and port:** `documenso:3000`
-- **Hostname:** `sign-legacy.yourdomain.com`
+- **Service et port :** `documenso:3000`
+- **Nom d'hôte :** `sign-legacy.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
 
-## Compose file
+## Fichier compose
 
-For reference — this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
 # DEPRECATED 2026-04-29 (F5a). New deploys should use DocuSeal instead;
@@ -210,4 +214,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Retour au catalogue des applications pré-configurées](./)

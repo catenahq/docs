@@ -1,74 +1,74 @@
 ---
 title: "cal.diy"
-description: "Single-provider booking page with Stripe-paid bookings, calendar app store (Google / Outlook / Apple / CalDAV), and a polished public booking flow."
+description: "Page de réservation mono-prestataire avec paiements Stripe, magasin d'apps calendrier (Google / Outlook / Apple / CalDAV), et un parcours de réservation publ..."
 ---
 
-Single-provider booking page with Stripe-paid bookings, calendar app store (Google / Outlook / Apple / CalDAV), and a polished public booking flow. Self-hosted build of Cal.com.
+Page de réservation mono-prestataire avec paiements Stripe, magasin d'apps calendrier (Google / Outlook / Apple / CalDAV), et un parcours de réservation public soigné. Version auto-hébergée de Cal.com.
 
-- **Upstream project:** <https://github.com/calcom/cal.diy>
-- **Replaces:** **Calendly**, **Acuity**, **SavvyCal**, **Cal.com Cloud**
-- **Sign-in (SSO):** Not available — this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
+- **Projet original :** <https://github.com/calcom/cal.diy>
+- **Remplace :** **Calendly**, **Acuity**, **SavvyCal**, **Cal.com Cloud**
+- **Connexion (SSO) :** Non disponible — l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
 
-## Setup steps
+## Étapes de configuration
 
-1. Click **Deploy**. Wait ~2-3 min for the first boot (Prisma migrations run on the entrypoint).
-2. Visit your cal.diy domain and complete the setup wizard (admin email, password, name). The wizard creates an account with role `ADMIN` and `identityProvider=CAL`.
-3. **Unblock the admin login (one-time).** The legacy image force-downgrades any `IdentityProvider=CAL` admin to `INACTIVE_ADMIN` until 2FA is enabled, which makes the post-login redirect bounce. Open the Dokploy **Terminal** on the `db` service and run:
+1. Cliquez **Deploy**. Patientez ~2-3 min au premier démarrage (les migrations Prisma s'exécutent au démarrage du conteneur).
+2. Visitez votre domaine cal.diy et complétez l'assistant initial (courriel admin, mot de passe, nom). L'assistant crée un compte avec le rôle `ADMIN` et `identityProvider=CAL`.
+3. **Débloquer la connexion admin (une seule fois).** L'image héritée force tout admin `identityProvider=CAL` à `INACTIVE_ADMIN` tant que la 2FA n'est pas activée, ce qui fait rebondir la redirection après connexion. Ouvrez le **Terminal** Dokploy sur le service `db` et exécutez :
    ```sql
-   UPDATE "users" SET role='USER' WHERE email='<your-admin-email>';
+   UPDATE "users" SET role='USER' WHERE email='<votre-courriel-admin>';
    ```
-   Sign in. Open **Settings → Security → Two-factor authentication**, enable 2FA. Then back in the terminal:
+   Connectez-vous. Ouvrez **Settings → Security → Two-factor authentication**, activez la 2FA. Puis de retour dans le terminal :
    ```sql
-   UPDATE "users" SET role='ADMIN' WHERE email='<your-admin-email>';
+   UPDATE "users" SET role='ADMIN' WHERE email='<votre-courriel-admin>';
    ```
-4. Connect a calendar: **Settings → Apps → Calendars** → install Google Calendar / Microsoft / CalDAV / Apple → authorize.
-5. *(Optional)* Enable Stripe-paid bookings: **Apps → Stripe** → connect a Stripe account → on each event type, toggle **Requires Payment** and set the price.
-6. Configure your event types under **Event Types**. Share the public URL `https://cal.<your-domain>/<username>/<event-slug>` with customers.
+4. Branchez un calendrier : **Settings → Apps → Calendars** → installez Google Calendar / Microsoft / CalDAV / Apple → autorisez.
+5. *(Optionnel)* Activez les réservations payantes Stripe : **Apps → Stripe** → connectez un compte Stripe → sur chaque type d'événement, activez **Requires Payment** et fixez le prix.
+6. Configurez vos types d'événements sous **Event Types**. Partagez l'URL publique `https://cal.<votre-domaine>/<utilisateur>/<slug-événement>` avec vos clients.
 
-### Image situation
+### Situation de l'image
 
-cal.diy is the new MIT-licensed open-source build of Cal.com. Upstream has not yet published a `calcom/cal.diy` Docker image; this template runs the legacy `calcom/cal.com:v6.2.0` image, which still works mechanically but carries commercial code paths (license phone-home, the `INACTIVE_ADMIN` gate above). Once cal.com publishes a clean cal.diy image with the gates removed, the operator can swap the image tag and the wizard-then-SQL dance goes away.
+cal.diy est le nouveau build open-source sous licence MIT de Cal.com. Aucune image Docker `calcom/cal.diy` n'a encore été publiée par l'amont ; ce template utilise l'image héritée `calcom/cal.com:v6.2.0` qui fonctionne mécaniquement mais embarque encore du code commercial (téléphone-maison de licence, garde `INACTIVE_ADMIN` ci-dessus). Quand cal.com publiera une image cal.diy propre sans les gardes, l'opérateur basculera le tag et la danse assistant-puis-SQL disparaîtra.
 
-### Features removed in the open-source split
+### Fonctionnalités retirées dans le passage open-source
 
-The cal.com `open-source-to-closed-source` rebrand moved the following into the commercial-only Cal.com tier: **Organizations & Teams**, **Routing Forms**, **Workflows** (automated reminders), **Instant Booking**, **AI Phone**, **Insights** (analytics), **API v1**, **SAML/SSO**, admin **Impersonation** + **Booking Audit**. If a workflow needs any of these, run the booking webhook into n8n and rebuild the missing piece there. See your operator before relying on a feature in this list.
+Le rebrand cal.com `open-source-to-closed-source` a déplacé en commercial uniquement : **Organizations & Teams**, **Routing Forms**, **Workflows** (rappels automatisés), **Instant Booking**, **AI Phone**, **Insights** (analytique), **API v1**, **SAML/SSO**, **Impersonation** admin + **Booking Audit**. Si votre flux dépend d'un de ces éléments, branchez le webhook de réservation dans n8n et reconstruisez la pièce manquante là. Parlez à votre opérateur avant de compter sur l'un de ces éléments.
 
-### Resources
+### Ressources
 
-cal.diy runs Next.js + Postgres in two containers. Plan for ~1-2 GB RAM at rest, slower first boot than most apps in the catalog.
+cal.diy tourne sur Next.js + Postgres dans deux conteneurs. Prévoyez ~1-2 GB de RAM au repos, premier démarrage plus lent que la plupart des apps du catalogue.
 
-### Multi-tenant warning
+### Avertissement multi-locataire
 
-Single-tenant deploys only. The community edition has no real org/team coordination. If you need multiple practitioners with shared availability (clinic / salon / repair shop), use [Easy!Appointments](/docs/apps/easyappointments/) instead.
+Déploiements mono-locataire uniquement. La version communautaire n'a pas de vraie coordination d'organisation/équipe. Si vous avez besoin de plusieurs prestataires avec disponibilités partagées (clinique / salon / atelier), utilisez plutôt [Easy!Appointments](/docs/fr/apps/easyappointments/).
 
-## Environment variables
+## Variables d'environnement
 
-These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
-you don't need to generate them yourself.
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
 
-| Variable | Default |
+| Variable | Valeur par défaut |
 |---|---|
 | `CALDIY_HOSTNAME` | `cal.yourdomain.com` |
-| `NEXTAUTH_SECRET` | _auto-generated random value_ |
-| `CALENDSO_ENCRYPTION_KEY` | _auto-generated random value_ |
-| `DB_PASSWORD` | _auto-generated random value_ |
+| `NEXTAUTH_SECRET` | _valeur aléatoire auto-générée_ |
+| `CALENDSO_ENCRYPTION_KEY` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
 
-## Domain
+## Domaine
 
-- **Service and port:** `caldiy:3000`
-- **Hostname:** `cal.yourdomain.com`
+- **Service et port :** `caldiy:3000`
+- **Nom d'hôte :** `cal.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
 
-## Compose file
+## Fichier compose
 
-For reference — this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
 # cal.diy — MIT-licensed open-source build of Cal.com (scheduling
@@ -166,4 +166,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Retour au catalogue des applications pré-configurées](./)

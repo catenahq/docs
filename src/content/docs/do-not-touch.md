@@ -1,29 +1,35 @@
 ---
-title: "Files and directories the software suite owns"
-description: "Short answer: if a file under the paths below is hand-edited, your"
+title: "Fichiers et répertoires appartenant à la suite logicielle"
+description: "En bref : si un fichier sous les chemins ci-dessous est modifié à la"
 ---
 
-Short answer: if a file under the paths below is hand-edited, your
-operator's next maintenance run will overwrite the change. Tell your
-operator what you wanted to do instead — they almost certainly have
-a flag or a different path for it.
+En bref : si un fichier sous les chemins ci-dessous est modifié à la
+main, la prochaine exécution de maintenance de votre opérateur
+écrasera vos modifications. Dites plutôt à votre opérateur ce que
+vous vouliez faire — il a presque certainement un drapeau ou un
+autre chemin prévu pour cela.
 
-Don't hand-edit these:
+Ne modifiez pas à la main :
 
-- `/etc/dokploy/traefik/dynamic/*.yml` — managed by `dashboard-sync`
-- `/etc/catena/backup.env` — managed by your operator's automation
-- `/etc/catena/restic.pass` — managed by your operator's automation
-- `/etc/systemd/system/catena-*.{service,timer}` — managed by your
-  operator's automation
+- `/etc/dokploy/traefik/dynamic/*.yml` — géré par `dashboard-sync`
+- `/etc/catena/backup.env` — géré par l'automatisation de votre
+  opérateur
+- `/etc/catena/restic.pass` — géré par l'automatisation de votre
+  opérateur
+- `/etc/systemd/system/catena-*.{service,timer}` — géré par
+  l'automatisation de votre opérateur
 - `/usr/local/bin/run-backup.sh`, `/usr/local/bin/dashboard-sync`,
   `/usr/local/bin/gatus-sync`, `/usr/local/bin/auto-update.sh` —
-  managed by your operator's automation
+  gérés par l'automatisation de votre opérateur
 
-If a file at one of these paths carries a header that says it was
-machine-rendered, treat it as read-only.
+Si un fichier à l'un de ces chemins porte un en-tête indiquant
+qu'il a été généré automatiquement, traitez-le comme étant en
+lecture seule.
 
-What you CAN touch without asking:
+Ce que vous POUVEZ modifier sans permission préalable :
 
-- Apps deployed through Dokploy's UI (those are yours)
-- Your Keycloak users/groups (that's the point of self-service SSO)
-- Anything in `/home/<your-users>/` (the operator doesn't touch home dirs)
+- Les applications déployées via l'interface de Dokploy (elles vous
+  appartiennent).
+- Vos utilisateurs et groupes Keycloak (c'est le propre du libre-service).
+- Tout ce qui se trouve dans `/home/<vos-utilisateurs>/` (l'opérateur
+  ne touche pas aux répertoires personnels).

@@ -1,17 +1,17 @@
 ---
-title: "How big a VPS do I need?"
-description: "Per-app resource footprint to size your VPS. Last measured: 2026-04-29."
+title: "Quel VPS me faut-il ?"
+description: "Empreinte ressources par application pour choisir un palier de VPS. Dernière mesure : 2026-04-29."
 ---
 
-Resource footprint of every pre-configured app, so you can pick a VPS
-tier that matches what you plan to deploy.
+Empreinte ressources de chaque application pré-configurée, pour choisir
+un palier de VPS adapté à ce que vous comptez déployer.
 
-**Last measured:** 2026-04-29
-**Measured on:** dev1 (1 vCPU / 2 GB OVH VPS)
+**Dernière mesure :** 2026-04-29
+**Mesuré sur :** dev1 (1 vCPU / 2 GB OVH VPS)
 
-## Footprint table
+## Tableau d'empreinte
 
-| Template | RAM (idle) | RAM (peak) | CPU (idle) | CPU (peak) | Disk (baseline) |
+| Application | RAM (repos) | RAM (pic) | CPU (repos) | CPU (pic) | Disque (base) |
 |---|---|---|---|---|---|
 | Nextcloud | 420 MB | 880 MB | 2% | 65% | 320 MB |
 | Rocket.Chat | 520 MB | 720 MB | 3% | 35% | 180 MB |
@@ -27,94 +27,99 @@ tier that matches what you plan to deploy.
 | Postiz | 480 MB | 680 MB | 2% | 35% | 200 MB |
 | DocuSeal | 320 MB | 540 MB | 1% | 35% | 140 MB |
 
-CPU is normalized to one core: 100% means one full vCPU is busy. Peak
-values are what we observed while exercising the app the way the
-[setup steps](/docs/apps/) describe (the first mass-upload to
-Nextcloud, the first wizard pass on ERPNext, etc.).
+Le CPU est normalisé sur un cœur : 100 % = un vCPU complet. Les pics
+correspondent à ce que nous avons observé en exerçant l'application
+selon les [étapes de configuration](/docs/fr/apps/) (premier import
+massif Nextcloud, première passe de l'assistant ERPNext, etc.).
 
-## Tier guidance
+## Recommandations par palier
 
-These are starting points; your real numbers depend on how many users
-log in and how heavy the workload is.
+Ce sont des points de départ ; vos chiffres réels dépendent du nombre
+d'utilisateurs et de l'intensité de la charge.
 
-- **6 GB VPS (starting tier):** comfortable for the productivity bundle
-  (Nextcloud + EspoCRM + Rocket.Chat + Outline) plus one mid-weight
-  template (Plane, Twenty, Postiz, Outline). Don't run ERPNext on
-  this tier.
-- **8 GB VPS:** required for ERPNext beside one other meaningful
-  template, or for any combination that adds a second mid-weight
-  template to the productivity bundle.
-- **12 GB+ VPS:** ERPNext alongside the full productivity bundle, or
-  any combination of two heavy templates.
+- **VPS 6 Go (palier de départ) :** confortable pour le combo
+  productivité (Nextcloud + EspoCRM + Rocket.Chat + Outline) plus une
+  application de poids moyen (Plane, Twenty, Postiz, Outline). À
+  éviter pour ERPNext.
+- **VPS 8 Go :** indispensable pour ERPNext avec une autre
+  application significative, ou pour toute combinaison qui ajoute
+  une deuxième application de poids moyen au combo productivité.
+- **VPS 12 Go ou plus :** ERPNext avec le combo productivité complet,
+  ou toute combinaison de deux applications lourdes.
 
-## Notes per template
+## Notes par application
 
 ### Nextcloud
 
-The app + db + redis + cron stack idles at ~420 MB. Heaviest single
-service is `app` (PHP-FPM) at ~280 MB idle, ~600 MB during the
-first user's mass-upload pass. With S3 primary storage configured,
-disk on the VPS stays roughly constant -- bucket grows instead.
+La pile app + db + redis + cron tourne à ~420 Mo au repos. Le
+service le plus lourd est `app` (PHP-FPM) à ~280 Mo au repos,
+~600 Mo lors du premier import massif. Avec S3 en stockage
+primaire, le disque du VPS reste stable -- c'est le seau qui
+grossit.
 ### Rocket.Chat
 
-MongoDB replica set + Rocket.Chat node process. MongoDB's WiredTiger
-cache is the dominant cost; default settings fit comfortably on the
-6 GB starting tier.
+Le replica set MongoDB + le process Node Rocket.Chat. Le cache
+WiredTiger de MongoDB domine ; les réglages par défaut tiennent
+sans difficulté sur le palier de départ 6 Go.
 ### OnlyOffice
 
-Idle is light; a single editing session spawns per-document worker
-processes. Three concurrent editors push CPU to 80% on a single
-vCPU. Pair with Nextcloud (it's a backend, no direct UI).
+Au repos, c'est léger ; chaque session d'édition lance des
+workers par document. Trois éditeurs concurrents poussent le CPU
+à 80 % sur un seul vCPU. À utiliser avec Nextcloud (pas d'UI
+directe).
 ### Outline
 
-Node app + Postgres + Redis. Lightweight in steady state; the
-collaborative-editor websocket layer adds ~50 MB per simultaneous
-editor.
+App Node + Postgres + Redis. Léger en régime de croisière ; la
+couche websocket de l'éditeur collaboratif ajoute ~50 Mo par
+éditeur connecté.
 ### EspoCRM
 
-PHP-Apache + MariaDB + cron sidecar. Lightweight day-to-day; mass
-email or bulk import pushes peak RAM to ~480 MB and CPU to ~40%
-on one vCPU.
+PHP-Apache + MariaDB + sidecar cron. Léger au quotidien ; envoi
+mass-email ou import en masse poussent à ~480 Mo et ~40 % CPU sur
+un vCPU.
 ### Twenty
 
-Server + worker + Postgres + Redis -- four containers; idle RAM is
-higher than EspoCRM. Choose Twenty for the modern UI; choose
-EspoCRM for tighter footprint.
+Server + worker + Postgres + Redis -- quatre conteneurs ; RAM au
+repos plus élevée qu'EspoCRM. Choisissez Twenty pour l'UI
+moderne ; EspoCRM pour l'empreinte plus légère.
 ### Plane
 
-Multi-container stack (api + worker + beat + frontend + space +
-MinIO + Postgres + Redis). Heavy idle RAM; budget 1 GB
-headroom over the rest of your suite.
+Pile multi-conteneurs (api + worker + beat + frontend + space +
+MinIO + Postgres + Redis). Empreinte RAM importante ; prévoyez
+1 Go au-dessus du reste de la suite.
 ### WordPress
 
-nginx + php-fpm + MariaDB + Redis. FastCGI cache absorbs
-anonymous traffic; PHP only fires on cache misses + admin sessions.
-A burst of editor logins or a plugin install spikes CPU.
+nginx + php-fpm + MariaDB + Redis. Le cache FastCGI absorbe le
+trafic anonyme ; PHP ne s'active que sur cache miss + sessions
+admin. Pic de connexions éditeurs ou install plugin font monter
+le CPU.
 ### n8n
 
-Lightweight at rest; a workflow run spawns Node child processes
-per node and can spike RAM/CPU sharply. Heavy automation users
-should size for the peak, not the idle.
+Léger au repos ; un workflow lance des processus Node par nœud
+et peut faire pointer RAM/CPU. Si vous automatisez beaucoup,
+dimensionnez sur le pic, pas le repos.
 ### ERPNext
 
-~10 containers. Heaviest template in the catalog. Plan for a
-dedicated 8 GB+ VPS; co-locating ERPNext with the full productivity
-bundle wants a 12 GB tier.
+~10 conteneurs. Le template le plus lourd du catalogue. Prévoyez
+un VPS dédié de 8 Go ou plus ; colocaliser ERPNext avec le combo
+productivité complet demande un palier de 12 Go.
 ### Actual Budget
 
-Single Node container, sqlite-backed. Negligible footprint;
-effectively free to add.
+Un seul conteneur Node, sqlite. Empreinte négligeable ; ajout
+quasi gratuit.
 ### Postiz
 
-Postiz + Postgres + Redis. Mid-weight; image-heavy posts push the
-Sharp library hard during scheduling.
+Postiz + Postgres + Redis. Poids moyen ; les publications avec
+images sollicitent fortement la bibliothèque Sharp lors de la
+planification.
 ### DocuSeal
 
-Rails + Postgres. Light at idle; signing flow's PDF cert-stamping
-is the peak workload.
+Rails + Postgres. Léger au repos ; le tamponnage PDF du flux de
+signature est le pic de charge.
 
 ---
 
-If you need a different tier than what your operator initially
-provisioned, contact them -- a tier change is a one-command migration
-to a fresh VPS with the same data.
+Si vous avez besoin d'un palier différent de celui initialement
+provisionné, contactez votre opérateur — un changement de palier est
+une migration en une commande vers un nouveau VPS avec les mêmes
+données.

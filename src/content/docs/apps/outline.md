@@ -1,50 +1,50 @@
 ---
 title: "Outline"
-description: "Team wiki / knowledge base. Notion-style pages, collections, nested docs. Keycloak SSO pre-wired."
+description: "Wiki d'équipe / base de connaissances. Pages façon Notion, collections, documents imbriqués. Keycloak SSO pré-câblé."
 ---
 
-Team wiki / knowledge base. Notion-style pages, collections, nested docs. Keycloak SSO pre-wired.
+Wiki d'équipe / base de connaissances. Pages façon Notion, collections, documents imbriqués. Keycloak SSO pré-câblé.
 
-- **Upstream project:** <https://www.getoutline.com/>
-- **Replaces:** **Notion**, **Confluence**, **Google Sites**
-- **Sign-in (SSO):** Pre-wired — the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
+- **Projet original :** <https://www.getoutline.com/>
+- **Remplace :** **Notion**, **Confluence**, **Google Sites**
+- **Connexion (SSO) :** Pré-câblé — la page de connexion affiche « Se connecter avec Keycloak » d'emblée, aucune étape post-déploiement.
 
-## Setup steps
+## Étapes de configuration
 
-1. Click **Deploy**. Environment defaults are all pre-filled.
-2. Wait ~1 min for the first boot.
-3. Visit your Outline domain → click **Sign in with Keycloak**. The first user to sign in becomes the workspace admin.
+1. Cliquez **Deploy**. Les valeurs par défaut de l'Environment sont pré-remplies.
+2. Patientez ~1 min pour le premier démarrage.
+3. Visitez votre domaine Outline → cliquez **Se connecter avec Keycloak**. Le premier utilisateur devient l'admin du workspace.
 
 
 
-## Environment variables
+## Variables d'environnement
 
-These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
-you don't need to generate them yourself.
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
 
-| Variable | Default |
+| Variable | Valeur par défaut |
 |---|---|
 | `OUTLINE_HOSTNAME` | `wiki.yourdomain.com` |
-| `OUTLINE_SECRET_KEY` | _auto-generated random value_ |
-| `OUTLINE_UTILS_SECRET` | _auto-generated random value_ |
-| `DB_PASSWORD` | _auto-generated random value_ |
+| `OUTLINE_SECRET_KEY` | _valeur aléatoire auto-générée_ |
+| `OUTLINE_UTILS_SECRET` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
 
-## Domain
+## Domaine
 
-- **Service and port:** `outline:3000`
-- **Hostname:** `wiki.yourdomain.com`
+- **Service et port :** `outline:3000`
+- **Nom d'hôte :** `wiki.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
 
-## Compose file
+## Fichier compose
 
-For reference — this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
 # Outline — team wiki / knowledge base, Keycloak SSO pre-wired via
@@ -139,4 +139,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Retour au catalogue des applications pré-configurées](./)

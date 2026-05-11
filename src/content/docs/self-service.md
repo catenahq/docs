@@ -1,40 +1,46 @@
 ---
-title: "Self-service — what you can do without the operator"
-description: "Rule of thumb: anything the web UIs expose, you can do yourself. Anything that requires SSH + sudo goes through the operator."
+title: "Libre-service — ce que vous pouvez faire sans l'opérateur"
+description: "Règle empirique : tout ce que les interfaces web exposent, vous pouvez le faire vous-même. Tout ce qui requiert SSH + sudo passe par l'opérateur."
 ---
 
-Rule of thumb: anything the web UIs expose, you can do yourself.
-Anything that requires SSH + sudo goes through the operator.
+Règle empirique : tout ce que les interfaces web exposent, vous
+pouvez le faire vous-même. Tout ce qui requiert un accès SSH et sudo
+passe par l'opérateur.
 
-## Yes, do this yourself
+## Oui, faites-le vous-même
 
-- **Add / remove staff accounts:** Keycloak UI
-  (`auth.yourdomain.com`). Includes password resets, MFA enrollment,
-  and group membership for per-department app access.
-- **Deploy new apps from the vetted catalog:** Dokploy UI
-  (`admin.yourdomain.com`). Pick a template, set the per-department
-  group label, deploy. SSO is wired automatically.
-- **Check service health:** Gatus (`monitor.yourdomain.com`) for the
-  external probe view, Homepage (`dash.yourdomain.com`) for the
-  per-app status tiles.
-- **Trigger one-off backups, view backup history:** OliveTin
-  (`actions.yourdomain.com`).
-- **See what's alerting:** Healthchecks (`checks.yourdomain.com`)
-  shows the dead-man state of every scheduled job.
-- **Manage app-level settings:** anything inside Nextcloud,
-  Rocket.Chat, EspoCRM, etc. -- the apps' own admin UIs are yours.
+- **Ajouter / retirer des comptes d'employés :** interface Keycloak
+  (`auth.yourdomain.com`). Inclut les réinitialisations de mot de
+  passe, l'enrôlement MFA, et l'appartenance aux groupes pour l'accès
+  par département.
+- **Déployer de nouvelles applications du catalogue éprouvé :**
+  interface Dokploy (`admin.yourdomain.com`). Choisissez un modèle,
+  réglez le label de groupe par département, déployez. Le SSO est
+  branché automatiquement.
+- **Vérifier la santé des services :** Gatus
+  (`monitor.yourdomain.com`) pour la vue par sondes externes,
+  Homepage (`dash.yourdomain.com`) pour les tuiles d'état par
+  application.
+- **Lancer des sauvegardes ponctuelles, consulter l'historique des
+  sauvegardes :** OliveTin (`actions.yourdomain.com`).
+- **Voir les alertes actives :** Healthchecks
+  (`checks.yourdomain.com`) affiche l'état homme-mort de chaque tâche
+  planifiée.
+- **Gérer les réglages applicatifs :** tout ce qui se trouve dans
+  Nextcloud, Rocket.Chat, EspoCRM, etc. -- les interfaces admin des
+  applications elles-mêmes sont à vous.
 
-## Ask the operator
+## Passez par l'opérateur
 
-- Upgrading Keycloak / Dokploy / Postgres major versions.
-- Changing the Cloudflare Tunnel or DNS topology.
-- Restoring from backup (destructive; must be done with the VPS in a
-  quiesced state).
-- Migrating to a different VPS provider.
-- Adding a custom (non-vetted) template, or anything outside the
-  Dokploy catalog.
-- Anything that needs SSH or sudo.
+- Mises à niveau majeures de Keycloak, Dokploy ou Postgres.
+- Changements à la topologie Cloudflare Tunnel ou DNS.
+- Restauration à partir d'une sauvegarde (destructif ; exige le VPS
+  en état suspendu).
+- Migration vers un autre fournisseur de VPS.
+- Ajout d'un modèle personnalisé (hors catalogue éprouvé), ou tout
+  ce qui sort du catalogue Dokploy.
+- Toute opération qui demande SSH ou sudo.
 
-If you are not sure which side of the line a task falls on, ask
-first. Most things lean self-service; the few that don't are
-clearly destructive or cross-cutting.
+Si vous n'êtes pas certain de quel côté de la ligne tombe une tâche,
+demandez d'abord. La plupart penchent vers le libre-service ; les
+rares exceptions sont clairement destructives ou transverses.

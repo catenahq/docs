@@ -1,49 +1,49 @@
 ---
 title: "Postiz"
-description: "Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, and more."
+description: "Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, et d'autres."
 ---
 
-Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, and more.
+Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, et d'autres.
 
-- **Upstream project:** <https://postiz.com/>
-- **Replaces:** **Buffer**, **Hootsuite**, **Later**
-- **Sign-in (SSO):** Not available — this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
+- **Projet original :** <https://postiz.com/>
+- **Remplace :** **Buffer**, **Hootsuite**, **Later**
+- **Connexion (SSO) :** Non disponible — l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
 
-## Setup steps
+## Étapes de configuration
 
-1. Click **Deploy**. Wait ~1 min.
-2. Visit your Postiz domain and create the admin account.
-3. Add each social network's app credentials: **Settings** → pick the network → paste your developer-app client ID + secret from the network's developer portal. One-time per network.
+1. Cliquez **Deploy**. Patientez ~1 min.
+2. Visitez votre domaine Postiz et créez le compte admin.
+3. Ajoutez les identifiants d'application de chaque réseau : **Settings** → choisissez le réseau → collez le client ID + secret de votre app développeur depuis le portail du réseau. Une fois par réseau.
 
-**Note on sign-in:** Postiz uses local email/password login. No native OIDC in the current community release. The user count for this tool is typically 1-3 marketing people, so the SSO gap is less impactful than for chat / helpdesk tools.
+**À propos de la connexion :** Postiz utilise un email/mot de passe local. Pas d'OIDC natif dans la version communautaire actuelle. Le nombre d'utilisateurs pour cet outil est typiquement de 1 à 3 personnes en marketing, donc l'absence de SSO est moins impactante que pour les outils de chat / helpdesk.
 
-## Environment variables
+## Variables d'environnement
 
-These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
-you don't need to generate them yourself.
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
 
-| Variable | Default |
+| Variable | Valeur par défaut |
 |---|---|
 | `POSTIZ_HOSTNAME` | `social.yourdomain.com` |
-| `JWT_SECRET` | _auto-generated random value_ |
-| `DB_PASSWORD` | _auto-generated random value_ |
+| `JWT_SECRET` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
 
-## Domain
+## Domaine
 
-- **Service and port:** `postiz:5000`
-- **Hostname:** `social.yourdomain.com`
+- **Service et port :** `postiz:5000`
+- **Nom d'hôte :** `social.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
 
-## Compose file
+## Fichier compose
 
-For reference — this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
 # Postiz — social media scheduling / posting across networks (Twitter/X,
@@ -125,4 +125,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Retour au catalogue des applications pré-configurées](./)

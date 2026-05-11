@@ -1,270 +1,285 @@
 ---
-title: "Nextcloud apps vs other suite apps"
-description: "Side-by-side comparison of bundled Nextcloud apps (Talk, Tasks, Deck, Collective, Calendar, Contacts, etc.) and the dedicated apps in the catena suite, with guidance on which to enable for which use case."
+title: "Applications Nextcloud vs autres apps de la suite"
+description: "Comparaison côte à côte des applications Nextcloud intégrées (Talk, Tasks, Deck, Collective, Calendar, Contacts, etc.) et des applications dédiées de la suite catena, avec des recommandations pour choisir laquelle activer selon l'usage."
 ---
 
-Nextcloud ships with a large catalog of first-party apps, several of
-which overlap with dedicated tools in your catena software suite (Rocket.Chat,
-Plane, Outline, Easy!Appointments, EspoCRM). Both can be installed at
-the same time, but you usually want to pick **one app per job** so
-your team is not split across two tools.
+Nextcloud propose un large catalogue d'applications de première
+partie, dont plusieurs recouvrent des outils dédiés de votre suite
+logicielle catena (Rocket.Chat, Plane, Outline, Easy!Appointments,
+EspoCRM). Les
+deux peuvent cohabiter, mais il vaut mieux choisir **une seule app
+par usage** pour ne pas éparpiller votre équipe.
 
-This page compares the most common Nextcloud apps to their suite
-counterparts and recommends which to enable.
+Cette page compare les applications Nextcloud les plus courantes à
+leurs équivalents dédiés et recommande lesquelles activer.
 
-## Featured Nextcloud apps in this guide
+## Applications Nextcloud présentées dans ce guide
 
-Nextcloud apps live under **Apps → Your apps** inside Nextcloud. The
-ones covered on this page:
+Les applications Nextcloud se trouvent dans **Applications → Vos
+applications** à l'intérieur de Nextcloud. Celles couvertes ici :
 
-- [Talk](https://nextcloud.com/talk/) — chat, voice and video calls
-- [Tasks](https://apps.nextcloud.com/apps/tasks) — to-do lists tied
-  to your CalDAV calendar
-- [Deck](https://apps.nextcloud.com/apps/deck) — kanban boards
-- [Collectives](https://apps.nextcloud.com/apps/collectives) —
-  collaborative wiki backed by Markdown files
-- [Notes](https://apps.nextcloud.com/apps/notes) — per-user
-  note-taking with mobile sync
+- [Talk](https://nextcloud.com/talk/) — clavardage, appels voix et
+  vidéo
+- [Tasks](https://apps.nextcloud.com/apps/tasks) — listes de tâches
+  liées au calendrier CalDAV
+- [Deck](https://apps.nextcloud.com/apps/deck) — tableaux kanban
+- [Collectives](https://apps.nextcloud.com/apps/collectives) — wiki
+  collaboratif basé sur des fichiers Markdown
+- [Notes](https://apps.nextcloud.com/apps/notes) — prise de notes
+  par utilisateur, synchronisation mobile
 - [Appointments](https://www.srgdev.com/lab/nextcloud-appointments/)
-  — public booking pages tied to a user's calendar
-- [Forms](https://apps.nextcloud.com/apps/forms) — internal surveys
-  and intake forms
-- [Contacts](https://apps.nextcloud.com/apps/contacts) — personal
-  and shared address books over CardDAV
-- [Mail](https://apps.nextcloud.com/apps/mail) — IMAP / SMTP client
-  inside Nextcloud
-- [Calendar](https://apps.nextcloud.com/apps/calendar) — staff and
-  shared calendars over CalDAV
+  — pages de réservation publiques liées au calendrier d'un
+  utilisateur
+- [Forms](https://apps.nextcloud.com/apps/forms) — sondages internes
+  et formulaires d'intégration
+- [Contacts](https://apps.nextcloud.com/apps/contacts) — carnets
+  d'adresses personnels et partagés via CardDAV
+- [Mail](https://apps.nextcloud.com/apps/mail) — client IMAP / SMTP
+  dans Nextcloud
+- [Calendar](https://apps.nextcloud.com/apps/calendar) — calendriers
+  du personnel et partagés via CalDAV
 - [Attendance](https://apps.nextcloud.com/apps/attendance) —
-  clock-in / clock-out time tracking
+  pointage entrée / sortie pour le suivi du temps
 - [Memories](https://apps.nextcloud.com/apps/memories) /
-  [Photos](https://apps.nextcloud.com/apps/photos) — photo timeline
-  and album browser
-- [Bookmarks](https://apps.nextcloud.com/apps/bookmarks) — shared
-  bookmarks
-- [Polls](https://apps.nextcloud.com/apps/polls) — group polls and
-  date pickers
-- [News](https://apps.nextcloud.com/apps/news) — RSS reader
+  [Photos](https://apps.nextcloud.com/apps/photos) — chronologie
+  photo et navigation par album
+- [Bookmarks](https://apps.nextcloud.com/apps/bookmarks) — signets
+  partagés
+- [Polls](https://apps.nextcloud.com/apps/polls) — sondages de
+  groupe et sélecteurs de date
+- [News](https://apps.nextcloud.com/apps/news) — lecteur RSS
 
-## How to read this page
+## Comment lire cette page
 
-For each capability:
+Pour chaque fonction :
 
-- **Try the Nextcloud app first** if the feature is unclear or the
-  use case is light. Lighter footprint, no extra template to deploy,
-  and you can switch to the dedicated suite app later if you outgrow
-  it.
-- **Use the dedicated suite app** when the Nextcloud app's limits
-  start to bite, or when the capability is core to your team's
-  daily work and you need more features, speed, or integrations.
-- **Use both** is rarely a good idea. The exceptions are called out
-  explicitly below.
+- **Essayez d'abord l'application Nextcloud** si vous hésitez ou si
+  l'usage est léger. Empreinte plus faible, pas de modèle
+  supplémentaire à déployer, et vous pouvez basculer vers
+  l'application dédiée plus tard si vous en dépassez les limites.
+- **Utilisez l'application dédiée de la suite** quand les limites de
+  l'application Nextcloud commencent à se faire sentir, ou quand la
+  fonction est centrale dans le travail quotidien et que vous avez
+  besoin de plus de fonctionnalités, de vitesse ou d'intégrations.
+- **Utiliser les deux** est rarement une bonne idée. Les exceptions
+  sont indiquées explicitement plus bas.
 
-Your operator can pre-enable a starting set during deployment; you
-can enable or disable any Nextcloud app yourself afterwards from the
-same screen.
+Votre opérateur peut pré-activer un ensemble de départ lors du
+déploiement ; vous pouvez ensuite activer ou désactiver n'importe
+quelle application Nextcloud depuis le même écran.
 
-## Chat and video calls
+## Clavardage et appels vidéo
 
-Both can host channels, direct messages, calls, and file sharing.
-The interesting axes are where they diverge:
+Les deux gèrent canaux, messages directs, appels et partage de
+fichiers. Ce qui les distingue vraiment :
 
-| Axis | Nextcloud Talk | Rocket.Chat |
+| Axe | Nextcloud Talk | Rocket.Chat |
 |---|---|---|
-| Deployment | Bundled inside Nextcloud, no extra container | Separate template, own database, own domain |
-| Designed for | Small teams where chat is a side channel next to files | Larger rosters where chat is the primary collaboration surface |
-| Mobile experience | Lives inside the Nextcloud mobile app | Dedicated iOS / Android apps with native push notifications |
-| Integrations | Tightly bound to Nextcloud (Files, Calendar, Deck, Contacts, share-from-app) | Marketplace of apps + channel bridges (Telegram, SMS, Matrix, etc.) |
-| Customer-facing channels | None | Built-in livechat widget for website support and omnichannel |
-| Federation | Federation across Nextcloud servers (Federated Cloud Sharing) | Matrix federation across organizations |
-| Identity | Tied to Nextcloud accounts (Nextcloud itself can chain to Keycloak SSO) | First-class Keycloak SSO out of the box |
-| Admin granularity | Inherited from Nextcloud's roles | Per-channel roles, retention policies, audit logs |
+| Déploiement | Intégré à Nextcloud, aucun conteneur supplémentaire | Modèle distinct, base de données et domaine propres |
+| Conçu pour | Petites équipes où le clavardage est un canal secondaire à côté des fichiers | Annuaires plus larges où le clavardage est la surface principale de collaboration |
+| Expérience mobile | Inclus dans l'application mobile Nextcloud | Applications iOS / Android dédiées avec notifications push natives |
+| Intégrations | Très liée à Nextcloud (Fichiers, Calendrier, Deck, Contacts, partage depuis l'app) | Place de marché d'applications et passerelles de canaux (Telegram, SMS, Matrix, etc.) |
+| Canaux clients | Aucun | Widget livechat intégré pour le soutien web et l'omnicanal |
+| Fédération | Fédération entre serveurs Nextcloud (Federated Cloud Sharing) | Fédération Matrix entre organisations |
+| Identité | Lié aux comptes Nextcloud (qui peuvent eux-mêmes chaîner vers le SSO Keycloak) | SSO Keycloak de première classe, prêt à l'emploi |
+| Granularité admin | Héritée des rôles Nextcloud | Rôles par canal, politiques de rétention, journaux d'audit |
 
-**Use Nextcloud Talk** for small teams (under 10 people) where chat is
-a side channel next to file collaboration.
+**Utilisez Nextcloud Talk** pour les petites équipes (moins de 10
+personnes) où le clavardage est un canal secondaire à côté de la
+collaboration sur fichiers.
 
-**Use Rocket.Chat** when chat is the primary collaboration surface,
-when you need a public livechat widget, when you want a polished
-dedicated mobile app, or when fine-grained admin controls matter.
+**Utilisez Rocket.Chat** quand le clavardage est la principale
+surface de collaboration, quand il vous faut un widget livechat
+public, quand vous voulez une application mobile dédiée soignée, ou
+quand des contrôles admin fins comptent.
 
-**Use both** only during a migration window. Otherwise turn off Talk
-when Rocket.Chat is your team chat.
+**Utiliser les deux** seulement pendant une fenêtre de migration.
+Sinon, désactivez Talk quand Rocket.Chat devient le clavardage
+d'équipe.
 
-Reference: [Nextcloud Talk overview](https://nextcloud.com/talk/) ·
-[Rocket.Chat platform overview](https://www.rocket.chat/platform-overview).
+Référence : [Vue d'ensemble Nextcloud Talk](https://nextcloud.com/talk/) ·
+[Vue d'ensemble Rocket.Chat](https://www.rocket.chat/platform-overview).
 
-## Tasks and project management
+## Tâches et gestion de projet
 
 | Nextcloud Tasks + Deck | Plane |
 |---|---|
-| Tasks: simple to-do lists tied to your CalDAV calendar | Issues, cycles, modules, sub-issues, custom fields |
-| Deck: kanban boards, lightweight Trello-equivalent | Kanban, list, calendar, gantt, sprints |
-| Personal or small-shared lists | Cross-team workspaces, roadmaps, milestones |
-| No estimates, no roadmap, no automation | Estimates, automations, GitHub/GitLab links |
+| Tasks : listes de tâches simples liées à votre calendrier CalDAV | Tickets, cycles, modules, sous-tickets, champs personnalisés |
+| Deck : tableaux kanban, équivalent léger de Trello | Kanban, liste, calendrier, gantt, sprints |
+| Listes personnelles ou petits partages | Espaces de travail multi-équipes, feuilles de route, jalons |
+| Pas d'estimés, pas de feuille de route, pas d'automatisation | Estimés, automatisations, liens GitHub/GitLab |
 
-**Use Nextcloud Tasks** for personal to-dos that sync to the same
-calendar your CalDAV clients see.
+**Utilisez Nextcloud Tasks** pour les tâches personnelles qui se
+synchronisent avec le même calendrier vu par vos clients CalDAV.
 
-**Use Nextcloud Deck** for small kanban boards (5-10 cards) shared
-inside a department.
+**Utilisez Nextcloud Deck** pour les petits tableaux kanban (5-10
+cartes) partagés au sein d'un département.
 
-**Use Plane** for any work tracked across multiple people, sprints,
-or external dependencies. Plane is the recommended project-management
-tool in the suite.
+**Utilisez Plane** pour tout travail suivi entre plusieurs personnes,
+sprints, ou dépendances externes. Plane est l'outil de gestion de
+projet recommandé dans la suite.
 
-Reference: [Nextcloud Tasks](https://apps.nextcloud.com/apps/tasks) ·
+Référence : [Nextcloud Tasks](https://apps.nextcloud.com/apps/tasks) ·
 [Nextcloud Deck](https://apps.nextcloud.com/apps/deck) ·
 [Plane](https://plane.so/).
 
-## Wiki and shared documents
+## Wiki et documents partagés
 
 | Nextcloud Collective + Notes | Outline |
 |---|---|
-| Collective: collaborative wiki backed by Markdown files in a folder | Database-backed wiki, Notion-style pages |
-| Notes: per-user note-taking, syncs to mobile via Notes apps | Hierarchical collections, nested docs |
-| Lives next to your files (one URL, one login) | Separate domain, Keycloak SSO, faster search |
-| Versioning via Nextcloud file history | Built-in revision history, comments, mentions |
+| Collective : wiki collaboratif basé sur des fichiers Markdown dans un dossier | Wiki à base de données, pages style Notion |
+| Notes : prise de notes par utilisateur, synchronise sur mobile via les apps Notes | Collections hiérarchiques, documents imbriqués |
+| Cohabite avec vos fichiers (une URL, une connexion) | Domaine distinct, SSO Keycloak, recherche plus rapide |
+| Versionnement via l'historique de fichiers Nextcloud | Historique de révisions intégré, commentaires, mentions |
 
-**Use Nextcloud Collective** for low-volume internal pages where
-everything else lives in Nextcloud already.
+**Utilisez Nextcloud Collective** pour les pages internes à faible
+volume quand tout le reste vit déjà dans Nextcloud.
 
-**Use Nextcloud Notes** for personal notes that sync with mobile.
+**Utilisez Nextcloud Notes** pour les notes personnelles qui se
+synchronisent avec mobile.
 
-**Use Outline** for company-wide knowledge bases, onboarding
-documentation, or anything that needs strong search and a polished
-reading experience.
+**Utilisez Outline** pour les bases de connaissances d'entreprise,
+la documentation d'intégration, ou tout ce qui demande une recherche
+robuste et une expérience de lecture soignée.
 
-Reference: [Nextcloud Collectives](https://apps.nextcloud.com/apps/collectives) ·
+Référence : [Nextcloud Collectives](https://apps.nextcloud.com/apps/collectives) ·
 [Nextcloud Notes](https://apps.nextcloud.com/apps/notes) ·
 [Outline](https://www.getoutline.com/).
 
-## Public booking pages
+## Pages de réservation publiques
 
-Both let customers book time slots without a Nextcloud account. They
-differ in deployment shape and team support:
+Les deux permettent aux clients de réserver des créneaux sans compte
+Nextcloud. Elles diffèrent par la forme du déploiement et le support
+multi-équipe :
 
-| Axis | [Nextcloud Appointments](https://www.srgdev.com/lab/nextcloud-appointments/) | Easy!Appointments |
+| Axe | [Nextcloud Appointments](https://www.srgdev.com/lab/nextcloud-appointments/) | Easy!Appointments |
 |---|---|---|
-| Deployment | A Nextcloud app, runs inside Nextcloud | Separate template, own database, own domain |
-| Provider model | One Nextcloud user per booking page (up to 10 pages per user) | Many providers, services, locations managed from one dashboard |
-| Calendar | Tied to that user's CalDAV calendar (any CalDAV calendar works) | Per-provider calendars, syncable via ICS |
-| Customer flow | Embeddable form; two-way email confirm/cancel via emailed links | Public booking page hosted at the app's domain; email + SMS reminders |
-| Best for | Solo practitioners, freelancers, anyone whose schedule already lives in Nextcloud | Multi-staff businesses (clinics, salons, repair shops) |
-| Payments | None | None natively (Stripe via a small bridge in the suite) |
+| Déploiement | Une application Nextcloud, vit dans Nextcloud | Modèle distinct, base de données et domaine propres |
+| Modèle de prestataire | Un utilisateur Nextcloud par page de réservation (jusqu'à 10 pages par utilisateur) | Plusieurs prestataires, services, lieux gérés depuis un seul tableau de bord |
+| Calendrier | Lié au calendrier CalDAV de cet utilisateur (n'importe quel calendrier CalDAV fonctionne) | Calendriers par prestataire, synchronisables via ICS |
+| Flux client | Formulaire intégrable ; confirmation/annulation bidirectionnelle par lien dans le courriel | Page de réservation publique hébergée sur le domaine de l'app ; rappels courriel + SMS |
+| Idéal pour | Travailleurs autonomes, indépendants, quiconque a déjà son agenda dans Nextcloud | Entreprises multi-personnel (cliniques, salons, ateliers de réparation) |
+| Paiements | Aucun | Aucun nativement (Stripe via un petit pont dans la suite) |
 
-**Use Nextcloud Appointments** when you are a one-person operation
-and your calendar already lives in Nextcloud — it is the lightest
-possible setup, no separate deploy.
+**Utilisez Nextcloud Appointments** quand vous travaillez seul et que
+votre agenda vit déjà dans Nextcloud — c'est la configuration la plus
+légère, aucun déploiement séparé.
 
-**Use Easy!Appointments** when several staff need their own
-schedules, when you want a dedicated booking domain, or when you
-need services / capacity / multi-location modeling.
+**Utilisez Easy!Appointments** quand plusieurs membres du personnel
+ont besoin de leurs propres horaires, quand vous voulez un domaine
+de réservation dédié, ou quand vous avez besoin de modéliser des
+services / capacités / multi-emplacements.
 
-See [How to pick a scheduler](./how-to-pick-a-scheduler/) for the
-full decision tree across all booking patterns.
+Voir [Comment choisir votre outil de réservation](./how-to-pick-a-scheduler/)
+pour l'arbre de décision complet de tous les besoins de réservation.
 
-Nextcloud Calendar (the staff CalDAV calendar) is complementary to
-both — it covers internal calendars and meeting rooms, not customer
-bookings. See the Nextcloud-only list below.
+Nextcloud Calendar (le calendrier CalDAV du personnel) est
+complémentaire aux deux — il couvre les calendriers internes et les
+salles de réunion, pas la réservation client. Voir la liste
+Nextcloud-uniquement plus bas.
 
-Reference: [Nextcloud Appointments](https://www.srgdev.com/lab/nextcloud-appointments/) ·
+Référence : [Nextcloud Appointments](https://www.srgdev.com/lab/nextcloud-appointments/) ·
 [Easy!Appointments](https://easyappointments.org/).
 
-## Forms and surveys
+## Formulaires et sondages
 
-The suite does not ship a dedicated forms app, so **Nextcloud Forms**
-is the recommended path for any inner-company forms — HR check-ins,
-event RSVPs, intake questionnaires, internal surveys. Enable it in
-Nextcloud under Apps → Your apps.
+La suite ne livre pas d'application de formulaires dédiée, donc
+**Nextcloud Forms** est la voie recommandée pour tout formulaire
+inter-entreprise — bilans RH, réponses d'événements, questionnaires
+d'intégration, sondages internes. Activez-le dans Nextcloud sous
+Applications → Vos applications.
 
-| Use case | Recommended app |
+| Cas d'usage | Application recommandée |
 |---|---|
-| Internal forms (HR, RSVPs, surveys, intake) | Nextcloud Forms |
-| Form input that triggers a workflow (auto-create CRM contact, send email, post to chat) | [n8n](./apps/n8n/) Form Trigger node |
-| Customer-facing lead capture tied to a sales pipeline | EspoCRM web-to-lead form |
-| Document-signing flow | [DocuSeal](./apps/docuseal/) |
+| Formulaires internes (RH, RSVP, sondages, intégration) | Nextcloud Forms |
+| Saisie de formulaire qui déclenche un workflow (créer un contact CRM, envoyer un courriel, publier dans le clavardage) | Nœud Form Trigger de [n8n](./apps/n8n/) |
+| Capture de pistes côté client liée à un pipeline de vente | Formulaire web-to-lead d'EspoCRM |
+| Flux de signature électronique | [DocuSeal](./apps/docuseal/) |
 
-For most inner-company needs, Nextcloud Forms is the right answer:
-results land in a Nextcloud spreadsheet, the form lives at a public
-or staff-only URL, and you do not need a separate deployment. Reach
-for n8n only when the form must trigger an automated downstream
-action.
+Pour la plupart des besoins inter-entreprise, Nextcloud Forms est la
+bonne réponse : les résultats atterrissent dans une feuille de calcul
+Nextcloud, le formulaire vit à une URL publique ou réservée au
+personnel, et vous n'avez pas besoin d'un déploiement séparé. Ne
+sortez n8n que lorsque le formulaire doit déclencher une action
+automatisée en aval.
 
-Reference: [Nextcloud Forms](https://apps.nextcloud.com/apps/forms) ·
+Référence : [Nextcloud Forms](https://apps.nextcloud.com/apps/forms) ·
 [n8n](https://n8n.io/) ·
 [EspoCRM](https://www.espocrm.com/) ·
 [DocuSeal](https://www.docuseal.com/).
 
-## Contacts and CRM
+## Contacts et CRM
 
-| Nextcloud Contacts | EspoCRM (or Twenty) |
+| Nextcloud Contacts | EspoCRM (ou Twenty) |
 |---|---|
-| Personal and shared address books (CardDAV) | Sales pipeline: leads, accounts, opportunities |
-| Phone, email, postal address, notes | Activity history, tasks, calls, deals, reports |
-| Meant to feed your phone and email client | Meant to track sales motions over time |
+| Carnets d'adresses personnels et partagés (CardDAV) | Pipeline de vente : pistes, comptes, opportunités |
+| Téléphone, courriel, adresse postale, notes | Historique d'activité, tâches, appels, transactions, rapports |
+| Conçu pour alimenter votre téléphone et votre client courriel | Conçu pour suivre les démarches commerciales dans le temps |
 
-**Use Nextcloud Contacts** for the staff phonebook and shared address
-books that sync to phones via CardDAV.
+**Utilisez Nextcloud Contacts** pour le bottin du personnel et les
+carnets d'adresses partagés qui se synchronisent vers les téléphones
+via CardDAV.
 
-**Use EspoCRM** when you need to track customer relationships, sales
-opportunities, and activity history. EspoCRM is the default CRM in
-the suite.
+**Utilisez EspoCRM** quand vous devez suivre les relations clients,
+les opportunités de vente et l'historique d'activité. EspoCRM est le
+CRM par défaut de la suite.
 
-These two are complementary. Run Nextcloud Contacts for the directory,
-EspoCRM for sales. Avoid duplicating the same person in both unless
-you have a specific reason.
+Les deux sont complémentaires. Utilisez Nextcloud Contacts pour
+l'annuaire, EspoCRM pour la vente. Évitez de dupliquer la même
+personne dans les deux sans raison précise.
 
-Reference: [Nextcloud Contacts](https://apps.nextcloud.com/apps/contacts) ·
+Référence : [Nextcloud Contacts](https://apps.nextcloud.com/apps/contacts) ·
 [EspoCRM](https://www.espocrm.com/) ·
 [Twenty](https://twenty.com/).
 
-## Mail
+## Courriel
 
-Nextcloud Mail is an **IMAP/SMTP client**, not a mail server. catena
-does not host email. Nextcloud Mail can connect to your existing
-email provider (Microsoft 365, Google Workspace, mailbox.org, etc.) so
-your team reads and sends mail inside Nextcloud.
+Nextcloud Mail est un **client IMAP/SMTP**, pas un serveur de
+courriel. catena n'héberge pas le courriel. Nextcloud Mail peut se
+connecter à votre fournisseur courriel existant (Microsoft 365,
+Google Workspace, mailbox.org, etc.) pour que votre équipe lise et
+envoie du courriel depuis Nextcloud.
 
-Reference: [Nextcloud Mail](https://apps.nextcloud.com/apps/mail).
+Référence : [Nextcloud Mail](https://apps.nextcloud.com/apps/mail).
 
-## Nextcloud-only apps worth knowing
+## Applications Nextcloud sans équivalent
 
-These have no direct equivalent in the suite. Enable them in Nextcloud
-(Apps → Your apps) when relevant.
+Celles-ci n'ont pas d'équivalent direct dans la suite. Activez-les
+dans Nextcloud (Applications → Vos applications) au besoin.
 
-- **[Calendar](https://apps.nextcloud.com/apps/calendar)** — staff and
-  shared calendars over CalDAV. The default for internal scheduling,
-  meeting rooms, and team availability.
-- **[Attendance](https://apps.nextcloud.com/apps/attendance)** —
-  clock-in / clock-out time tracking. Useful for small businesses that
-  need a simple staff-attendance log without pulling in a full HR /
-  payroll system.
-- **[Memories](https://apps.nextcloud.com/apps/memories) /
-  [Photos](https://apps.nextcloud.com/apps/photos)** — photo timeline
-  and album browser for image files in your Nextcloud. Useful if your
-  business stores a lot of visual assets.
-- **[Bookmarks](https://apps.nextcloud.com/apps/bookmarks)** — shared
-  bookmarks across your team. Useful for curated link collections.
-- **[Polls](https://apps.nextcloud.com/apps/polls)** — quick group
-  polls (date pickers, multiple choice). Lightweight Doodle
-  equivalent.
-- **[News](https://apps.nextcloud.com/apps/news)** — RSS reader. Niche
-  but solid.
+- **Calendar** — calendriers du personnel et partagés via CalDAV.
+  Le choix par défaut pour la planification interne, les salles de
+  réunion et la disponibilité d'équipe.
+- **Attendance** — pointage entrée/sortie pour le suivi du temps.
+  Utile pour les petites entreprises qui ont besoin d'un simple
+  registre de présence du personnel sans déployer un système RH /
+  paie complet.
+- **Memories / Photos** — chronologie photo et navigation par album
+  pour les images de votre Nextcloud. Utile si votre entreprise
+  stocke beaucoup d'actifs visuels.
+- **Bookmarks** — signets partagés au sein de votre équipe. Utile
+  pour des collections de liens organisées.
+- **Polls** — sondages rapides en groupe (sélecteurs de date, choix
+  multiples). Équivalent léger de Doodle.
+- **News** — lecteur RSS. Spécialisé mais solide.
 
-## When in doubt, start with the Nextcloud app
+## Dans le doute, commencez par l'application Nextcloud
 
-The Nextcloud apps above are free to enable, light on resources, and
-easy to turn off if they don't fit. **If you are not sure whether
-your team needs the dedicated suite app, try the Nextcloud version
-first** — for a week or two, with the actual people who will use it.
-You will quickly know whether it covers the use case or whether the
-limits start to bite.
+Les applications Nextcloud ci-dessus sont gratuites à activer,
+légères en ressources et faciles à désactiver si elles ne
+conviennent pas. **Si vous n'êtes pas certain que votre équipe a
+besoin de l'application dédiée de la suite, essayez d'abord la
+version Nextcloud** — pendant une semaine ou deux, avec les
+personnes qui l'utiliseront vraiment. Vous saurez rapidement si
+elle couvre le besoin ou si les limites commencent à se faire
+sentir.
 
-If the Nextcloud app is enough, you save a deployment, a domain, and
-a separate login surface. If it is not enough, the dedicated suite
-app is one operator request away — and your data on the Nextcloud
-side stays in place during the switch.
+Si l'application Nextcloud suffit, vous économisez un déploiement,
+un domaine et une surface de connexion supplémentaire. Si elle ne
+suffit pas, l'application dédiée n'est qu'à une demande de votre
+opérateur — et vos données côté Nextcloud restent en place pendant
+le changement.
 
-Talk to your operator any time you want to enable, disable, or swap
-which app handles a given capability. They can adjust the enabled
-list in one batch.
+Parlez à votre opérateur dès que vous voulez activer, désactiver
+ou changer l'application qui gère une fonction donnée. Il peut
+ajuster la liste activée en un seul lot.

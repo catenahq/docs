@@ -1,301 +1,340 @@
 ---
-title: "Disaster prevention: what to set up so recovery is possible"
-description: "This page is a checklist of things to do **before** anything goes"
+title: "Prévention des sinistres : ce qu'il faut mettre en place pour que la récupération soit possible"
+description: "Cette page est une liste de vérification de ce qu'il faut faire"
 ---
 
-This page is a checklist of things to do **before** anything goes
-wrong, so that if something does, you're on the "annoying Tuesday"
-side of the line instead of the "data loss" side. The companion page
-is [Disaster recovery](/disaster-recovery/), which covers what to do
-once something has broken.
+Cette page est une liste de vérification de ce qu'il faut faire
+**avant** que quelque chose tourne mal, pour que si cela arrive, vous
+soyez du côté « mardi pénible » et non du côté « perte de données ».
+La page compagne est [Reprise après sinistre](/disaster-recovery/),
+qui couvre ce qu'il faut faire une fois que quelque chose est déjà
+cassé.
 
-The two pages are written to be read in order — prevention first, then
-recovery so you know what the prevention is protecting you against.
+Les deux pages sont écrites pour être lues dans l'ordre : la
+prévention d'abord, puis la récupération pour que vous sachiez contre
+quoi la prévention vous protège.
 
-> This page is written for non-technical readers — owners, managers,
-> office staff. No terminal commands required outside the optional
-> "test it once" step. The companion
-> [Disaster recovery](/disaster-recovery/) and
-> [Restore to a fresh VPS](/self-restore/) pages assume more
-> technical comfort and step into command-line territory.
+> Cette page est écrite pour des lectrices et lecteurs non
+> techniques — propriétaires, gestionnaires, personnel de bureau.
+> Aucune commande terminal n'est requise hors de l'étape facultative
+> « tester une fois ». Les pages compagnes
+> [Reprise après sinistre](/disaster-recovery/) et
+> [Restaurer sur un nouveau VPS](/self-restore/) supposent un peu
+> plus d'aisance technique et descendent en ligne de commande.
 
-## The principle: two independent paths, two independent backups
+## Le principe : deux voies indépendantes, deux sauvegardes indépendantes
 
-Your software suite is designed so that the **public path** (Cloudflare Tunnel
-→ your apps) and the **ops path** (Tailscale → SSH) are independent
-of each other. Breaking one doesn't break the other. Similarly, your
-**VPS** and your **backup bucket** should be at different companies,
-so a single provider outage can't take both down. (Setting that up is
-a one-time hand-off step — confirm with your operator that it's in
-place if you're not sure.) Prevention is mostly
-about **not collapsing those independences**.
+Votre infrastructure est conçue de telle sorte que la **voie
+publique** (Tunnel Cloudflare → vos applis) et la **voie
+d'administration** (Tailscale → SSH) sont indépendantes l'une de
+l'autre. Casser l'une ne casse pas l'autre. De même, votre **VPS** et
+votre **compartiment de sauvegarde** devraient être chez des
+entreprises différentes, de sorte qu'une seule panne de fournisseur
+ne peut pas faire tomber les deux. (C'est une étape ponctuelle de la
+prise en main — vérifiez avec votre opérateur que c'est en place si
+vous n'êtes pas certain.) La prévention consiste surtout à **ne pas
+faire s'effondrer ces indépendances**.
 
-## Checklist — do these at hand-off, then once a year
+## Liste de vérification — à faire à la remise, puis une fois par an
 
-### 1. Save the recovery credentials your operator handed you
+### 1. Sauvegardez les identifiants de récupération que votre opérateur vous a remis
 
-At hand-off your operator gave you a small kit of credentials. The
-exact contents depend on whether your operator is also managing the
-suite day-to-day, but every kit includes these four:
+Lors de la remise, votre opérateur vous a donné un petit kit
+d'identifiants. Le contenu exact dépend de la formule choisie, mais
+chaque kit comprend ces quatre éléments :
 
-- The **restic repository encryption password** — without it, every
-  byte in your backup bucket is unreadable ciphertext.
-- The **S3 access key + secret** that point at your backup bucket
-  (one access key string + one secret-key string, paired).
-- A **copy of the SSH private key** the operator uses to log into
-  your VPS — your fallback if the operator becomes unreachable.
-- The **address of your backup bucket** (the URL or "endpoint" of
-  the S3 service plus the bucket name).
+- Le **mot de passe de chiffrement du dépôt restic** — sans lui,
+  chaque octet du compartiment de sauvegarde est du texte chiffré
+  illisible.
+- La **clé d'accès S3 + clé secrète** qui pointent sur votre
+  compartiment de sauvegarde (une chaîne « access key » + une chaîne
+  « secret », appariées).
+- Une **copie de la clé SSH privée** que l'opérateur utilise pour
+  se connecter à votre VPS — votre filet de sécurité si l'opérateur
+  devient injoignable.
+- L'**adresse de votre compartiment de sauvegarde** (l'URL ou le
+  « point d'accès » du service S3, plus le nom du compartiment).
 
-Some kits also include a **vault password** (also called a "master
-password" in older docs). That one only matters if your operator has
-also given you the encrypted secret file itself — most clients do
-not have that file directly, because the recovery flow today uses
-the [Export recovery secrets](/disaster-recovery/) button instead,
-which lets you re-export an encrypted bundle on demand and protect
-it with a passphrase you choose at click time. If your kit does not
-include a vault password, you do not need one — the export-button
-flow has you covered.
+Certains kits incluent aussi un **mot de passe de coffre** (aussi
+appelé « mot de passe maître » dans les anciennes docs). Celui-ci
+n'a d'utilité que si votre opérateur vous a aussi remis le fichier
+de secrets chiffré lui-même — la plupart des clients n'ont pas ce
+fichier directement, parce que la voie de récupération actuelle
+passe par le bouton [Exporter les clés de récupération](/disaster-recovery/),
+qui vous laisse réexporter à la demande un paquet chiffré protégé
+par une phrase de passe que VOUS choisissez au moment du clic. Si
+votre kit ne contient pas de mot de passe de coffre, vous n'en avez
+pas besoin — le bouton d'export couvre le scénario.
 
-Put each credential in your password manager, labelled clearly
-("VPS — backup encryption", "VPS — S3 access key", "VPS — SSH
-private key", "VPS — bucket URL"). **Save them as separate entries**
-even though it feels redundant — losing any of them costs you a
-recovery path. The restic password decrypts the data, the S3 keys
-let you read the bucket, the SSH key lets you log into the server,
-and the bucket URL tells you where to look.
+Mettez chaque identifiant dans votre gestionnaire de mots de passe,
+étiqueté clairement (« VPS — chiffrement sauvegardes », « VPS —
+clé d'accès S3 », « VPS — clé SSH privée », « VPS — URL du
+compartiment »). **Sauvegardez-les comme entrées séparées** même
+si cela semble redondant — perdre l'un ou l'autre vous coûte une
+voie de récupération. Le mot de passe restic déchiffre les données,
+les clés S3 vous laissent lire le compartiment, la clé SSH vous
+laisse vous connecter au serveur, et l'URL du compartiment vous dit
+où regarder.
 
-### 2. Keep your SSH private key off your laptop
+### 2. Gardez votre clé SSH privée hors de votre portable
 
-Your laptop dying without a backup SSH key means losing remote access
-until provider rescue mode gets you back in. A few ways to avoid
-that:
+Votre portable qui meurt sans clé SSH de secours signifie perdre
+l'accès distant jusqu'à ce que le mode secours du fournisseur vous
+rentre. Quelques façons d'éviter ça :
 
-- Copy the private key to an encrypted USB stick kept in a safe or at
-  a different address.
-- Use a hardware token (YubiKey) — the key material never leaves the
-  device.
-- Use a password manager that stores attachments (1Password, Bitwarden
-  paid) and put the private key there.
+- Copiez la clé privée sur une clé USB chiffrée conservée dans un
+  coffre ou à une autre adresse.
+- Utilisez une clé matérielle (YubiKey) — le matériel de clé ne
+  quitte jamais l'appareil.
+- Utilisez un gestionnaire de mots de passe qui stocke les pièces
+  jointes (1Password, Bitwarden payant) et mettez-y la clé privée.
 
-Pick one. Do it today.
+Choisissez-en une. Faites-le aujourd'hui.
 
-### 3. Confirm your backup bucket is in a different city from your VPS
+### 3. Vérifiez que votre compartiment de sauvegarde est dans une ville différente de votre VPS
 
-A datacenter fire (OVH Strasbourg 2021) can take out every machine in
-one building at once. If your VPS lives in Beauharnois, your backup
-bucket should be in Toronto, Montreal-West, Frankfurt, or any other
-location that would survive the same local disaster.
+Un incendie de centre de données (OVH Strasbourg 2021) peut détruire
+chaque machine dans un bâtiment d'un seul coup. Si votre VPS vit à
+Beauharnois, votre compartiment de sauvegarde devrait être à Toronto,
+à Montréal-Ouest, à Francfort ou dans tout autre endroit qui
+survivrait à la même catastrophe locale.
 
-If you're not sure where your backup bucket is, ask your operator.
-This is a one-time question with a simple answer ("eu-west-1" /
-"us-east-005" / etc.).
+Si vous ne savez pas où se trouve votre compartiment de sauvegarde,
+demandez à votre opérateur. C'est une question ponctuelle avec une
+réponse simple (« eu-west-1 » / « us-east-005 » / etc.).
 
-### 4. Confirm your software suite has a weekly immutable-bucket snapshot
+### 4. Confirmez que votre infrastructure a un instantané hebdomadaire dans un compartiment immuable
 
-If a ransomware attack reaches your VPS, the attacker has access
-to the same restic password and S3 keys the nightly backup uses.
-With those, they could in principle issue a `forget --prune` and
-delete your historical snapshots before encrypting the live disk
-— turning a recoverable incident into an unrecoverable one.
+Si une attaque par rançongiciel atteint votre VPS, l'attaquant a
+accès au même mot de passe restic et aux mêmes clés S3 que la
+sauvegarde nocturne. Avec ça, il pourrait en principe lancer un
+`forget --prune` et supprimer vos sauvegardes historiques avant
+de chiffrer le disque actif — transformant un incident
+récupérable en perte irréversible.
 
-The defence: your software suite ships a **weekly mirror** that copies
-your live (mutable) backup bucket to a SEPARATE bucket with
-Object Lock / WORM enabled. The live bucket stays normal so the
-nightly backup's prune step works without interference; the
-weekly mirror takes a snapshot of the bucket at sync time and
-stores it where it cannot be deleted or overwritten until the
-retention window (typically 30 days) expires.
+La défense : votre infrastructure embarque un **miroir
+hebdomadaire** qui copie votre compartiment de sauvegarde actif
+(mutable) vers un compartiment SÉPARÉ avec Object Lock / WORM
+activé. Le compartiment actif reste normal pour que l'élagage
+nocturne de restic fonctionne sans interférence ; le miroir
+hebdomadaire capture l'état du compartiment au moment de la
+synchro et le range là où il ne peut être ni supprimé ni
+écrasé avant l'expiration de la fenêtre de rétention
+(typiquement 30 jours).
 
-The result: even if the attacker successfully wipes everything
-in the live bucket, last week's mirror is still in WORM storage,
-recoverable to your last good week. Worst case data-loss window
-is one week, not "everything."
+Résultat : même si l'attaquant efface tout dans le compartiment
+actif, le miroir de la semaine dernière est toujours dans le
+stockage WORM, récupérable jusqu'à votre dernière bonne
+semaine. La pire fenêtre de perte de données est d'une
+semaine, pas « tout ».
 
-Ask your operator to confirm two things:
+Demandez à votre opérateur de confirmer deux choses :
 
-1. The weekly WORM mirror is configured (the systemd timer
-   `catena-restic-mirror.timer` is enabled, the WORM bucket has
-   credentials in vault, and last week's healthcheck pinged
-   green).
-2. The WORM bucket lives at a **different provider** from the
-   live backup bucket. If the live bucket's provider is the one
-   compromised, putting the WORM at the same place defeats the
-   point.
+1. Le miroir WORM hebdomadaire est configuré (le minuteur
+   systemd `catena-restic-mirror.timer` est activé, le
+   compartiment WORM a ses identifiants dans le coffre, et le
+   healthcheck de la dernière semaine a pingé vert).
+2. Le compartiment WORM vit chez un **fournisseur différent**
+   de votre compartiment de sauvegarde actif. Si le fournisseur
+   du compartiment actif est celui qui est compromis, mettre le
+   WORM au même endroit annule l'effet.
 
-The mirror runs once a week, before any update window, on a
-fixed schedule that does not depend on whether updates fire that
-week. It is fail-soft: a misconfigured WORM bucket cannot block
-the daily backup — the daily run only touches the live bucket.
+Le miroir tourne une fois par semaine, avant toute fenêtre de
+mise à jour, sur un horaire fixe qui ne dépend pas du fait que
+les mises à jour soient déclenchées cette semaine ou non. Il
+échoue en douceur : un compartiment WORM mal configuré ne peut
+pas bloquer la sauvegarde quotidienne — le run quotidien ne
+touche que le compartiment actif.
 
-### 5. Optional — add a client-owned second backup bucket
+### 5. Optionnel — ajoutez un second compartiment de sauvegarde dont vous êtes propriétaire
 
-The WORM mirror in section 4 is configured and run by your operator
-on a fixed schedule. If you want a second backup line that **you**
-own outright — separate billing, separate provider, credentials in
-your own custody — you can add a second backup bucket yourself.
+Le miroir WORM de la section 4 est configuré et exécuté par votre
+opérateur sur un calendrier fixe. Si vous voulez une seconde voie
+de sauvegarde dont **vous** êtes propriétaire — facturation
+distincte, fournisseur distinct, identifiants entièrement sous
+votre contrôle — vous pouvez ajouter un second compartiment
+vous-même.
 
-This is overkill for most deployments (the operator-managed WORM
-mirror in section 4 already protects against ransomware and
-account-takeover). Worth doing when:
+C'est superflu pour la plupart des déploiements (le miroir WORM de
+la section 4 protège déjà contre les rançongiciels et la prise de
+contrôle de compte). À envisager quand :
 
-- You want the encryption password and S3 credentials entirely in
-  your custody, with no operator involvement in the recovery path.
-- Compliance or contractual obligations require an explicitly
-  client-owned off-site copy.
-- You want geographic redundancy beyond the WORM mirror's provider
-  (e.g. one bucket in Canada, one in the EU, one in the US).
+- Vous voulez que le mot de passe de chiffrement et les clés S3
+  soient entièrement sous votre contrôle, sans intervention de
+  l'opérateur dans le chemin de récupération.
+- Une obligation de conformité ou contractuelle exige une copie
+  hors-site explicitement détenue par le client.
+- Vous voulez une redondance géographique au-delà du fournisseur
+  du miroir WORM (par ex. un compartiment au Canada, un dans l'UE,
+  un aux États-Unis).
 
-**Pick a provider that supports Object Lock.** The provider must
-support **S3 Object Lock + versioning**. Snapshots written to an
-Object Lock bucket cannot be deleted or overwritten before the
-retention window expires, even by someone with valid credentials —
-the same line of defense the section 4 WORM mirror relies on.
+**Choisissez un fournisseur qui prend en charge Object Lock.** Le
+fournisseur doit prendre en charge **S3 Object Lock + versionnage**.
+Les snapshots écrits dans un compartiment Object Lock ne peuvent
+pas être supprimés ni écrasés avant la fin de la fenêtre de
+rétention, même par quelqu'un qui détient des identifiants valides
+— c'est la même ligne de défense sur laquelle s'appuie le miroir
+WORM de la section 4.
 
-Decent options:
+Quelques options décentes :
 
-- **eazybackup** — Canadian-owned, ca-central-1, Object Lock +
-  versioning supported. Default recommendation when the primary
-  bucket is also Canadian and you want jurisdictional separation.
-- **AWS S3** — Object Lock + versioning, most battle-tested, most
-  expensive.
-- **Backblaze B2** — cheap, Object Lock + versioning, US-based.
-- **OVH Object Storage** — flat pricing, EU-based; verify Object
-  Lock availability in your target region.
-- **Cloudflare R2** — no egress fees, Object Lock + versioning,
-  US-based.
+- **eazybackup** — Canadien, ca-central-1, Object Lock +
+  versionnage pris en charge. Recommandation par défaut quand le
+  compartiment principal est aussi canadien et que vous voulez une
+  séparation juridictionnelle.
+- **AWS S3** — Object Lock + versionnage, le plus éprouvé, le plus
+  cher.
+- **Backblaze B2** — bon marché, Object Lock + versionnage, US.
+- **OVH Object Storage** — tarification fixe, UE ; vérifiez la
+  disponibilité d'Object Lock dans votre région cible.
+- **Cloudflare R2** — pas de frais d'égress, Object Lock +
+  versionnage, US.
 
-Avoid putting both buckets at the same parent company.
+Évitez de mettre les deux compartiments chez la même société-mère.
 
-**Create the bucket.** The provider's docs walk you through it. End
-state:
+**Créez le compartiment.** La documentation du fournisseur vous
+guide. État final :
 
-- A bucket name (e.g. `acme-vps-backup-2`).
-- A region code (e.g. `ca-central-1`).
-- An endpoint URL (e.g. `s3.ca-central-1.amazonaws.com`).
-- An access key + secret scoped to write into the bucket.
-- **Object Lock enabled at creation** in compliance or governance
-  mode (compliance is stronger — even the bucket owner cannot
-  shorten retention).
-- **Object versioning enabled** (Object Lock requires it).
-- A default retention period matching your snapshot retention
-  (typical: 30-90 days).
+- Un nom de compartiment (par ex. `acme-vps-backup-2`).
+- Un code de région (par ex. `ca-central-1`).
+- Une URL de point d'accès (par ex. `s3.ca-central-1.amazonaws.com`).
+- Une clé d'accès + secrète limitée à l'écriture dans ce
+  compartiment.
+- **Object Lock activé à la création** en mode compliance ou
+  governance (compliance est plus fort — même le propriétaire ne
+  peut pas raccourcir la rétention).
+- **Versionnage des objets activé** (Object Lock l'exige).
+- Une période de rétention par défaut correspondant à votre
+  rétention de snapshots (typique : 30 à 90 jours).
 
-Most providers gate Object Lock behind a checkbox at creation time.
-If you forget to tick it, you have to delete the bucket and start
-over — Object Lock cannot be enabled retroactively at most
-providers.
+La plupart des fournisseurs cachent Object Lock derrière une case
+à cocher au moment de la création. Si vous oubliez de la cocher,
+il faut supprimer le compartiment et recommencer — Object Lock ne
+peut pas être activé rétroactivement chez la plupart des
+fournisseurs.
 
-Make sure the bucket lives in a different city — and ideally a
-different country — from your VPS and your primary backup bucket.
+Assurez-vous que le compartiment est dans une autre ville — et
+idéalement un autre pays — que votre VPS et votre compartiment de
+sauvegarde principal.
 
-**Hand the credentials to your operator** through whatever
-encrypted channel you've used before (do not paste them in plain
-email or Slack). Your operator wires the second bucket into the
-backup schedule and confirms the next run is writing to it.
+**Transmettez les identifiants à votre opérateur** via le canal
+chiffré que vous utilisez d'habitude (ne les collez pas dans un
+courriel ou un Slack en clair). Votre opérateur intègre le second
+compartiment au calendrier de sauvegarde et confirme que la
+prochaine exécution y écrit bien.
 
-**Save the credentials in your password manager**, alongside the
-primary bucket entry, labelled clearly. Use the same restic
-encryption password as the primary bucket — a single password
-unlocking both is enough.
+**Sauvegardez les identifiants dans votre gestionnaire de mots de
+passe**, à côté de l'entrée du compartiment principal, étiquetée
+clairement. Utilisez le même mot de passe de chiffrement restic que
+pour le principal — un seul mot de passe ouvrant les deux
+compartiments suffit.
 
-**Once a year**, confirm: the second bucket is still receiving
-snapshots, your stored credentials match what's installed on the
-VPS, and the provider has not changed Object Lock behaviour or
-pricing in a way that matters.
+**Une fois par an**, confirmez : le second compartiment reçoit
+toujours les snapshots, vos identifiants stockés correspondent à ce
+qui est installé sur le VPS, et le fournisseur n'a pas modifié le
+comportement d'Object Lock ou la tarification d'une façon qui vous
+concerne.
 
-If you ever need to restore from the secondary bucket, the
-[Restore to a fresh VPS](/self-restore/) page covers it — same
-procedure, just with the secondary's credentials in the environment
-variables.
+Si vous devez un jour restaurer depuis le compartiment secondaire,
+la page [Restaurer sur un nouveau VPS](/self-restore/) couvre la
+procédure — c'est la même que pour le principal, juste avec les
+identifiants du secondaire dans les variables d'environnement.
 
-### 6. Run the "Export recovery secrets" button proactively
+### 6. Utilisez le bouton « Exporter les clés de récupération » de manière proactive
 
-On [actions.yourdomain.com](https://actions.yourdomain.com/),
-in the **Ops** section, there's a button called **"Export recovery
-secrets (encrypted)"** (🔐). Most of the time it's used when something
-has already gone wrong — but it also works as prevention.
+Sur [actions.yourdomain.com](https://actions.yourdomain.com/),
+dans la section **Ops / divers**, il y a un bouton intitulé
+**« Exporter les clés de récupération (chiffrées) »** (🔐). La plupart
+du temps, il est utilisé quand quelque chose est déjà mal tourné —
+mais il fonctionne aussi comme prévention.
 
-Every quarter:
+Chaque trimestre :
 
-1. Click the button, type a strong passphrase (your password manager
-   can generate one).
-2. Open [recovery.yourdomain.com](https://recovery.yourdomain.com/)
-   in your browser, sign in as an administrator, and download the
-   newest `secrets-*.yml.gpg` file to your laptop.
-3. Store the `.gpg` file + the passphrase used to encrypt it in your
-   password manager (attach the file; save the passphrase as a
-   separate entry).
+1. Cliquez sur le bouton, tapez une phrase de passe solide (votre
+   gestionnaire de mots de passe peut en générer une).
+2. Ouvrez [recovery.yourdomain.com](https://recovery.yourdomain.com/)
+   dans votre navigateur, connectez-vous comme administrateur, et
+   téléchargez le plus récent fichier `secrets-*.yml.gpg` sur votre
+   portable.
+3. Stockez le fichier `.gpg` + la phrase de passe utilisée pour le
+   chiffrer dans votre gestionnaire de mots de passe (joignez le
+   fichier ; sauvegardez la phrase de passe comme une entrée
+   séparée).
 
-That gives you a **pre-made recovery bundle** ready to use if you
-ever lose your master password file. You still need the passphrase to
-decrypt it, but you chose the passphrase yourself and you saved it in
-a place you control.
+Cela vous donne un **kit de récupération prêt à l'emploi** utilisable
+si vous perdez un jour votre fichier de mot de passe maître. Il vous
+faut toujours la phrase de passe pour le déchiffrer, mais c'est vous
+qui l'avez choisie et qui l'avez sauvegardée à un endroit que vous
+contrôlez.
 
-### 7. Test your recovery path once
+### 7. Testez votre chemin de récupération une fois
 
-At some quiet point in the first six months, do a "does this
-work end-to-end" dry run:
+À un moment calme des six premiers mois, faites un essai « est-ce que
+ça fonctionne vraiment » :
 
-- Pick a throwaway directory on your laptop.
-- Decrypt one of the proactive exports from step 5 — pick the command
-  that matches your OS:
+- Choisissez un répertoire jetable sur votre portable.
+- Déchiffrez un des exports proactifs de l'étape 5 — choisissez la
+  commande qui correspond à votre système :
 
-    - **Linux** (Ubuntu / Debian / Fedora — `gpg` is preinstalled, or
-      `sudo apt install gnupg`):
+    - **Linux** (Ubuntu / Debian / Fedora — `gpg` est préinstallé, ou
+      `sudo apt install gnupg`) :
 
         ```
         gpg --pinentry-mode loopback -o vault-test.yml -d secrets-*.yml.gpg
         ```
 
-    - **macOS** (Homebrew: `brew install gnupg`, then):
+    - **macOS** (Homebrew : `brew install gnupg`, puis) :
 
         ```
         gpg --pinentry-mode loopback -o vault-test.yml -d secrets-*.yml.gpg
         ```
 
-    - **Windows** — install [Gpg4win](https://www.gpg4win.org/) (the
-      Kleopatra GUI is the easiest path). Open Kleopatra, drag the
-      `.gpg` file onto its window, type the passphrase you chose,
-      Kleopatra writes the decrypted `vault-test.yml` next to it.
-      Power users can also run `gpg.exe` from PowerShell using the
-      same command line as macOS / Linux above.
+    - **Windows** — installez [Gpg4win](https://www.gpg4win.org/)
+      (l'interface Kleopatra est la voie la plus simple). Ouvrez
+      Kleopatra, glissez-déposez le fichier `.gpg` dans la fenêtre,
+      tapez la phrase de passe que vous avez choisie, Kleopatra écrit
+      le `vault-test.yml` déchiffré à côté. Les utilisateurs avancés
+      peuvent aussi lancer `gpg.exe` depuis PowerShell avec la même
+      ligne de commande que macOS / Linux ci-dessus.
 
-- Verify that the file contents look like a real secret file (you'll
-  see entries like `vault_dokploy_postgres_password: "..."`).
-- Delete `vault-test.yml` when you're done.
+- Vérifiez que le contenu du fichier ressemble à un vrai fichier de
+  secrets (vous verrez des entrées comme
+  `vault_dokploy_postgres_password: "..."`).
+- Supprimez `vault-test.yml` quand vous avez terminé.
 
-If anything about this doesn't work — wrong passphrase, corrupted
-file, etc. — you want to find out now, not during an incident. It's
-worth 15 minutes of calm time.
+Si quelque chose ne fonctionne pas — mauvaise phrase de passe,
+fichier corrompu, etc. — vous voulez le découvrir maintenant, pas
+pendant un incident. Cela vaut 15 minutes de temps tranquille.
 
-## Recap — what "done" looks like
+## Récapitulatif — à quoi ressemble « terminé »
 
-When prevention is in place, a three-month-from-now you can answer
-"yes" to all of these:
+Quand la prévention est en place, le vous d'ici trois mois peut
+répondre « oui » à tout cela :
 
-- [ ] My restic repository password is in my password manager,
-      labelled clearly.
-- [ ] My S3 access key + secret are in my password manager, as a
-      separate entry from the restic password.
-- [ ] My backup bucket's URL/endpoint and bucket name are in my
-      password manager, with the credentials.
-- [ ] I have a copy of my SSH private key somewhere other than my
-      current laptop.
-- [ ] (If my operator handed me a vault password, it is in my
-      password manager — separate entry. If not, I'm relying on
-      the **Export recovery secrets** button instead, which is
-      fine.)
-- [ ] I know which city my backup bucket lives in (and it's not the
-      same city as my VPS).
-- [ ] My software suite has a weekly WORM-bucket mirror configured (separate
-      provider from the live backup bucket, last weekly run pinged
-      green) — confirmed with my operator.
-- [ ] I have decided whether I need a second backup location — if yes,
-      my operator has set it up.
-- [ ] I've run the "Export recovery secrets" button at least once
-      and the decrypted output looks sensible.
+- [ ] Mon mot de passe du dépôt restic est dans mon gestionnaire de
+      mots de passe, clairement étiqueté.
+- [ ] Ma clé d'accès S3 + clé secrète sont dans mon gestionnaire de
+      mots de passe, comme entrée séparée du mot de passe restic.
+- [ ] L'URL/point d'accès et le nom de mon compartiment de
+      sauvegarde sont dans mon gestionnaire de mots de passe, avec
+      les identifiants.
+- [ ] J'ai une copie de ma clé SSH privée ailleurs que sur mon
+      portable actuel.
+- [ ] (Si mon opérateur m'a remis un mot de passe de coffre, il est
+      dans mon gestionnaire de mots de passe — entrée séparée. Sinon,
+      je m'appuie sur le bouton **Exporter les clés de
+      récupération**, ce qui est correct.)
+- [ ] Je sais dans quelle ville vit mon compartiment de sauvegarde
+      (et ce n'est pas la même ville que mon VPS).
+- [ ] Mon infrastructure a un miroir WORM hebdomadaire configuré
+      (fournisseur différent du compartiment de sauvegarde actif,
+      dernier run hebdomadaire a pingé vert) — confirmé avec mon
+      opérateur.
+- [ ] J'ai décidé si j'ai besoin d'un second emplacement de
+      sauvegarde — si oui, mon opérateur l'a configuré.
+- [ ] J'ai cliqué sur le bouton « Exporter les clés de récupération »
+      au moins une fois et la sortie déchiffrée a l'air cohérente.
 
-If any of those are "no," work on them this week. The
-[Disaster recovery](/disaster-recovery/) page walks through what to
-do once prevention paid off.
+Si l'un de ces points est « non », travaillez-y cette semaine. La
+page [Reprise après sinistre](/disaster-recovery/) explique ce qu'il
+faut faire une fois que la prévention a porté ses fruits.

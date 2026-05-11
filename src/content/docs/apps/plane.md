@@ -1,51 +1,51 @@
 ---
 title: "Plane"
-description: "Open-source project management — issues, cycles, modules, pages, workspaces."
+description: "Gestion de projet open-source — issues, cycles, modules, pages, workspaces."
 ---
 
-Open-source project management — issues, cycles, modules, pages, workspaces.
+Gestion de projet open-source — issues, cycles, modules, pages, workspaces.
 
-- **Upstream project:** <https://plane.so/>
-- **Replaces:** **Jira**, **Linear**, **Asana**, **ClickUp**
-- **Sign-in (SSO):** Enable via the app's admin UI — paste the `OIDC_*` values from the Environment tab once.
+- **Projet original :** <https://plane.so/>
+- **Remplace :** **Jira**, **Linear**, **Asana**, **ClickUp**
+- **Connexion (SSO) :** À activer via l'interface admin — collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
 
-## Setup steps
+## Étapes de configuration
 
-1. Click **Deploy**. Wait ~2-3 min (multi-service stack with MinIO).
-2. Visit your Plane domain and sign up to create the instance admin + first workspace.
-3. *(Optional)* Enable Keycloak SSO: while signed in, visit `https://projects.<your-domain>/god-mode` → **Authentication** → **OpenID Connect** → paste `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` from the Environment tab. Save.
+1. Cliquez **Deploy**. Patientez ~2-3 min (pile multi-services avec MinIO).
+2. Visitez votre domaine Plane et créez le compte admin initial + le premier workspace.
+3. *(Optionnel)* Activez Keycloak SSO : une fois connecté, visitez `https://projects.<votre-domaine>/god-mode` → **Authentication** → **OpenID Connect** → collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
 
 
 
-## Environment variables
+## Variables d'environnement
 
-These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
-you don't need to generate them yourself.
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
 
-| Variable | Default |
+| Variable | Valeur par défaut |
 |---|---|
 | `PLANE_HOSTNAME` | `projects.yourdomain.com` |
-| `PLANE_SECRET_KEY` | _auto-generated random value_ |
-| `DB_PASSWORD` | _auto-generated random value_ |
-| `PLANE_MINIO_ACCESS_KEY` | _auto-generated random value_ |
-| `PLANE_MINIO_SECRET_KEY` | _auto-generated random value_ |
+| `PLANE_SECRET_KEY` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
+| `PLANE_MINIO_ACCESS_KEY` | _valeur aléatoire auto-générée_ |
+| `PLANE_MINIO_SECRET_KEY` | _valeur aléatoire auto-générée_ |
 
-## Domain
+## Domaine
 
-- **Service and port:** `proxy:80`
-- **Hostname:** `projects.yourdomain.com`
+- **Service et port :** `proxy:80`
+- **Nom d'hôte :** `projects.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
 
-## Compose file
+## Fichier compose
 
-For reference — this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
 # Plane — open-source project management (Jira/Linear alternative).
@@ -246,4 +246,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Retour au catalogue des applications pré-configurées](./)

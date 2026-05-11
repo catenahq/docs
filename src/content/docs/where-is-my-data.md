@@ -1,164 +1,187 @@
 ---
-title: "Where is my data?"
-description: "Plain-language answer to \"if the VPS burns down, what's lost and"
+title: "Où sont mes données ?"
+description: "Réponse en langage clair à la question « si le VPS part en fumée,"
 ---
 
-Plain-language answer to "if the VPS burns down, what's lost and
-what's recoverable?" Read this once at hand-off so you have a
-mental map before anything goes wrong; the
-[Disaster prevention](/disaster-prevention/) and
-[Disaster recovery](/disaster-recovery/) pages assume you know
-where things live.
+Réponse en langage clair à la question « si le VPS part en fumée,
+qu'est-ce qui est perdu et qu'est-ce qui est récupérable ? » Lisez
+ceci une fois à la remise pour avoir une carte mentale avant que
+quoi que ce soit ne tourne mal ; les pages
+[Prévention des sinistres](/disaster-prevention/) et
+[Reprise après sinistre](/disaster-recovery/) supposent que vous
+savez où se trouvent les choses.
 
-## The short version
+## Version courte
 
-Your data lives in **at least two places**, and possibly three:
+Vos données vivent dans **au moins deux endroits**, et possiblement
+trois :
 
-1. **On the VPS itself** — running databases, app config, file
-   uploads for most apps.
-2. **In your restic backup bucket** — encrypted nightly snapshot of
-   the VPS, in a different city (and ideally a different country)
-   from the VPS.
-3. **In your Nextcloud-S3 bucket** *(only if you use Nextcloud with
-   S3 storage)* — the actual files Nextcloud users upload, in their
-   own bucket separate from restic.
+1. **Sur le VPS lui-même** — bases de données en cours d'exécution,
+   configuration des applications, fichiers téléversés pour la
+   plupart des applications.
+2. **Dans votre compartiment de sauvegarde restic** — instantané
+   nocturne chiffré du VPS, dans une autre ville (et idéalement un
+   autre pays) que le VPS.
+3. **Dans votre compartiment Nextcloud-S3** *(seulement si vous
+   utilisez Nextcloud avec stockage S3)* — les fichiers réels que
+   les utilisateurs Nextcloud téléversent, dans leur propre
+   compartiment, séparé du restic.
 
-Anything stored only on the VPS is at risk; the VPS can fail or
-be destroyed. Anything in restic + on the VPS is safe against any
-single thing breaking. Anything in restic *or* Nextcloud-S3
-specifically can also fail — but those are independent failures
-covered by [Disaster prevention](/disaster-prevention/).
+Tout ce qui n'est stocké que sur le VPS est à risque ; le VPS peut
+tomber ou être détruit. Tout ce qui est dans restic + sur le VPS est
+à l'abri d'un seul incident. Tout ce qui est dans restic *ou*
+Nextcloud-S3 spécifiquement peut aussi tomber — mais ces pannes sont
+indépendantes et couvertes par
+[Prévention des sinistres](/disaster-prevention/).
 
-## On the VPS
+## Sur le VPS
 
-The day-to-day data that makes your apps work:
+Les données du quotidien qui font fonctionner vos applications :
 
-- **Postgres databases** — every app's records (Nextcloud users,
-  Outline pages, Cal.com bookings, etc.) live in a Postgres database
-  inside a Docker volume on the VPS.
-- **App config** — what's configured, who has access, custom
-  branding. Lives in app-specific Docker volumes.
-- **File uploads** — for apps that store files locally (Outline
-  attachments, Rocket.Chat uploads, n8n workflow data). Lives in
-  Docker volumes.
-- **Nightly Postgres dumps** — a plain-SQL copy of every database,
-  staged on the VPS just before each backup runs. A safety net if
-  the raw database volume is corrupted between backups.
+- **Bases Postgres** — les enregistrements de chaque application
+  (utilisateurs Nextcloud, pages Outline, rendez-vous Cal.com, etc.)
+  vivent dans une base Postgres à l'intérieur d'un volume Docker
+  sur le VPS.
+- **Configuration des applications** — ce qui est configuré, qui a
+  accès, l'image de marque personnalisée. Vit dans des volumes
+  Docker propres à chaque application.
+- **Fichiers téléversés** — pour les applications qui stockent les
+  fichiers localement (pièces jointes Outline, téléversements
+  Rocket.Chat, données de workflow n8n). Vit dans des volumes
+  Docker.
+- **Dumps Postgres nocturnes** — une copie SQL en clair de chaque
+  base, déposée sur le VPS juste avant l'exécution de chaque
+  sauvegarde. Filet de sécurité si le volume brut de la base est
+  corrompu entre deux sauvegardes.
 
-## In your restic backup bucket
+## Dans votre compartiment de sauvegarde restic
 
-Every night, everything in the previous section (plus VPS system
-files like SSH host keys and firewall config) is encrypted and
-uploaded to **your** S3 bucket — not the operator's. You own the
-bucket, you pay the bill, you control retention.
+Chaque nuit, tout ce qui se trouve dans la section précédente (plus
+les fichiers système du VPS comme les clés d'hôte SSH et la
+configuration du pare-feu) est chiffré et téléversé vers **votre**
+compartiment S3 — pas celui de l'opérateur. Vous possédez le
+compartiment, vous payez la facture, vous contrôlez la rétention.
 
-Default retention: 7 daily, 4 weekly, 6 monthly snapshots. Anything
-older expires automatically.
+Rétention par défaut : 7 quotidiennes, 4 hebdomadaires, 6 mensuelles.
+Tout ce qui est plus ancien expire automatiquement.
 
-The bucket is encrypted end-to-end with the **restic password**
-your operator handed you at hand-off (see
-[Disaster prevention](/disaster-prevention/)). Without that
-password, the bucket is unreadable ciphertext — even to the
-operator. With it, you can restore to any cloud, any time.
+Le compartiment est chiffré de bout en bout avec le **mot de passe
+restic** que votre opérateur vous a remis à la remise (voir
+[Prévention des sinistres](/disaster-prevention/)). Sans ce mot de
+passe, le compartiment est du texte chiffré illisible — même pour
+l'opérateur. Avec lui, vous pouvez restaurer chez n'importe quel
+nuage, n'importe quand.
 
-## In your Nextcloud-S3 bucket (if applicable)
+## Dans votre compartiment Nextcloud-S3 (si applicable)
 
-If your operator deployed Nextcloud with S3 primary storage (the
-"big files" pattern, normally used when you'll store more than
-~20 GB), the **actual file contents your users upload to Nextcloud
-do not live in restic**. They live in a separate S3 bucket that is
-also yours.
+Si votre opérateur a déployé Nextcloud avec stockage primaire S3
+(la formule « gros fichiers », normalement utilisée quand vous
+allez stocker plus de ~20 Go), le **contenu réel des fichiers que
+vos utilisateurs téléversent dans Nextcloud ne vit pas dans
+restic**. Il vit dans un compartiment S3 séparé qui vous appartient
+aussi.
 
-Why this matters:
+Pourquoi cela compte :
 
-- The restic snapshot stays small even if your Nextcloud holds
-  terabytes — restic only carries Nextcloud's app code + its
-  database, not the file bytes.
-- You access those files via Nextcloud's UI normally, and via any
-  S3-compatible tool (`rclone`, `aws s3 sync`) directly if you ever
-  need to.
-- The bucket survives independently of the VPS. If the VPS burns
-  down, the files are still in the bucket. When a new VPS comes up
-  and reconnects to the same bucket, every file is there.
-- The bucket also fails independently of the VPS. Provider outages,
-  bucket deletion, credential leaks affect the Nextcloud-S3 bucket
-  *without* affecting the VPS or the restic bucket. See the
-  Nextcloud-S3 risk section below.
+- L'instantané restic reste petit même si votre Nextcloud héberge
+  des téraoctets — restic ne porte que le code de Nextcloud + sa
+  base de données, pas les octets des fichiers.
+- Vous accédez à ces fichiers via l'interface Nextcloud
+  normalement, et via n'importe quel outil compatible S3
+  (`rclone`, `aws s3 sync`) directement si vous en avez besoin.
+- Le compartiment survit indépendamment du VPS. Si le VPS part en
+  fumée, les fichiers sont toujours dans le compartiment. Quand un
+  nouveau VPS démarre et se reconnecte au même compartiment, chaque
+  fichier est là.
+- Le compartiment tombe aussi indépendamment du VPS. Pannes de
+  fournisseur, suppression de compartiment, fuite d'identifiants
+  affectent le compartiment Nextcloud-S3 *sans* affecter le VPS ni
+  le compartiment restic. Voir la section sur les risques
+  Nextcloud-S3 ci-dessous.
 
-If you do **not** use Nextcloud with S3 (for example: small
-Nextcloud install with default local storage, or no Nextcloud at
-all), this whole section does not apply — your Nextcloud files, if
-any, live on the VPS and ride the restic backup like everything
-else.
+Si vous **n'utilisez pas** Nextcloud avec S3 (par exemple : petit
+Nextcloud avec stockage local par défaut, ou pas de Nextcloud du
+tout), cette section ne s'applique pas — vos fichiers Nextcloud, si
+vous en avez, vivent sur le VPS et profitent de la sauvegarde
+restic comme tout le reste.
 
-### Nextcloud-S3 specific data-loss scenarios
+### Scénarios spécifiques de perte de données Nextcloud-S3
 
-Independent failure means independent worry. Each row below is a
-separate "what if" plus the mitigation already in place.
+Une panne indépendante = une inquiétude indépendante. Chaque ligne
+ci-dessous est un « et si » distinct, plus la mitigation déjà en
+place.
 
-| What happens | What's lost | What's already in place | What you can do |
+| Ce qui arrive | Ce qui est perdu | Ce qui est déjà en place | Ce que vous pouvez faire |
 |---|---|---|---|
-| Your Nextcloud-S3 bucket has a multi-day provider outage | Read/write of files (the VPS is fine; only file open/upload fails) | Operator can verify the issue is at the bucket level via monitoring | Wait it out — the files come back when the provider recovers; tell your team uploads are paused |
-| Bucket credentials leaked, attacker writes/deletes objects | Some or all files in the bucket | Object versioning + 30-day retention rule on the bucket means deleted objects are recoverable for 30 days | Contact your operator immediately; they rotate credentials and roll back the affected objects |
-| You accidentally delete the bucket from the provider console | Everything in the bucket once the provider's grace period ends | Most providers have a 7-90 day account-level grace period | Contact provider support immediately to recover the bucket within the grace window; contact your operator |
-| Nextcloud database (on the VPS) is restored from yesterday's backup but bucket has today's writes | New files added today appear as orphans in the bucket | Nextcloud's `occ files:scan` rebuilds the database-to-file mapping from what's in the bucket | Tell your operator to run a file scan after the restore; they handle the technical part |
-| Provider terminates your account | Everything in that bucket | Only a second backup bucket at a different provider protects you here | If you've set up a [second backup bucket](/disaster-prevention/#5-optional-add-a-client-owned-second-backup-bucket), you're covered. If not — this is the worst case |
+| Votre compartiment Nextcloud-S3 a une panne fournisseur de plusieurs jours | Lecture/écriture de fichiers (le VPS va bien ; seules les ouvertures/téléversements échouent) | L'opérateur peut vérifier que le problème est au niveau du compartiment via son monitoring | Patientez — les fichiers reviendront quand le fournisseur se rétablira ; prévenez votre équipe que les téléversements sont en pause |
+| Identifiants du compartiment fuités, un attaquant écrit/supprime des objets | Une partie ou l'ensemble des fichiers du compartiment | Versionnage des objets + règle de rétention de 30 jours sur le compartiment : les objets supprimés sont récupérables pendant 30 jours | Contactez votre opérateur immédiatement ; il fait tourner les identifiants et restaure les objets affectés |
+| Vous supprimez par accident le compartiment depuis la console du fournisseur | Tout ce qui est dans le compartiment une fois la période de grâce du fournisseur écoulée | La plupart des fournisseurs ont une période de grâce au niveau du compte de 7 à 90 jours | Contactez le support du fournisseur immédiatement pour récupérer le compartiment dans la fenêtre de grâce ; contactez votre opérateur |
+| La base Nextcloud (sur le VPS) est restaurée depuis la sauvegarde d'hier mais le compartiment a les écritures d'aujourd'hui | Les nouveaux fichiers ajoutés aujourd'hui apparaissent comme orphelins dans le compartiment | `occ files:scan` de Nextcloud reconstruit la correspondance base→fichier à partir de ce qui est dans le compartiment | Demandez à votre opérateur de lancer un scan des fichiers après la restauration ; il s'occupe de la partie technique |
+| Le fournisseur résilie votre compte | Tout ce qui est dans ce compartiment | Seul un second compartiment de sauvegarde chez un autre fournisseur vous protège ici | Si vous avez configuré un [second compartiment de sauvegarde](/disaster-prevention/#5-optionnel-ajoutez-un-second-compartiment-de-sauvegarde-dont-vous-etes-proprietaire), vous êtes couvert. Sinon — c'est le pire cas |
 
-The takeaway: the Nextcloud-S3 bucket is independent of the VPS,
-which is good (the VPS dying doesn't take it with) and risky (the
-bucket can fail without the VPS noticing). The mitigations above
-cover the common cases; the catastrophic cases (bucket deletion,
-account termination) are exactly what the **second backup bucket**
-pattern in [Disaster prevention](/disaster-prevention/) is for.
+À retenir : le compartiment Nextcloud-S3 est indépendant du VPS, ce
+qui est bon (la mort du VPS ne l'emporte pas avec lui) et risqué
+(le compartiment peut tomber sans que le VPS ne le remarque). Les
+mitigations ci-dessus couvrent les cas courants ; les cas
+catastrophiques (suppression du compartiment, résiliation de
+compte) sont exactement ce contre quoi le **second compartiment de
+sauvegarde** dans [Prévention des sinistres](/disaster-prevention/)
+sert.
 
-## Externally hosted (not on your VPS, not in your buckets)
+## Hébergé à l'extérieur (pas sur votre VPS, pas dans vos compartiments)
 
-A few small things live in third-party admin consoles instead of
-on your VPS:
+Quelques petites choses vivent dans les consoles d'administration
+de tiers plutôt que sur votre VPS :
 
-- **DNS records** — at Cloudflare, in your DNS account.
-- **Cloudflare tunnel configuration** — at Cloudflare, in your CF
-  account.
-- **Tailscale tenant + ACL rules** — at Tailscale, in your operator's
-  Tailscale account (the operator owns this for the persistent ops
-  back-door — see [How this software suite works](/how-this-stack-works/)).
-- **SMTP provider account** — at your transactional email provider
-  (Resend / Brevo / etc.) — controls who can send mail "from" your
-  domain.
+- **Enregistrements DNS** — chez Cloudflare, dans votre compte DNS.
+- **Configuration du tunnel Cloudflare** — chez Cloudflare, dans
+  votre compte CF.
+- **Tenant Tailscale + règles ACL** — chez Tailscale, dans le
+  compte Tailscale de votre opérateur (l'opérateur le possède pour
+  la porte dérobée d'administration permanente — voir
+  [Comment fonctionne cette suite logicielle](/how-this-stack-works/)).
+- **Compte du fournisseur SMTP** — chez votre fournisseur d'e-mails
+  transactionnels (Resend / Brevo / etc.) — contrôle qui peut
+  envoyer du courrier « depuis » votre domaine.
 
-These are recreated easily if any one of them fails — you log in to
-the third-party console and click. The
-[Disaster recovery](/disaster-recovery/) page lists the recovery
-path for each.
+Ces éléments sont recréés facilement si l'un d'eux tombe — vous
+vous connectez à la console du tiers et vous cliquez. La page
+[Reprise après sinistre](/disaster-recovery/) liste la voie de
+récupération pour chacun.
 
-## Not backed up (by design)
+## Non sauvegardé (intentionnellement)
 
-These are intentionally NOT in the restic snapshot:
+Ce qui n'est intentionnellement PAS dans l'instantané restic :
 
-- `/var/log/` — ephemeral, app logs rotate; not worth the storage.
-- Container image layers — re-pullable from the upstream registry,
-  no need to hoard.
-- Temporary directories (`/tmp`, `/var/tmp`) — ephemeral by
-  definition.
+- `/var/log/` — éphémère, les journaux applicatifs sont rotationnés ;
+  pas la peine d'occuper le stockage.
+- Couches d'images de conteneurs — re-tirables depuis le registre
+  amont, pas besoin de les accumuler.
+- Répertoires temporaires (`/tmp`, `/var/tmp`) — éphémères par
+  définition.
 
-If you ever wonder "did this end up in backup?", the rule of thumb
-is: **state your apps need to come back exactly as they were**, yes;
-**state that's regenerated automatically on first boot**, no.
+Si vous vous demandez « est-ce que ça a fini dans la sauvegarde ? »,
+la règle générale est : **l'état dont vos applications ont besoin
+pour revenir exactement comme avant**, oui ; **l'état regénéré
+automatiquement au premier démarrage**, non.
 
-## What's lost if the VPS burns down
+## Ce qui est perdu si le VPS part en fumée
 
-Worst-case scenario: physical destruction of the VPS, no warning.
+Pire scénario : destruction physique du VPS, sans avertissement.
 
-- **VPS state since the last backup** — anything created or
-  modified between the latest backup snapshot and the moment of
-  destruction. Depending on your backup schedule, that's 1-24
-  hours. Apps held idle during that window lose nothing; apps
-  receiving heavy writes (a busy Rocket.Chat, real-time editing in
-  Outline) lose the most recent edits.
-- **Anything in `/tmp` or container memory** — that's not a real
-  loss; nothing important should live there.
-- **Nothing else.** Restic + (optional) Nextcloud-S3 + Cloudflare
-  + Tailscale carry the rest.
+- **L'état du VPS depuis la dernière sauvegarde** — tout ce qui a
+  été créé ou modifié entre le dernier instantané de sauvegarde et
+  le moment de la destruction. Selon votre calendrier de
+  sauvegarde, c'est 1 à 24 heures. Les applications restées
+  inactives pendant cette fenêtre ne perdent rien ; les
+  applications recevant beaucoup d'écritures (un Rocket.Chat
+  occupé, de l'édition en temps réel dans Outline) perdent les
+  modifications les plus récentes.
+- **Tout ce qui est dans `/tmp` ou en mémoire des conteneurs** —
+  ce n'est pas une vraie perte ; rien d'important ne devrait
+  vivre là.
+- **Rien d'autre.** Restic + (facultatif) Nextcloud-S3 +
+  Cloudflare + Tailscale portent le reste.
 
-The [Restore to a fresh VPS](/self-restore/) page covers what
-"come back" looks like in practice.
+La page [Restaurer sur un nouveau VPS](/self-restore/) couvre à
+quoi « revenir » ressemble en pratique.

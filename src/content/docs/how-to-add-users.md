@@ -1,27 +1,31 @@
 ---
-title: "How to add users"
-description: "TODO — Keycloak UI walkthrough with screenshots."
+title: "Comment ajouter des utilisateurs"
+description: "Version abrégée :"
 ---
 
-TODO — Keycloak UI walkthrough with screenshots.
+Version abrégée :
 
-Short version:
-
-1. Go to `https://auth.yourdomain.com` and log in as admin.
-2. Admin interface → Directory → Users → "Create"
-3. Fill in username + email. Set a strong password OR send an invite
-   (Keycloak emails a set-password link via SMTP — requires operator
-   to have wired up SMTP).
-4. Assign to `client-staff` group (default access to gated apps).
-   For finer-grained access, use a per-department group (see your
-   operator's deployment docs).
-5. User can now log in at any app subdomain (`admin.yourdomain.com`,
+1. Rendez-vous sur `https://auth.yourdomain.com` et connectez-vous
+   en tant qu'administrateur.
+2. Interface d'administration → Directory → Users → « Create ».
+3. Remplissez le nom d'utilisateur et le courriel. Définissez un mot de
+   passe fort OU envoyez une invitation (Keycloak expédie par SMTP un
+   lien pour définir le mot de passe — suppose que l'opérateur a
+   configuré SMTP).
+4. Attribuez le groupe `client-staff` (accès de base aux applications
+   protégées). Pour un contrôle plus fin, utilisez un groupe par
+   département (consultez la documentation de déploiement de votre
+   opérateur).
+5. L'utilisateur peut alors se connecter à n'importe quel sous-domaine
+   d'application (`admin.yourdomain.com`,
    `monitor.yourdomain.com`,
    `actions.yourdomain.com`,
-   `dash.yourdomain.com`) with their email + password.
+   `dash.yourdomain.com`) avec son courriel et son mot
+   de passe.
 
-Self-service flows that work without operator involvement:
+Les flux en libre-service qui fonctionnent sans intervention de
+l'opérateur :
 
-- Password reset (email link)
-- Profile edits (display name, email)
-- Enabling MFA on own account
+- Réinitialisation du mot de passe (lien par courriel).
+- Modification du profil (nom affiché, courriel).
+- Activation de l'authentification multifacteur sur son propre compte.

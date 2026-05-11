@@ -27,8 +27,8 @@ npm run build -w @catena/website
 
 ## Adding a page
 
-1. Create `apps/docs/src/content/docs/<slug>.md` (EN, default) and
-   `apps/docs/src/content/docs/fr/<slug>.md` (FR mirror).
+1. Create `apps/docs/src/content/docs/<slug>.md` (FR, default) and
+   `apps/docs/src/content/docs/en/<slug>.md` (EN mirror).
 2. If the page belongs to a navigation group, add the slug to
    `astro.config.mjs::sidebar` under the right group. Pages in
    `apps/` are auto-generated from the directory.
@@ -36,7 +36,7 @@ npm run build -w @catena/website
    broken links, and missing locales.
 
 The unit test `automation/tests/unit/test_docs_translation_parity.py`
-asserts every EN page has an FR sibling and that heading + mermaid
+asserts every FR page has an EN sibling and that heading + mermaid
 counts match.
 
 ## Interactive `yourdomain.com`
@@ -55,7 +55,7 @@ companyname.com) are rejected by
 
 ## Adding a language
 
-Mirror the EN tree under `src/content/docs/<lang>/`, register the
-locale in the website's astro.config.mjs (the docs sub-build picks
-up Astro's i18n automatically), then add a third locale to the
-sidebar group `translations` blocks.
+Mirror the FR tree (default) under `src/content/docs/<lang>/`,
+register the locale in the website's astro.config.mjs (the docs
+sub-build picks up Astro's i18n automatically), then add a third
+locale to the sidebar group `translations` blocks.

@@ -1,52 +1,52 @@
 ---
 title: "n8n"
-description: "Workflow automation — visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows."
+description: "Automatisation de flux de travail — enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code."
 ---
 
-Workflow automation — visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows.
+Automatisation de flux de travail — enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code.
 
-- **Upstream project:** <https://n8n.io/>
-- **Replaces:** **Zapier**, **Make (Integromat)**, **Tray.io**
-- **Sign-in (SSO):** Not available — this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
+- **Projet original :** <https://n8n.io/>
+- **Remplace :** **Zapier**, **Make (Integromat)**, **Tray.io**
+- **Connexion (SSO) :** Non disponible — l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
 
-## Setup steps
+## Étapes de configuration
 
-1. Click **Deploy**. Wait ~1 min for Postgres + n8n to initialize.
-2. Visit your n8n domain and create the owner account via the setup wizard.
-3. Invite additional users: **Settings** → **Users** → **Invite**. Each user receives an email invite.
-4. Start building workflows: **Workflows** → **+ Add Workflow**. Browse the integrations library for pre-built nodes.
+1. Cliquez **Deploy**. Patientez ~1 min le temps que Postgres + n8n s'initialisent.
+2. Visitez votre domaine n8n et créez le compte propriétaire via l'assistant.
+3. Invitez d'autres utilisateurs : **Settings** → **Users** → **Invite**. Chaque utilisateur reçoit une invitation par courriel.
+4. Créez des workflows : **Workflows** → **+ Add Workflow**. Parcourez la bibliothèque d'intégrations pour les nœuds prêts à l'emploi.
 
-**Note on sign-in.** n8n's community edition uses email/password user management with invite flows. OIDC and SAML are enterprise-gated, so SSO isn't available here — each user maintains a per-app login. Fine for an automation team of 1-5 people.
+**À propos de la connexion.** L'édition communautaire de n8n utilise email/mot de passe avec des invitations. OIDC et SAML sont enterprise, donc le SSO n'est pas disponible ici — chaque utilisateur garde une connexion spécifique. Convient à une équipe d'automatisation de 1-5 personnes.
 
-## Environment variables
+## Variables d'environnement
 
-These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
-you don't need to generate them yourself.
+Ces valeurs se trouvent dans l'onglet **Environment** du compose
+Dokploy. Les secrets aléatoires sont générés automatiquement au
+premier semi du template — vous n'avez pas à les générer vous-même.
 
-| Variable | Default |
+| Variable | Valeur par défaut |
 |---|---|
 | `N8N_HOSTNAME` | `automate.yourdomain.com` |
 | `N8N_TIMEZONE` | `UTC` |
-| `N8N_ENCRYPTION_KEY` | _auto-generated random value_ |
-| `N8N_JWT_SECRET` | _auto-generated random value_ |
-| `DB_PASSWORD` | _auto-generated random value_ |
+| `N8N_ENCRYPTION_KEY` | _valeur aléatoire auto-générée_ |
+| `N8N_JWT_SECRET` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
 
-## Domain
+## Domaine
 
-- **Service and port:** `n8n:5678`
-- **Hostname:** `automate.yourdomain.com`
+- **Service et port :** `n8n:5678`
+- **Nom d'hôte :** `automate.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+Le nom d'hôte est attaché automatiquement au semi du template ;
+modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
+vous souhaitez autre chose.
 
-## Compose file
+## Fichier compose
 
-For reference — this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+Pour référence — c'est ce que le template déploie. **Ne collez ceci
+nulle part.** Le compose est semé dans Dokploy automatiquement ; les
+ajustements côté client se font dans les onglets Environment et
+Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
 # n8n — workflow automation (Zapier / Make alternative). Community
@@ -119,4 +119,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Retour au catalogue des applications pré-configurées](./)

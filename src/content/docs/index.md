@@ -1,66 +1,69 @@
 ---
-title: Your VPS, your docs
-description: Public reference docs for the catena self-hosted software suite. Per-VPS specifics live in the client portal.
+title: Votre VPS, votre documentation
+description: Documentation de référence publique pour la suite logicielle auto-hébergée catena. Les spécificités par-VPS vivent dans le portail client.
 ---
 
-These are the public reference docs for the catena software suite as
-deployed on your VPS. Every page applies to **every catena
-installation**; the per-installation specifics (your domain names,
-your inventory hostname, your S3 bucket) are surfaced in the
-[client portal](https://app.catena.run).
+Voici la documentation de référence publique pour la suite logicielle
+catena telle que déployée sur votre VPS. Chaque page s'applique à
+**toute installation catena** ; les spécificités par-installation
+(vos noms de domaine, votre hôte d'inventaire, votre seau S3)
+apparaissent dans le [portail client](https://app.catena.run).
 
-If you are evaluating catena, start with
-[How this software suite works](/docs/how-this-stack-works/) for the
-plain-language tour. If you are an existing client, your portal
-links into these docs in context for the operational tasks that come
-up day-to-day.
+Si vous évaluez catena, commencez par
+[Comment fonctionne cette suite logicielle](/docs/fr/how-this-stack-works/)
+pour la visite en langage clair. Si vous êtes déjà client, votre
+portail vous renvoie ici en contexte pour les tâches opérationnelles
+du quotidien.
 
-## Where to start
+## Par où commencer
 
-- **[How this software suite works](/docs/how-this-stack-works/)** -- a
-  plain-language tour of the services and how they fit together.
-  Start here if this is your first time.
-- **[Where your data lives](/docs/where-is-my-data/)** -- what's on
-  the VPS, what's in your S3 backup bucket, what's lost if the VPS
-  burns down.
-- **[Files you should not touch](/docs/do-not-touch/)** -- hand-edits
-  get overwritten the next time your operator pushes an update.
-  Here's what to leave alone.
+- **[Comment fonctionne cette suite logicielle](/docs/fr/how-this-stack-works/)** --
+  une visite en langage clair des services et de comment ils
+  s'assemblent. Commencez ici si c'est votre première fois.
+- **[Où vivent vos données](/docs/fr/where-is-my-data/)** -- ce qui est
+  sur le VPS, ce qui est dans votre seau S3, ce qui est perdu si le
+  VPS prend feu.
+- **[Fichiers à ne pas toucher](/docs/fr/do-not-touch/)** -- les
+  modifications manuelles sont écrasées au prochain push de votre
+  opérateur. Voici ce qu'il faut laisser tranquille.
 
-## Day-to-day tasks
+## Tâches quotidiennes
 
-- **[Add / remove users](/docs/how-to-add-users/)** -- Keycloak
-  walkthrough for staff onboarding + password resets.
-- **[Deploy apps (per-department access)](/docs/how-to-deploy-apps/)**
-  -- gate new apps to specific teams using compose labels.
-- **[What you can do yourself](/docs/self-service/)** -- day-to-day
-  tasks that never need your operator.
+- **[Ajouter / retirer des utilisateurs](/docs/fr/how-to-add-users/)** --
+  marche-à-suivre Keycloak pour l'arrivée du personnel +
+  réinitialisations.
+- **[Déployer des applications (accès par département)](/docs/fr/how-to-deploy-apps/)**
+  -- restreindre les nouvelles applications à des équipes
+  spécifiques avec des labels compose.
+- **[Ce que vous pouvez faire vous-même](/docs/fr/self-service/)** --
+  tâches quotidiennes qui n'ont jamais besoin de votre opérateur.
 
-## Disaster handling
+## Gestion des sinistres
 
-- **[Disaster prevention](/docs/disaster-prevention/)** -- how the
-  suite reduces the blast radius of common failures.
-- **[Disaster recovery](/docs/disaster-recovery/)** -- what happens
-  when the VPS is lost.
-- **[Self-restore](/docs/self-restore/)** -- the one-script flow you
-  can run yourself to spin up a replacement.
+- **[Prévention](/docs/fr/disaster-prevention/)** -- comment la suite
+  réduit l'impact des défaillances courantes.
+- **[Reprise](/docs/fr/disaster-recovery/)** -- ce qui se passe quand le
+  VPS est perdu.
+- **[Auto-restauration](/docs/fr/self-restore/)** -- le flux à un script
+  que vous pouvez lancer vous-même pour démarrer un remplacement.
 
-## Your subdomains
+## Vos sous-domaines
 
-Every catena installation publishes the same set of subdomains
-under your zone. Your portal shows the actual values for **your**
-deployment. The shape:
+Chaque installation catena publie le même ensemble de sous-domaines
+sous votre zone. Votre portail affiche les valeurs réelles pour
+**votre** déploiement. La forme :
 
-| Service | Subdomain |
+| Service | Sous-domaine |
 |---|---|
-| Keycloak (identity + SSO) | `auth.yourdomain.com` |
-| Dokploy (app deployment) | `admin.yourdomain.com` |
-| Gatus (service health) | `monitor.yourdomain.com` |
-| Homepage (dashboard) | `dash.yourdomain.com` |
-| OliveTin (one-click actions) | `actions.yourdomain.com` |
-| Healthchecks (cron / dead-man) | `checks.yourdomain.com` |
+| Keycloak (identité + SSO) | `auth.yourdomain.com` |
+| Dokploy (déploiement d'applications) | `admin.yourdomain.com` |
+| Gatus (santé des services) | `monitor.yourdomain.com` |
+| Homepage (tableau de bord) | `dash.yourdomain.com` |
+| OliveTin (actions à un clic) | `actions.yourdomain.com` |
+| Healthchecks (cron / homme mort) | `checks.yourdomain.com` |
 
-> **Note:** Throughout the docs, `yourdomain.com` is the business
-> domain you provided at onboarding -- the input pill at the top of
-> this page rewrites every occurrence on the fly so the URLs you
-> see match your installation.
+> **Note :** Dans toute la documentation, `yourdomain.com` représente
+> le domaine d'entreprise que vous avez fourni à l'intégration --
+> la pastille en haut de cette page réécrit chaque occurrence à la
+> volée afin que les URL affichées correspondent à votre
+> installation.
