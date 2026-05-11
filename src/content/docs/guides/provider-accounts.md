@@ -7,7 +7,7 @@ Un déploiement catena typique repose sur quelques comptes externes qui restent 
 
 ## 1. Fournisseur de courriel : en choisir un
 
-Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que vous choisissez. Ouvrez le [comparatif des fournisseurs de courriel](/docs/guides/email-providers/) et choisissez l'un des six que nous recommandons (Migadu, Mailbox.org, Hostpoint, Infomaniak, OVH Pro Mail, Mailfence), puis créez le compte au nom de votre entreprise. Choisissez le plan qui correspond à la taille de votre équipe ; on s'occupe des enregistrements DNS et de l'expéditeur transactionnel à l'installation.
+Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que vous choisissez. Ouvrez le [comparatif des fournisseurs de courriel](/docs/guides/email-providers/) et choisissez l'un des cinq que nous recommandons (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence), puis créez le compte au nom de votre entreprise. Choisissez le plan qui correspond à la taille de votre équipe ; on s'occupe des enregistrements DNS et de l'expéditeur transactionnel à l'installation.
 
 *Durée : 15-30 minutes (création de compte + vérification initiale du domaine).*
 

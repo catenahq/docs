@@ -5,7 +5,7 @@ description: "Comment vos courriels, votre calendrier et vos contacts sont sauve
 
 Vos courriels sont hébergés chez le fournisseur que votre opérateur
 a sélectionné lors de la mise en place (Migadu, Mailbox.org,
-Hostpoint, Infomaniak ou OVH). Vous continuez à les utiliser comme
+Infomaniak, OVH ou Mailfence). Vous continuez à les utiliser comme
 avant : webmail, application mobile, client de bureau. Rien ne
 change de ce côté.
 

@@ -4,7 +4,7 @@ description: "How your email, calendar, and contacts are backed up from your ext
 ---
 
 Your email lives at the provider your operator picked during setup
-(Migadu, Mailbox.org, Hostpoint, Infomaniak, or OVH). You keep using
+(Migadu, Mailbox.org, Infomaniak, OVH, or Mailfence). You keep using
 it the way you always have — webmail, your phone app, your desktop
 client. Nothing changes there.
 

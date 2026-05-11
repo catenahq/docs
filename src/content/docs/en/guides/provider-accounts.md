@@ -7,7 +7,7 @@ A typical catena deployment leans on a handful of external accounts that stay in
 
 ## 1. Email provider: choose one
 
-Catena does not host email; it integrates with the provider you pick. Open the [email provider comparison](/docs/en/guides/email-providers/) and choose one of the six we recommend (Migadu, Mailbox.org, Hostpoint, Infomaniak, OVH Pro Mail, Mailfence), then create the account in your business name. Pick the mailbox plan that matches your team size; we wire the DNS records and the transactional sender for you at install.
+Catena does not host email; it integrates with the provider you pick. Open the [email provider comparison](/docs/en/guides/email-providers/) and choose one of the five we recommend (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence), then create the account in your business name. Pick the mailbox plan that matches your team size; we wire the DNS records and the transactional sender for you at install.
 
 *Time: 15-30 minutes (account creation + initial domain verification).*
 
