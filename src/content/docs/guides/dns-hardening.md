@@ -1,46 +1,75 @@
 ---
-title: Durcir votre DNS avec blocage et filtrage
-description: Configurer Cloudflare Gateway et le filtrage DNS par catégorie pour bloquer maliciels, hameçonnage et contenu adulte sur tous les appareils de votre PME — sans agent par appareil.
+title: Filtrer votre DNS pour bloquer maliciels et hameçonnage
+description: Configurer Quad9 (sans inscription) ou NextDNS (filtres personnalisés) sur votre routeur, Firefox ou Chrome pour bloquer maliciels et hameçonnage sur tous vos appareils.
 ---
 
-Le filtrage au niveau DNS est l'amélioration de sécurité la moins chère et la plus efficace que la plupart des PME ne mettent jamais en place. Un seul changement au niveau du résolveur bloque le command-and-control des maliciels, les domaines d'hameçonnage et le contenu par catégorie pour tous les appareils du réseau — sans agent par appareil.
+Le filtrage au niveau DNS est l'amélioration de sécurité la moins chère et la plus efficace que la plupart des PME ne mettent jamais en place. Un seul changement au niveau du résolveur bloque les domaines malveillants pour tous les appareils du réseau — sans logiciel à installer sur chaque poste.
 
-## Ce que vous obtenez
+## Choisir un résolveur
 
-- Domaines de maliciels et d'hameçonnage bloqués avant même que le navigateur les résolve.
-- Filtrage par catégorie (adulte, jeu, pair-à-pair, etc.) configurable par bureau ou par identité.
-- Journal par requête des tentatives bloquées — preuve à montrer lors d'une revue d'incident.
-- Aucun agent par appareil si vous appliquez le changement au routeur du bureau ou via WARP.
+Deux résolveurs respectueux de la vie privée que nous recommandons. Les deux sont gratuits.
 
-## Approche : Cloudflare Gateway + WARP
+| | Quad9 | NextDNS |
+| --- | --- | --- |
+| Où l'organisation est basée | Suisse (fondation à but non lucratif) | France |
+| Inscription requise | non | oui (compte gratuit) |
+| Blocage maliciels et hameçonnage | oui, intégré | oui, configurable |
+| Filtres personnalisés (catégories, listes, journaux) | non | oui |
+| Quota gratuit | illimité | 300 000 requêtes / mois (≈ 10-30 personnes selon usage) |
 
-[Cloudflare Gateway](https://developers.cloudflare.com/cloudflare-one/policies/gateway/dns-policies/) est le choix adapté aux PME : gratuit jusqu'à 50 sièges sur Zero Trust Free, tourne sur le compte Cloudflare qui sert déjà d'entrée publique pour vos services catena, et se marie au [client WARP](https://1.1.1.1/) pour le filtrage sur les appareils qui quittent le réseau du bureau.
+**Quad9** convient si vous voulez la protection de base sans gérer un compte de plus. Vous changez les adresses DNS, c'est terminé.
 
-### 1. Activer Cloudflare Zero Trust sur votre compte Cloudflare existant
+**NextDNS** convient si vous voulez voir ce qui est bloqué, ajouter vos propres règles (publicité, suivi, contenu adulte, jeu, etc.), ou couvrir plusieurs sites avec des politiques différentes. Vous créez un compte sur [nextdns.io](https://nextdns.io/), choisissez vos filtres, puis utilisez l'identifiant de configuration qui vous est attribué (de la forme `abc123`) à la place des valeurs d'exemple plus bas.
 
-Depuis le tableau de bord Cloudflare : **Zero Trust** → **Settings** → choisissez un domaine d'équipe (modifiable plus tard). Le palier Free convient pour moins de 50 sièges ; bascule en *Pay-as-you-go* si vous grossissez.
+## Configurer le routeur du bureau
 
-### 2. Créer une politique DNS de base
+C'est l'option qui couvre le plus d'appareils d'un seul coup : ordinateurs, téléphones, imprimantes, objets connectés du réseau. Connectez-vous à l'interface d'administration de votre routeur (généralement `192.168.1.1` ou `192.168.0.1`), trouvez la section DNS (souvent sous *WAN*, *Internet* ou *DHCP*), et remplacez les serveurs DNS par :
 
-**Gateway** → **Policies** → **DNS**. Ajoutez une politique avec sélecteurs *Security categories : malware, phishing, command-and-control, cryptomining* et action *Block*. À elle seule, elle attrape la majorité de ce qui autrement atteindrait les navigateurs.
+**Quad9**
+- DNS principal : `9.9.9.9`
+- DNS secondaire : `149.112.112.112`
+- IPv6 principal : `2620:fe::fe`
+- IPv6 secondaire : `2620:fe::9`
 
-### 3. Ajouter une politique de contenu
+**NextDNS** (remplacez `abc123` par votre identifiant)
+- DNS principal : `45.90.28.0`
+- DNS secondaire : `45.90.30.0`
+- Suivez ensuite les instructions de NextDNS pour lier ces IP à votre compte, ou utilisez le routeur lui-même pour pointer vers l'endpoint `https://dns.nextdns.io/abc123` si votre routeur supporte DNS-over-HTTPS (OPNsense, pfSense, MikroTik, certains routeurs Asus / Ubiquiti).
 
-Ajoutez une seconde politique DNS avec sélecteurs *Content categories : adult, gambling, anonymizers* (choisissez les catégories qui collent à votre posture d'entreprise) et action *Block*. Pour une clinique ou une école, ajoutez *peer-to-peer* et *illegal downloads*.
+Redémarrez le routeur. Les appareils prennent les nouveaux DNS au prochain renouvellement DHCP (souvent en débranchant-rebranchant le câble réseau, ou en oubliant et rejoignant le WiFi).
 
-### 4. Choisir comment les clients atteignent le résolveur
+## Configurer Firefox
 
-Deux options, vous pouvez utiliser les deux :
+Pour les portables qui quittent le bureau ou les appareils où vous ne contrôlez pas le routeur.
 
-- **Routeur du bureau :** réglez les serveurs DNS du LAN sur les adresses IPv4 + IPv6 que Gateway vous donne sous *Networks*. Tous les appareils du LAN résolvent désormais via votre politique de filtrage.
-- **Client WARP :** déployez le [client WARP](https://1.1.1.1/) sur les portables qui quittent le bureau. La même politique les suit à la maison, sur le WiFi d'hôtel et sur le cellulaire.
+1. Ouvrez **Paramètres** → **Vie privée et sécurité**.
+2. Descendez jusqu'à **DNS sur HTTPS**, sélectionnez **Protection maximale**.
+3. Sous **Choisissez un fournisseur**, choisissez **Personnalisé**.
+4. Collez l'URL :
+   - Quad9 : `https://dns.quad9.net/dns-query`
+   - NextDNS : `https://dns.nextdns.io/abc123` (remplacez `abc123` par votre identifiant)
+5. Fermez l'onglet. Le changement prend effet immédiatement.
 
-### 5. Vérifier
+## Configurer Chrome (et Edge, Brave, Opera)
 
-Depuis un appareil derrière la politique, visitez [un domaine de test connu malveillant](https://www.malware-test-site.com/). Vous devriez tomber sur la page de blocage Cloudflare plutôt que sur le site. Puis consultez **Gateway** → **Logs** ; la requête bloquée s'y trouve avec la politique associée.
+1. Ouvrez **Paramètres** → **Confidentialité et sécurité** → **Sécurité**.
+2. Descendez jusqu'à **Utiliser un DNS sécurisé**, activez l'option, choisissez **Avec** puis **Personnalisé**.
+3. Collez l'URL :
+   - Quad9 : `https://dns.quad9.net/dns-query`
+   - NextDNS : `https://dns.nextdns.io/abc123` (remplacez `abc123` par votre identifiant)
+4. Fermez l'onglet. Le changement prend effet immédiatement.
+
+Edge, Brave et Opera partagent le même paramètre sous un libellé équivalent (« DNS sécurisé », « Secure DNS »).
+
+## Vérifier que ça marche
+
+- **Quad9** : visitez [test.quad9.net](https://test.quad9.net/). La page confirme si votre appareil résout bien via Quad9, et offre un domaine de test malveillant qui doit être bloqué.
+- **NextDNS** : visitez [test.nextdns.io](https://test.nextdns.io/). La page confirme que votre identifiant de configuration est bien actif, et le tableau de bord NextDNS affiche les requêtes en temps réel.
+
+Si la vérification échoue, l'appareil utilise probablement encore le DNS du fournisseur d'accès. Sur le routeur, vérifiez que le changement DNS est bien sauvegardé et que le DHCP distribue les nouveaux serveurs. Sur le navigateur, vérifiez que DNS sur HTTPS est bien activé (pas en mode « par défaut »).
 
 ## Mises en garde
 
-- Le filtrage DNS ne voit pas le trafic qui utilise DNS-over-HTTPS (DoH) en contournant votre résolveur. Désactivez le DoH par navigateur sur les appareils gérés, ou utilisez WARP, qui tunnelise la résolution via Gateway peu importe la préférence de l'application.
-- Mettez en allow-list les faux positifs *rapidement*. Le coût de trois jours de retard sur un domaine de fournisseur légitime est bien supérieur au risque marginal de l'autoriser.
-- Les journaux contiennent les IP utilisateurs et les noms d'hôtes interrogés. Configurez la rétention délibérément et documentez-la dans votre politique de confidentialité.
+- Le filtrage DNS bloque les noms de domaine, pas le contenu une fois la page chargée. Il complète, mais ne remplace pas, un antivirus à jour et la prudence avec les pièces jointes.
+- Configurer le DNS au routeur ET au navigateur en même temps fait que le navigateur gagne. Choisissez une couche ou l'autre, ou assurez-vous que les deux pointent vers le même résolveur.
+- Les domaines légitimes sont parfois faussement bloqués. Si NextDNS bloque un domaine de fournisseur que vous utilisez, ajoutez-le à votre liste d'autorisation dans le tableau de bord — l'ajustement prend effet en moins d'une minute. Quad9 n'offre pas de liste d'autorisation par client ; si un faux positif vous bloque, basculez ce poste sur NextDNS.
