@@ -53,6 +53,15 @@ export default defineConfig({
           ],
         },
         {
+          label: "Setup guides",
+          translations: { fr: "Guides de configuration" },
+          items: [
+            { slug: "guides/email-providers" },
+            { slug: "guides/provider-accounts" },
+            { slug: "guides/dns-hardening" },
+          ],
+        },
+        {
           label: "Day-to-day",
           translations: { fr: "Au quotidien" },
           items: [
