@@ -14,17 +14,15 @@ export default defineConfig({
   site: "https://catena.run",
   base: "/docs",
   trailingSlash: "ignore",
-  i18n: {
-    locales: ["en", "fr"],
-    defaultLocale: "fr",
-    routing: {
-      prefixDefaultLocale: false,
-    },
-  },
   integrations: [
     starlight({
       title: "catena docs",
       logo: { src: "./src/assets/logo.svg", replacesTitle: false },
+      defaultLocale: "root",
+      locales: {
+        root: { label: "Français", lang: "fr" },
+        en: { label: "English", lang: "en" },
+      },
       components: {
         SiteTitle: "./src/components/SiteTitle.astro",
       },
