@@ -43,13 +43,6 @@ export default defineConfig({
           attrs: { src: "/docs/domain-rewriter.js", defer: true },
         },
       ],
-      social: [
-        {
-          icon: "github",
-          label: "GitHub",
-          href: "https://github.com/ma-lalonde/catena",
-        },
-      ],
       sidebar: [
         {
           label: "Start here",
