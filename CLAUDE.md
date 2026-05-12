@@ -1,24 +1,24 @@
-# apps/docs -- catena client wiki
+# catenahq/docs -- catena client wiki
 
 Astro 6 + Starlight. Client-facing documentation. Builds standalone
-(`npm run build`) and is also chained into `apps/website/dist/docs/`
-by `apps/website/scripts/build-with-docs.mjs` for the single-deploy
-production setup.
+(`npm run build` -> `dist/`).
 
 ## Build flow
 
 - `npm run dev` -- Starlight dev server.
 - `npm run build` -- standalone Starlight build into `dist/`.
 - `npm run check` -- typecheck (Astro check).
-- `prebuild` runs `packages/tools/sync-brand.mjs` to seed
-  `src/styles/brand/`. Vendored locally after split (see
-  `internal_docs/operator/repo-split-runbook.md`).
+
+## Brand assets
+
+Brand tokens come from `@catenahq/contracts/brand`. Update the
+contracts repo and bump the dep here to pull in changes; do not
+vendor a local copy.
 
 ## Content rules
 
-- This is **client-facing** documentation. Never reference the
-  operator documentation, operator paths, Ansible roles, playbooks,
-  or filesystem paths.
+- Client-facing. Never reference the operator documentation,
+  operator paths, Ansible roles, or filesystem paths.
 - Standing rule (2026-04-22): for maintenance / recovery / internal
   tasks, write "contact your operator" instead of citing the
   operator doc path or task name. Intentional exception:
@@ -38,15 +38,3 @@ production setup.
 
 Use the Astro MCP (`mcp__Astro_docs__search_astro_docs`) for any
 Astro / Starlight feature question rather than guessing.
-
-## Repo split
-
-This folder is structured to be lifted into its own repo via
-`git subtree split --prefix=apps/docs`. See the runbook at
-`internal_docs/operator/repo-split-runbook.md` in the canonical
-monorepo. Couplings the runbook resolves:
-
-- `predev` / `prebuild` reference `../../packages/tools/sync-brand.mjs`
-  -- vendor `tools/` locally on split.
-- After split, the operator wires the Starlight `editLink.baseUrl`
-  in `astro.config.mjs` to point at the new public repo.

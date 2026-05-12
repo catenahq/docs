@@ -4,16 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node ./tools/sync-brand.mjs ./src/styles/brand",
     "dev": "astro dev",
     "start": "astro dev",
-    "prebuild": "node ./tools/sync-brand.mjs ./src/styles/brand",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.38.4",
+    "@catenahq/contracts": "github:catenahq/contracts#v0.1.0",
     "astro": "^6.2.1",
     "sharp": "^0.34.5",
     "starlight-links-validator": "^0.24.0"

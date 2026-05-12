@@ -1,4 +1,4 @@
-@import "./brand/tokens/all.css";
+@import "@catenahq/contracts/brand/tokens/all.css";
 
 /* Override Starlight's default accent with catena brand colors.
    Light theme keeps the deep brand blue; dark theme bumps to a
