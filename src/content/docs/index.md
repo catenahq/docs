@@ -10,41 +10,41 @@ catena telle que déployée sur votre VPS. Chaque page s'applique à
 apparaissent dans le [portail client](https://app.catena.run).
 
 Si vous évaluez catena, commencez par
-[Comment fonctionne cette suite logicielle](/docs/fr/how-this-stack-works/)
+[Comment fonctionne cette suite logicielle](/docs/how-this-stack-works/)
 pour la visite en langage clair. Si vous êtes déjà client, votre
 portail vous renvoie ici en contexte pour les tâches opérationnelles
 du quotidien.
 
 ## Par où commencer
 
-- **[Comment fonctionne cette suite logicielle](/docs/fr/how-this-stack-works/)** --
+- **[Comment fonctionne cette suite logicielle](/docs/how-this-stack-works/)** --
   une visite en langage clair des services et de comment ils
   s'assemblent. Commencez ici si c'est votre première fois.
-- **[Où vivent vos données](/docs/fr/where-is-my-data/)** -- ce qui est
+- **[Où vivent vos données](/docs/where-is-my-data/)** -- ce qui est
   sur le VPS, ce qui est dans votre seau S3, ce qui est perdu si le
   VPS prend feu.
-- **[Fichiers à ne pas toucher](/docs/fr/do-not-touch/)** -- les
+- **[Fichiers à ne pas toucher](/docs/do-not-touch/)** -- les
   modifications manuelles sont écrasées au prochain push de votre
   opérateur. Voici ce qu'il faut laisser tranquille.
 
 ## Tâches quotidiennes
 
-- **[Ajouter / retirer des utilisateurs](/docs/fr/how-to-add-users/)** --
+- **[Ajouter / retirer des utilisateurs](/docs/how-to-add-users/)** --
   marche-à-suivre Keycloak pour l'arrivée du personnel +
   réinitialisations.
-- **[Déployer des applications (accès par département)](/docs/fr/how-to-deploy-apps/)**
+- **[Déployer des applications (accès par département)](/docs/how-to-deploy-apps/)**
   -- restreindre les nouvelles applications à des équipes
   spécifiques avec des labels compose.
-- **[Ce que vous pouvez faire vous-même](/docs/fr/self-service/)** --
+- **[Ce que vous pouvez faire vous-même](/docs/self-service/)** --
   tâches quotidiennes qui n'ont jamais besoin de votre opérateur.
 
 ## Gestion des sinistres
 
-- **[Prévention](/docs/fr/disaster-prevention/)** -- comment la suite
+- **[Prévention](/docs/disaster-prevention/)** -- comment la suite
   réduit l'impact des défaillances courantes.
-- **[Reprise](/docs/fr/disaster-recovery/)** -- ce qui se passe quand le
+- **[Reprise](/docs/disaster-recovery/)** -- ce qui se passe quand le
   VPS est perdu.
-- **[Auto-restauration](/docs/fr/self-restore/)** -- le flux à un script
+- **[Auto-restauration](/docs/self-restore/)** -- le flux à un script
   que vous pouvez lancer vous-même pour démarrer un remplacement.
 
 ## Vos sous-domaines

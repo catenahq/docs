@@ -7,7 +7,7 @@ Quelque chose est déjà cassé et vous devez le réparer. Cette page est
 la carte « ce qui peut tourner mal » + « ce qui fonctionne encore
 quand ça arrive » + « comment s'en sortir dans chaque situation ». Si
 vous lisez ceci **avant** un incident, la page compagne est
-[Prévention des sinistres](/disaster-prevention/) — c'est là que
+[Prévention des sinistres](/docs/disaster-prevention/) — c'est là que
 vivent les sauvegardes hors portable, le compartiment hors site et
 les exports proactifs des clés.
 
@@ -24,12 +24,12 @@ renvoie à la page ou la section qui détaille la récupération.
 
 | Situation | Premier réflexe | Où en lire plus |
 |---|---|---|
-| **J'ai supprimé un fichier par accident** (un utilisateur, un fichier/dossier) | Essayez la corbeille de l'application. Si vide, contactez votre opérateur. | [J'ai supprimé quelque chose — comment le récupérer ?](/how-to-restore-one-app/) |
-| **J'ai perdu mon mot de passe ou mon 2FA** (juste moi) | Réinitialisation libre-service ; pour le 2FA, contactez votre opérateur. | [J'ai perdu mon mot de passe (ou mon 2FA)](/i-lost-my-password/) |
-| **Tous les administrateurs sont verrouillés en même temps** (email perdu, tableau de bord perdu) | Contactez votre opérateur — il a un chemin de récupération séparé qui ne dépend ni de l'email ni du tableau de bord. | [J'ai perdu mon mot de passe (ou mon 2FA)](/i-lost-my-password/) |
+| **J'ai supprimé un fichier par accident** (un utilisateur, un fichier/dossier) | Essayez la corbeille de l'application. Si vide, contactez votre opérateur. | Suivez d'abord la corbeille; sinon contactez votre opérateur. |
+| **J'ai perdu mon mot de passe ou mon 2FA** (juste moi) | Réinitialisation libre-service ; pour le 2FA, contactez votre opérateur. | Réinitialisation libre-service via le portail; 2FA via votre opérateur. |
+| **Tous les administrateurs sont verrouillés en même temps** (email perdu, tableau de bord perdu) | Contactez votre opérateur — il a un chemin de récupération séparé qui ne dépend ni de l'email ni du tableau de bord. | Chemin opérateur hors-bande (non documenté côté client). |
 | **Le VPS entier est chiffré par un rançongiciel** | Contactez votre opérateur immédiatement. La récupération se fait depuis votre dernière sauvegarde saine, antérieure au rançongiciel. | Carte de récupération ci-dessous (« Disque VPS entier ») |
 | **Le VPS lui-même est compromis par un malware / accès non autorisé** | Contactez votre opérateur. Le chemin est : effacement + restauration depuis un snapshot pré-compromis + rotation de tous les secrets. Votre opérateur s'en charge ; vous recevez une mise à jour à chaque phase. | Carte de récupération ci-dessous (« Disque VPS entier ») |
-| **Le centre de données du fournisseur VPS brûle** (ou panne matérielle) | Contactez votre opérateur. Il restaure votre infrastructure sur un nouveau VPS chez le même ou un autre fournisseur, depuis le compartiment de sauvegarde hors site. | Carte de récupération ci-dessous (« Disque VPS entier ») + [Restaurer sur un nouveau VPS](/self-restore/) |
+| **Le centre de données du fournisseur VPS brûle** (ou panne matérielle) | Contactez votre opérateur. Il restaure votre infrastructure sur un nouveau VPS chez le même ou un autre fournisseur, depuis le compartiment de sauvegarde hors site. | Carte de récupération ci-dessous (« Disque VPS entier ») + [Restaurer sur un nouveau VPS](/docs/self-restore/) |
 | **Le fournisseur VPS donne un préavis de 48 h / suspend le compte** | Contactez votre opérateur. Il migre vers un nouveau fournisseur dans un délai serré ; comptez ~30-60 min d'indisponibilité publique pendant la bascule. | Carte de récupération ci-dessous (« Le fournisseur VPS fait faillite ») |
 | **Le fournisseur de sauvegarde donne un préavis de 48 h** | Contactez votre opérateur. Il re-cible les sauvegardes vers un nouveau compartiment ; les données sur le VPS ne sont pas affectées. | Carte de récupération ci-dessous (« Le fournisseur S3 fait faillite ») |
 | **Je crois que quelqu'un d'autre a mon mot de passe / mon jeton API** | N'attendez pas — contactez votre opérateur et faites tourner la clé. | Carte de récupération ci-dessous (lignes par identifiant) |
@@ -81,7 +81,7 @@ peut faire la même chose à distance en utilisant le même outil par
 SSH.
 
 *Le même bouton peut être utilisé avant tout incident, comme étape de
-prévention — voir [Prévention des sinistres](/disaster-prevention/).*
+prévention — voir [Prévention des sinistres](/docs/disaster-prevention/).*
 
 ## Ce que le bouton peut et ne peut pas récupérer
 
@@ -115,20 +115,20 @@ marquées, pour que vous sachiez qu'il faut les régénérer.
 | **Clé SSH privée** | Serveur, applis, tableau de bord | Votre opérateur ajoute une nouvelle clé publique via sa propre voie d'administration ; s'il est indisponible, voir « Mode secours du fournisseur » plus bas |
 | **Accès au tableau de bord (SSO cassé, Keycloak tombé)** | Vos applis (leurs propres logins fonctionnent encore), vos données | L'opérateur se connecte par SSH pour réparer ; au pire, redémarrer le conteneur Keycloak |
 | **Données d'une appli (vous avez supprimé quelque chose)** | Tout le reste | Restaurez uniquement les données de cette appli à partir de la sauvegarde de la nuit dernière via la liste des snapshots restic |
-| **Disque entier du VPS (corruption, effacement accidentel)** | Les sauvegardes (dans votre compartiment S3) | Suivez [Restaurer sur un nouveau VPS](/self-restore/) chez le même fournisseur |
+| **Disque entier du VPS (corruption, effacement accidentel)** | Les sauvegardes (dans votre compartiment S3) | Suivez [Restaurer sur un nouveau VPS](/docs/self-restore/) chez le même fournisseur |
 | **Jeton API Cloudflare (régénéré par accident)** | Votre tunnel continue à tourner. Les applis publiques restent en ligne. **Fonctionnalité seulement**, pas la sauvegarde. | Générez un nouveau jeton API à [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens), puis **contactez votre opérateur** avec celui-ci — il installe le nouveau jeton et confirme que le tunnel continue de prendre en compte les changements DNS après rotation. Les applis restent joignables pendant que vous attendez. |
 | **Jeton de tunnel Cloudflare (régénéré ou fuité)** | Le tunnel existant continue à tourner jusqu'à la prochaine reconnexion de cloudflared, puis tombe. Les applis publiques sont coupées jusqu'à la fin de la rotation. **Fonctionnalité**, pas la sauvegarde. | Plus perturbant que le jeton API : le trafic public s'arrête quand cloudflared ne peut plus s'authentifier. **Contactez votre opérateur immédiatement** pour qu'il génère et installe le remplacement. Trouvez le jeton sous [dash.cloudflare.com](https://dash.cloudflare.com) → votre zone → **Zero Trust** → **Networks** → **Tunnels** → cliquez sur votre tunnel → **Configure** → afficher/régénérer le jeton. **PAS** dans la page « API Tokens ». Comptez 5 à 15 minutes d'arrêt des applis publiques pendant l'installation. |
 | **Client OAuth Tailscale (régénéré par accident)** | L'accès du serveur au tailnet continue à fonctionner. Le SSH distant reste actif. | Générez un nouveau client OAuth, puis **contactez votre opérateur** avec les identifiants pour la mise en place. |
 | **Clé API Dokploy (régénérée par accident)** | Toutes vos applis continuent à tourner | Générez une nouvelle clé dans l'interface Dokploy, puis **contactez votre opérateur** avec celle-ci. |
 | **Compte Cloudflare résilié** | Serveur, applis (en interne), données | Créez un nouveau compte Cloudflare, pointez votre domaine dessus, relancez la configuration de l'opérateur ; vos applis subissent un temps d'arrêt uniquement pendant la propagation DNS |
 | **Compte Tailscale résilié** | Serveur, applis, voie publique (Tunnel CF) | Passez à une autre méthode d'accès admin ; Tailscale n'est que la « porte dérobée d'administration », pas une partie du chemin de service public |
-| **Votre fournisseur VPS fait faillite / ferme** | Votre compartiment de sauvegarde S3 (entreprise différente) | [Restaurer sur un nouveau VPS](/self-restore/) chez un autre fournisseur à partir de la sauvegarde |
+| **Votre fournisseur VPS fait faillite / ferme** | Votre compartiment de sauvegarde S3 (entreprise différente) | [Restaurer sur un nouveau VPS](/docs/self-restore/) chez un autre fournisseur à partir de la sauvegarde |
 | **Le centre de données de votre fournisseur VPS brûle (OVH Strasbourg 2021)** | Votre compartiment de sauvegarde S3 (région et ville différentes) | Idem — restaurer sur un nouveau VPS chez le même ou un autre fournisseur, dans une autre région |
-| **Votre fournisseur S3 de sauvegarde fait faillite / ferme** | Votre VPS et ses données | Vous avez toujours les données — copiez votre VPS de production vers un nouveau compartiment S3 *avant* la date butoir du fournisseur. Si vous avez configuré une sauvegarde secondaire (voir [Prévention](/disaster-prevention/)), elle est déjà en sécurité |
+| **Votre fournisseur S3 de sauvegarde fait faillite / ferme** | Votre VPS et ses données | Vous avez toujours les données — copiez votre VPS de production vers un nouveau compartiment S3 *avant* la date butoir du fournisseur. Si vous avez configuré une sauvegarde secondaire (voir [Prévention](/docs/disaster-prevention/)), elle est déjà en sécurité |
 | **Compartiment S3 supprimé par accident** | Votre VPS et ses données | Idem — recréez le compartiment et repointez les sauvegardes. Certains fournisseurs (Backblaze B2) conservent les objets supprimés pendant une période de rétention, ce qui peut vous laisser du temps |
-| **Panne simultanée du fournisseur VPS ET du fournisseur S3** | Dernière copie hors site hebdomadaire (si vous en avez configuré une — voir [Prévention](/disaster-prevention/)) | Restaurer à partir de la copie hors site vers n'importe quel nouveau cloud |
-| **Mot de passe maître ET SSH ET serveur mort** | Compartiment S3 de sauvegarde | Vous pouvez toujours déchiffrer le dépôt restic si vous avez sauvegardé le **mot de passe du dépôt restic** ET la **clé d'accès S3 + clé secrète** séparément (voir [Prévention](/disaster-prevention/)) — restic a besoin des trois pour lire le compartiment — suivez [Restaurer sur un nouveau VPS](/self-restore/) |
-| **Mot de passe maître ET mot de passe restic ET serveur mort** | Votre compartiment S3 existe mais chaque octet est du texte chiffré indéchiffrable | **Perte de données.** C'est pour cela que [Prévention des sinistres](/disaster-prevention/) dit de sauvegarder le mot de passe restic séparément, même du mot de passe maître |
+| **Panne simultanée du fournisseur VPS ET du fournisseur S3** | Dernière copie hors site hebdomadaire (si vous en avez configuré une — voir [Prévention](/docs/disaster-prevention/)) | Restaurer à partir de la copie hors site vers n'importe quel nouveau cloud |
+| **Mot de passe maître ET SSH ET serveur mort** | Compartiment S3 de sauvegarde | Vous pouvez toujours déchiffrer le dépôt restic si vous avez sauvegardé le **mot de passe du dépôt restic** ET la **clé d'accès S3 + clé secrète** séparément (voir [Prévention](/docs/disaster-prevention/)) — restic a besoin des trois pour lire le compartiment — suivez [Restaurer sur un nouveau VPS](/docs/self-restore/) |
+| **Mot de passe maître ET mot de passe restic ET serveur mort** | Votre compartiment S3 existe mais chaque octet est du texte chiffré indéchiffrable | **Perte de données.** C'est pour cela que [Prévention des sinistres](/docs/disaster-prevention/) dit de sauvegarder le mot de passe restic séparément, même du mot de passe maître |
 
 ## Mode secours du fournisseur — quand vous avez perdu SSH
 

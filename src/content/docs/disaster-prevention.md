@@ -6,7 +6,7 @@ description: "Cette page est une liste de vérification de ce qu'il faut faire"
 Cette page est une liste de vérification de ce qu'il faut faire
 **avant** que quelque chose tourne mal, pour que si cela arrive, vous
 soyez du côté « mardi pénible » et non du côté « perte de données ».
-La page compagne est [Reprise après sinistre](/disaster-recovery/),
+La page compagne est [Reprise après sinistre](/docs/disaster-recovery/),
 qui couvre ce qu'il faut faire une fois que quelque chose est déjà
 cassé.
 
@@ -18,8 +18,8 @@ quoi la prévention vous protège.
 > techniques — propriétaires, gestionnaires, personnel de bureau.
 > Aucune commande terminal n'est requise hors de l'étape facultative
 > « tester une fois ». Les pages compagnes
-> [Reprise après sinistre](/disaster-recovery/) et
-> [Restaurer sur un nouveau VPS](/self-restore/) supposent un peu
+> [Reprise après sinistre](/docs/disaster-recovery/) et
+> [Restaurer sur un nouveau VPS](/docs/self-restore/) supposent un peu
 > plus d'aisance technique et descendent en ligne de commande.
 
 ## Le principe : deux voies indépendantes, deux sauvegardes indépendantes
@@ -60,7 +60,7 @@ appelé « mot de passe maître » dans les anciennes docs). Celui-ci
 n'a d'utilité que si votre opérateur vous a aussi remis le fichier
 de secrets chiffré lui-même — la plupart des clients n'ont pas ce
 fichier directement, parce que la voie de récupération actuelle
-passe par le bouton [Exporter les clés de récupération](/disaster-recovery/),
+passe par le bouton [Exporter les clés de récupération](/docs/disaster-recovery/),
 qui vous laisse réexporter à la demande un paquet chiffré protégé
 par une phrase de passe que VOUS choisissez au moment du clic. Si
 votre kit ne contient pas de mot de passe de coffre, vous n'en avez
@@ -236,7 +236,7 @@ comportement d'Object Lock ou la tarification d'une façon qui vous
 concerne.
 
 Si vous devez un jour restaurer depuis le compartiment secondaire,
-la page [Restaurer sur un nouveau VPS](/self-restore/) couvre la
+la page [Restaurer sur un nouveau VPS](/docs/self-restore/) couvre la
 procédure — c'est la même que pour le principal, juste avec les
 identifiants du secondaire dans les variables d'environnement.
 
@@ -336,5 +336,5 @@ répondre « oui » à tout cela :
       au moins une fois et la sortie déchiffrée a l'air cohérente.
 
 Si l'un de ces points est « non », travaillez-y cette semaine. La
-page [Reprise après sinistre](/disaster-recovery/) explique ce qu'il
+page [Reprise après sinistre](/docs/disaster-recovery/) explique ce qu'il
 faut faire une fois que la prévention a porté ses fruits.

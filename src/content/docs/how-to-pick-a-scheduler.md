@@ -11,13 +11,13 @@ Choisissez la ligne qui correspond à votre situation. Chaque branche aboutit à
 
 ### Des clients qui réservent du temps avec mon équipe (clinique, salon, atelier, cours)
 
-**Recommandé :** [Easy!Appointments](/docs/fr/apps/easyappointments/).
+**Recommandé :** [Easy!Appointments](/docs/apps/easyappointments/).
 
 Une page de réservation publique ; calendriers indépendants par prestataire ; rappels par courriel ; export ICS. Connexion locale du personnel (pas de SSO côté upstream pour l'instant).
 
 ### Juste moi qui prends les réservations (un seul prestataire, payant ou non)
 
-**Recommandé :** [cal.diy](/docs/fr/apps/cal-diy/).
+**Recommandé :** [cal.diy](/docs/apps/cal-diy/).
 
 Page de réservation mono-prestataire avec paiements Stripe natifs, un magasin d'apps calendrier (Google / Outlook / Apple / CalDAV), et un parcours de réservation client soigné. Version auto-hébergée de Cal.com.
 
@@ -29,7 +29,7 @@ La réservation de ressources est une voie étroite dans le segment PME. Parlez 
 
 ### Trouver un moment de réunion à plusieurs, ponctuel
 
-**Recommandé :** [Nextcloud Polls](/docs/fr/nextcloud-apps-vs-suite/).
+**Recommandé :** [Nextcloud Polls](/docs/nextcloud-apps-vs-suite/).
 
 Nextcloud Polls couvre le besoin — sélecteurs de date et sondages à choix multiples avec un lien public, sans compte requis pour les participants. Activez l'application sous Applications → Vos applications dans Nextcloud.
 
@@ -41,13 +41,13 @@ Deux candidats : Mobilizon pour les organisations multi-régions fédérées ; G
 
 ### Inscriptions aux classes / cohortes (yoga, cours, fitness)
 
-**Recommandé :** [Easy!Appointments en mode groupe](/docs/fr/apps/easyappointments/).
+**Recommandé :** [Easy!Appointments en mode groupe](/docs/apps/easyappointments/).
 
 Easy!Appointments gère les séances de groupe d'emblée ; même configuration que le flux réservations clients, avec capacité par créneau.
 
 ### Calendrier interne du personnel uniquement (pas de page client)
 
-**Recommandé :** [Calendrier EspoCRM](/docs/fr/apps/espocrm/).
+**Recommandé :** [Calendrier EspoCRM](/docs/apps/espocrm/).
 
 Déjà dans la suite via le CRM. Pas besoin d'un outil séparé.
 

@@ -77,7 +77,7 @@ ready-to-deploy apps that are wired correctly from the start —
 authentication, SSO, storage, networking, labels, SSL are all
 pre-configured. Click Deploy on the ones you want, Delete on the rest.
 
-Full catalog with per-app notes: **[Pre-configured templates](catalog/)**.
+Full catalog with per-app notes: **[Pre-configured templates](/docs/en/apps/)**.
 
 ## Multi-container apps (example: Nextcloud)
 

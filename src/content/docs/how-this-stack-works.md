@@ -221,10 +221,10 @@ de sauvegarde. Votre surface d'interaction quotidienne est :
 
 - **Keycloak** — ajouter ou retirer du personnel, réinitialiser des
   mots de passe, assigner les personnes aux équipes (voir
-  [Ajouter / retirer des utilisateurs](/how-to-add-users/)).
+  [Ajouter / retirer des utilisateurs](/docs/how-to-add-users/)).
 - **Dokploy** — déployer de nouvelles applications avec des étiquettes
   de contrôle d'accès (voir
-  [Déployer des applications](/how-to-deploy-apps/)).
+  [Déployer des applications](/docs/how-to-deploy-apps/)).
 - **Homepage** — coup d'œil rapide sur la santé des services et les
   liens épinglés.
 - **Healthchecks** — ajouter les canaux de notification que vous

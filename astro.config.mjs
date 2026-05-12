@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import starlightLinksValidator from "starlight-links-validator";
 
 // catena.run/docs -- public client docs.
 //
@@ -17,6 +18,14 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "catena docs",
+      plugins: [
+        starlightLinksValidator({
+          // Provider-installation screenshots land later (see backlog).
+          // Until then, exclude the directory rather than maintain a
+          // file-by-file ignore list.
+          exclude: ["/img/guides/provider-accounts/**"],
+        }),
+      ],
       lastUpdated: true,
       logo: { src: "./src/assets/logo.svg", replacesTitle: false },
       defaultLocale: "root",

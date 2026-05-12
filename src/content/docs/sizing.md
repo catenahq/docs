@@ -29,7 +29,7 @@ un palier de VPS adapté à ce que vous comptez déployer.
 
 Le CPU est normalisé sur un cœur : 100 % = un vCPU complet. Les pics
 correspondent à ce que nous avons observé en exerçant l'application
-selon les [étapes de configuration](/docs/fr/apps/) (premier import
+selon les [étapes de configuration](/docs/apps/) (premier import
 massif Nextcloud, première passe de l'assistant ERPNext, etc.).
 
 ## Recommandations par palier

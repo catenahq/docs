@@ -246,4 +246,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](./)
+[← Retour au catalogue des applications pré-configurées](/docs/apps/)

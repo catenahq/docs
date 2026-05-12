@@ -148,4 +148,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](./)
+[← Back to all pre-configured apps](/docs/en/apps/)

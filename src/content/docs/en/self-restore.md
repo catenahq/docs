@@ -22,7 +22,7 @@ Linux unzip) when you provide the password.
 
 1. The recovery archive (downloaded from `recovery.<zone>` after
    they click the "Generate recovery archive (encrypted)" action —
-   see the [Disaster prevention](/disaster-prevention/) page for
+   see the [Disaster prevention](/docs/en/disaster-prevention/) page for
    what to set up beforehand). The file looks like
    `recovery-<timestamp>.zip`.
 2. The one-time password for that archive.
@@ -279,7 +279,7 @@ operator deployed Nextcloud this way:
   this automatically: when the cold-side credentials are present in
   the envelope, the script copies every object from the cold mirror
   back into a fresh hot bucket before users log in. The
-  [Disaster prevention](/disaster-prevention/) page lists what your
+  [Disaster prevention](/docs/en/disaster-prevention/) page lists what your
   operator must enable for the cold mirror to exist.
 
 ## When in doubt — call your operator back

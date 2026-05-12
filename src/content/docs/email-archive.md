@@ -79,7 +79,7 @@ réception et le destinataire, et l'opérateur l'extrait de l'archive.
 
 Pour une reprise après sinistre complète (fournisseur perdu, VPS
 perdu, en même temps), la page
-[Reprise après sinistre](/fr/disaster-recovery/) décrit le
+[Reprise après sinistre](/docs/disaster-recovery/) décrit le
 parcours. L'archive revient avec le reste, car elle réside dans la
 même sauvegarde.
 

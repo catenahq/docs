@@ -87,7 +87,7 @@ départ — authentification, SSO, stockage, réseau, étiquettes, SSL.
 Cliquez Deploy sur celles que vous voulez, Delete sur les autres.
 
 Catalogue complet avec notes par application :
-**[Applications pré-configurées](catalog/)**.
+**[Applications pré-configurées](/docs/apps/)**.
 
 ## Applications multi-conteneurs (exemple : Nextcloud)
 
