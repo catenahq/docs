@@ -1,0 +1,112 @@
+name: Bump @catenahq/contracts to latest
+
+# Polls catenahq/contracts for the latest semver tag. If our vendored
+# tarball does not match, re-packs + opens a "contracts: bump to
+# vX.Y.Z" PR against this repo. The companion contracts-freshness
+# job in ci.yml fails every consumer build until that PR merges, so
+# this workflow is the easy path to satisfying the freshness gate.
+#
+# Required secret:
+#   CONTRACTS_READ_TOKEN  fine-grained PAT with Contents:read on
+#                         catenahq/contracts only. No other scope.
+
+on:
+  schedule:
+    - cron: '17 7 * * *'  # daily 07:17 UTC (off-peak hour)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Find latest contracts tag
+        id: latest
+        env:
+          GH_TOKEN: ${{ secrets.CONTRACTS_READ_TOKEN }}
+        run: |
+          TAG=$(gh api repos/catenahq/contracts/tags --paginate --jq '.[].name' | sort -V | tail -1)
+          if [ -z "$TAG" ]; then
+            echo "::error::no tags found on catenahq/contracts"
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Compare with vendored version
+        id: compare
+        run: |
+          OUR_TAR=$(ls vendor/catenahq-contracts-*.tgz 2>/dev/null | head -1 || true)
+          OUR_VER=""
+          if [ -n "$OUR_TAR" ]; then
+            OUR_VER=$(basename "$OUR_TAR" | sed 's/catenahq-contracts-//;s/\.tgz$//')
+          fi
+          NEW_VER="${{ steps.latest.outputs.version }}"
+          echo "vendored: ${OUR_VER:-<none>}, latest: $NEW_VER"
+          if [ "$OUR_VER" = "$NEW_VER" ]; then
+            echo "needs_bump=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs_bump=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Clone contracts at tag + pack
+        if: steps.compare.outputs.needs_bump == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CONTRACTS_READ_TOKEN }}
+        run: |
+          gh repo clone catenahq/contracts /tmp/contracts -- \
+            --branch ${{ steps.latest.outputs.tag }} --depth 1
+          cd /tmp/contracts
+          npm pack
+
+      - name: Replace vendored tarball
+        if: steps.compare.outputs.needs_bump == 'true'
+        run: |
+          VER="${{ steps.latest.outputs.version }}"
+          mkdir -p vendor
+          rm -f vendor/catenahq-contracts-*.tgz
+          cp "/tmp/contracts/catenahq-contracts-${VER}.tgz" \
+             "vendor/catenahq-contracts-${VER}.tgz"
+
+      - name: Update package.json + refresh lockfile
+        if: steps.compare.outputs.needs_bump == 'true'
+        run: |
+          VER="${{ steps.latest.outputs.version }}"
+          node -e "
+            const fs = require('fs');
+            const p = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            p.dependencies['@catenahq/contracts'] =
+              'file:./vendor/catenahq-contracts-' + '${VER}' + '.tgz';
+            fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
+          "
+          npm install --no-audit --no-fund
+
+      - name: Open PR
+        if: steps.compare.outputs.needs_bump == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VER="${{ steps.latest.outputs.version }}"
+          BRANCH="bump-contracts-v${VER}"
+          git config user.name "catena-bot"
+          git config user.email "bot@catena.run"
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "contracts: bump to v${VER}"
+          git push -u origin "$BRANCH" --force
+          if ! gh pr view "$BRANCH" >/dev/null 2>&1; then
+            gh pr create \
+              --title "contracts: bump to v${VER}" \
+              --body "Automated bump of vendored @catenahq/contracts to v${VER}. Merging this clears the contracts-freshness CI gate." \
+              --head "$BRANCH" \
+              --base main
+          fi

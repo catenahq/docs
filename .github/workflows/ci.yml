@@ -1,9 +1,4 @@
-# apps/docs -- standalone CI workflow.
-#
-# Inactive in the monorepo (GitHub Actions only reads from the repo
-# root .github/workflows/). Carried inside this folder so that
-# `git subtree split --prefix=apps/docs` lifts a complete CI
-# pipeline into the new repo.
+# catenahq/docs -- CI.
 
 name: CI
 
@@ -13,6 +8,29 @@ on:
   pull_request:
 
 jobs:
+  contracts-freshness:
+    name: contracts freshness gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vendored @catenahq/contracts matches the latest tag
+        env:
+          GH_TOKEN: ${{ secrets.CONTRACTS_READ_TOKEN }}
+        run: |
+          LATEST=$(gh api repos/catenahq/contracts/tags --paginate --jq '.[].name' | sort -V | tail -1)
+          LATEST="${LATEST#v}"
+          OUR_TAR=$(ls vendor/catenahq-contracts-*.tgz 2>/dev/null | head -1 || true)
+          if [ -z "$OUR_TAR" ]; then
+            echo "::error::no vendor/catenahq-contracts-*.tgz found."
+            exit 1
+          fi
+          OUR_VER=$(basename "$OUR_TAR" | sed 's/catenahq-contracts-//;s/\.tgz$//')
+          if [ "$OUR_VER" != "$LATEST" ]; then
+            echo "::error::vendored contracts $OUR_VER is stale (latest: $LATEST). Run the 'Bump @catenahq/contracts to latest' workflow or wait for the daily auto-bump PR."
+            exit 1
+          fi
+          echo "vendored contracts $OUR_VER is current."
+
   docs:
     name: docs (typecheck + build)
     runs-on: ubuntu-latest
