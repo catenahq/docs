@@ -17,6 +17,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "catena docs",
+      lastUpdated: true,
       logo: { src: "./src/assets/logo.svg", replacesTitle: false },
       defaultLocale: "root",
       locales: {
