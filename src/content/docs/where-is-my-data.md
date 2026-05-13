@@ -1,6 +1,6 @@
 ---
 title: "Où sont mes données ?"
-description: "Réponse en langage clair à la question "si le VPS part en fumée,"
+description: "Réponse en langage clair à la question \"si le VPS part en fumée,\""
 ---
 
 Réponse en langage clair à la question "si le VPS part en fumée,

@@ -22,64 +22,64 @@ independents last. Each entry links to a full reference page with the
 setup steps, environment variables, domain, and compose file.
 
 ### 1. Nextcloud -- replaces Google Drive, Dropbox, OneDrive for Business
-Self-hosted file sharing and collaboration -- the file hub that other templates plug into. [-> Full details](nextcloud-s3-oidc.md)
+Self-hosted file sharing and collaboration -- the file hub that other templates plug into. [-> Full details](/docs/en/apps/nextcloud-s3-oidc/)
 
 ### 2. Collabora Online (CODE) -- replaces Microsoft Office Online, Google Docs (as embedded editor)
-Collaborative ODT/DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing. LibreOffice-based; lighter than OnlyOffice; better fidelity for ODF formats. [-> Full details](collabora.md)
+Collaborative ODT/DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing. LibreOffice-based; lighter than OnlyOffice; better fidelity for ODF formats. [-> Full details](/docs/en/apps/collabora/)
 
 ### 3. OnlyOffice -- replaces Microsoft Office Online, Google Docs (as embedded editor)
-Collaborative DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing with high MS Office fidelity. [-> Full details](onlyoffice.md)
+Collaborative DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing with high MS Office fidelity. [-> Full details](/docs/en/apps/onlyoffice/)
 
 ### 4. Rocket.Chat -- replaces Slack, Microsoft Teams, Discord (for work)
-Team chat -- channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired. [-> Full details](rocketchat-oidc.md)
+Team chat -- channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired. [-> Full details](/docs/en/apps/rocketchat-oidc/)
 
 ### 5. DocuSeal -- replaces DocuSign, HelloSign, PandaDoc, Adobe Sign
-Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in. [-> Full details](docuseal.md)
+Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in. [-> Full details](/docs/en/apps/docuseal/)
 
 ### 6. Documenso (deprecated) -- replaces DocuSign, HelloSign, PandaDoc, Adobe Sign
-**DEPRECATED** as of 2026-04-29 -- kept in catalog for the migration window. New deploys should use **DocuSeal** instead. Open-source document signing -- upload a PDF, place signature fields, send for signature. Keycloak SSO pre-wired. [-> Full details](documenso.md)
+**DEPRECATED** as of 2026-04-29 -- kept in catalog for the migration window. New deploys should use **DocuSeal** instead. Open-source document signing -- upload a PDF, place signature fields, send for signature. Keycloak SSO pre-wired. [-> Full details](/docs/en/apps/documenso/)
 
 ### 7. Outline -- replaces Notion, Confluence, Google Sites
-Team wiki / knowledge base. Notion-style pages, collections, nested docs. Keycloak SSO pre-wired. [-> Full details](outline.md)
+Team wiki / knowledge base. Notion-style pages, collections, nested docs. Keycloak SSO pre-wired. [-> Full details](/docs/en/apps/outline/)
 
 ### 8. EspoCRM -- replaces Salesforce, HubSpot, Zoho CRM, Pipedrive
-Default CRM in the stack. Contacts, accounts, opportunities, leads, calendar, email integration, mass mail, workflow automation. Native OIDC via post-deploy toggle. [-> Full details](espocrm.md)
+Default CRM in the stack. Contacts, accounts, opportunities, leads, calendar, email integration, mass mail, workflow automation. Native OIDC via post-deploy toggle. [-> Full details](/docs/en/apps/espocrm/)
 
 ### 9. Twenty -- replaces Salesforce, HubSpot, Pipedrive
-Modern open-source CRM. Contacts, companies, opportunities, email sync, pipelines. Alternative to EspoCRM (the default CRM). [-> Full details](twenty.md)
+Modern open-source CRM. Contacts, companies, opportunities, email sync, pipelines. Alternative to EspoCRM (the default CRM). [-> Full details](/docs/en/apps/twenty/)
 
 ### 10. Plane -- replaces Jira, Linear, Asana, ClickUp
-Open-source project management -- issues, cycles, modules, pages, workspaces. [-> Full details](plane.md)
+Open-source project management -- issues, cycles, modules, pages, workspaces. [-> Full details](/docs/en/apps/plane/)
 
 ### 11. cal.diy -- replaces Calendly, Acuity, SavvyCal, Cal.com Cloud
-Single-provider booking page with Stripe-paid bookings, calendar app store (Google / Outlook / Apple / CalDAV), and a polished public booking flow. Self-hosted build of Cal.com. [-> Full details](cal-diy.md)
+Single-provider booking page with Stripe-paid bookings, calendar app store (Google / Outlook / Apple / CalDAV), and a polished public booking flow. Self-hosted build of Cal.com. [-> Full details](/docs/en/apps/cal-diy/)
 
 ### 12. Zammad -- replaces Zendesk, Freshdesk, Jira Service Desk
-Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. Native OIDC. [-> Full details](zammad.md)
+Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. Native OIDC. [-> Full details](/docs/en/apps/zammad/)
 
 ### 13. Chatwoot -- replaces Intercom, Front, Help Scout (for chat channels)
-Conversation-first omnichannel inbox. Email, live-chat widget, WhatsApp, Facebook, Instagram, Twitter/X in one inbox. [-> Full details](chatwoot.md)
+Conversation-first omnichannel inbox. Email, live-chat widget, WhatsApp, Facebook, Instagram, Twitter/X in one inbox. [-> Full details](/docs/en/apps/chatwoot/)
 
 ### 14. WordPress -- replaces Wix, Squarespace, self-hosted Drupal
-Production-ready public CMS / website platform with FastCGI cache, Redis object cache, and a curated free-tier plugin set pre-installed. The site serves anonymously; admin sign-in runs on /wp-admin and can be wired to Keycloak via a plugin. [-> Full details](wordpress.md)
+Production-ready public CMS / website platform with FastCGI cache, Redis object cache, and a curated free-tier plugin set pre-installed. The site serves anonymously; admin sign-in runs on /wp-admin and can be wired to Keycloak via a plugin. [-> Full details](/docs/en/apps/wordpress/)
 
 ### 15. n8n -- replaces Zapier, Make (Integromat), Tray.io
-Workflow automation -- visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows. [-> Full details](n8n.md)
+Workflow automation -- visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows. [-> Full details](/docs/en/apps/n8n/)
 
 ### 16. ERPNext -- replaces SAP Business One, Odoo, Oracle NetSuite
-Full open-source ERP suite -- accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module. [-> Full details](erpnext.md)
+Full open-source ERP suite -- accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module. [-> Full details](/docs/en/apps/erpnext/)
 
 ### 17. Actual Budget -- replaces YNAB (You Need A Budget), Mint, EveryDollar
-Self-hosted personal finance. Envelope budgeting, bank account syncing via SimpleFIN or GoCardless, encrypted end-to-end. [-> Full details](actualbudget.md)
+Self-hosted personal finance. Envelope budgeting, bank account syncing via SimpleFIN or GoCardless, encrypted end-to-end. [-> Full details](/docs/en/apps/actualbudget/)
 
 ### 18. Postiz -- replaces Buffer, Hootsuite, Later
-Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, and more. [-> Full details](postiz.md)
+Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, and more. [-> Full details](/docs/en/apps/postiz/)
 
 ### 19. Easy!Appointments -- replaces Calendly, Acuity, SimplyBook, Setmore
-Customer-facing booking app for one or many providers (clinic, salon, lessons, repair shop). Public booking page; staff calendars; email + SMS reminders; ICS export. [-> Full details](easyappointments.md)
+Customer-facing booking app for one or many providers (clinic, salon, lessons, repair shop). Public booking page; staff calendars; email + SMS reminders; ICS export. [-> Full details](/docs/en/apps/easyappointments/)
 
 ### 20. Mautic -- replaces Mailchimp, ActiveCampaign, HubSpot Marketing, Brevo (Sendinblue)
-Open-source marketing automation. Contact segments, email campaigns, drip sequences, landing pages, forms, lead scoring. Replaces Mailchimp / ActiveCampaign / HubSpot Marketing. [-> Full details](mautic.md)
+Open-source marketing automation. Contact segments, email campaigns, drip sequences, landing pages, forms, lead scoring. Replaces Mailchimp / ActiveCampaign / HubSpot Marketing. [-> Full details](/docs/en/apps/mautic/)
 
 ## A note on sign-in (SSO)
 
