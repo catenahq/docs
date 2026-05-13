@@ -26,6 +26,7 @@ tier that matches what you plan to deploy.
 | Actual Budget | 80 MB | 180 MB | 1% | 15% | 30 MB |
 | Postiz | 480 MB | 680 MB | 2% | 35% | 200 MB |
 | DocuSeal | 320 MB | 540 MB | 1% | 35% | 140 MB |
+| Mautic | 1500 MB | 3000 MB | 3% | 75% | 420 MB |
 
 CPU is normalized to one core: 100% means one full vCPU is busy. Peak
 values are what we observed while exercising the app the way the
@@ -112,6 +113,14 @@ Sharp library hard during scheduling.
 
 Rails + Postgres. Light at idle; signing flow's PDF cert-stamping
 is the peak workload.
+### Mautic
+
+Three Apache/PHP containers (web + worker + cron) on top of
+MariaDB. Idle RAM is dominated by the worker and cron sidecars
+(~300 MB each, even at rest). Campaign sends and segment rebuilds
+push peak RAM near 3 GB and CPU above 75% on one vCPU. Plan for
+a 6 GB tier if Mautic is co-located with Nextcloud + Rocket.Chat;
+otherwise a 4 GB tier holds for low-volume sending.
 
 ---
 

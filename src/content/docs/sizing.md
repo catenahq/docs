@@ -26,6 +26,7 @@ un palier de VPS adapté à ce que vous comptez déployer.
 | Actual Budget | 80 MB | 180 MB | 1% | 15% | 30 MB |
 | Postiz | 480 MB | 680 MB | 2% | 35% | 200 MB |
 | DocuSeal | 320 MB | 540 MB | 1% | 35% | 140 MB |
+| Mautic | 1500 MB | 3000 MB | 3% | 75% | 420 MB |
 
 Le CPU est normalisé sur un cœur : 100 % = un vCPU complet. Les pics
 correspondent à ce que nous avons observé en exerçant l'application
@@ -116,6 +117,15 @@ planification.
 
 Rails + Postgres. Léger au repos ; le tamponnage PDF du flux de
 signature est le pic de charge.
+### Mautic
+
+Trois conteneurs Apache/PHP (web + worker + cron) au-dessus de
+MariaDB. La RAM au repos est dominée par les sidecars worker et
+cron (~300 Mo chacun, même à l'arrêt). Les envois de campagne et
+reconstructions de segments poussent le pic RAM vers 3 Go et le
+CPU au-dessus de 75 % sur un vCPU. Prévoyez un palier 6 Go si
+Mautic cohabite avec Nextcloud + Rocket.Chat ; sinon un palier
+4 Go tient pour de faibles volumes d'envoi.
 
 ---
 
