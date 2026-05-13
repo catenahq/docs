@@ -7,13 +7,13 @@ Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connais
 
 - **Projet original :** <https://zammad.com/>
 - **Remplace :** **Zendesk**, **Freshdesk**, **Jira Service Desk**
-- **Connexion (SSO) :** À activer via l'interface admin — collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
 
 ## Étapes de configuration
 
-1. Cliquez **Deploy**. Le premier démarrage est lent (2-3 min) — Elasticsearch et les migrations Rails se lancent au démarrage.
+1. Cliquez **Deploy**. Le premier démarrage est lent (2-3 min) -- Elasticsearch et les migrations Rails se lancent au démarrage.
 2. Visitez votre domaine Zammad. Complétez l'assistant de configuration (compte admin, nom d'organisation).
-3. *(Optionnel)* Activez Keycloak SSO : **Settings** → **Security** → **Third-party authentication** → **OpenID Connect** → collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
+3. *(Optionnel)* Activez Keycloak SSO : **Settings** -> **Security** -> **Third-party authentication** -> **OpenID Connect** -> collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
 
 **Ressources :** Zammad intègre Elasticsearch qui réserve ~1,5 GB de RAM. Prévoyez un VPS ≥4 GB si vous lancez Zammad avec d'autres apps.
 
@@ -21,7 +21,7 @@ Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connais
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -39,15 +39,15 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# Zammad — ticket-first help desk / omnichannel support. Native OIDC
-# support (configured in Settings → Security → Third-party
-# authentication → OIDC after first admin sign-in).
+# Zammad -- ticket-first help desk / omnichannel support. Native OIDC
+# support (configured in Settings -> Security -> Third-party
+# authentication -> OIDC after first admin sign-in).
 #
 # Heavier than Chatwoot: bundles Elasticsearch (needs ~1.5 GB RAM), a
 # dedicated scheduler, websocket process, nginx front-end, + the usual
@@ -215,4 +215,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

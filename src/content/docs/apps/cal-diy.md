@@ -7,7 +7,7 @@ Page de réservation mono-prestataire avec paiements Stripe, magasin d'apps cale
 
 - **Projet original :** <https://github.com/calcom/cal.diy>
 - **Remplace :** **Calendly**, **Acuity**, **SavvyCal**, **Cal.com Cloud**
-- **Connexion (SSO) :** Non disponible — l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
+- **Connexion (SSO) :** Non disponible -- l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
 
 ## Étapes de configuration
 
@@ -17,12 +17,12 @@ Page de réservation mono-prestataire avec paiements Stripe, magasin d'apps cale
    ```sql
    UPDATE "users" SET role='USER' WHERE email='<votre-courriel-admin>';
    ```
-   Connectez-vous. Ouvrez **Settings → Security → Two-factor authentication**, activez la 2FA. Puis de retour dans le terminal :
+   Connectez-vous. Ouvrez **Settings -> Security -> Two-factor authentication**, activez la 2FA. Puis de retour dans le terminal :
    ```sql
    UPDATE "users" SET role='ADMIN' WHERE email='<votre-courriel-admin>';
    ```
-4. Branchez un calendrier : **Settings → Apps → Calendars** → installez Google Calendar / Microsoft / CalDAV / Apple → autorisez.
-5. *(Optionnel)* Activez les réservations payantes Stripe : **Apps → Stripe** → connectez un compte Stripe → sur chaque type d'événement, activez **Requires Payment** et fixez le prix.
+4. Branchez un calendrier : **Settings -> Apps -> Calendars** -> installez Google Calendar / Microsoft / CalDAV / Apple -> autorisez.
+5. *(Optionnel)* Activez les réservations payantes Stripe : **Apps -> Stripe** -> connectez un compte Stripe -> sur chaque type d'événement, activez **Requires Payment** et fixez le prix.
 6. Configurez vos types d'événements sous **Event Types**. Partagez l'URL publique `https://cal.<votre-domaine>/<utilisateur>/<slug-événement>` avec vos clients.
 
 ### Situation de l'image
@@ -45,7 +45,7 @@ Déploiements mono-locataire uniquement. La version communautaire n'a pas de vra
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -65,20 +65,20 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# cal.diy — MIT-licensed open-source build of Cal.com (scheduling
+# cal.diy -- MIT-licensed open-source build of Cal.com (scheduling
 # links / Calendly alternative). cal.diy is the post-rebrand name
 # for the self-hostable Cal.com codebase. Source:
 # https://github.com/calcom/cal.diy. No standalone calcom/cal.diy
 # Docker image yet; the legacy `calcom/cal.com` image (latest tag
 # v6.2.0, 2026-03-02) is the runtime stand-in until upstream
 # publishes one. SAML SSO is gated to the commercial Cal.com
-# edition, so this template ships email/password admin login only —
+# edition, so this template ships email/password admin login only --
 # no Keycloak realm client, no BoxyHQ Jackson sidecar.
 #
 # v6.x auto-runs `prisma migrate deploy` on container boot
@@ -89,7 +89,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 # password passes the strict validator AND 2FA is enabled.
 # Wizard-created admins land in INACTIVE_ADMIN and bounce on
 # post-login redirect. Workaround documented in the catalog
-# setup_steps (demote to USER → 2FA → re-promote).
+# setup_steps (demote to USER -> 2FA -> re-promote).
 
 services:
   caldiy:
@@ -166,4 +166,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

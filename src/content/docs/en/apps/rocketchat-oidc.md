@@ -1,20 +1,20 @@
 ---
 title: "Rocket.Chat"
-description: "Team chat — channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired."
+description: "Team chat -- channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired."
 ---
 
-Team chat — channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired.
+Team chat -- channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired.
 
 - **Upstream project:** <https://www.rocket.chat/>
 - **Replaces:** **Slack**, **Microsoft Teams**, **Discord (for work)**
-- **Sign-in (SSO):** Pre-wired — the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
+- **Sign-in (SSO):** Pre-wired -- the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
 
 ## Setup steps
 
 1. Click **Deploy**. Nothing to fill in the Environment tab unless you want a different hostname.
 2. Wait ~5 minutes for the first sync. The login page will show **Sign in with Keycloak**.
 3. Sign in. The first user becomes the workspace admin.
-4. *(Optional, ~30 s)* Attach Nextcloud files in chats: Administration → Apps → Marketplace → search `Nextcloud` → install → set your Nextcloud domain in the app settings. Users can then type `/nextcloud` in any chat to browse and attach files.
+4. *(Optional, ~30 s)* Attach Nextcloud files in chats: Administration -> Apps -> Marketplace -> search `Nextcloud` -> install -> set your Nextcloud domain in the app settings. Users can then type `/nextcloud` in any chat to browse and attach files.
 
 ### Mobile apps
 
@@ -23,7 +23,7 @@ Rocket.Chat's iOS and Android apps connect straight to your server. Users paste 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -51,13 +51,13 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# Rocket.Chat — team chat + Keycloak SSO.
+# Rocket.Chat -- team chat + Keycloak SSO.
 #
 # All values come from the Environment tab. Sign-in with Keycloak
 # is pre-wired via OVERWRITE_SETTING_* env vars; no admin-UI steps
@@ -108,7 +108,7 @@ services:
 
       # Keycloak OIDC, wired via OVERWRITE_SETTING_* env vars. Rocket.Chat
       # reads these on boot and writes them into its Settings collection,
-      # overriding any admin-UI changes — lets us ship a working SSO out of
+      # overriding any admin-UI changes -- lets us ship a working SSO out of
       # the box without a post-deploy config step. To take manual control
       # after deploy, remove the relevant OVERWRITE_SETTING_* line here.
       OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak: "true"
@@ -303,4 +303,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

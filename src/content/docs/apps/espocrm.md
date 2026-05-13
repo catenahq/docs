@@ -7,13 +7,13 @@ CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calend
 
 - **Projet original :** <https://www.espocrm.com/>
 - **Remplace :** **Salesforce**, **HubSpot**, **Zoho CRM**, **Pipedrive**
-- **Connexion (SSO) :** À activer via l'interface admin — collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min.
 2. Visitez votre domaine EspoCRM. Connectez-vous avec `ESPOCRM_ADMIN_USERNAME` / `ESPOCRM_ADMIN_PASSWORD` de l'onglet Environment.
-3. *(Optionnel)* Activez Keycloak SSO : **Administration** → **Authentication** → réglez **Method** sur **OIDC** → collez :
+3. *(Optionnel)* Activez Keycloak SSO : **Administration** -> **Authentication** -> réglez **Method** sur **OIDC** -> collez :
    - **Client ID :** `OIDC_CLIENT_ID` depuis Environment (`espocrm`)
    - **Client Secret :** `OIDC_CLIENT_SECRET` depuis Environment (demandez à votre opérateur de le générer côté Keycloak si vide)
    - **Authorization Endpoint :** `<OIDC_ISSUER_URL>/protocol/openid-connect/auth`
@@ -34,7 +34,7 @@ EspoCRM tourne en PHP-Apache + MariaDB + un cron sidecar. Prévoyez ~1 GB RAM au
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -58,7 +58,7 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
@@ -168,4 +168,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

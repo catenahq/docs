@@ -40,9 +40,9 @@ here.
 
 **Recommended:** [Nextcloud Polls](/docs/nextcloud-apps-vs-suite/).
 
-Nextcloud Polls covers this — date pickers and multiple-choice polls
+Nextcloud Polls covers this -- date pickers and multiple-choice polls
 with a public link, no account required for participants. Enable it
-under Apps → Your apps inside Nextcloud.
+under Apps -> Your apps inside Nextcloud.
 
 ### Public event RSVP / community events listing
 

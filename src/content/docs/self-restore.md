@@ -6,9 +6,9 @@ description: "Si votre opérateur n'est pas disponible et que vous devez déplac
 Si votre opérateur n'est pas disponible et que vous devez déplacer votre
 suite logicielle vers un autre VPS, cette page détaille la procédure manuelle, avec
 les mêmes outils qu'utilise votre opérateur. Comptez quelques heures.
-Vos données vous appartiennent — ceci est la voie de secours.
+Vos données vous appartiennent -- ceci est la voie de secours.
 
-## Voie rapide — archive de récupération préchargée (recommandée)
+## Voie rapide -- archive de récupération préchargée (recommandée)
 
 La récupération la plus rapide est celle où vous n'avez aucun
 identifiant à taper. Votre opérateur peut générer un fichier zip
@@ -22,8 +22,8 @@ Linux unzip) lorsque vous fournissez le mot de passe.
 **Ce que votre opérateur vous remet, hors ligne :**
 
 1. L'archive de récupération (téléchargée depuis `recovery.<zone>`
-   après avoir cliqué sur l'action « Générer l'archive de
-   récupération (chiffrée) » — voir la page
+   après avoir cliqué sur l'action "Générer l'archive de
+   récupération (chiffrée)" -- voir la page
    [Prévention des sinistres](/docs/disaster-prevention/) pour ce
    qu'il faut configurer au préalable). Le fichier ressemble à
    `recovery-<horodatage>.zip`.
@@ -34,14 +34,14 @@ Linux unzip) lorsque vous fournissez le mot de passe.
 Double-cliquez sur le zip. Votre OS demande le mot de passe ;
 tapez-le. Six fichiers apparaissent dans le dossier extrait :
 
-- `README.txt` (anglais) et `LISEZ-MOI.txt` (français) — ces
+- `README.txt` (anglais) et `LISEZ-MOI.txt` (français) -- ces
   instructions.
-- `recover.sh` — le wrapper à lancer sur le nouveau VPS.
-- `restore.sh` — le script de récupération (aucun accès Internet
+- `recover.sh` -- le wrapper à lancer sur le nouveau VPS.
+- `restore.sh` -- le script de récupération (aucun accès Internet
   requis au moment de la reprise ; l'archive est entièrement
   autonome).
-- `envelope.env` — les identifiants pour les buckets de *ce* VPS.
-- `vault.recovered.yml` — copie de référence des secrets
+- `envelope.env` -- les identifiants pour les buckets de *ce* VPS.
+- `vault.recovered.yml` -- copie de référence des secrets
   récupérables depuis l'hôte vivant, pour votre opérateur si votre
   coffre principal est aussi perdu. À traiter comme un fichier de
   mots de passe.
@@ -62,12 +62,12 @@ snapshot, installer Dokploy, rejouer les dumps Postgres par
 application, réparer le bucket S3 Nextcloud si nécessaire,
 installer cloudflared, résumé.
 
-Idempotent en cas d'échec partiel — relancez-le après avoir
+Idempotent en cas d'échec partiel -- relancez-le après avoir
 corrigé le problème, il reprend où il s'est arrêté.
 
-Si le bucket de sauvegarde « chaud » est injoignable (rare, p. ex.
+Si le bucket de sauvegarde "chaud" est injoignable (rare, p. ex.
 le bucket lui-même a été supprimé) et que l'enveloppe contient
-aussi les identifiants du bucket « froid », le script bascule
+aussi les identifiants du bucket "froid", le script bascule
 automatiquement sur le miroir froid. Si vous utilisez Nextcloud
 avec stockage S3 et que le bucket Nextcloud chaud est vide ou
 manquant, le script recopie le miroir froid vers le bucket chaud
@@ -78,7 +78,7 @@ le zip d'origine de votre poste et du VPS. Les identifiants qu'ils
 contiennent sont sensibles et n'ont besoin d'exister que le temps
 de la reprise.
 
-## Voie rapide brute — invites interactives pour les identifiants
+## Voie rapide brute -- invites interactives pour les identifiants
 
 Si vous avez les identifiants listés à la section suivante mais pas
 de script préchargé, vous pouvez exécuter la version non chiffrée
@@ -104,7 +104,7 @@ procédure manuelle suit.
 
 ## Ce qu'il vous faut avant de commencer
 
-- Un nouveau VPS (n'importe quel fournisseur — OVH, Hetzner,
+- Un nouveau VPS (n'importe quel fournisseur -- OVH, Hetzner,
   DigitalOcean, AWS). 2 vCPU / 6 Go de RAM / 40 Go de disque
   correspond au palier de départ et fait tourner la suite de base.
   Avec plus de services déployés ou sous charge soutenue, passez à
@@ -119,7 +119,7 @@ procédure manuelle suit.
     `s3:s3.<région>.fournisseur.example/<bucket>`)
 - Une aisance avec SSH et le terminal. Ansible n'est pas requis.
 
-## Étape 1 — Préparer le nouveau VPS
+## Étape 1 -- Préparer le nouveau VPS
 
 ```bash
 ssh root@IP-DU-NOUVEAU-VPS
@@ -128,7 +128,7 @@ apt install -y restic curl ca-certificates
 mkdir -p /mnt/data
 ```
 
-N'installez pas Docker ici — l'étape 4 ci-dessous lance l'installeur
+N'installez pas Docker ici -- l'étape 4 ci-dessous lance l'installeur
 officiel de Dokploy (`curl -sSL https://dokploy.com/install.sh | sh`)
 qui installe la bonne version de Docker, initialise Docker Swarm et
 lance Traefik en une seule fois. Installer Docker en amont mène à une
@@ -138,7 +138,7 @@ Si votre jeu de sauvegarde s'attend à un `/mnt/data` sur un volume
 séparé, attachez-en un via la console du fournisseur et montez-le là.
 Sinon un simple répertoire sur la racine suffit.
 
-## Étape 2 — Configurer les identifiants restic
+## Étape 2 -- Configurer les identifiants restic
 
 ```bash
 export RESTIC_REPOSITORY='s3:s3.<région>.fournisseur.example/<bucket>'
@@ -157,7 +157,7 @@ Vous devriez voir la liste des snapshots (un par nuit). Sinon, vérifiez
 que l'URL et le mot de passe correspondent à ceux transmis par
 l'opérateur.
 
-## Étape 3 — Restaurer le dernier snapshot
+## Étape 3 -- Restaurer le dernier snapshot
 
 ```bash
 restic restore latest --target /
@@ -169,17 +169,17 @@ passante.
 
 À la fin, votre VPS contient :
 
-- `/etc/dokploy/` — configuration de Dokploy
-- `/mnt/data/docker/volumes/` — données persistantes de chaque
+- `/etc/dokploy/` -- configuration de Dokploy
+- `/mnt/data/docker/volumes/` -- données persistantes de chaque
   application (bases Postgres, Redis, téléversements)
-- `/mnt/data/apps/` — fichiers compose de chaque projet
-- `/mnt/data/backup-staging/pg/` — dumps SQL nocturnes, un par
+- `/mnt/data/apps/` -- fichiers compose de chaque projet
+- `/mnt/data/backup-staging/pg/` -- dumps SQL nocturnes, un par
   conteneur Postgres
-- `/etc/ssh`, `/etc/ufw`, `/etc/fstab` — configuration système
-- `/etc`, `/var/lib/dpkg`, `/usr/local/bin` — état des paquets et
+- `/etc/ssh`, `/etc/ufw`, `/etc/fstab` -- configuration système
+- `/etc`, `/var/lib/dpkg`, `/usr/local/bin` -- état des paquets et
   scripts auxiliaires
 
-## Étape 4 — Installer Dokploy
+## Étape 4 -- Installer Dokploy
 
 Suivez les instructions d'installation officielles :
 <https://dokploy.com/docs/core/installation>. En résumé :
@@ -209,7 +209,7 @@ Dokploy se reconnecte au volume Postgres existant au démarrage.
     (L'automatisation de votre opérateur évite cette étape en
     pré-positionnant le secret depuis leur coffre.)
 
-## Étape 5 — Rejouer les dumps Postgres par application
+## Étape 5 -- Rejouer les dumps Postgres par application
 
 Chaque base applicative est aussi dumpée en SQL chaque nuit et
 restaurée à l'étape 3. Une fois les conteneurs relancés par Dokploy :
@@ -228,7 +228,7 @@ Le volume brut sous `/mnt/data/docker/volumes/` suffit généralement ;
 les dumps SQL sont la solution de repli si le volume est corrompu ou si
 vous migrez entre versions Postgres incompatibles.
 
-## Étape 6 — Reprovisionner la passerelle publique
+## Étape 6 -- Reprovisionner la passerelle publique
 
 L'**identifiant + les identifiants** du tunnel Cloudflare ne sont pas
 inclus dans la sauvegarde restic (ils sont liés à un serveur
@@ -245,7 +245,7 @@ spécifique). À refaire :
     ```
 
 Si vous préférez le déploiement Swarm utilisé par votre opérateur,
-consultez `/root/README.md` sur le VPS restauré — la commande exacte y
+consultez `/root/README.md` sur le VPS restauré -- la commande exacte y
 figure. À noter : la variante Swarm tourne comme service Docker
 attaché au réseau `dokploy-network` pour atteindre les noms d'hôte
 internes de vos applis ; la commande standalone
@@ -255,23 +255,23 @@ version Swarm est celle que l'automatisation de votre opérateur
 reconstruit, à privilégier si vous comptez lui rendre le serveur plus
 tard.
 
-## Étape 7 — Vérifications
+## Étape 7 -- Vérifications
 
 Ouvrez :
 
-- `https://auth.<zone>` → page de connexion Keycloak ; vos
+- `https://auth.<zone>` -> page de connexion Keycloak ; vos
   utilisateurs existants doivent fonctionner
-- `https://apps.<zone>` → tableau Dokploy ; tous les projets compose
-  sont visibles (possiblement « arrêtés » — cliquez Deploy une fois par
+- `https://apps.<zone>` -> tableau Dokploy ; tous les projets compose
+  sont visibles (possiblement "arrêtés" -- cliquez Deploy une fois par
   projet pour les relancer)
-- `https://<votre-app>.<zone>` → l'application elle-même
+- `https://<votre-app>.<zone>` -> l'application elle-même
 
 Si les trois chargent, vos données sont bien de retour.
 
 ## Si vous utilisez Nextcloud avec stockage S3
 
-Certaines applications qui gèrent beaucoup de fichiers — Nextcloud en
-est le cas courant — rangent leurs fichiers dans un bucket S3 séparé,
+Certaines applications qui gèrent beaucoup de fichiers -- Nextcloud en
+est le cas courant -- rangent leurs fichiers dans un bucket S3 séparé,
 pas dans le dépôt restic. Si votre opérateur a déployé Nextcloud de
 cette façon :
 
@@ -281,7 +281,7 @@ cette façon :
   l'opérateur a provisionné dans votre compte nuagique.
 - Au démarrage, le conteneur Nextcloud restauré se reconnecte
   automatiquement au même bucket avec les identifiants enregistrés
-  dans sa configuration — aucune restauration séparée nécessaire.
+  dans sa configuration -- aucune restauration séparée nécessaire.
 - Si vous avez volontairement fait tourner les clés S3 depuis la
   sauvegarde, mettez à jour les variables d'environnement Nextcloud
   dans l'interface Dokploy avant de redéployer, sinon l'application
@@ -299,7 +299,7 @@ cette façon :
   [Prévention des sinistres](/docs/disaster-prevention/) liste ce que
   votre opérateur doit activer pour que le miroir froid existe.
 
-## En cas de doute — rappelez votre opérateur
+## En cas de doute -- rappelez votre opérateur
 
 Cette page existe pour qu'aucune situation ne vous bloque. Mais le
 flux scripté (`./catena restore && ./catena site`) de votre opérateur
@@ -315,6 +315,6 @@ le relever, le site de documentation ne vous aidera pas. Enregistrez
 les pages que vous utiliseriez lors d'un sinistre (celle-ci +
 [Reprise après sinistre](/docs/disaster-recovery/) +
 [Où vivent vos données](/docs/where-is-my-data/)) sur votre poste
-avec « Enregistrer sous... » de votre navigateur (ou imprimez-les en
+avec "Enregistrer sous..." de votre navigateur (ou imprimez-les en
 PDF) à la prise en charge, et rafraîchissez la copie une fois par
 an.

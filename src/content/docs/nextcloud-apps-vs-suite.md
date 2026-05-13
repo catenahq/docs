@@ -15,39 +15,39 @@ leurs équivalents dédiés et recommande lesquelles activer.
 
 ## Applications Nextcloud présentées dans ce guide
 
-Les applications Nextcloud se trouvent dans **Applications → Vos
+Les applications Nextcloud se trouvent dans **Applications -> Vos
 applications** à l'intérieur de Nextcloud. Celles couvertes ici :
 
-- [Talk](https://nextcloud.com/talk/) — clavardage, appels voix et
+- [Talk](https://nextcloud.com/talk/) -- clavardage, appels voix et
   vidéo
-- [Tasks](https://apps.nextcloud.com/apps/tasks) — listes de tâches
+- [Tasks](https://apps.nextcloud.com/apps/tasks) -- listes de tâches
   liées au calendrier CalDAV
-- [Deck](https://apps.nextcloud.com/apps/deck) — tableaux kanban
-- [Collectives](https://apps.nextcloud.com/apps/collectives) — wiki
+- [Deck](https://apps.nextcloud.com/apps/deck) -- tableaux kanban
+- [Collectives](https://apps.nextcloud.com/apps/collectives) -- wiki
   collaboratif basé sur des fichiers Markdown
-- [Notes](https://apps.nextcloud.com/apps/notes) — prise de notes
+- [Notes](https://apps.nextcloud.com/apps/notes) -- prise de notes
   par utilisateur, synchronisation mobile
 - [Appointments](https://www.srgdev.com/lab/nextcloud-appointments/)
-  — pages de réservation publiques liées au calendrier d'un
+  -- pages de réservation publiques liées au calendrier d'un
   utilisateur
-- [Forms](https://apps.nextcloud.com/apps/forms) — sondages internes
+- [Forms](https://apps.nextcloud.com/apps/forms) -- sondages internes
   et formulaires d'intégration
-- [Contacts](https://apps.nextcloud.com/apps/contacts) — carnets
+- [Contacts](https://apps.nextcloud.com/apps/contacts) -- carnets
   d'adresses personnels et partagés via CardDAV
-- [Mail](https://apps.nextcloud.com/apps/mail) — client IMAP / SMTP
+- [Mail](https://apps.nextcloud.com/apps/mail) -- client IMAP / SMTP
   dans Nextcloud
-- [Calendar](https://apps.nextcloud.com/apps/calendar) — calendriers
+- [Calendar](https://apps.nextcloud.com/apps/calendar) -- calendriers
   du personnel et partagés via CalDAV
-- [Attendance](https://apps.nextcloud.com/apps/attendance) —
+- [Attendance](https://apps.nextcloud.com/apps/attendance) --
   pointage entrée / sortie pour le suivi du temps
 - [Memories](https://apps.nextcloud.com/apps/memories) /
-  [Photos](https://apps.nextcloud.com/apps/photos) — chronologie
+  [Photos](https://apps.nextcloud.com/apps/photos) -- chronologie
   photo et navigation par album
-- [Bookmarks](https://apps.nextcloud.com/apps/bookmarks) — signets
+- [Bookmarks](https://apps.nextcloud.com/apps/bookmarks) -- signets
   partagés
-- [Polls](https://apps.nextcloud.com/apps/polls) — sondages de
+- [Polls](https://apps.nextcloud.com/apps/polls) -- sondages de
   groupe et sélecteurs de date
-- [News](https://apps.nextcloud.com/apps/news) — lecteur RSS
+- [News](https://apps.nextcloud.com/apps/news) -- lecteur RSS
 
 ## Comment lire cette page
 
@@ -162,7 +162,7 @@ multi-équipe :
 | Paiements | Aucun | Aucun nativement (Stripe via un petit pont dans la suite) |
 
 **Utilisez Nextcloud Appointments** quand vous travaillez seul et que
-votre agenda vit déjà dans Nextcloud — c'est la configuration la plus
+votre agenda vit déjà dans Nextcloud -- c'est la configuration la plus
 légère, aucun déploiement séparé.
 
 **Utilisez Easy!Appointments** quand plusieurs membres du personnel
@@ -174,7 +174,7 @@ Voir [Comment choisir votre outil de réservation](/docs/how-to-pick-a-scheduler
 pour l'arbre de décision complet de tous les besoins de réservation.
 
 Nextcloud Calendar (le calendrier CalDAV du personnel) est
-complémentaire aux deux — il couvre les calendriers internes et les
+complémentaire aux deux -- il couvre les calendriers internes et les
 salles de réunion, pas la réservation client. Voir la liste
 Nextcloud-uniquement plus bas.
 
@@ -185,9 +185,9 @@ Référence : [Nextcloud Appointments](https://www.srgdev.com/lab/nextcloud-appo
 
 La suite ne livre pas d'application de formulaires dédiée, donc
 **Nextcloud Forms** est la voie recommandée pour tout formulaire
-inter-entreprise — bilans RH, réponses d'événements, questionnaires
+inter-entreprise -- bilans RH, réponses d'événements, questionnaires
 d'intégration, sondages internes. Activez-le dans Nextcloud sous
-Applications → Vos applications.
+Applications -> Vos applications.
 
 | Cas d'usage | Application recommandée |
 |---|---|
@@ -245,23 +245,23 @@ Référence : [Nextcloud Mail](https://apps.nextcloud.com/apps/mail).
 ## Applications Nextcloud sans équivalent
 
 Celles-ci n'ont pas d'équivalent direct dans la suite. Activez-les
-dans Nextcloud (Applications → Vos applications) au besoin.
+dans Nextcloud (Applications -> Vos applications) au besoin.
 
-- **Calendar** — calendriers du personnel et partagés via CalDAV.
+- **Calendar** -- calendriers du personnel et partagés via CalDAV.
   Le choix par défaut pour la planification interne, les salles de
   réunion et la disponibilité d'équipe.
-- **Attendance** — pointage entrée/sortie pour le suivi du temps.
+- **Attendance** -- pointage entrée/sortie pour le suivi du temps.
   Utile pour les petites entreprises qui ont besoin d'un simple
   registre de présence du personnel sans déployer un système RH /
   paie complet.
-- **Memories / Photos** — chronologie photo et navigation par album
+- **Memories / Photos** -- chronologie photo et navigation par album
   pour les images de votre Nextcloud. Utile si votre entreprise
   stocke beaucoup d'actifs visuels.
-- **Bookmarks** — signets partagés au sein de votre équipe. Utile
+- **Bookmarks** -- signets partagés au sein de votre équipe. Utile
   pour des collections de liens organisées.
-- **Polls** — sondages rapides en groupe (sélecteurs de date, choix
+- **Polls** -- sondages rapides en groupe (sélecteurs de date, choix
   multiples). Équivalent léger de Doodle.
-- **News** — lecteur RSS. Spécialisé mais solide.
+- **News** -- lecteur RSS. Spécialisé mais solide.
 
 ## Dans le doute, commencez par l'application Nextcloud
 
@@ -269,7 +269,7 @@ Les applications Nextcloud ci-dessus sont gratuites à activer,
 légères en ressources et faciles à désactiver si elles ne
 conviennent pas. **Si vous n'êtes pas certain que votre équipe a
 besoin de l'application dédiée de la suite, essayez d'abord la
-version Nextcloud** — pendant une semaine ou deux, avec les
+version Nextcloud** -- pendant une semaine ou deux, avec les
 personnes qui l'utiliseront vraiment. Vous saurez rapidement si
 elle couvre le besoin ou si les limites commencent à se faire
 sentir.
@@ -277,7 +277,7 @@ sentir.
 Si l'application Nextcloud suffit, vous économisez un déploiement,
 un domaine et une surface de connexion supplémentaire. Si elle ne
 suffit pas, l'application dédiée n'est qu'à une demande de votre
-opérateur — et vos données côté Nextcloud restent en place pendant
+opérateur -- et vos données côté Nextcloud restent en place pendant
 le changement.
 
 Parlez à votre opérateur dès que vous voulez activer, désactiver

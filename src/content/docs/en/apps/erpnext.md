@@ -1,33 +1,33 @@
 ---
 title: "ERPNext"
-description: "Full open-source ERP suite — accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module."
+description: "Full open-source ERP suite -- accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module."
 ---
 
-Full open-source ERP suite — accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module.
+Full open-source ERP suite -- accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module.
 
 - **Upstream project:** <https://erpnext.com/>
 - **Replaces:** **SAP Business One**, **Odoo**, **Oracle NetSuite**
-- **Sign-in (SSO):** Enable via the app's admin UI — paste the `OIDC_*` values from the Environment tab once.
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
 ## Setup steps
 
-1. Click **Deploy**. First boot takes 5-10 min — the site must be created, MariaDB initialized, Python apps installed. Watch the `create-site` container logs in Dokploy if you want to follow along.
+1. Click **Deploy**. First boot takes 5-10 min -- the site must be created, MariaDB initialized, Python apps installed. Watch the `create-site` container logs in Dokploy if you want to follow along.
 2. Visit your ERPNext domain. Sign in as `Administrator` / `ERPNEXT_ADMIN_PASSWORD` from the Environment tab.
 3. Complete the setup wizard: company name, fiscal year, base currency, chart of accounts template.
-4. *(Optional)* Enable Keycloak SSO: **Integrations** → **Social Login Keys** → **New** → **Provider: OpenID Connect**. Fill:
+4. *(Optional)* Enable Keycloak SSO: **Integrations** -> **Social Login Keys** -> **New** -> **Provider: OpenID Connect**. Fill:
    - **Client ID:** `OIDC_CLIENT_ID` from Environment
    - **Client Secret:** `OIDC_CLIENT_SECRET`
    - **Base URL:** `OIDC_ISSUER_URL`
    - Save. The login page shows **Login with OpenID Connect**.
 
-**Resource note.** ERPNext is heavy — 10+ containers, ~3 GB RAM + 2 CPUs recommended minimum. Consider running it on a dedicated VPS tier if you also deploy Nextcloud + chat + other apps alongside.
+**Resource note.** ERPNext is heavy -- 10+ containers, ~3 GB RAM + 2 CPUs recommended minimum. Consider running it on a dedicated VPS tier if you also deploy Nextcloud + chat + other apps alongside.
 
-**Upgrade path.** Major version bumps (v15 → v16) require `bench migrate`. The compose template leaves `vps.auto-update=patch` on every service so weekly automated updates stay within v15.x.x — majors are a deliberate operator action, not a 3 a.m. auto-update.
+**Upgrade path.** Major version bumps (v15 -> v16) require `bench migrate`. The compose template leaves `vps.auto-update=patch` on every service so weekly automated updates stay within v15.x.x -- majors are a deliberate operator action, not a 3 a.m. auto-update.
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -47,20 +47,20 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# ERPNext — full ERP suite (accounting, inventory, HR, CRM, manufacturing,
+# ERPNext -- full ERP suite (accounting, inventory, HR, CRM, manufacturing,
 # website). Multi-service stack based on the Frappe framework: web
 # frontend (nginx) + Python backend + websocket + celery workers +
 # scheduler + MariaDB + two Redis instances. Plus two one-shot init
 # containers that bootstrap the site on first deploy.
 #
-# SSO via admin UI post-deploy: sign in as Administrator →
-# Integrations → Social Login Keys → Add → OpenID Connect → paste the
+# SSO via admin UI post-deploy: sign in as Administrator ->
+# Integrations -> Social Login Keys -> Add -> OpenID Connect -> paste the
 # OIDC_* values from the Environment tab.
 #
 # Heavy: plan for ≥4 GB VPS RAM and 2 CPUs.
@@ -303,4 +303,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

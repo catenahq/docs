@@ -1,28 +1,28 @@
 ---
 title: "n8n"
-description: "Automatisation de flux de travail — enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code."
+description: "Automatisation de flux de travail -- enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code."
 ---
 
-Automatisation de flux de travail — enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code.
+Automatisation de flux de travail -- enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code.
 
 - **Projet original :** <https://n8n.io/>
 - **Remplace :** **Zapier**, **Make (Integromat)**, **Tray.io**
-- **Connexion (SSO) :** Non disponible — l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
+- **Connexion (SSO) :** Non disponible -- l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min le temps que Postgres + n8n s'initialisent.
 2. Visitez votre domaine n8n et créez le compte propriétaire via l'assistant.
-3. Invitez d'autres utilisateurs : **Settings** → **Users** → **Invite**. Chaque utilisateur reçoit une invitation par courriel.
-4. Créez des workflows : **Workflows** → **+ Add Workflow**. Parcourez la bibliothèque d'intégrations pour les nœuds prêts à l'emploi.
+3. Invitez d'autres utilisateurs : **Settings** -> **Users** -> **Invite**. Chaque utilisateur reçoit une invitation par courriel.
+4. Créez des workflows : **Workflows** -> **+ Add Workflow**. Parcourez la bibliothèque d'intégrations pour les nœuds prêts à l'emploi.
 
-**À propos de la connexion.** L'édition communautaire de n8n utilise email/mot de passe avec des invitations. OIDC et SAML sont enterprise, donc le SSO n'est pas disponible ici — chaque utilisateur garde une connexion spécifique. Convient à une équipe d'automatisation de 1-5 personnes.
+**À propos de la connexion.** L'édition communautaire de n8n utilise email/mot de passe avec des invitations. OIDC et SAML sont enterprise, donc le SSO n'est pas disponible ici -- chaque utilisateur garde une connexion spécifique. Convient à une équipe d'automatisation de 1-5 personnes.
 
 ## Variables d'environnement
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -43,13 +43,13 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# n8n — workflow automation (Zapier / Make alternative). Community
+# n8n -- workflow automation (Zapier / Make alternative). Community
 # edition uses local email/password user management. OIDC/SAML are
 # enterprise-only, so per-user app-local logins here.
 
@@ -119,4 +119,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

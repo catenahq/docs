@@ -1,19 +1,19 @@
 ---
 title: "Plane"
-description: "Gestion de projet open-source — issues, cycles, modules, pages, workspaces."
+description: "Gestion de projet open-source -- issues, cycles, modules, pages, workspaces."
 ---
 
-Gestion de projet open-source — issues, cycles, modules, pages, workspaces.
+Gestion de projet open-source -- issues, cycles, modules, pages, workspaces.
 
 - **Projet original :** <https://plane.so/>
 - **Remplace :** **Jira**, **Linear**, **Asana**, **ClickUp**
-- **Connexion (SSO) :** À activer via l'interface admin — collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~2-3 min (pile multi-services avec MinIO).
 2. Visitez votre domaine Plane et créez le compte admin initial + le premier workspace.
-3. *(Optionnel)* Activez Keycloak SSO : une fois connecté, visitez `https://projects.<votre-domaine>/god-mode` → **Authentication** → **OpenID Connect** → collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
+3. *(Optionnel)* Activez Keycloak SSO : une fois connecté, visitez `https://projects.<votre-domaine>/god-mode` -> **Authentication** -> **OpenID Connect** -> collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
 
 
 
@@ -21,7 +21,7 @@ Gestion de projet open-source — issues, cycles, modules, pages, workspaces.
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -42,17 +42,17 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# Plane — open-source project management (Jira/Linear alternative).
+# Plane -- open-source project management (Jira/Linear alternative).
 # Multi-service stack: web/api/worker/admin/space/live behind an nginx
 # proxy, backed by postgres + redis + minio (object storage for
 # attachments). OIDC SSO is post-deploy: sign in as the first user,
-# visit God-mode (/god-mode) → Authentication → OpenID Connect →
+# visit God-mode (/god-mode) -> Authentication -> OpenID Connect ->
 # paste the OIDC_* values from the Environment tab.
 
 services:
@@ -246,4 +246,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

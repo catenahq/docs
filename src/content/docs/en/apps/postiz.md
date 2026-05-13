@@ -7,20 +7,20 @@ Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, In
 
 - **Upstream project:** <https://postiz.com/>
 - **Replaces:** **Buffer**, **Hootsuite**, **Later**
-- **Sign-in (SSO):** Not available — this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
+- **Sign-in (SSO):** Not available -- this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
 
 ## Setup steps
 
 1. Click **Deploy**. Wait ~1 min.
 2. Visit your Postiz domain and create the admin account.
-3. Add each social network's app credentials: **Settings** → pick the network → paste your developer-app client ID + secret from the network's developer portal. One-time per network.
+3. Add each social network's app credentials: **Settings** -> pick the network -> paste your developer-app client ID + secret from the network's developer portal. One-time per network.
 
 **Note on sign-in:** Postiz uses local email/password login. No native OIDC in the current community release. The user count for this tool is typically 1-3 marketing people, so the SSO gap is less impactful than for chat / helpdesk tools.
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -40,14 +40,14 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# Postiz — social media scheduling / posting across networks (Twitter/X,
-# LinkedIn, Facebook, Instagram, YouTube, TikTok, …). Login is local
+# Postiz -- social media scheduling / posting across networks (Twitter/X,
+# LinkedIn, Facebook, Instagram, YouTube, TikTok, ...). Login is local
 # (email/password) + optional social OAuth buttons configured per-
 # network. No native OIDC in the current community release.
 
@@ -125,4 +125,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

@@ -7,15 +7,15 @@ Plateforme CMS / site web public prête pour la production, avec cache FastCGI, 
 
 - **Projet original :** <https://wordpress.org/>
 - **Remplace :** **Wix**, **Squarespace**, **Drupal auto-hébergé**
-- **Connexion (SSO) :** À activer via l'interface admin — collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min le temps que MariaDB + Redis + nginx + WordPress s'initialisent.
 2. Visitez votre domaine WordPress. Suivez l'assistant d'installation (titre du site, admin, mot de passe, email).
-3. Une fois l'assistant terminé, le prochain converge opérateur installe et configure automatiquement la liste curatée : kadence-blocks, performance-lab et ses sept modules (auto-sizes, dominant-color-images, embed-optimizer, image-prioritizer, optimization-detective, speculation-rules, webp-uploads), nginx-cache-purge-and-preload (NPP — purge le cache FastCGI à la publication puis le réchauffe via votre sitemap Rank Math), redis-cache (câblé au Redis embarqué), wp-mail-smtp (câblé au SMTP configuré côté opérateur), wp-mail-logging, complianz-gdpr, wp-consent-api, seo-by-rank-math, et Fluent Forms.
+3. Une fois l'assistant terminé, le prochain converge opérateur installe et configure automatiquement la liste curatée : kadence-blocks, performance-lab et ses sept modules (auto-sizes, dominant-color-images, embed-optimizer, image-prioritizer, optimization-detective, speculation-rules, webp-uploads), nginx-cache-purge-and-preload (NPP -- purge le cache FastCGI à la publication puis le réchauffe via votre sitemap Rank Math), redis-cache (câblé au Redis embarqué), wp-mail-smtp (câblé au SMTP configuré côté opérateur), wp-mail-logging, complianz-gdpr, wp-consent-api, seo-by-rank-math, et Fluent Forms.
 4. Visitez `/wp-admin/admin.php?page=rank-math` et `/wp-admin/admin.php?page=cmplz-wizard` pour exécuter les assistants de première utilisation Rank Math + Complianz. Leurs réponses dépendent du site (secteur, UE / hors-UE, etc.) et ne sont volontairement pas pré-remplies.
-5. *(Optionnel)* Connectez `/wp-admin` à Keycloak : **Extensions** → **Ajouter** → chercher `OpenID Connect Generic` → **Installer** → **Activer**. Puis **Réglages** → **OpenID Connect Client** et remplissez :
+5. *(Optionnel)* Connectez `/wp-admin` à Keycloak : **Extensions** -> **Ajouter** -> chercher `OpenID Connect Generic` -> **Installer** -> **Activer**. Puis **Réglages** -> **OpenID Connect Client** et remplissez :
    - **Client ID :** `OIDC_CLIENT_ID` depuis Environment
    - **Client Secret :** `OIDC_CLIENT_SECRET`
    - **Login Endpoint URL :** `<OIDC_ISSUER_URL>/authorize/`
@@ -28,13 +28,13 @@ Plateforme CMS / site web public prête pour la production, avec cache FastCGI, 
 
 **Stack.** WordPress tourne en nginx + php-fpm + MariaDB + Redis. Nginx sert directement les ressources statiques, met en cache les réponses PHP avec son cache FastCGI (purgé automatiquement par NPP à chaque édition / publication, puis réchauffé via le sitemap), et délègue le reste à php-fpm. Redis sert de cache d'objets WordPress. Dimensionné pour un VPS unique ; pour absorber un pic de trafic, scaler verticalement.
 
-**Auth mixte.** Les pages publiques du site sont servies anonymement — les moteurs de recherche crawlent normalement, les visiteurs ne voient pas Keycloak. Seul `/wp-admin` passe par le plugin OIDC optionnel pour les connexions admin/éditeur. C'est ce qui rend WordPress sur cette stack hybride : tourné vers les lecteurs mais administré en SSO.
+**Auth mixte.** Les pages publiques du site sont servies anonymement -- les moteurs de recherche crawlent normalement, les visiteurs ne voient pas Keycloak. Seul `/wp-admin` passe par le plugin OIDC optionnel pour les connexions admin/éditeur. C'est ce qui rend WordPress sur cette stack hybride : tourné vers les lecteurs mais administré en SSO.
 
 ## Variables d'environnement
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -54,7 +54,7 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
@@ -221,4 +221,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

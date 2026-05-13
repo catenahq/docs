@@ -7,15 +7,15 @@ Production-ready public CMS / website platform with FastCGI cache, Redis object 
 
 - **Upstream project:** <https://wordpress.org/>
 - **Replaces:** **Wix**, **Squarespace**, **self-hosted Drupal**
-- **Sign-in (SSO):** Enable via the app's admin UI — paste the `OIDC_*` values from the Environment tab once.
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
 ## Setup steps
 
 1. Click **Deploy**. Wait ~1 min for MariaDB + Redis + nginx + WordPress to initialize.
 2. Visit your WordPress domain. Run through the install wizard (site title, admin username, admin password, email).
-3. After the install wizard completes, the next operator converge auto-installs and configures the curated plugin set: kadence-blocks, performance-lab + its seven feature modules (auto-sizes, dominant-color-images, embed-optimizer, image-prioritizer, optimization-detective, speculation-rules, webp-uploads), nginx-cache-purge-and-preload (NPP — purges + re-warms the FastCGI cache via your Rank Math sitemap), redis-cache (wired to the bundled Redis), wp-mail-smtp (wired to your operator-configured SMTP), wp-mail-logging, complianz-gdpr, wp-consent-api, seo-by-rank-math, and Fluent Forms.
+3. After the install wizard completes, the next operator converge auto-installs and configures the curated plugin set: kadence-blocks, performance-lab + its seven feature modules (auto-sizes, dominant-color-images, embed-optimizer, image-prioritizer, optimization-detective, speculation-rules, webp-uploads), nginx-cache-purge-and-preload (NPP -- purges + re-warms the FastCGI cache via your Rank Math sitemap), redis-cache (wired to the bundled Redis), wp-mail-smtp (wired to your operator-configured SMTP), wp-mail-logging, complianz-gdpr, wp-consent-api, seo-by-rank-math, and Fluent Forms.
 4. Visit `/wp-admin/admin.php?page=rank-math` and `/wp-admin/admin.php?page=cmplz-wizard` to run the Rank Math + Complianz first-run wizards. Their answers are site-specific (industry, EU/non-EU, etc.) and intentionally not pre-filled.
-5. *(Optional)* Wire `/wp-admin` login to Keycloak: **Plugins** → **Add New** → search `OpenID Connect Generic` → **Install** → **Activate**. Go to **Settings** → **OpenID Connect Client** and fill:
+5. *(Optional)* Wire `/wp-admin` login to Keycloak: **Plugins** -> **Add New** -> search `OpenID Connect Generic` -> **Install** -> **Activate**. Go to **Settings** -> **OpenID Connect Client** and fill:
    - **Client ID:** `OIDC_CLIENT_ID` from Environment
    - **Client Secret:** `OIDC_CLIENT_SECRET`
    - **Login Endpoint URL:** `<OIDC_ISSUER_URL>/authorize/`
@@ -28,12 +28,12 @@ Production-ready public CMS / website platform with FastCGI cache, Redis object 
 
 **Stack.** WordPress runs as nginx + php-fpm + MariaDB + Redis. Nginx serves static assets directly, caches PHP responses with FastCGI cache (purged automatically by NPP on edit/publish, then re-warmed via your sitemap), and proxies the rest to php-fpm. Redis backs the WordPress object cache. Sized for a single-VPS deploy; for traffic spikes scale vertically.
 
-**Split-auth note.** Public pages (the website itself) are served anonymously — search engines crawl normally, visitors don't see Keycloak. Only `/wp-admin` goes through the optional OIDC plugin for admin/editor logins. That's what makes WordPress on this stack a hybrid: reader-facing but SSO-managed for staff.
+**Split-auth note.** Public pages (the website itself) are served anonymously -- search engines crawl normally, visitors don't see Keycloak. Only `/wp-admin` goes through the optional OIDC plugin for admin/editor logins. That's what makes WordPress on this stack a hybrid: reader-facing but SSO-managed for staff.
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -54,7 +54,7 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
@@ -221,4 +221,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

@@ -7,10 +7,9 @@ import starlightLinksValidator from "starlight-links-validator";
 // Content lives under src/content/docs/{en,fr}/. Starlight handles
 // the sidebar nav + EN/FR routing automatically.
 //
-// Deployment: this is a sub-build of apps/website. The website
-// build script chains `astro build` here with base="/docs", then
-// copies dist/* into apps/website/dist/docs/ so a single nginx
-// container serves both surfaces. There is no standalone deploy.
+// Deployment: standalone Astro build (`npm run build` -> `dist/`).
+// This repo deploys independently from catenahq/website; nginx routes
+// /docs/ to this build's output. No chained-build coupling.
 export default defineConfig({
   site: "https://catena.run",
   base: "/docs",
@@ -18,6 +17,11 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "catena docs",
+      editLink: {
+        // "Suggest edit" link in every page footer; opens the file
+        // on GitHub for the post-split source of truth.
+        baseUrl: "https://github.com/catenahq/docs/edit/main/",
+      },
       plugins: [
         starlightLinksValidator({
           // Provider-installation screenshots land later (see backlog).

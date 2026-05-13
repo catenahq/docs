@@ -1,13 +1,13 @@
 ---
 title: "Collabora Online (CODE)"
-description: "Collaborative ODT/DOCX/XLSX/PPTX editing — bolts into Nextcloud for real-time co-editing."
+description: "Collaborative ODT/DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing."
 ---
 
-Collaborative ODT/DOCX/XLSX/PPTX editing — bolts into Nextcloud for real-time co-editing. LibreOffice-based; lighter than OnlyOffice; better fidelity for ODF formats.
+Collaborative ODT/DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing. LibreOffice-based; lighter than OnlyOffice; better fidelity for ODF formats.
 
 - **Upstream project:** <https://www.collaboraonline.com/>
 - **Replaces:** **Microsoft Office Online**, **Google Docs (as embedded editor)**
-- **Sign-in (SSO):** Not applicable — this template has no user-facing login (server-to-server usage only).
+- **Sign-in (SSO):** Not applicable -- this template has no user-facing login (server-to-server usage only).
 
 ## Setup steps
 
@@ -17,14 +17,14 @@ Collaborative ODT/DOCX/XLSX/PPTX editing — bolts into Nextcloud for real-time 
 
 Switching back to OnlyOffice later is one click: stop this Collabora compose, deploy `onlyoffice`, then click the **Wire Nextcloud OnlyOffice** button.
 
-Don't visit the Collabora domain directly in a browser — it has no UI of its own. Users only ever see it through Nextcloud when they open a document.
+Don't visit the Collabora domain directly in a browser -- it has no UI of its own. Users only ever see it through Nextcloud when they open a document.
 
 
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 _(no environment variables to configure)_
@@ -40,7 +40,7 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
@@ -92,4 +92,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

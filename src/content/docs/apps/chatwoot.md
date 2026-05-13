@@ -7,21 +7,21 @@ Boîte de réception omnicanale orientée conversation. Email, widget de chat, W
 
 - **Projet original :** <https://www.chatwoot.com/>
 - **Remplace :** **Intercom**, **Front**, **Help Scout (canaux de chat)**
-- **Connexion (SSO) :** Non disponible — l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
+- **Connexion (SSO) :** Non disponible -- l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~2 min le premier démarrage (migrations Rails).
 2. Visitez votre domaine Chatwoot. Complétez l'assistant pour créer le premier admin.
-3. Ajoutez des canaux : **Settings** → **Inboxes** → **Add inbox**. Choisissez le canal (email, widget, WhatsApp, etc.) et suivez les instructions.
+3. Ajoutez des canaux : **Settings** -> **Inboxes** -> **Add inbox**. Choisissez le canal (email, widget, WhatsApp, etc.) et suivez les instructions.
 
-**À propos de la connexion :** l'édition communautaire de Chatwoot ne supporte pas OIDC/SSO — chaque agent garde un email/mot de passe spécifique à l'app. Le SSO SAML/OIDC est enterprise uniquement. Si le SSO est important, envisagez Zammad (compromis : flux orienté ticket au lieu de l'inbox orienté conversation de Chatwoot).
+**À propos de la connexion :** l'édition communautaire de Chatwoot ne supporte pas OIDC/SSO -- chaque agent garde un email/mot de passe spécifique à l'app. Le SSO SAML/OIDC est enterprise uniquement. Si le SSO est important, envisagez Zammad (compromis : flux orienté ticket au lieu de l'inbox orienté conversation de Chatwoot).
 
 ## Variables d'environnement
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -40,14 +40,14 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# Chatwoot — customer support / omnichannel inbox (email, live chat,
-# WhatsApp, Facebook, Instagram, Twitter, …). Community edition uses
+# Chatwoot -- customer support / omnichannel inbox (email, live chat,
+# WhatsApp, Facebook, Instagram, Twitter, ...). Community edition uses
 # email/password for agent login; SAML/OIDC SSO is enterprise-only.
 
 services:
@@ -149,4 +149,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

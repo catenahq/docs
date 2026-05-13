@@ -7,20 +7,20 @@ Team wiki / knowledge base. Notion-style pages, collections, nested docs. Keyclo
 
 - **Upstream project:** <https://www.getoutline.com/>
 - **Replaces:** **Notion**, **Confluence**, **Google Sites**
-- **Sign-in (SSO):** Pre-wired — the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
+- **Sign-in (SSO):** Pre-wired -- the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
 
 ## Setup steps
 
 1. Click **Deploy**. Environment defaults are all pre-filled.
 2. Wait ~1 min for the first boot.
-3. Visit your Outline domain → click **Sign in with Keycloak**. The first user to sign in becomes the workspace admin.
+3. Visit your Outline domain -> click **Sign in with Keycloak**. The first user to sign in becomes the workspace admin.
 
 
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -41,13 +41,13 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# Outline — team wiki / knowledge base, Keycloak SSO pre-wired via
+# Outline -- team wiki / knowledge base, Keycloak SSO pre-wired via
 # env-based OIDC. Zero admin-UI config needed after first deploy; users
 # see "Sign in with Keycloak" on the login page.
 
@@ -71,7 +71,7 @@ services:
       FORCE_HTTPS: "true"
       ENABLE_UPDATES: "false"
 
-      # Keycloak OIDC — populated by dashboard-sync after first deploy.
+      # Keycloak OIDC -- populated by dashboard-sync after first deploy.
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       OIDC_AUTH_URI: ${OIDC_ISSUER_URL}/protocol/openid-connect/auth
@@ -139,4 +139,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

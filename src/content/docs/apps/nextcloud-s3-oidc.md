@@ -1,22 +1,22 @@
 ---
 title: "Nextcloud"
-description: "Partage de fichiers et collaboration auto-hébergés — le hub auquel d'autres templates se connectent."
+description: "Partage de fichiers et collaboration auto-hébergés -- le hub auquel d'autres templates se connectent."
 ---
 
-Partage de fichiers et collaboration auto-hébergés — le hub auquel d'autres templates se connectent.
+Partage de fichiers et collaboration auto-hébergés -- le hub auquel d'autres templates se connectent.
 
 - **Projet original :** <https://nextcloud.com>
 - **Remplace :** **Google Drive**, **Dropbox**, **OneDrive Entreprise**
-- **Connexion (SSO) :** Câblé automatiquement — la convergence de votre opérateur exécute un hook CLI idempotent qui enregistre Keycloak dans l'app à chaque passage. Aucune étape post-déploiement côté client.
+- **Connexion (SSO) :** Câblé automatiquement -- la convergence de votre opérateur exécute un hook CLI idempotent qui enregistre Keycloak dans l'app à chaque passage. Aucune étape post-déploiement côté client.
 
 ## Étapes de configuration
 
-1. Ouvrez l'onglet **Environment** et remplissez `S3_BUCKET`, `S3_REGION`, `S3_HOST`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` avec les coordonnées de votre seau S3. (Le reste est pré-rempli — `NEXTCLOUD_HOSTNAME`, identifiants admin/DB, variables d'intégration OIDC.)
+1. Ouvrez l'onglet **Environment** et remplissez `S3_BUCKET`, `S3_REGION`, `S3_HOST`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` avec les coordonnées de votre seau S3. (Le reste est pré-rempli -- `NEXTCLOUD_HOSTNAME`, identifiants admin/DB, variables d'intégration OIDC.)
 2. Cliquez **Deploy**. Patientez ~2 min pour le premier démarrage.
-3. Câblez le SSO : ouvrez `actions.<votre-domaine>` puis cliquez **Câbler l'OIDC pour Nextcloud**. Le bouton enregistre Keycloak comme fournisseur OIDC à l'intérieur de Nextcloud (idempotent — peut être recliqué sans risque après un redéploiement ou une rotation de secret).
+3. Câblez le SSO : ouvrez `actions.<votre-domaine>` puis cliquez **Câbler l'OIDC pour Nextcloud**. Le bouton enregistre Keycloak comme fournisseur OIDC à l'intérieur de Nextcloud (idempotent -- peut être recliqué sans risque après un redéploiement ou une rotation de secret).
 4. Connectez-vous sur votre domaine Nextcloud avec **Se connecter avec keycloak** (utilise votre identité gérée par l'opérateur), ou repli sur `NEXTCLOUD_ADMIN_USER` / `NEXTCLOUD_ADMIN_PASSWORD` de l'onglet Environment.
 
-### Connexion avec Keycloak — câblée par le bouton OliveTin
+### Connexion avec Keycloak -- câblée par le bouton OliveTin
 
 Après le premier déploiement de Nextcloud, vous cliquez
 **Câbler l'OIDC pour Nextcloud** sur
@@ -30,14 +30,14 @@ continue de fonctionner en parallèle comme issue de secours.
 
 Recliquez le bouton chaque fois que la configuration OIDC
 dérive (après une rotation de secret, un redéploiement
-destructif, etc.). Il est idempotent — relancer ne fait que
+destructif, etc.). Il est idempotent -- relancer ne fait que
 rafraîchir l'enregistrement du fournisseur.
 
 ### Le partage de fichiers par lien courriel fonctionne toujours
 
 L'authentification Keycloak gouverne la **connexion des
 utilisateurs** à Nextcloud. Elle ne restreint **pas** les
-liens de partage publics anonymes — les URL
+liens de partage publics anonymes -- les URL
 `/s/<jeton>` que votre équipe génère depuis Nextcloud
 restent accessibles aux destinataires qui n'ont pas de
 compte Keycloak.
@@ -63,14 +63,14 @@ conception.
 
 Si vous souhaitez verrouiller complètement les partages
 publics, le bon contrôle est à l'intérieur de Nextcloud
-(Paramètres → Partage → « Autoriser le partage par lien
-public »), pas au niveau réseau.
+(Paramètres -> Partage -> "Autoriser le partage par lien
+public"), pas au niveau réseau.
 
 ## Variables d'environnement
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -105,13 +105,13 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# Nextcloud — S3 primary storage + Keycloak SSO.
+# Nextcloud -- S3 primary storage + Keycloak SSO.
 #
 # All values come from the Environment tab: hostname, S3 credentials,
 # admin password, DB password, OIDC coordinates (auto-injected). The
@@ -175,7 +175,7 @@ services:
       NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
       NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
 
-      # TLS is terminated upstream (Cloudflare Tunnel → Traefik). Force
+      # TLS is terminated upstream (Cloudflare Tunnel -> Traefik). Force
       # Nextcloud to render https:// links + trust the reverse-proxy
       # Forwarded headers so user_oidc's HTTPS precondition check passes.
       OVERWRITEPROTOCOL: https
@@ -428,4 +428,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

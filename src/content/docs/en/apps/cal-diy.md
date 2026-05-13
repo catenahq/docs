@@ -7,7 +7,7 @@ Single-provider booking page with Stripe-paid bookings, calendar app store (Goog
 
 - **Upstream project:** <https://github.com/calcom/cal.diy>
 - **Replaces:** **Calendly**, **Acuity**, **SavvyCal**, **Cal.com Cloud**
-- **Sign-in (SSO):** Not available — this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
+- **Sign-in (SSO):** Not available -- this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
 
 ## Setup steps
 
@@ -17,12 +17,12 @@ Single-provider booking page with Stripe-paid bookings, calendar app store (Goog
    ```sql
    UPDATE "users" SET role='USER' WHERE email='<your-admin-email>';
    ```
-   Sign in. Open **Settings → Security → Two-factor authentication**, enable 2FA. Then back in the terminal:
+   Sign in. Open **Settings -> Security -> Two-factor authentication**, enable 2FA. Then back in the terminal:
    ```sql
    UPDATE "users" SET role='ADMIN' WHERE email='<your-admin-email>';
    ```
-4. Connect a calendar: **Settings → Apps → Calendars** → install Google Calendar / Microsoft / CalDAV / Apple → authorize.
-5. *(Optional)* Enable Stripe-paid bookings: **Apps → Stripe** → connect a Stripe account → on each event type, toggle **Requires Payment** and set the price.
+4. Connect a calendar: **Settings -> Apps -> Calendars** -> install Google Calendar / Microsoft / CalDAV / Apple -> authorize.
+5. *(Optional)* Enable Stripe-paid bookings: **Apps -> Stripe** -> connect a Stripe account -> on each event type, toggle **Requires Payment** and set the price.
 6. Configure your event types under **Event Types**. Share the public URL `https://cal.<your-domain>/<username>/<event-slug>` with customers.
 
 ### Image situation
@@ -44,7 +44,7 @@ Single-tenant deploys only. The community edition has no real org/team coordinat
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -65,20 +65,20 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# cal.diy — MIT-licensed open-source build of Cal.com (scheduling
+# cal.diy -- MIT-licensed open-source build of Cal.com (scheduling
 # links / Calendly alternative). cal.diy is the post-rebrand name
 # for the self-hostable Cal.com codebase. Source:
 # https://github.com/calcom/cal.diy. No standalone calcom/cal.diy
 # Docker image yet; the legacy `calcom/cal.com` image (latest tag
 # v6.2.0, 2026-03-02) is the runtime stand-in until upstream
 # publishes one. SAML SSO is gated to the commercial Cal.com
-# edition, so this template ships email/password admin login only —
+# edition, so this template ships email/password admin login only --
 # no Keycloak realm client, no BoxyHQ Jackson sidecar.
 #
 # v6.x auto-runs `prisma migrate deploy` on container boot
@@ -89,7 +89,7 @@ Domains tabs (described above), never in the compose itself.
 # password passes the strict validator AND 2FA is enabled.
 # Wizard-created admins land in INACTIVE_ADMIN and bounce on
 # post-login redirect. Workaround documented in the catalog
-# setup_steps (demote to USER → 2FA → re-promote).
+# setup_steps (demote to USER -> 2FA -> re-promote).
 
 services:
   caldiy:
@@ -166,4 +166,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

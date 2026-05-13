@@ -1,5 +1,5 @@
 ---
-title: "Self-service — what you can do without the operator"
+title: "Self-service -- what you can do without the operator"
 description: "Rule of thumb: anything the web UIs expose, you can do yourself. Anything that requires SSH + sudo goes through the operator."
 ---
 

@@ -1,22 +1,22 @@
 ---
 title: "Nextcloud"
-description: "Self-hosted file sharing and collaboration — the file hub that other templates plug into."
+description: "Self-hosted file sharing and collaboration -- the file hub that other templates plug into."
 ---
 
-Self-hosted file sharing and collaboration — the file hub that other templates plug into.
+Self-hosted file sharing and collaboration -- the file hub that other templates plug into.
 
 - **Upstream project:** <https://nextcloud.com>
 - **Replaces:** **Google Drive**, **Dropbox**, **OneDrive for Business**
-- **Sign-in (SSO):** Wired automatically — your operator's converge runs an idempotent CLI hook that registers Keycloak inside the app on every run. Zero post-deploy step on the client side.
+- **Sign-in (SSO):** Wired automatically -- your operator's converge runs an idempotent CLI hook that registers Keycloak inside the app on every run. Zero post-deploy step on the client side.
 
 ## Setup steps
 
-1. Open the **Environment** tab and fill `S3_BUCKET`, `S3_REGION`, `S3_HOST`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` with your bucket's coordinates. (Everything else is pre-filled — `NEXTCLOUD_HOSTNAME`, admin/DB credentials, OIDC integration vars.)
+1. Open the **Environment** tab and fill `S3_BUCKET`, `S3_REGION`, `S3_HOST`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` with your bucket's coordinates. (Everything else is pre-filled -- `NEXTCLOUD_HOSTNAME`, admin/DB credentials, OIDC integration vars.)
 2. Click **Deploy**. Wait ~2 minutes for the first boot.
-3. Wire SSO: open `actions.<your-domain>` and click **Wire Nextcloud OIDC**. The button registers Keycloak as an OIDC provider inside Nextcloud (idempotent — safe to re-click after redeploys or secret rotations).
+3. Wire SSO: open `actions.<your-domain>` and click **Wire Nextcloud OIDC**. The button registers Keycloak as an OIDC provider inside Nextcloud (idempotent -- safe to re-click after redeploys or secret rotations).
 4. Sign in at your Nextcloud domain with **Log in with keycloak** (uses your operator-managed identity), or fall back to `NEXTCLOUD_ADMIN_USER` / `NEXTCLOUD_ADMIN_PASSWORD` from the Environment tab.
 
-### Sign-in with Keycloak — wired by the OliveTin button
+### Sign-in with Keycloak -- wired by the OliveTin button
 
 After Nextcloud's first deploy you click **Wire Nextcloud
 OIDC** at `actions.<your-domain>`. The button enables
@@ -29,13 +29,13 @@ a break-glass.
 
 Re-click the button any time the OIDC configuration drifts
 (after a secret rotation, a destructive redeploy, etc.). It
-is idempotent — re-running just refreshes the provider
+is idempotent -- re-running just refreshes the provider
 record.
 
 ### Sharing files by email link still works
 
 Keycloak SSO governs **user login** to Nextcloud. It does
-**not** restrict anonymous public share links —
+**not** restrict anonymous public share links --
 `/s/<token>` URLs your team generates from inside Nextcloud
 are reachable by recipients who have no Keycloak account.
 
@@ -55,13 +55,13 @@ only handles the login flow for *your team members*; the
 public-share endpoints remain anonymous-by-design.
 
 If you ever need to lock down public shares entirely, the
-right control is inside Nextcloud (Settings → Sharing →
+right control is inside Nextcloud (Settings -> Sharing ->
 "Allow share via public link"), not at the network layer.
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -97,13 +97,13 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# Nextcloud — S3 primary storage + Keycloak SSO.
+# Nextcloud -- S3 primary storage + Keycloak SSO.
 #
 # All values come from the Environment tab: hostname, S3 credentials,
 # admin password, DB password, OIDC coordinates (auto-injected). The
@@ -167,7 +167,7 @@ services:
       NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
       NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
 
-      # TLS is terminated upstream (Cloudflare Tunnel → Traefik). Force
+      # TLS is terminated upstream (Cloudflare Tunnel -> Traefik). Force
       # Nextcloud to render https:// links + trust the reverse-proxy
       # Forwarded headers so user_oidc's HTTPS precondition check passes.
       OVERWRITEPROTOCOL: https
@@ -420,4 +420,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

@@ -14,37 +14,37 @@ counterparts and recommends which to enable.
 
 ## Featured Nextcloud apps in this guide
 
-Nextcloud apps live under **Apps → Your apps** inside Nextcloud. The
+Nextcloud apps live under **Apps -> Your apps** inside Nextcloud. The
 ones covered on this page:
 
-- [Talk](https://nextcloud.com/talk/) — chat, voice and video calls
-- [Tasks](https://apps.nextcloud.com/apps/tasks) — to-do lists tied
+- [Talk](https://nextcloud.com/talk/) -- chat, voice and video calls
+- [Tasks](https://apps.nextcloud.com/apps/tasks) -- to-do lists tied
   to your CalDAV calendar
-- [Deck](https://apps.nextcloud.com/apps/deck) — kanban boards
-- [Collectives](https://apps.nextcloud.com/apps/collectives) —
+- [Deck](https://apps.nextcloud.com/apps/deck) -- kanban boards
+- [Collectives](https://apps.nextcloud.com/apps/collectives) --
   collaborative wiki backed by Markdown files
-- [Notes](https://apps.nextcloud.com/apps/notes) — per-user
+- [Notes](https://apps.nextcloud.com/apps/notes) -- per-user
   note-taking with mobile sync
 - [Appointments](https://www.srgdev.com/lab/nextcloud-appointments/)
-  — public booking pages tied to a user's calendar
-- [Forms](https://apps.nextcloud.com/apps/forms) — internal surveys
+  -- public booking pages tied to a user's calendar
+- [Forms](https://apps.nextcloud.com/apps/forms) -- internal surveys
   and intake forms
-- [Contacts](https://apps.nextcloud.com/apps/contacts) — personal
+- [Contacts](https://apps.nextcloud.com/apps/contacts) -- personal
   and shared address books over CardDAV
-- [Mail](https://apps.nextcloud.com/apps/mail) — IMAP / SMTP client
+- [Mail](https://apps.nextcloud.com/apps/mail) -- IMAP / SMTP client
   inside Nextcloud
-- [Calendar](https://apps.nextcloud.com/apps/calendar) — staff and
+- [Calendar](https://apps.nextcloud.com/apps/calendar) -- staff and
   shared calendars over CalDAV
-- [Attendance](https://apps.nextcloud.com/apps/attendance) —
+- [Attendance](https://apps.nextcloud.com/apps/attendance) --
   clock-in / clock-out time tracking
 - [Memories](https://apps.nextcloud.com/apps/memories) /
-  [Photos](https://apps.nextcloud.com/apps/photos) — photo timeline
+  [Photos](https://apps.nextcloud.com/apps/photos) -- photo timeline
   and album browser
-- [Bookmarks](https://apps.nextcloud.com/apps/bookmarks) — shared
+- [Bookmarks](https://apps.nextcloud.com/apps/bookmarks) -- shared
   bookmarks
-- [Polls](https://apps.nextcloud.com/apps/polls) — group polls and
+- [Polls](https://apps.nextcloud.com/apps/polls) -- group polls and
   date pickers
-- [News](https://apps.nextcloud.com/apps/news) — RSS reader
+- [News](https://apps.nextcloud.com/apps/news) -- RSS reader
 
 ## How to read this page
 
@@ -153,7 +153,7 @@ differ in deployment shape and team support:
 | Payments | None | None natively (Stripe via a small bridge in the suite) |
 
 **Use Nextcloud Appointments** when you are a one-person operation
-and your calendar already lives in Nextcloud — it is the lightest
+and your calendar already lives in Nextcloud -- it is the lightest
 possible setup, no separate deploy.
 
 **Use Easy!Appointments** when several staff need their own
@@ -164,7 +164,7 @@ See [How to pick a scheduler](/docs/en/how-to-pick-a-scheduler/) for the
 full decision tree across all booking patterns.
 
 Nextcloud Calendar (the staff CalDAV calendar) is complementary to
-both — it covers internal calendars and meeting rooms, not customer
+both -- it covers internal calendars and meeting rooms, not customer
 bookings. See the Nextcloud-only list below.
 
 Reference: [Nextcloud Appointments](https://www.srgdev.com/lab/nextcloud-appointments/) ·
@@ -173,9 +173,9 @@ Reference: [Nextcloud Appointments](https://www.srgdev.com/lab/nextcloud-appoint
 ## Forms and surveys
 
 The suite does not ship a dedicated forms app, so **Nextcloud Forms**
-is the recommended path for any inner-company forms — HR check-ins,
+is the recommended path for any inner-company forms -- HR check-ins,
 event RSVPs, intake questionnaires, internal surveys. Enable it in
-Nextcloud under Apps → Your apps.
+Nextcloud under Apps -> Your apps.
 
 | Use case | Recommended app |
 |---|---|
@@ -230,25 +230,25 @@ Reference: [Nextcloud Mail](https://apps.nextcloud.com/apps/mail).
 ## Nextcloud-only apps worth knowing
 
 These have no direct equivalent in the suite. Enable them in Nextcloud
-(Apps → Your apps) when relevant.
+(Apps -> Your apps) when relevant.
 
-- **[Calendar](https://apps.nextcloud.com/apps/calendar)** — staff and
+- **[Calendar](https://apps.nextcloud.com/apps/calendar)** -- staff and
   shared calendars over CalDAV. The default for internal scheduling,
   meeting rooms, and team availability.
-- **[Attendance](https://apps.nextcloud.com/apps/attendance)** —
+- **[Attendance](https://apps.nextcloud.com/apps/attendance)** --
   clock-in / clock-out time tracking. Useful for small businesses that
   need a simple staff-attendance log without pulling in a full HR /
   payroll system.
 - **[Memories](https://apps.nextcloud.com/apps/memories) /
-  [Photos](https://apps.nextcloud.com/apps/photos)** — photo timeline
+  [Photos](https://apps.nextcloud.com/apps/photos)** -- photo timeline
   and album browser for image files in your Nextcloud. Useful if your
   business stores a lot of visual assets.
-- **[Bookmarks](https://apps.nextcloud.com/apps/bookmarks)** — shared
+- **[Bookmarks](https://apps.nextcloud.com/apps/bookmarks)** -- shared
   bookmarks across your team. Useful for curated link collections.
-- **[Polls](https://apps.nextcloud.com/apps/polls)** — quick group
+- **[Polls](https://apps.nextcloud.com/apps/polls)** -- quick group
   polls (date pickers, multiple choice). Lightweight Doodle
   equivalent.
-- **[News](https://apps.nextcloud.com/apps/news)** — RSS reader. Niche
+- **[News](https://apps.nextcloud.com/apps/news)** -- RSS reader. Niche
   but solid.
 
 ## When in doubt, start with the Nextcloud app
@@ -256,13 +256,13 @@ These have no direct equivalent in the suite. Enable them in Nextcloud
 The Nextcloud apps above are free to enable, light on resources, and
 easy to turn off if they don't fit. **If you are not sure whether
 your team needs the dedicated suite app, try the Nextcloud version
-first** — for a week or two, with the actual people who will use it.
+first** -- for a week or two, with the actual people who will use it.
 You will quickly know whether it covers the use case or whether the
 limits start to bite.
 
 If the Nextcloud app is enough, you save a deployment, a domain, and
 a separate login surface. If it is not enough, the dedicated suite
-app is one operator request away — and your data on the Nextcloud
+app is one operator request away -- and your data on the Nextcloud
 side stays in place during the switch.
 
 Talk to your operator any time you want to enable, disable, or swap

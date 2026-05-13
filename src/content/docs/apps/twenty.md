@@ -7,21 +7,21 @@ CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation e
 
 - **Projet original :** <https://twenty.com/>
 - **Remplace :** **Salesforce**, **HubSpot**, **Pipedrive**
-- **Connexion (SSO) :** À activer via l'interface admin — collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min.
 2. Visitez votre domaine Twenty et créez le compte initial (workspace + admin).
-3. *(Optionnel)* Activez Keycloak SSO : **Settings** → **Security** → **Single sign-on** → collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
+3. *(Optionnel)* Activez Keycloak SSO : **Settings** -> **Security** -> **Single sign-on** -> collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
 
-**EspoCRM vs Twenty.** EspoCRM est le CRM par défaut de cette stack (mature, OIDC natif, apps mobiles). Twenty est offert comme alternative pour les clients qui préfèrent son UI façon Notion ; les deux peuvent cohabiter. Le domaine par défaut `crm.<votre-domaine>` est réservé à EspoCRM — Twenty utilise par défaut `twenty.<votre-domaine>`.
+**EspoCRM vs Twenty.** EspoCRM est le CRM par défaut de cette stack (mature, OIDC natif, apps mobiles). Twenty est offert comme alternative pour les clients qui préfèrent son UI façon Notion ; les deux peuvent cohabiter. Le domaine par défaut `crm.<votre-domaine>` est réservé à EspoCRM -- Twenty utilise par défaut `twenty.<votre-domaine>`.
 
 ## Variables d'environnement
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -40,16 +40,16 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# Twenty — modern open-source CRM. Email/password login out of the box;
-# to enable Keycloak SSO, go to Settings → Security → Single sign-on
+# Twenty -- modern open-source CRM. Email/password login out of the box;
+# to enable Keycloak SSO, go to Settings -> Security -> Single sign-on
 # (OIDC) after first deploy and paste the OIDC_* values from
-# the Environment tab. Workspace-level config — not env-driven in the
+# the Environment tab. Workspace-level config -- not env-driven in the
 # community edition.
 
 services:
@@ -64,7 +64,7 @@ services:
       STORAGE_TYPE: local
       STORAGE_LOCAL_PATH: /app/.local-storage
       APP_SECRET: ${TWENTY_APP_SECRET}
-      # Exposed for operator reference (Settings → SSO) but not read by
+      # Exposed for operator reference (Settings -> SSO) but not read by
       # the server directly.
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
@@ -148,4 +148,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

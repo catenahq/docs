@@ -1,20 +1,20 @@
 ---
 title: "Documenso (deprecated)"
-description: "**DEPRECATED** as of 2026-04-29 — kept in catalog for the migration window. New deploys should use **DocuSeal** instead."
+description: "**DEPRECATED** as of 2026-04-29 -- kept in catalog for the migration window. New deploys should use **DocuSeal** instead."
 ---
 
-**DEPRECATED** as of 2026-04-29 — kept in catalog for the migration window. New deploys should use **DocuSeal** instead. Open-source document signing — upload a PDF, place signature fields, send for signature. Keycloak SSO pre-wired.
+**DEPRECATED** as of 2026-04-29 -- kept in catalog for the migration window. New deploys should use **DocuSeal** instead. Open-source document signing -- upload a PDF, place signature fields, send for signature. Keycloak SSO pre-wired.
 
 - **Upstream project:** <https://documenso.com/>
 - **Replaces:** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**
-- **Sign-in (SSO):** Pre-wired — the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
+- **Sign-in (SSO):** Pre-wired -- the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
 
 ## Setup steps
 
 > **Deprecated:** new deploys should use **DocuSeal** at `sign.<your-domain>`. This entry is retained at `sign-legacy.<your-domain>` for the migration window. To migrate, deploy DocuSeal, recreate your templates there, then delete this Documenso compose.
 
 1. Click **Deploy**. Environment defaults are pre-filled; the first boot mints a self-signed signing certificate automatically (~30 s).
-2. Visit your Documenso domain → click **Sign in with Keycloak**. The first user to sign in becomes the team admin.
+2. Visit your Documenso domain -> click **Sign in with Keycloak**. The first user to sign in becomes the team admin.
 3. *(Optional)* Replace the auto-generated signing certificate with one issued by a trusted Certificate Authority for legally-binding signatures. Until then, signed PDFs render correctly but Adobe / Acrobat / browsers will mark the signature as "issued by an untrusted root." Contact your operator to install a real cert into the `documenso-signing` Docker volume.
 
 ### Self-signed cert vs trusted-CA cert
@@ -31,7 +31,7 @@ For internal-only workflows (HR forms, vendor intake, NDAs
 between parties who already trust each other), the self-
 signed cert is fine. For client-facing signed contracts,
 contact your operator to install a CA-issued cert. The
-upgrade is non-disruptive — replace `cert.p12` in the
+upgrade is non-disruptive -- replace `cert.p12` in the
 `documenso-signing` volume, restart the Documenso container.
 
 ### SMTP
@@ -45,7 +45,7 @@ documentation has the host/port/credentials).
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -73,7 +73,7 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
@@ -84,7 +84,7 @@ Domains tabs (described above), never in the compose itself.
 # clients can continue running Documenso until they cut over. The
 # catalog entry's setup_steps section also surfaces the deprecation.
 #
-# Documenso — open-source document signing (DocuSign / HelloSign / PandaDoc
+# Documenso -- open-source document signing (DocuSign / HelloSign / PandaDoc
 # replacement). Keycloak SSO pre-wired via env-based OIDC; the operator's
 # automation mints the realm client + populates OIDC_* env on first
 # converge.
@@ -139,7 +139,7 @@ services:
       NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH: /opt/documenso/cert.p12
       NEXT_PRIVATE_SIGNING_PASSPHRASE: ${SIGNING_PASSPHRASE}
 
-      # Keycloak OIDC — populated by dashboard-sync after first deploy.
+      # Keycloak OIDC -- populated by dashboard-sync after first deploy.
       # Documenso's own env-var names are NEXT_PRIVATE_OIDC_*; we
       # remap from the generic OIDC_* keys dashboard-sync writes into
       # Dokploy's env, matching the pattern in outline.compose.yml.
@@ -149,7 +149,7 @@ services:
       NEXT_PRIVATE_OIDC_PROVIDER_LABEL: Keycloak
       NEXT_PRIVATE_OIDC_ALLOW_SIGNUP: "true"
 
-      # SMTP — Documenso uses NEXT_PRIVATE_SMTP_* names. Optional;
+      # SMTP -- Documenso uses NEXT_PRIVATE_SMTP_* names. Optional;
       # when unset, in-app invitations and signature requests do not
       # email users (they still appear in the dashboard for a
       # logged-in user to act on, just no email).
@@ -210,4 +210,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

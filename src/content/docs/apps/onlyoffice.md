@@ -1,13 +1,13 @@
 ---
 title: "OnlyOffice"
-description: "Édition collaborative DOCX/XLSX/PPTX — s'intègre à Nextcloud pour la co-édition temps réel avec une haute fidélité aux formats MS Office."
+description: "Édition collaborative DOCX/XLSX/PPTX -- s'intègre à Nextcloud pour la co-édition temps réel avec une haute fidélité aux formats MS Office."
 ---
 
-Édition collaborative DOCX/XLSX/PPTX — s'intègre à Nextcloud pour la co-édition temps réel avec une haute fidélité aux formats MS Office.
+Édition collaborative DOCX/XLSX/PPTX -- s'intègre à Nextcloud pour la co-édition temps réel avec une haute fidélité aux formats MS Office.
 
 - **Projet original :** <https://www.onlyoffice.com/>
 - **Remplace :** **Microsoft Office Online**, **Google Docs (éditeur embarqué)**
-- **Connexion (SSO) :** Sans objet — ce template n'a pas de connexion utilisateur (usage serveur-à-serveur uniquement).
+- **Connexion (SSO) :** Sans objet -- ce template n'a pas de connexion utilisateur (usage serveur-à-serveur uniquement).
 
 ## Étapes de configuration
 
@@ -17,7 +17,7 @@ description: "Édition collaborative DOCX/XLSX/PPTX — s'intègre à Nextcloud 
 
 Pour passer à Collabora plus tard : arrêtez ce conteneur OnlyOffice, déployez `collabora`, puis cliquez le bouton **Wire Nextcloud Collabora**.
 
-N'accédez pas au domaine OnlyOffice directement dans un navigateur — il n'a pas d'interface utilisateur. Les utilisateurs ne le voient qu'à travers Nextcloud.
+N'accédez pas au domaine OnlyOffice directement dans un navigateur -- il n'a pas d'interface utilisateur. Les utilisateurs ne le voient qu'à travers Nextcloud.
 
 
 
@@ -25,7 +25,7 @@ N'accédez pas au domaine OnlyOffice directement dans un navigateur — il n'a p
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -42,22 +42,22 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# OnlyOffice Document Server — collaborative DOCX/XLSX/PPTX editing,
-# bolted into Nextcloud via the "ONLYOFFICE" app (admin → Apps → search
-# ONLYOFFICE → Install → settings → enter the domain below + JWT secret).
+# OnlyOffice Document Server -- collaborative DOCX/XLSX/PPTX editing,
+# bolted into Nextcloud via the "ONLYOFFICE" app (admin -> Apps -> search
+# ONLYOFFICE -> Install -> settings -> enter the domain below + JWT secret).
 #
 # Server-to-server auth is JWT-protected (JWT_ENABLED=true). The UI is
 # iframe-embedded inside Nextcloud; forward-auth MUST be disabled on
 # this route (vps.auth.mode=public) because the iframe would otherwise
 # redirect to Keycloak and break the editor.
 #
-# Don't expose this to end users directly — they only ever see it
+# Don't expose this to end users directly -- they only ever see it
 # through Nextcloud.
 
 services:
@@ -101,4 +101,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

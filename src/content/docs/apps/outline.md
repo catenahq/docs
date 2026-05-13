@@ -7,13 +7,13 @@ Wiki d'équipe / base de connaissances. Pages façon Notion, collections, docume
 
 - **Projet original :** <https://www.getoutline.com/>
 - **Remplace :** **Notion**, **Confluence**, **Google Sites**
-- **Connexion (SSO) :** Pré-câblé — la page de connexion affiche « Se connecter avec Keycloak » d'emblée, aucune étape post-déploiement.
+- **Connexion (SSO) :** Pré-câblé -- la page de connexion affiche "Se connecter avec Keycloak" d'emblée, aucune étape post-déploiement.
 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Les valeurs par défaut de l'Environment sont pré-remplies.
 2. Patientez ~1 min pour le premier démarrage.
-3. Visitez votre domaine Outline → cliquez **Se connecter avec Keycloak**. Le premier utilisateur devient l'admin du workspace.
+3. Visitez votre domaine Outline -> cliquez **Se connecter avec Keycloak**. Le premier utilisateur devient l'admin du workspace.
 
 
 
@@ -21,7 +21,7 @@ Wiki d'équipe / base de connaissances. Pages façon Notion, collections, docume
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -41,13 +41,13 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# Outline — team wiki / knowledge base, Keycloak SSO pre-wired via
+# Outline -- team wiki / knowledge base, Keycloak SSO pre-wired via
 # env-based OIDC. Zero admin-UI config needed after first deploy; users
 # see "Sign in with Keycloak" on the login page.
 
@@ -71,7 +71,7 @@ services:
       FORCE_HTTPS: "true"
       ENABLE_UPDATES: "false"
 
-      # Keycloak OIDC — populated by dashboard-sync after first deploy.
+      # Keycloak OIDC -- populated by dashboard-sync after first deploy.
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       OIDC_AUTH_URI: ${OIDC_ISSUER_URL}/protocol/openid-connect/auth
@@ -139,4 +139,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

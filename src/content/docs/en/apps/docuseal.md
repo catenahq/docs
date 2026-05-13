@@ -7,13 +7,13 @@ Default document-signing app in the stack (replaces Documenso). Upload a PDF, pl
 
 - **Upstream project:** <https://www.docuseal.com/>
 - **Replaces:** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**
-- **Sign-in (SSO):** Enable via the app's admin UI — paste the `OIDC_*` values from the Environment tab once.
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
 ## Setup steps
 
 1. Click **Deploy**. Wait ~1 min for the first boot.
 2. Visit your DocuSeal domain and complete the first-run wizard (creates the initial admin account).
-3. *(Optional)* Enable Keycloak SSO: **Settings** → **SSO** → choose **OpenID Connect** → paste:
+3. *(Optional)* Enable Keycloak SSO: **Settings** -> **SSO** -> choose **OpenID Connect** -> paste:
    - **Client ID:** `OIDC_CLIENT_ID` from Environment (`docuseal`)
    - **Client Secret:** `OIDC_CLIENT_SECRET` from Environment (ask your operator to mint one in Keycloak if blank)
    - **Issuer URL:** `OIDC_ISSUER_URL`
@@ -26,7 +26,7 @@ DocuSeal supersedes Documenso (still in the catalog under a deprecation banner).
 
 ### Signing certificate
 
-DocuSeal generates signed PDFs out of the box without a separate signing-cert mint step. Adobe Acrobat shows the signature as cryptographically valid but with a "self-signed root" warning by default — same caveat as Documenso. For legally-binding signatures, contact your operator to install a CA-issued cert via DocuSeal's admin UI (Settings → Signature → Certificates).
+DocuSeal generates signed PDFs out of the box without a separate signing-cert mint step. Adobe Acrobat shows the signature as cryptographically valid but with a "self-signed root" warning by default -- same caveat as Documenso. For legally-binding signatures, contact your operator to install a CA-issued cert via DocuSeal's admin UI (Settings -> Signature -> Certificates).
 
 ### SMTP
 
@@ -35,7 +35,7 @@ Without SMTP configured, signature-request emails are not delivered. Recipients 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -64,7 +64,7 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
@@ -158,4 +158,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

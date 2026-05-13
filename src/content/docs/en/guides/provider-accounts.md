@@ -1,6 +1,6 @@
 ---
 title: Create your provider accounts
-description: Step-by-step — create the external provider accounts (email, Cloudflare, Tailscale, OVH, eazybackup, Resend) that a typical catena deployment needs.
+description: Step-by-step -- create the external provider accounts (email, Cloudflare, Tailscale, OVH, eazybackup, Resend) that a typical catena deployment needs.
 ---
 
 A typical catena deployment leans on a handful of external accounts that stay in your name. Walk through what you can; we will cover the rest together at the install meeting.
@@ -13,7 +13,7 @@ Catena does not host email; it integrates with the provider you pick. Open the [
 
 [![Email provider selection walkthrough screenshot](/img/guides/provider-accounts/email.en.png)](/img/guides/provider-accounts/email.en.png)
 
-[Compare the six providers →](/docs/en/guides/email-providers/)
+[Compare the six providers ->](/docs/en/guides/email-providers/)
 
 ## 2. Cloudflare: create an API key
 
@@ -23,7 +23,7 @@ Catena does not host email; it integrates with the provider you pick. Open the [
 
 [![Cloudflare API token walkthrough screenshot](/img/guides/provider-accounts/cloudflare.en.png)](/img/guides/provider-accounts/cloudflare.en.png)
 
-[Full Cloudflare docs →](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
+[Full Cloudflare docs ->](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
 
 ## 3. Tailscale: create an OAuth client ID
 
@@ -33,7 +33,7 @@ Catena does not host email; it integrates with the provider you pick. Open the [
 
 [![Tailscale OAuth client walkthrough screenshot](/img/guides/provider-accounts/tailscale.en.png)](/img/guides/provider-accounts/tailscale.en.png)
 
-[Full Tailscale docs →](https://tailscale.com/kb/1215/oauth-clients)
+[Full Tailscale docs ->](https://tailscale.com/kb/1215/oauth-clients)
 
 ## 4. OVH (or another VPS provider): rent a VPS
 
@@ -43,7 +43,7 @@ Catena does not host email; it integrates with the provider you pick. Open the [
 
 [![OVH VPS order walkthrough screenshot](/img/guides/provider-accounts/ovh.en.png)](/img/guides/provider-accounts/ovh.en.png)
 
-[Full OVH docs →](https://help.ovhcloud.com/csm/en-ca-vps-getting-started?id=kb_article_view&sysparm_article=KB0047708)
+[Full OVH docs ->](https://help.ovhcloud.com/csm/en-ca-vps-getting-started?id=kb_article_view&sysparm_article=KB0047708)
 
 ## 5. eazybackup: create immutable S3 backup storage
 
@@ -53,17 +53,17 @@ Catena does not host email; it integrates with the provider you pick. Open the [
 
 [![eazybackup signup walkthrough screenshot](/img/guides/provider-accounts/eazybackup.en.png)](/img/guides/provider-accounts/eazybackup.en.png)
 
-[Full eazybackup docs →](https://eazybackup.ca/)
+[Full eazybackup docs ->](https://eazybackup.ca/)
 
 ## 6. SMTP relay: configure a sender for automated email
 
-Catena does not run a mail server; it relays automated email (password resets, calendar invites, ticket notifications) through a sender of your choice. Default: [Resend](https://resend.com/) (one-click setup — add your domain, drop the DNS records into Cloudflare, generate an API key). Alternatives: [Brevo](https://www.brevo.com/) (generous free tier), or your existing transactional-email provider.
+Catena does not run a mail server; it relays automated email (password resets, calendar invites, ticket notifications) through a sender of your choice. Default: [Resend](https://resend.com/) (one-click setup -- add your domain, drop the DNS records into Cloudflare, generate an API key). Alternatives: [Brevo](https://www.brevo.com/) (generous free tier), or your existing transactional-email provider.
 
 *Time: 10-20 minutes with Resend (DNS verification round-trip).*
 
 [![Resend domain + API key walkthrough screenshot](/img/guides/provider-accounts/resend.en.png)](/img/guides/provider-accounts/resend.en.png)
 
-[Full Resend docs →](https://resend.com/docs/dashboard/domains/introduction)
+[Full Resend docs ->](https://resend.com/docs/dashboard/domains/introduction)
 
 ---
 

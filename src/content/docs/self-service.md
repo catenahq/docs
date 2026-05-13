@@ -1,5 +1,5 @@
 ---
-title: "Libre-service — ce que vous pouvez faire sans l'opérateur"
+title: "Libre-service -- ce que vous pouvez faire sans l'opérateur"
 description: "Règle empirique : tout ce que les interfaces web exposent, vous pouvez le faire vous-même. Tout ce qui requiert SSH + sudo passe par l'opérateur."
 ---
 

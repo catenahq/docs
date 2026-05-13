@@ -3,7 +3,7 @@ title: Filter your DNS to block malware and phishing
 description: Configure Quad9 (no signup) or NextDNS (custom filters) on your router, Firefox, or Chrome to block malware and phishing on every device.
 ---
 
-DNS-level filtering is the cheapest, highest-leverage security upgrade most SMBs never do. One change at the resolver level blocks malicious domains for every device on the network — no software to install on each machine.
+DNS-level filtering is the cheapest, highest-leverage security upgrade most SMBs never do. One change at the resolver level blocks malicious domains for every device on the network -- no software to install on each machine.
 
 ## Pick a resolver
 
@@ -42,7 +42,7 @@ Reboot the router. Devices pick up the new DNS at the next DHCP renewal (usually
 
 For laptops that leave the office, or devices on networks you do not control.
 
-1. Open **Settings** → **Privacy & Security**.
+1. Open **Settings** -> **Privacy & Security**.
 2. Scroll to **DNS over HTTPS** and pick **Max Protection**.
 3. Under **Choose provider**, pick **Custom**.
 4. Paste the URL:
@@ -52,7 +52,7 @@ For laptops that leave the office, or devices on networks you do not control.
 
 ## Configure Chrome (and Edge, Brave, Opera)
 
-1. Open **Settings** → **Privacy and security** → **Security**.
+1. Open **Settings** -> **Privacy and security** -> **Security**.
 2. Scroll to **Use secure DNS**, turn it on, pick **With** then **Custom**.
 3. Paste the URL:
    - Quad9: `https://dns.quad9.net/dns-query`
@@ -72,4 +72,4 @@ If the check fails, the device is probably still using the ISP's DNS. On the rou
 
 - DNS filtering blocks domain names, not page content once a page has loaded. It complements but does not replace an up-to-date antivirus and basic caution with attachments.
 - Configuring DNS at both the router AND the browser at the same time means the browser wins. Pick one layer or the other, or make sure both point at the same resolver.
-- Legitimate domains occasionally get blocked by mistake. If NextDNS blocks a vendor domain you use, add it to your allow list in the dashboard — the change takes effect in under a minute. Quad9 does not offer a per-customer allow list; if a false positive blocks you, switch that workstation to NextDNS.
+- Legitimate domains occasionally get blocked by mistake. If NextDNS blocks a vendor domain you use, add it to your allow list in the dashboard -- the change takes effect in under a minute. Quad9 does not offer a per-customer allow list; if a false positive blocks you, switch that workstation to NextDNS.

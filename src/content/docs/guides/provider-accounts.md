@@ -1,6 +1,6 @@
 ---
 title: Créer vos comptes fournisseurs
-description: Pas-à-pas — créer les comptes fournisseurs externes (courriel, Cloudflare, Tailscale, OVH, eazybackup, Resend) qu'un déploiement catena typique requiert.
+description: Pas-à-pas -- créer les comptes fournisseurs externes (courriel, Cloudflare, Tailscale, OVH, eazybackup, Resend) qu'un déploiement catena typique requiert.
 ---
 
 Un déploiement catena typique repose sur quelques comptes externes qui restent à votre nom. Passez à travers ce que vous pouvez ; on couvrira le reste ensemble à la rencontre d'installation.
@@ -13,7 +13,7 @@ Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que 
 
 [![Capture d'écran du parcours de choix d'un fournisseur de courriel](/img/guides/provider-accounts/email.fr.png)](/img/guides/provider-accounts/email.fr.png)
 
-[Comparer les six fournisseurs →](/docs/guides/email-providers/)
+[Comparer les six fournisseurs ->](/docs/guides/email-providers/)
 
 ## 2. Cloudflare : créer une clé API
 
@@ -23,7 +23,7 @@ Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que 
 
 [![Capture d'écran du parcours de création d'un jeton API Cloudflare](/img/guides/provider-accounts/cloudflare.fr.png)](/img/guides/provider-accounts/cloudflare.fr.png)
 
-[Documentation Cloudflare complète →](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
+[Documentation Cloudflare complète ->](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
 
 ## 3. Tailscale : créer un client OAuth
 
@@ -33,7 +33,7 @@ Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que 
 
 [![Capture d'écran du parcours de création d'un client OAuth Tailscale](/img/guides/provider-accounts/tailscale.fr.png)](/img/guides/provider-accounts/tailscale.fr.png)
 
-[Documentation Tailscale complète →](https://tailscale.com/kb/1215/oauth-clients)
+[Documentation Tailscale complète ->](https://tailscale.com/kb/1215/oauth-clients)
 
 ## 4. OVH (ou un autre fournisseur de VPS) : louer un VPS
 
@@ -43,7 +43,7 @@ Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que 
 
 [![Capture d'écran du parcours de commande VPS OVH](/img/guides/provider-accounts/ovh.fr.png)](/img/guides/provider-accounts/ovh.fr.png)
 
-[Documentation OVH complète →](https://help.ovhcloud.com/csm/fr-ca-vps-getting-started?id=kb_article_view&sysparm_article=KB0047708)
+[Documentation OVH complète ->](https://help.ovhcloud.com/csm/fr-ca-vps-getting-started?id=kb_article_view&sysparm_article=KB0047708)
 
 ## 5. eazybackup : créer un stockage S3 de sauvegarde immuable
 
@@ -53,17 +53,17 @@ Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que 
 
 [![Capture d'écran du parcours d'inscription eazybackup](/img/guides/provider-accounts/eazybackup.fr.png)](/img/guides/provider-accounts/eazybackup.fr.png)
 
-[Documentation eazybackup complète →](https://eazybackup.ca/)
+[Documentation eazybackup complète ->](https://eazybackup.ca/)
 
 ## 6. Relais SMTP : configurer un expéditeur pour les courriels automatiques
 
-Catena n'opère pas de serveur de messagerie ; il relaie les courriels automatiques (réinitialisations de mot de passe, invitations calendrier, notifications de tickets) via un expéditeur de votre choix. Par défaut : [Resend](https://resend.com/) (configuration en un clic — ajoutez votre domaine, copiez les enregistrements DNS dans Cloudflare, générez une clé API). Alternatives : [Brevo](https://www.brevo.com/) (palier gratuit généreux), ou votre fournisseur courriel transactionnel actuel.
+Catena n'opère pas de serveur de messagerie ; il relaie les courriels automatiques (réinitialisations de mot de passe, invitations calendrier, notifications de tickets) via un expéditeur de votre choix. Par défaut : [Resend](https://resend.com/) (configuration en un clic -- ajoutez votre domaine, copiez les enregistrements DNS dans Cloudflare, générez une clé API). Alternatives : [Brevo](https://www.brevo.com/) (palier gratuit généreux), ou votre fournisseur courriel transactionnel actuel.
 
 *Durée : 10-20 minutes avec Resend (aller-retour DNS).*
 
 [![Capture d'écran de la configuration domaine + clé API Resend](/img/guides/provider-accounts/resend.fr.png)](/img/guides/provider-accounts/resend.fr.png)
 
-[Documentation Resend complète →](https://resend.com/docs/dashboard/domains/introduction)
+[Documentation Resend complète ->](https://resend.com/docs/dashboard/domains/introduction)
 
 ---
 

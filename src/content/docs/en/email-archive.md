@@ -5,14 +5,14 @@ description: "How your email, calendar, and contacts are backed up from your ext
 
 Your email lives at the provider your operator picked during setup
 (Migadu, Mailbox.org, Infomaniak, OVH, or Mailfence). You keep using
-it the way you always have — webmail, your phone app, your desktop
+it the way you always have -- webmail, your phone app, your desktop
 client. Nothing changes there.
 
 What's new: each night, your VPS pulls a copy of every message,
 calendar event, and contact from your provider into the same backup
 pipeline that protects the rest of your data. If your provider
-account ever goes wrong — compromised, billing dispute, accidental
-delete — the history is still in your operator's keeping.
+account ever goes wrong -- compromised, billing dispute, accidental
+delete -- the history is still in your operator's keeping.
 
 ## What this protects against
 
@@ -67,8 +67,8 @@ Until in-Files browsing ships, recovery is a one-line conversation
 with your operator: tell them roughly when the message was sent or
 received and to whom, and they pull it from the archive.
 
-For full disaster recovery — provider gone, VPS gone, both at the
-same time — the [Disaster recovery](/docs/en/disaster-recovery/) page covers
+For full disaster recovery -- provider gone, VPS gone, both at the
+same time -- the [Disaster recovery](/docs/en/disaster-recovery/) page covers
 the path. The archive comes back as part of that flow because it
 sits in the same backup as everything else.
 

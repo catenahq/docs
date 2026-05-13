@@ -31,7 +31,7 @@ La réservation de ressources est une voie étroite dans le segment PME. Parlez 
 
 **Recommandé :** [Nextcloud Polls](/docs/nextcloud-apps-vs-suite/).
 
-Nextcloud Polls couvre le besoin — sélecteurs de date et sondages à choix multiples avec un lien public, sans compte requis pour les participants. Activez l'application sous Applications → Vos applications dans Nextcloud.
+Nextcloud Polls couvre le besoin -- sélecteurs de date et sondages à choix multiples avec un lien public, sans compte requis pour les participants. Activez l'application sous Applications -> Vos applications dans Nextcloud.
 
 ### Inscription aux événements publics / annuaire d'événements communautaires
 

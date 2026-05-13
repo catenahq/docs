@@ -7,15 +7,15 @@ Customer-facing booking app for one or many providers (clinic, salon, lessons, r
 
 - **Upstream project:** <https://easyappointments.org/>
 - **Replaces:** **Calendly**, **Acuity**, **SimplyBook**, **Setmore**
-- **Sign-in (SSO):** Not available — this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
+- **Sign-in (SSO):** Not available -- this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
 
 ## Setup steps
 
 1. Click **Deploy**. Wait ~1 min for the first boot (database initializes on first run).
 2. Visit your Easy!Appointments domain and complete the first-run installer (creates the initial admin account, business name, working hours).
 3. Add providers (staff with bookable calendars), services (durations + prices), and customers as needed.
-4. *(Optional)* Configure SMTP under **Settings** → **Business Logic** → **Email** to send appointment confirmations and reminders. Without SMTP, customers and staff still see bookings inside the app, but no emails go out.
-5. *(Optional)* Embed the booking page on your website: copy the public booking URL from **Settings** → **Booking Settings** and link to it from your site or business listings.
+4. *(Optional)* Configure SMTP under **Settings** -> **Business Logic** -> **Email** to send appointment confirmations and reminders. Without SMTP, customers and staff still see bookings inside the app, but no emails go out.
+5. *(Optional)* Embed the booking page on your website: copy the public booking URL from **Settings** -> **Booking Settings** and link to it from your site or business listings.
 
 ### Authentication
 
@@ -25,7 +25,7 @@ If a single sign-on for staff is required, contact your operator to discuss an o
 
 ### Email + SMS reminders
 
-Email reminders work as soon as SMTP is configured. SMS reminders require a Twilio account (configured under **Settings** → **Notifications** → **SMS**). SMS is opt-in per customer at booking time.
+Email reminders work as soon as SMTP is configured. SMS reminders require a Twilio account (configured under **Settings** -> **Notifications** -> **SMS**). SMS is opt-in per customer at booking time.
 
 ### Public booking URL
 
@@ -34,7 +34,7 @@ The default public URL is `https://book.<your-domain>/`. Share this directly wit
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -54,7 +54,7 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
@@ -138,4 +138,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

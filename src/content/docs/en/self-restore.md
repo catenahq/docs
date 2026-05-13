@@ -8,7 +8,7 @@ different VPS, this page walks you through doing it manually with the
 same building blocks your operator uses. It takes a few hours. You own
 your data; this is the fallback path.
 
-## Fast path — pre-filled recovery archive (recommended)
+## Fast path -- pre-filled recovery archive (recommended)
 
 The fastest recovery is the one where you do not have to type any
 credentials. Your operator can generate a single password-protected
@@ -21,7 +21,7 @@ Linux unzip) when you provide the password.
 **What your operator hands you, out of band:**
 
 1. The recovery archive (downloaded from `recovery.<zone>` after
-   they click the "Generate recovery archive (encrypted)" action —
+   they click the "Generate recovery archive (encrypted)" action --
    see the [Disaster prevention](/docs/en/disaster-prevention/) page for
    what to set up beforehand). The file looks like
    `recovery-<timestamp>.zip`.
@@ -32,12 +32,12 @@ Linux unzip) when you provide the password.
 Double-click the zip. Your OS prompts for the password; type it.
 Six files appear in the extracted folder:
 
-- `README.txt` (English) and `LISEZ-MOI.txt` (French) — these instructions.
-- `recover.sh` — the wrapper you run on the fresh VPS.
-- `restore.sh` — the recovery script (no internet required at
+- `README.txt` (English) and `LISEZ-MOI.txt` (French) -- these instructions.
+- `recover.sh` -- the wrapper you run on the fresh VPS.
+- `restore.sh` -- the recovery script (no internet required at
   recovery time; the archive is fully self-contained).
-- `envelope.env` — the credentials for *this* VPS's buckets.
-- `vault.recovered.yml` — a reference copy of the live host's
+- `envelope.env` -- the credentials for *this* VPS's buckets.
+- `vault.recovered.yml` -- a reference copy of the live host's
   recoverable secrets, for your operator if your full vault is also
   lost. Treat it like a password file.
 
@@ -56,7 +56,7 @@ repo, restore the latest snapshot, install Dokploy, replay per-app
 Postgres dumps, repair the Nextcloud S3 bucket if needed, install
 cloudflared, summary.
 
-It is idempotent on partial failures — re-run after fixing whatever
+It is idempotent on partial failures -- re-run after fixing whatever
 broke and it picks up where it left off.
 
 If the hot backup bucket is unreachable (rare, e.g. the bucket
@@ -70,7 +70,7 @@ When you are done, delete the extracted folder and the original
 zip from your laptop and from the VPS. The credentials inside are
 sensitive and only need to live as long as the recovery takes.
 
-## Plain fast path — interactive credential prompts
+## Plain fast path -- interactive credential prompts
 
 If you have the credentials listed in the next section but no
 pre-filled script, you can run the unencrypted version that prompts
@@ -94,7 +94,7 @@ follows.
 
 ## What you need before you start
 
-- A fresh VPS (any provider — OVH, Hetzner, DigitalOcean, AWS). 2 vCPU /
+- A fresh VPS (any provider -- OVH, Hetzner, DigitalOcean, AWS). 2 vCPU /
   6 GB RAM / 40 GB disk matches the starting tier and runs the base
   suite. With more services deployed or under sustained load, step up
   to 4 vCPU / 8 GB RAM / 80 GB disk. Heavy apps like ERPNext want the
@@ -107,7 +107,7 @@ follows.
     `s3:s3.<region>.provider.example/<bucket>`)
 - Familiarity with SSH + a terminal. No Ansible required.
 
-## Step 1 — Prepare the new VPS
+## Step 1 -- Prepare the new VPS
 
 ```bash
 ssh root@NEW-VPS-IP
@@ -116,7 +116,7 @@ apt install -y restic curl ca-certificates
 mkdir -p /mnt/data
 ```
 
-Don't install Docker here — Step 4 below runs Dokploy's official
+Don't install Docker here -- Step 4 below runs Dokploy's official
 installer (`curl -sSL https://dokploy.com/install.sh | sh`) which
 installs the correct Docker version, initializes Docker Swarm, and
 brings up Traefik in one shot. Installing Docker first leads to a
@@ -126,7 +126,7 @@ If your backup set expects `/mnt/data` to be on a separate volume, attach
 one via your provider's console and mount it there. Otherwise a
 directory on root works.
 
-## Step 2 — Configure restic credentials
+## Step 2 -- Configure restic credentials
 
 ```bash
 export RESTIC_REPOSITORY='s3:s3.<region>.provider.example/<bucket>'
@@ -144,28 +144,28 @@ restic snapshots --latest 5
 You should see a list of snapshots (one per night). If not, check that
 the repository URL and password match what the operator gave you.
 
-## Step 3 — Restore the latest snapshot
+## Step 3 -- Restore the latest snapshot
 
 ```bash
 restic restore latest --target /
 ```
 
 This walks every file in the snapshot back into its original path on the
-new host. Expect 5–30 minutes depending on bucket size and bandwidth.
+new host. Expect 5-30 minutes depending on bucket size and bandwidth.
 
 After it finishes, your VPS has:
 
-- `/etc/dokploy/` — Dokploy configuration
-- `/mnt/data/docker/volumes/` — every app's persistent data (Postgres
+- `/etc/dokploy/` -- Dokploy configuration
+- `/mnt/data/docker/volumes/` -- every app's persistent data (Postgres
   databases, Redis, uploads)
-- `/mnt/data/apps/` — per-app compose project files
-- `/mnt/data/backup-staging/pg/` — nightly SQL dumps, one per Postgres
+- `/mnt/data/apps/` -- per-app compose project files
+- `/mnt/data/backup-staging/pg/` -- nightly SQL dumps, one per Postgres
   container
-- `/etc/ssh`, `/etc/ufw`, `/etc/fstab` — system configuration
-- `/etc`, `/var/lib/dpkg`, `/usr/local/bin` — package state + helper
+- `/etc/ssh`, `/etc/ufw`, `/etc/fstab` -- system configuration
+- `/etc`, `/var/lib/dpkg`, `/usr/local/bin` -- package state + helper
   scripts
 
-## Step 4 — Install Dokploy
+## Step 4 -- Install Dokploy
 
 Follow Dokploy's own install instructions:
 <https://dokploy.com/docs/core/installation>. In short:
@@ -196,7 +196,7 @@ startup.
     (Your operator's automation avoids this step by pre-seeding the
     secret from their vault.)
 
-## Step 5 — Replay per-app Postgres dumps
+## Step 5 -- Replay per-app Postgres dumps
 
 Each app's database was also dumped as SQL nightly and restored in step
 3. For each application container that runs Postgres, once the
@@ -216,7 +216,7 @@ The raw volume in `/mnt/data/docker/volumes/` is usually sufficient; the
 SQL dumps are a fallback for the "raw volume is corrupt or from a
 different Postgres version" case.
 
-## Step 6 — Reprovision the public gateway
+## Step 6 -- Reprovision the public gateway
 
 The Cloudflare Tunnel's **tunnel ID + credentials** are not in the
 restic backup (they bind to a specific server at provisioning time).
@@ -233,7 +233,7 @@ Recreate:
     ```
 
 If you prefer the Swarm-deployed `cloudflared` your operator uses,
-consult `/root/README.md` on the restored VPS — it has the exact command
+consult `/root/README.md` on the restored VPS -- it has the exact command
 baked in. Note that the Swarm-deployed variant runs as a Docker service
 attached to the `dokploy-network` so it can reach your apps' internal
 hostnames; the standalone `cloudflared service install <token>` above
@@ -241,21 +241,21 @@ runs as a system service and reaches them via the host network. Either
 works; the Swarm version is what your operator's automation rebuilds and
 the one to pick if you plan to hand the server back to them later.
 
-## Step 7 — Sanity check
+## Step 7 -- Sanity check
 
 Visit:
 
-- `https://auth.<zone>` → Keycloak login page, your existing users
+- `https://auth.<zone>` -> Keycloak login page, your existing users
   should work
-- `https://apps.<zone>` → Dokploy dashboard, all your compose projects
-  visible (may show "stopped" — click Deploy on each once to start them)
-- `https://<your-app>.<zone>` → the app itself
+- `https://apps.<zone>` -> Dokploy dashboard, all your compose projects
+  visible (may show "stopped" -- click Deploy on each once to start them)
+- `https://<your-app>.<zone>` -> the app itself
 
 If all three load, you have your data back.
 
 ## If you use Nextcloud with S3 storage
 
-Some file-heavy apps — Nextcloud being the common one — store their
+Some file-heavy apps -- Nextcloud being the common one -- store their
 files in a separate S3 bucket, not in the restic repo. If your
 operator deployed Nextcloud this way:
 
@@ -264,7 +264,7 @@ operator deployed Nextcloud this way:
   bytes live in the S3 bucket your operator provisioned in your
   cloud account.
 - When the restored Nextcloud container starts up, it reconnects to
-  the same bucket using credentials stored in the configuration — no
+  the same bucket using credentials stored in the configuration -- no
   separate restore needed.
 - If you intentionally rotated the S3 credentials after the backup,
   update the Nextcloud env vars in Dokploy's environment UI before
@@ -282,7 +282,7 @@ operator deployed Nextcloud this way:
   [Disaster prevention](/docs/en/disaster-prevention/) page lists what your
   operator must enable for the cold mirror to exist.
 
-## When in doubt — call your operator back
+## When in doubt -- call your operator back
 
 This page exists so you are never stuck. But the scripted flow
 (`./catena restore && ./catena site`) your operator runs replaces every

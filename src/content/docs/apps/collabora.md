@@ -1,13 +1,13 @@
 ---
 title: "Collabora Online (CODE)"
-description: "Édition collaborative ODT/DOCX/XLSX/PPTX — s'intègre à Nextcloud pour la co-édition temps réel."
+description: "Édition collaborative ODT/DOCX/XLSX/PPTX -- s'intègre à Nextcloud pour la co-édition temps réel."
 ---
 
-Édition collaborative ODT/DOCX/XLSX/PPTX — s'intègre à Nextcloud pour la co-édition temps réel. Basé sur LibreOffice ; plus léger qu'OnlyOffice ; meilleure fidélité pour les formats ODF.
+Édition collaborative ODT/DOCX/XLSX/PPTX -- s'intègre à Nextcloud pour la co-édition temps réel. Basé sur LibreOffice ; plus léger qu'OnlyOffice ; meilleure fidélité pour les formats ODF.
 
 - **Projet original :** <https://www.collaboraonline.com/>
 - **Remplace :** **Microsoft Office Online**, **Google Docs (éditeur embarqué)**
-- **Connexion (SSO) :** Sans objet — ce template n'a pas de connexion utilisateur (usage serveur-à-serveur uniquement).
+- **Connexion (SSO) :** Sans objet -- ce template n'a pas de connexion utilisateur (usage serveur-à-serveur uniquement).
 
 ## Étapes de configuration
 
@@ -17,7 +17,7 @@ description: "Édition collaborative ODT/DOCX/XLSX/PPTX — s'intègre à Nextcl
 
 Pour revenir à OnlyOffice plus tard : arrêtez ce conteneur Collabora, déployez `onlyoffice`, puis cliquez le bouton **Wire Nextcloud OnlyOffice**.
 
-N'accédez pas au domaine Collabora directement dans un navigateur — il n'a pas d'interface utilisateur. Les utilisateurs ne le voient qu'à travers Nextcloud.
+N'accédez pas au domaine Collabora directement dans un navigateur -- il n'a pas d'interface utilisateur. Les utilisateurs ne le voient qu'à travers Nextcloud.
 
 
 
@@ -25,7 +25,7 @@ N'accédez pas au domaine Collabora directement dans un navigateur — il n'a pa
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 _(aucune variable d'environnement à configurer)_
 
@@ -40,7 +40,7 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
@@ -92,4 +92,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

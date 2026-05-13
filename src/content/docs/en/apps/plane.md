@@ -1,26 +1,26 @@
 ---
 title: "Plane"
-description: "Open-source project management — issues, cycles, modules, pages, workspaces."
+description: "Open-source project management -- issues, cycles, modules, pages, workspaces."
 ---
 
-Open-source project management — issues, cycles, modules, pages, workspaces.
+Open-source project management -- issues, cycles, modules, pages, workspaces.
 
 - **Upstream project:** <https://plane.so/>
 - **Replaces:** **Jira**, **Linear**, **Asana**, **ClickUp**
-- **Sign-in (SSO):** Enable via the app's admin UI — paste the `OIDC_*` values from the Environment tab once.
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
 ## Setup steps
 
 1. Click **Deploy**. Wait ~2-3 min (multi-service stack with MinIO).
 2. Visit your Plane domain and sign up to create the instance admin + first workspace.
-3. *(Optional)* Enable Keycloak SSO: while signed in, visit `https://projects.<your-domain>/god-mode` → **Authentication** → **OpenID Connect** → paste `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` from the Environment tab. Save.
+3. *(Optional)* Enable Keycloak SSO: while signed in, visit `https://projects.<your-domain>/god-mode` -> **Authentication** -> **OpenID Connect** -> paste `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` from the Environment tab. Save.
 
 
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -42,17 +42,17 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# Plane — open-source project management (Jira/Linear alternative).
+# Plane -- open-source project management (Jira/Linear alternative).
 # Multi-service stack: web/api/worker/admin/space/live behind an nginx
 # proxy, backed by postgres + redis + minio (object storage for
 # attachments). OIDC SSO is post-deploy: sign in as the first user,
-# visit God-mode (/god-mode) → Authentication → OpenID Connect →
+# visit God-mode (/god-mode) -> Authentication -> OpenID Connect ->
 # paste the OIDC_* values from the Environment tab.
 
 services:
@@ -246,4 +246,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

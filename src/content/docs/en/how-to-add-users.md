@@ -1,16 +1,16 @@
 ---
 title: "How to add users"
-description: "TODO — Keycloak UI walkthrough with screenshots."
+description: "TODO -- Keycloak UI walkthrough with screenshots."
 ---
 
-TODO — Keycloak UI walkthrough with screenshots.
+TODO -- Keycloak UI walkthrough with screenshots.
 
 Short version:
 
 1. Go to `https://auth.yourdomain.com` and log in as admin.
-2. Admin interface → Directory → Users → "Create"
+2. Admin interface -> Directory -> Users -> "Create"
 3. Fill in username + email. Set a strong password OR send an invite
-   (Keycloak emails a set-password link via SMTP — requires operator
+   (Keycloak emails a set-password link via SMTP -- requires operator
    to have wired up SMTP).
 4. Assign to `client-staff` group (default access to gated apps).
    For finer-grained access, use a per-department group (see your

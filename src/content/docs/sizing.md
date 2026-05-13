@@ -130,6 +130,6 @@ Mautic cohabite avec Nextcloud + Rocket.Chat ; sinon un palier
 ---
 
 Si vous avez besoin d'un palier différent de celui initialement
-provisionné, contactez votre opérateur — un changement de palier est
+provisionné, contactez votre opérateur -- un changement de palier est
 une migration en une commande vers un nouveau VPS avec les mêmes
 données.

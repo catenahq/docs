@@ -7,20 +7,20 @@ Conversation-first omnichannel inbox. Email, live-chat widget, WhatsApp, Faceboo
 
 - **Upstream project:** <https://www.chatwoot.com/>
 - **Replaces:** **Intercom**, **Front**, **Help Scout (for chat channels)**
-- **Sign-in (SSO):** Not available — this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
+- **Sign-in (SSO):** Not available -- this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
 
 ## Setup steps
 
 1. Click **Deploy**. Wait ~2 min for the first boot (Rails migrations).
 2. Visit your Chatwoot domain. Complete the setup wizard to create the first admin account.
-3. Add channels: **Settings** → **Inboxes** → **Add inbox**. Pick the channel (email, website widget, WhatsApp, etc.) and follow the per-channel instructions.
+3. Add channels: **Settings** -> **Inboxes** -> **Add inbox**. Pick the channel (email, website widget, WhatsApp, etc.) and follow the per-channel instructions.
 
-**Note on sign-in:** Chatwoot's community edition doesn't support OIDC/SSO — agents keep per-app email/password logins. SAML/OIDC is enterprise-only. If SSO matters, consider Zammad instead (trade-off: ticket-first workflow vs Chatwoot's conversation-first inbox).
+**Note on sign-in:** Chatwoot's community edition doesn't support OIDC/SSO -- agents keep per-app email/password logins. SAML/OIDC is enterprise-only. If SSO matters, consider Zammad instead (trade-off: ticket-first workflow vs Chatwoot's conversation-first inbox).
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -40,14 +40,14 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# Chatwoot — customer support / omnichannel inbox (email, live chat,
-# WhatsApp, Facebook, Instagram, Twitter, …). Community edition uses
+# Chatwoot -- customer support / omnichannel inbox (email, live chat,
+# WhatsApp, Facebook, Instagram, Twitter, ...). Community edition uses
 # email/password for agent login; SAML/OIDC SSO is enterprise-only.
 
 services:
@@ -149,4 +149,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

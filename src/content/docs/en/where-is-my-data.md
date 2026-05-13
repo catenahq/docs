@@ -14,34 +14,34 @@ where things live.
 
 Your data lives in **at least two places**, and possibly three:
 
-1. **On the VPS itself** — running databases, app config, file
+1. **On the VPS itself** -- running databases, app config, file
    uploads for most apps.
-2. **In your restic backup bucket** — encrypted nightly snapshot of
+2. **In your restic backup bucket** -- encrypted nightly snapshot of
    the VPS, in a different city (and ideally a different country)
    from the VPS.
 3. **In your Nextcloud-S3 bucket** *(only if you use Nextcloud with
-   S3 storage)* — the actual files Nextcloud users upload, in their
+   S3 storage)* -- the actual files Nextcloud users upload, in their
    own bucket separate from restic.
 
 Anything stored only on the VPS is at risk; the VPS can fail or
 be destroyed. Anything in restic + on the VPS is safe against any
 single thing breaking. Anything in restic *or* Nextcloud-S3
-specifically can also fail — but those are independent failures
+specifically can also fail -- but those are independent failures
 covered by [Disaster prevention](/docs/en/disaster-prevention/).
 
 ## On the VPS
 
 The day-to-day data that makes your apps work:
 
-- **Postgres databases** — every app's records (Nextcloud users,
+- **Postgres databases** -- every app's records (Nextcloud users,
   Outline pages, Cal.com bookings, etc.) live in a Postgres database
   inside a Docker volume on the VPS.
-- **App config** — what's configured, who has access, custom
+- **App config** -- what's configured, who has access, custom
   branding. Lives in app-specific Docker volumes.
-- **File uploads** — for apps that store files locally (Outline
+- **File uploads** -- for apps that store files locally (Outline
   attachments, Rocket.Chat uploads, n8n workflow data). Lives in
   Docker volumes.
-- **Nightly Postgres dumps** — a plain-SQL copy of every database,
+- **Nightly Postgres dumps** -- a plain-SQL copy of every database,
   staged on the VPS just before each backup runs. A safety net if
   the raw database volume is corrupted between backups.
 
@@ -49,7 +49,7 @@ The day-to-day data that makes your apps work:
 
 Every night, everything in the previous section (plus VPS system
 files like SSH host keys and firewall config) is encrypted and
-uploaded to **your** S3 bucket — not the operator's. You own the
+uploaded to **your** S3 bucket -- not the operator's. You own the
 bucket, you pay the bill, you control retention.
 
 Default retention: 7 daily, 4 weekly, 6 monthly snapshots. Anything
@@ -58,7 +58,7 @@ older expires automatically.
 The bucket is encrypted end-to-end with the **restic password**
 your operator handed you at hand-off (see
 [Disaster prevention](/docs/en/disaster-prevention/)). Without that
-password, the bucket is unreadable ciphertext — even to the
+password, the bucket is unreadable ciphertext -- even to the
 operator. With it, you can restore to any cloud, any time.
 
 ## In your Nextcloud-S3 bucket (if applicable)
@@ -72,7 +72,7 @@ also yours.
 Why this matters:
 
 - The restic snapshot stays small even if your Nextcloud holds
-  terabytes — restic only carries Nextcloud's app code + its
+  terabytes -- restic only carries Nextcloud's app code + its
   database, not the file bytes.
 - You access those files via Nextcloud's UI normally, and via any
   S3-compatible tool (`rclone`, `aws s3 sync`) directly if you ever
@@ -87,7 +87,7 @@ Why this matters:
 
 If you do **not** use Nextcloud with S3 (for example: small
 Nextcloud install with default local storage, or no Nextcloud at
-all), this whole section does not apply — your Nextcloud files, if
+all), this whole section does not apply -- your Nextcloud files, if
 any, live on the VPS and ride the restic backup like everything
 else.
 
@@ -98,11 +98,11 @@ separate "what if" plus the mitigation already in place.
 
 | What happens | What's lost | What's already in place | What you can do |
 |---|---|---|---|
-| Your Nextcloud-S3 bucket has a multi-day provider outage | Read/write of files (the VPS is fine; only file open/upload fails) | Operator can verify the issue is at the bucket level via monitoring | Wait it out — the files come back when the provider recovers; tell your team uploads are paused |
+| Your Nextcloud-S3 bucket has a multi-day provider outage | Read/write of files (the VPS is fine; only file open/upload fails) | Operator can verify the issue is at the bucket level via monitoring | Wait it out -- the files come back when the provider recovers; tell your team uploads are paused |
 | Bucket credentials leaked, attacker writes/deletes objects | Some or all files in the bucket | Object versioning + 30-day retention rule on the bucket means deleted objects are recoverable for 30 days | Contact your operator immediately; they rotate credentials and roll back the affected objects |
 | You accidentally delete the bucket from the provider console | Everything in the bucket once the provider's grace period ends | Most providers have a 7-90 day account-level grace period | Contact provider support immediately to recover the bucket within the grace window; contact your operator |
 | Nextcloud database (on the VPS) is restored from yesterday's backup but bucket has today's writes | New files added today appear as orphans in the bucket | Nextcloud's `occ files:scan` rebuilds the database-to-file mapping from what's in the bucket | Tell your operator to run a file scan after the restore; they handle the technical part |
-| Provider terminates your account | Everything in that bucket | Only a second backup bucket at a different provider protects you here | If you've set up a [second backup bucket](/docs/en/disaster-prevention/#5-optional--add-a-client-owned-second-backup-bucket), you're covered. If not — this is the worst case |
+| Provider terminates your account | Everything in that bucket | Only a second backup bucket at a different provider protects you here | If you've set up a [second backup bucket](/docs/en/disaster-prevention/#5-optional--add-a-client-owned-second-backup-bucket), you're covered. If not -- this is the worst case |
 
 The takeaway: the Nextcloud-S3 bucket is independent of the VPS,
 which is good (the VPS dying doesn't take it with) and risky (the
@@ -116,17 +116,17 @@ pattern in [Disaster prevention](/docs/en/disaster-prevention/) is for.
 A few small things live in third-party admin consoles instead of
 on your VPS:
 
-- **DNS records** — at Cloudflare, in your DNS account.
-- **Cloudflare tunnel configuration** — at Cloudflare, in your CF
+- **DNS records** -- at Cloudflare, in your DNS account.
+- **Cloudflare tunnel configuration** -- at Cloudflare, in your CF
   account.
-- **Tailscale tenant + ACL rules** — at Tailscale, in your operator's
+- **Tailscale tenant + ACL rules** -- at Tailscale, in your operator's
   Tailscale account (the operator owns this for the persistent ops
-  back-door — see [How this software suite works](/docs/en/how-this-stack-works/)).
-- **SMTP provider account** — at your transactional email provider
-  (Resend / Brevo / etc.) — controls who can send mail "from" your
+  back-door -- see [How this software suite works](/docs/en/how-this-stack-works/)).
+- **SMTP provider account** -- at your transactional email provider
+  (Resend / Brevo / etc.) -- controls who can send mail "from" your
   domain.
 
-These are recreated easily if any one of them fails — you log in to
+These are recreated easily if any one of them fails -- you log in to
 the third-party console and click. The
 [Disaster recovery](/docs/en/disaster-recovery/) page lists the recovery
 path for each.
@@ -135,10 +135,10 @@ path for each.
 
 These are intentionally NOT in the restic snapshot:
 
-- `/var/log/` — ephemeral, app logs rotate; not worth the storage.
-- Container image layers — re-pullable from the upstream registry,
+- `/var/log/` -- ephemeral, app logs rotate; not worth the storage.
+- Container image layers -- re-pullable from the upstream registry,
   no need to hoard.
-- Temporary directories (`/tmp`, `/var/tmp`) — ephemeral by
+- Temporary directories (`/tmp`, `/var/tmp`) -- ephemeral by
   definition.
 
 If you ever wonder "did this end up in backup?", the rule of thumb
@@ -149,13 +149,13 @@ is: **state your apps need to come back exactly as they were**, yes;
 
 Worst-case scenario: physical destruction of the VPS, no warning.
 
-- **VPS state since the last backup** — anything created or
+- **VPS state since the last backup** -- anything created or
   modified between the latest backup snapshot and the moment of
   destruction. Depending on your backup schedule, that's 1-24
   hours. Apps held idle during that window lose nothing; apps
   receiving heavy writes (a busy Rocket.Chat, real-time editing in
   Outline) lose the most recent edits.
-- **Anything in `/tmp` or container memory** — that's not a real
+- **Anything in `/tmp` or container memory** -- that's not a real
   loss; nothing important should live there.
 - **Nothing else.** Restic + (optional) Nextcloud-S3 + Cloudflare
   + Tailscale carry the rest.

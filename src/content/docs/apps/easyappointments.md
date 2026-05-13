@@ -7,15 +7,15 @@ Application de réservation côté client pour un ou plusieurs prestataires (cli
 
 - **Projet original :** <https://easyappointments.org/>
 - **Remplace :** **Calendly**, **Acuity**, **SimplyBook**, **Setmore**
-- **Connexion (SSO) :** Non disponible — l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
+- **Connexion (SSO) :** Non disponible -- l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min pour le premier démarrage (la base de données s'initialise au premier lancement).
 2. Visitez votre domaine Easy!Appointments et complétez l'assistant initial (compte admin, nom de l'entreprise, heures d'ouverture).
 3. Ajoutez les prestataires (membres du personnel avec calendriers réservables), les services (durées + prix), et les clients au besoin.
-4. *(Optionnel)* Configurez SMTP sous **Settings** → **Business Logic** → **Email** pour envoyer les confirmations et rappels de rendez-vous. Sans SMTP, les clients et le personnel voient les réservations dans l'application, mais aucun courriel n'est envoyé.
-5. *(Optionnel)* Intégrez la page de réservation à votre site web : copiez l'URL publique depuis **Settings** → **Booking Settings** et liez-la depuis votre site ou vos fiches d'établissement.
+4. *(Optionnel)* Configurez SMTP sous **Settings** -> **Business Logic** -> **Email** pour envoyer les confirmations et rappels de rendez-vous. Sans SMTP, les clients et le personnel voient les réservations dans l'application, mais aucun courriel n'est envoyé.
+5. *(Optionnel)* Intégrez la page de réservation à votre site web : copiez l'URL publique depuis **Settings** -> **Booking Settings** et liez-la depuis votre site ou vos fiches d'établissement.
 
 ### Authentification
 
@@ -25,7 +25,7 @@ Si un SSO unifié pour le personnel est requis, contactez votre opérateur pour 
 
 ### Rappels courriel + SMS
 
-Les rappels par courriel fonctionnent dès que SMTP est configuré. Les rappels SMS nécessitent un compte Twilio (configuré sous **Settings** → **Notifications** → **SMS**). Les SMS sont consentis par le client au moment de la réservation.
+Les rappels par courriel fonctionnent dès que SMTP est configuré. Les rappels SMS nécessitent un compte Twilio (configuré sous **Settings** -> **Notifications** -> **SMS**). Les SMS sont consentis par le client au moment de la réservation.
 
 ### URL de réservation publique
 
@@ -35,7 +35,7 @@ L'URL publique par défaut est `https://book.<votre-domaine>/`. Partagez-la dire
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -54,7 +54,7 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
@@ -138,4 +138,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

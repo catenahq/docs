@@ -5,18 +5,18 @@ description: "Short answer: if a file under the paths below is hand-edited, your
 
 Short answer: if a file under the paths below is hand-edited, your
 operator's next maintenance run will overwrite the change. Tell your
-operator what you wanted to do instead — they almost certainly have
+operator what you wanted to do instead -- they almost certainly have
 a flag or a different path for it.
 
 Don't hand-edit these:
 
-- `/etc/dokploy/traefik/dynamic/*.yml` — managed by `dashboard-sync`
-- `/etc/catena/backup.env` — managed by your operator's automation
-- `/etc/catena/restic.pass` — managed by your operator's automation
-- `/etc/systemd/system/catena-*.{service,timer}` — managed by your
+- `/etc/dokploy/traefik/dynamic/*.yml` -- managed by `dashboard-sync`
+- `/etc/catena/backup.env` -- managed by your operator's automation
+- `/etc/catena/restic.pass` -- managed by your operator's automation
+- `/etc/systemd/system/catena-*.{service,timer}` -- managed by your
   operator's automation
 - `/usr/local/bin/run-backup.sh`, `/usr/local/bin/dashboard-sync`,
-  `/usr/local/bin/gatus-sync`, `/usr/local/bin/auto-update.sh` —
+  `/usr/local/bin/gatus-sync`, `/usr/local/bin/auto-update.sh` --
   managed by your operator's automation
 
 If a file at one of these paths carries a header that says it was

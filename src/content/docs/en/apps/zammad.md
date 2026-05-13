@@ -7,20 +7,20 @@ Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. 
 
 - **Upstream project:** <https://zammad.com/>
 - **Replaces:** **Zendesk**, **Freshdesk**, **Jira Service Desk**
-- **Sign-in (SSO):** Enable via the app's admin UI — paste the `OIDC_*` values from the Environment tab once.
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
 ## Setup steps
 
-1. Click **Deploy**. First boot is slow (2-3 min) — Elasticsearch and Rails migrations run on startup.
+1. Click **Deploy**. First boot is slow (2-3 min) -- Elasticsearch and Rails migrations run on startup.
 2. Visit your Zammad domain. Complete the setup wizard (admin account, organization name).
-3. *(Optional)* Enable Keycloak SSO: **Settings** → **Security** → **Third-party authentication** → **OpenID Connect** → paste `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` from the Environment tab. Save.
+3. *(Optional)* Enable Keycloak SSO: **Settings** -> **Security** -> **Third-party authentication** -> **OpenID Connect** -> paste `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` from the Environment tab. Save.
 
 **Resource note:** Zammad bundles Elasticsearch which reserves ~1.5 GB RAM. Plan for a ≥4 GB VPS if you run Zammad alongside other apps.
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -39,15 +39,15 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# Zammad — ticket-first help desk / omnichannel support. Native OIDC
-# support (configured in Settings → Security → Third-party
-# authentication → OIDC after first admin sign-in).
+# Zammad -- ticket-first help desk / omnichannel support. Native OIDC
+# support (configured in Settings -> Security -> Third-party
+# authentication -> OIDC after first admin sign-in).
 #
 # Heavier than Chatwoot: bundles Elasticsearch (needs ~1.5 GB RAM), a
 # dedicated scheduler, websocket process, nginx front-end, + the usual
@@ -215,4 +215,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

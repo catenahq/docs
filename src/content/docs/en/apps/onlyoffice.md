@@ -1,13 +1,13 @@
 ---
 title: "OnlyOffice"
-description: "Collaborative DOCX/XLSX/PPTX editing — bolts into Nextcloud for real-time co-editing with high MS Office fidelity."
+description: "Collaborative DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing with high MS Office fidelity."
 ---
 
-Collaborative DOCX/XLSX/PPTX editing — bolts into Nextcloud for real-time co-editing with high MS Office fidelity.
+Collaborative DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing with high MS Office fidelity.
 
 - **Upstream project:** <https://www.onlyoffice.com/>
 - **Replaces:** **Microsoft Office Online**, **Google Docs (as embedded editor)**
-- **Sign-in (SSO):** Not applicable — this template has no user-facing login (server-to-server usage only).
+- **Sign-in (SSO):** Not applicable -- this template has no user-facing login (server-to-server usage only).
 
 ## Setup steps
 
@@ -17,14 +17,14 @@ Collaborative DOCX/XLSX/PPTX editing — bolts into Nextcloud for real-time co-e
 
 Switching to Collabora later is one click: stop this OnlyOffice compose, deploy `collabora`, then click the **Wire Nextcloud Collabora** button.
 
-Don't visit the OnlyOffice domain directly in a browser — it has no UI of its own. Users only ever see it through Nextcloud when they open a document.
+Don't visit the OnlyOffice domain directly in a browser -- it has no UI of its own. Users only ever see it through Nextcloud when they open a document.
 
 
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -42,22 +42,22 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# OnlyOffice Document Server — collaborative DOCX/XLSX/PPTX editing,
-# bolted into Nextcloud via the "ONLYOFFICE" app (admin → Apps → search
-# ONLYOFFICE → Install → settings → enter the domain below + JWT secret).
+# OnlyOffice Document Server -- collaborative DOCX/XLSX/PPTX editing,
+# bolted into Nextcloud via the "ONLYOFFICE" app (admin -> Apps -> search
+# ONLYOFFICE -> Install -> settings -> enter the domain below + JWT secret).
 #
 # Server-to-server auth is JWT-protected (JWT_ENABLED=true). The UI is
 # iframe-embedded inside Nextcloud; forward-auth MUST be disabled on
 # this route (vps.auth.mode=public) because the iframe would otherwise
 # redirect to Keycloak and break the editor.
 #
-# Don't expose this to end users directly — they only ever see it
+# Don't expose this to end users directly -- they only ever see it
 # through Nextcloud.
 
 services:
@@ -101,4 +101,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

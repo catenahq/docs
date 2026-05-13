@@ -1,27 +1,27 @@
 ---
 title: "n8n"
-description: "Workflow automation — visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows."
+description: "Workflow automation -- visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows."
 ---
 
-Workflow automation — visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows.
+Workflow automation -- visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows.
 
 - **Upstream project:** <https://n8n.io/>
 - **Replaces:** **Zapier**, **Make (Integromat)**, **Tray.io**
-- **Sign-in (SSO):** Not available — this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
+- **Sign-in (SSO):** Not available -- this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
 
 ## Setup steps
 
 1. Click **Deploy**. Wait ~1 min for Postgres + n8n to initialize.
 2. Visit your n8n domain and create the owner account via the setup wizard.
-3. Invite additional users: **Settings** → **Users** → **Invite**. Each user receives an email invite.
-4. Start building workflows: **Workflows** → **+ Add Workflow**. Browse the integrations library for pre-built nodes.
+3. Invite additional users: **Settings** -> **Users** -> **Invite**. Each user receives an email invite.
+4. Start building workflows: **Workflows** -> **+ Add Workflow**. Browse the integrations library for pre-built nodes.
 
-**Note on sign-in.** n8n's community edition uses email/password user management with invite flows. OIDC and SAML are enterprise-gated, so SSO isn't available here — each user maintains a per-app login. Fine for an automation team of 1-5 people.
+**Note on sign-in.** n8n's community edition uses email/password user management with invite flows. OIDC and SAML are enterprise-gated, so SSO isn't available here -- each user maintains a per-app login. Fine for an automation team of 1-5 people.
 
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -43,13 +43,13 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
 
 ```yaml
-# n8n — workflow automation (Zapier / Make alternative). Community
+# n8n -- workflow automation (Zapier / Make alternative). Community
 # edition uses local email/password user management. OIDC/SAML are
 # enterprise-only, so per-user app-local logins here.
 
@@ -119,4 +119,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

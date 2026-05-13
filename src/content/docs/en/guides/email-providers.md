@@ -1,13 +1,13 @@
 ---
 title: Choose your email provider
-description: Compare the five recommended email providers (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence) — where they are, what they cost, what languages they speak, and how they handle shared mailboxes.
+description: Compare the five recommended email providers (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence) -- where they are, what they cost, what languages they speak, and how they handle shared mailboxes.
 ---
 
 Five privacy-focused, full-featured email providers cover every situation we typically see. They all do the basics well; the table below shows what actually differs between them, so you can pick on the criteria that matter to you.
 
 ## What all five do well
 
-- **Standard email apps.** Use whatever you already know — Gmail, Outlook / Microsoft 365, Apple Mail, Thunderbird, the iPhone / Android mail app — and switch later to any other provider without losing your messages, calendars, or contacts.
+- **Standard email apps.** Use whatever you already know -- Gmail, Outlook / Microsoft 365, Apple Mail, Thunderbird, the iPhone / Android mail app -- and switch later to any other provider without losing your messages, calendars, or contacts.
 - **App passwords.** Create a separate password for each device or app, so a lost phone does not force you to change your main password everywhere.
 - **Mailboxes at your own domain.** Your address looks like `you@yourcompany.ca`, not `you@gmail.com`. Your identity is yours.
 

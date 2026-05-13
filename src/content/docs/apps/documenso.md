@@ -1,21 +1,21 @@
 ---
 title: "Documenso (déprécié)"
-description: "**DÉPRÉCIÉ** depuis 2026-04-29 — conservé au catalogue le temps de la migration. Les nouveaux déploiements doivent utiliser **DocuSeal**."
+description: "**DÉPRÉCIÉ** depuis 2026-04-29 -- conservé au catalogue le temps de la migration. Les nouveaux déploiements doivent utiliser **DocuSeal**."
 ---
 
-**DÉPRÉCIÉ** depuis 2026-04-29 — conservé au catalogue le temps de la migration. Les nouveaux déploiements doivent utiliser **DocuSeal**. Signature électronique de documents open-source — téléversez un PDF, placez les champs de signature, envoyez pour signature. Keycloak SSO pré-câblé.
+**DÉPRÉCIÉ** depuis 2026-04-29 -- conservé au catalogue le temps de la migration. Les nouveaux déploiements doivent utiliser **DocuSeal**. Signature électronique de documents open-source -- téléversez un PDF, placez les champs de signature, envoyez pour signature. Keycloak SSO pré-câblé.
 
 - **Projet original :** <https://documenso.com/>
 - **Remplace :** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**
-- **Connexion (SSO) :** Pré-câblé — la page de connexion affiche « Se connecter avec Keycloak » d'emblée, aucune étape post-déploiement.
+- **Connexion (SSO) :** Pré-câblé -- la page de connexion affiche "Se connecter avec Keycloak" d'emblée, aucune étape post-déploiement.
 
 ## Étapes de configuration
 
 > **Déprécié :** les nouveaux déploiements doivent utiliser **DocuSeal** à `sign.<votre-domaine>`. Cette entrée est conservée à `sign-legacy.<votre-domaine>` le temps de la migration. Pour migrer : déployez DocuSeal, recréez vos templates, puis supprimez ce compose Documenso.
 
 1. Cliquez **Deploy**. Les valeurs par défaut sont pré-remplies ; le premier démarrage génère automatiquement un certificat de signature auto-signé (~30 s).
-2. Visitez votre domaine Documenso → cliquez **Se connecter avec Keycloak**. Le premier utilisateur devient l'admin de l'équipe.
-3. *(Optionnel)* Remplacez le certificat auto-signé par un certificat émis par une autorité de certification de confiance pour les signatures à valeur légale. En attendant, les PDF signés s'affichent correctement, mais Adobe / Acrobat / les navigateurs marqueront la signature comme « émise par une racine non fiable ». Contactez votre opérateur pour installer un vrai certificat dans le volume Docker `documenso-signing`.
+2. Visitez votre domaine Documenso -> cliquez **Se connecter avec Keycloak**. Le premier utilisateur devient l'admin de l'équipe.
+3. *(Optionnel)* Remplacez le certificat auto-signé par un certificat émis par une autorité de certification de confiance pour les signatures à valeur légale. En attendant, les PDF signés s'affichent correctement, mais Adobe / Acrobat / les navigateurs marqueront la signature comme "émise par une racine non fiable". Contactez votre opérateur pour installer un vrai certificat dans le volume Docker `documenso-signing`.
 
 ### Certificat auto-signé vs certificat d'une AC de confiance
 
@@ -25,15 +25,15 @@ quel. Les documents signés avec ce certificat sont
 cryptographiquement valides (la mathématique fonctionne),
 mais l'identité de signature est **le nom d'hôte de votre
 VPS**, pas l'identité de votre entreprise, et Adobe Acrobat
-et les navigateurs affichent un bandeau jaune (« pas d'une
-racine de confiance ») à chaque vérification.
+et les navigateurs affichent un bandeau jaune ("pas d'une
+racine de confiance") à chaque vérification.
 
 Pour les workflows internes (formulaires RH, prise en
 charge fournisseur, NDA entre parties déjà en confiance), le
 certificat auto-signé suffit. Pour les contrats signés
 face client, contactez votre opérateur pour installer un
 certificat émis par une AC. La mise à niveau ne perturbe
-rien — remplacez `cert.p12` dans le volume
+rien -- remplacez `cert.p12` dans le volume
 `documenso-signing`, redémarrez le conteneur Documenso.
 
 ### SMTP
@@ -50,7 +50,7 @@ les identifiants).
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -77,7 +77,7 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
@@ -88,7 +88,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 # clients can continue running Documenso until they cut over. The
 # catalog entry's setup_steps section also surfaces the deprecation.
 #
-# Documenso — open-source document signing (DocuSign / HelloSign / PandaDoc
+# Documenso -- open-source document signing (DocuSign / HelloSign / PandaDoc
 # replacement). Keycloak SSO pre-wired via env-based OIDC; the operator's
 # automation mints the realm client + populates OIDC_* env on first
 # converge.
@@ -143,7 +143,7 @@ services:
       NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH: /opt/documenso/cert.p12
       NEXT_PRIVATE_SIGNING_PASSPHRASE: ${SIGNING_PASSPHRASE}
 
-      # Keycloak OIDC — populated by dashboard-sync after first deploy.
+      # Keycloak OIDC -- populated by dashboard-sync after first deploy.
       # Documenso's own env-var names are NEXT_PRIVATE_OIDC_*; we
       # remap from the generic OIDC_* keys dashboard-sync writes into
       # Dokploy's env, matching the pattern in outline.compose.yml.
@@ -153,7 +153,7 @@ services:
       NEXT_PRIVATE_OIDC_PROVIDER_LABEL: Keycloak
       NEXT_PRIVATE_OIDC_ALLOW_SIGNUP: "true"
 
-      # SMTP — Documenso uses NEXT_PRIVATE_SMTP_* names. Optional;
+      # SMTP -- Documenso uses NEXT_PRIVATE_SMTP_* names. Optional;
       # when unset, in-app invitations and signature requests do not
       # email users (they still appear in the dashboard for a
       # logged-in user to act on, just no email).
@@ -214,4 +214,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)

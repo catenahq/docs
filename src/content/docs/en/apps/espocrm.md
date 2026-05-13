@@ -7,13 +7,13 @@ Default CRM in the stack. Contacts, accounts, opportunities, leads, calendar, em
 
 - **Upstream project:** <https://www.espocrm.com/>
 - **Replaces:** **Salesforce**, **HubSpot**, **Zoho CRM**, **Pipedrive**
-- **Sign-in (SSO):** Enable via the app's admin UI — paste the `OIDC_*` values from the Environment tab once.
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
 ## Setup steps
 
 1. Click **Deploy**. Wait ~1 min.
 2. Visit your EspoCRM domain. Sign in as `ESPOCRM_ADMIN_USERNAME` / `ESPOCRM_ADMIN_PASSWORD` from the Environment tab.
-3. *(Optional)* Enable Keycloak SSO: **Administration** → **Authentication** → set **Method** to **OIDC** → paste:
+3. *(Optional)* Enable Keycloak SSO: **Administration** -> **Authentication** -> set **Method** to **OIDC** -> paste:
    - **Client ID:** `OIDC_CLIENT_ID` from Environment (`espocrm`)
    - **Client Secret:** `OIDC_CLIENT_SECRET` from Environment (ask your operator to mint one in Keycloak if blank)
    - **Authorization Endpoint:** `<OIDC_ISSUER_URL>/protocol/openid-connect/auth`
@@ -33,7 +33,7 @@ EspoCRM runs as PHP-Apache + MariaDB + a cron sidecar. Plan for ~1 GB RAM at idl
 ## Environment variables
 
 These values live in the Dokploy compose's **Environment** tab. Random
-secrets are minted automatically when the template is first seeded —
+secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
@@ -58,7 +58,7 @@ something else.
 
 ## Compose file
 
-For reference — this is what the template deploys. **Do not paste this
+For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Dokploy automatically; the
 client-facing adjustments you make happen in the Environment and
 Domains tabs (described above), never in the compose itself.
@@ -168,4 +168,4 @@ networks:
 
 ---
 
-[← Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/docs/en/apps/)

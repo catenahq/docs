@@ -7,13 +7,13 @@ Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instag
 
 - **Projet original :** <https://postiz.com/>
 - **Remplace :** **Buffer**, **Hootsuite**, **Later**
-- **Connexion (SSO) :** Non disponible — l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
+- **Connexion (SSO) :** Non disponible -- l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min.
 2. Visitez votre domaine Postiz et créez le compte admin.
-3. Ajoutez les identifiants d'application de chaque réseau : **Settings** → choisissez le réseau → collez le client ID + secret de votre app développeur depuis le portail du réseau. Une fois par réseau.
+3. Ajoutez les identifiants d'application de chaque réseau : **Settings** -> choisissez le réseau -> collez le client ID + secret de votre app développeur depuis le portail du réseau. Une fois par réseau.
 
 **À propos de la connexion :** Postiz utilise un email/mot de passe local. Pas d'OIDC natif dans la version communautaire actuelle. Le nombre d'utilisateurs pour cet outil est typiquement de 1 à 3 personnes en marketing, donc l'absence de SSO est moins impactante que pour les outils de chat / helpdesk.
 
@@ -21,7 +21,7 @@ Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instag
 
 Ces valeurs se trouvent dans l'onglet **Environment** du compose
 Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template — vous n'avez pas à les générer vous-même.
+premier semi du template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -40,14 +40,14 @@ vous souhaitez autre chose.
 
 ## Fichier compose
 
-Pour référence — c'est ce que le template déploie. **Ne collez ceci
+Pour référence -- c'est ce que le template déploie. **Ne collez ceci
 nulle part.** Le compose est semé dans Dokploy automatiquement ; les
 ajustements côté client se font dans les onglets Environment et
 Domains (décrits plus haut), jamais dans le compose lui-même.
 
 ```yaml
-# Postiz — social media scheduling / posting across networks (Twitter/X,
-# LinkedIn, Facebook, Instagram, YouTube, TikTok, …). Login is local
+# Postiz -- social media scheduling / posting across networks (Twitter/X,
+# LinkedIn, Facebook, Instagram, YouTube, TikTok, ...). Login is local
 # (email/password) + optional social OAuth buttons configured per-
 # network. No native OIDC in the current community release.
 
@@ -125,4 +125,4 @@ networks:
 
 ---
 
-[← Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/docs/apps/)
