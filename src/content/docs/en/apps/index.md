@@ -78,6 +78,9 @@ Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, In
 ### 19. Easy!Appointments — replaces Calendly, Acuity, SimplyBook, Setmore
 Customer-facing booking app for one or many providers (clinic, salon, lessons, repair shop). Public booking page; staff calendars; email + SMS reminders; ICS export. [→ Full details](/docs/en/apps/easyappointments/)
 
+### 20. Mautic — replaces Mailchimp, ActiveCampaign, HubSpot Marketing, Brevo (Sendinblue)
+Open-source marketing automation. Contact segments, email campaigns, drip sequences, landing pages, forms, lead scoring. [→ Full details](/docs/en/apps/mautic/)
+
 ## A note on sign-in (SSO)
 
 Each template's reference page declares its SSO status (pre-wired, post-deploy UI, one-time curl, or not available). Apps without native OIDC just mean each user maintains a per-app login — the app itself is still reachable, backed up, and secured by its own login wall. It just doesn't participate in the "one login for everything" flow.
