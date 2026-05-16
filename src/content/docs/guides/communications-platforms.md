@@ -27,11 +27,13 @@ Aucun outil unique ne couvre tout ce dont une entreprise a besoin en communicati
 | Applications mobiles (iOS / Android)         |   ✅    |     ✅      |   ✅    |    ✅    |
 | Chiffrement de bout en bout (messages directs) |   ✅  |     ✅      |   ✅    |    ✅    |
 | Fédération entre organisations               | limitée |   limitée   |   ✅    |    ✅    |
+| Intégration Nextcloud [^4]                   | complète | fichiers + SSO | SSO seulement | ❌ |
 | Gratuit sur votre serveur, sans frais par utilisateur |   ✅ |   ✅ [^3]   |   ✅    |    ✅    |
 
 [^1]: Nécessite un abonnement à un service téléphonique. Voir [Ce qui tourne sur votre serveur, ce qui coûte extra](#ce-qui-tourne-sur-votre-serveur-ce-qui-coûte-extra) plus bas.
 [^2]: Rocket.Chat vend cette fonction comme un forfait Premium accompagné d'un complément Voice, facturé par utilisateur et par mois, négocié directement avec leur équipe de ventes. Les autres options de cette page évitent ce frais.
 [^3]: L'édition Community de Rocket.Chat (gratuite) couvre tout ce qui figure dans le tableau, sauf les appels téléphoniques dans la fenêtre.
+[^4]: Talk est une application Nextcloud : sélecteur de fichiers, entrées d'agenda, contacts, sondages et présence sont partagés automatiquement avec le reste de Nextcloud. Rocket.Chat partage l'authentification unique Keycloak avec Nextcloud et propose une extension optionnelle sur sa Marketplace qui ajoute un sélecteur de fichiers Nextcloud ; agenda et contacts restent séparés. Element partage uniquement l'authentification unique Keycloak -- sélecteur de fichiers, agenda et contacts vivent dans Nextcloud et doivent être ouverts dans un onglet séparé.
 
 ## Choisir selon votre situation
 

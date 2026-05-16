@@ -27,11 +27,13 @@ No single tool covers everything a business needs for communication. Internal te
 | Mobile apps (iOS / Android)              |   ✅    |     ✅      |   ✅    |    ✅    |
 | End-to-end encryption (DMs)              |   ✅    |     ✅      |   ✅    |    ✅    |
 | Federation between organizations         | limited |   limited   |   ✅    |    ✅    |
+| Nextcloud integration [^4]               |  full   | files + SSO | SSO only|    ❌    |
 | Free on your server, no per-user fee     |   ✅    |   ✅ [^3]   |   ✅    |    ✅    |
 
 [^1]: Requires a phone-service subscription. See [What runs on your server, what costs extra](#what-runs-on-your-server-what-costs-extra) below.
 [^2]: Rocket.Chat sells this feature as a Premium plan plus a Voice add-on, priced per user per month, negotiated directly with their sales team. The other options on this page avoid this fee.
 [^3]: Rocket.Chat Community Edition (free) covers everything in the table except in-window phone calls.
+[^4]: Talk is a Nextcloud app: file picker, calendar entries, contacts, polls, and presence are shared with the rest of Nextcloud automatically. Rocket.Chat shares Keycloak single sign-on with Nextcloud and offers an optional marketplace extension that adds a Nextcloud Files picker; calendar and contacts stay separate. Element shares only Keycloak single sign-on -- file picker, calendar, and contacts live in Nextcloud and have to be opened in a separate tab.
 
 ## Pick by situation
 
