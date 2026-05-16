@@ -3,83 +3,54 @@ title: Choosing a communications platform
 description: Compare Nextcloud Talk, Rocket.Chat, Element, and Linphone -- what each one brings, what each one lacks, what runs on your own server at no extra cost, and which combinations fit which situations.
 ---
 
-No single tool covers everything a business needs for communication. Internal team chat, video meetings, customer-support inboxes, and regular phone calls each work best on a different platform. This page shows what each option does well, where it falls short, and which combinations fit common situations.
+No single tool covers everything a business needs for communication. Internal team chat, video meetings, customer-support inboxes, and regular phone calls each work best on a different platform. The table below shows what each option does well and where it falls short.
 
-## What runs on your server, what costs extra
+## Feature comparison
 
-Almost everything below runs on the server your operator already manages for you. Nothing on this page charges per user per month -- with one specific, optional exception. The only recurring outside costs are the ones the rest of the world makes mandatory: a phone provider (if you want to dial or receive regular phone numbers) and the regulatory 9-1-1 fee that goes with it.
+|                                                                | Nextcloud Talk | Rocket.Chat | Element | Linphone            |
+| -------------------------------------------------------------- | :------------: | :---------: | :-----: | :-----------------: |
+| Internal team chat                                              |       ✅       |     ✅      |   ✅    |         n/a         |
+| Group video meetings                                            |       ✅       |     ✅      |   ✅    |         n/a         |
+| Phone dial-in to scheduled meetings [^1]                        |       ✅       |     ✅      |   ✅    |         n/a         |
+| Customer-support inbox (web, email, social, SMS)                |       ❌       |     ✅      |   ❌    |         n/a         |
+| Regular phone calls from inside the chat window                 |       ❌       | paid [^2]   |   ✅    | (it is the phone)   |
+| Mobile apps (iOS / Android)                                     |       ✅       |     ✅      |   ✅    |          ✅         |
+| End-to-end encryption on direct messages                        |       ✅       |  optional   | ✅ (default) |    optional     |
+| Federation with another organization on the same platform       |     limited    |   limited   |   ✅    |         ✅          |
+| Free on your server, no monthly per-user fee                    |       ✅       |   ✅ [^3]   |   ✅    |         ✅          |
 
-| What | Where it runs | Recurring cost beyond what your operator already runs |
-| --- | --- | --- |
-| Nextcloud Talk | Your server | None |
-| Rocket.Chat (Community Edition) | Your server | None |
-| Rocket.Chat Premium + Voice add-on (in-window phone calls) | Your server, but feature-gated by Rocket.Chat's license | Paid, per user, per month, set directly by Rocket.Chat. The other options on this page avoid this fee. |
-| Element / Matrix | Your server | None |
-| Linphone (softphone app per staff member) | Each staff member's computer or phone | None |
-| FreeSWITCH / Asterisk (if you want a full phone system with hunt groups, voicemail, IVR) | Your server | None |
-| SIP trunk + phone numbers (DIDs) | External phone provider | Per number, per month + per minute or flat-rate bundle. Mandatory if you want regular phone calls at all. |
-| 9-1-1 fee | Billed by the phone provider | Per number, per month. CRTC-mandated in Canada. |
-
-The takeaway: the chat, meeting, and voice software is yours. The phone line and emergency-services routing come from a phone company because that is how the public phone network works.
-
-## The four building blocks
-
-**[Nextcloud Talk](/docs/nextcloud-apps-vs-suite/)** is included with the Nextcloud suite on your server at no extra cost. It covers internal team chat, voice and video meetings between staff, and dial-in to those meetings from a regular phone when paired with a phone provider. It does not include a customer-support inbox or extension-style phone calls.
-
-**[Rocket.Chat](/docs/apps/rocketchat-oidc/)** is a richer team chat platform with mature mobile apps and a built-in Omnichannel module that turns a single inbox into the place your staff handle webchat, email, social, and SMS conversations from customers. Internal voice and video work out of the box (the meeting button opens a Jitsi room). The "make and receive regular phone calls from inside the chat window" feature, however, is gated behind a paid Premium plan plus a Voice add-on. That price is per user, per month, set directly by Rocket.Chat with their sales team, and is the one paid subscription called out on this page. The Community Edition that runs on your server without that subscription covers everything else.
-
-**Element** is a chat platform built on the open Matrix protocol. Its strength is native phone integration: calls to and from regular phone numbers happen inside the same window as the chat, with no paid add-on. Element also supports federation (your team can chat with anyone on any other Matrix server) and end-to-end encryption on direct messages by default. It does not include an Omnichannel customer-support inbox.
-
-**Linphone** is a free, open-source softphone app -- a desktop or mobile application that turns your computer or phone into an office line. It is not a competing chat platform; it is the piece that fills the regular-phone gap when you keep Talk or Rocket.Chat as your chat tool. Each staff member installs Linphone, signs in once with credentials your operator provisions, and gets an extension number, voicemail, and the ability to make and receive calls. The trade-off is one extra window during the workday: chat stays in Talk or Rocket.Chat, the actual call audio happens in Linphone.
-
-## Where they overlap, where they differ
-
-|                                                              | Nextcloud Talk            | Rocket.Chat                                | Element                              | Linphone               |
-| ------------------------------------------------------------ | ------------------------- | ------------------------------------------ | ------------------------------------ | ---------------------- |
-| Internal team chat                                           | yes                       | yes                                        | yes                                  | no                     |
-| Group video meetings                                         | yes                       | yes (via the meeting button)               | yes                                  | no                     |
-| Phone dial-in to scheduled meetings                          | yes (with a phone provider) | yes (with a phone provider)              | yes (with a phone provider)          | n/a                    |
-| Customer-support Omnichannel inbox                           | no                        | yes                                        | no                                   | no                     |
-| Regular phone calls from inside the chat window              | no                        | paid add-on (Premium + Voice)              | yes                                  | n/a (it is the phone)  |
-| Mobile apps (iOS / Android)                                  | yes                       | yes                                        | yes                                  | yes                    |
-| End-to-end encryption on direct messages                     | yes                       | optional                                   | yes (default)                        | optional               |
-| Federation with other organizations on the same platform     | limited                   | limited                                    | yes                                  | yes (via SIP)          |
-| Runs on your server with no per-user fee                     | yes                       | yes (in-window phone is the paid exception) | yes                                  | yes (one install per staff member) |
+[^1]: Requires a phone-service subscription. See [What runs on your server, what costs extra](#what-runs-on-your-server-what-costs-extra) below.
+[^2]: Rocket.Chat sells this feature as a Premium plan plus a Voice add-on, priced per user per month, negotiated directly with their sales team. The other options on this page avoid this fee.
+[^3]: Rocket.Chat Community Edition (free) covers everything in the table except in-window phone calls.
 
 ## Pick by situation
 
-### Small team, internal communication only, no public phone number
+- **Small team, internal communication only.** [Nextcloud Talk](/docs/nextcloud-apps-vs-suite/) alone.
+- **Team chat plus a customer-support inbox across web, email, social, and SMS.** [Rocket.Chat](/docs/apps/rocketchat-oidc/) for the inbox; Linphone for outbound phone work.
+- **Team chat plus regular phone calls in the same window.** Element.
+- **Customer-support inbox AND regular phone calls in one window.** No clean single-window option; pick Rocket.Chat plus Linphone, or Element plus a separate ticketing tool.
+- **Mixed needs across several teams.** Talk for internal chat, Rocket.Chat for the customer-support team, Linphone for anyone needing a phone extension.
 
-**Recommended:** [Nextcloud Talk](/docs/nextcloud-apps-vs-suite/) alone.
+## The four building blocks
 
-Talk is already on your server, costs nothing extra, and covers chat, meetings, and phone dial-in to those meetings when you need it.
+**[Nextcloud Talk](/docs/nextcloud-apps-vs-suite/)** is included with the Nextcloud suite already on your server. Internal team chat, voice and video meetings, and phone dial-in to those meetings when you sign up with a phone service. No customer-support inbox; no extension-style office phone.
 
-### Team chat plus customer support across web, email, social, or SMS
+**[Rocket.Chat](/docs/apps/rocketchat-oidc/)** is a richer team chat platform with strong mobile apps and a customer-support inbox that pulls webchat, email, social, and SMS into one place. Internal voice and video work out of the box. Making and receiving regular phone calls from inside the chat window requires a paid Rocket.Chat subscription; everything else stays free on your server.
 
-**Recommended:** [Rocket.Chat](/docs/apps/rocketchat-oidc/) for the inbox; Linphone for outbound phone work.
+**Element** handles regular phone calls in the same window as the chat with no paid add-on, and lets your team chat with anyone on another organization's Element server. It does not include a customer-support inbox.
 
-Rocket.Chat's Omnichannel module is the reason to pick it. One inbox covers webchat, email-to-ticket, and SMS-to-conversation (through your phone provider's API). Your staff handle customer conversations from a single window. Outbound and inbound regular phone calls happen in Linphone alongside. Rocket.Chat itself stays on the Community Edition; no Premium subscription needed for this combination.
+**Linphone** is a free phone app for desktop and mobile that gives each staff member an office extension number, a voicemail box, and the ability to make and receive regular phone calls. It is not a chat platform; it is the piece you add when you keep Talk or Rocket.Chat as your chat tool and still need a real office phone. The trade-off: one extra window during the workday.
 
-### Team chat plus regular phone calls in one window
+## What runs on your server, what costs extra
 
-**Recommended:** Element.
+Everything above -- Talk, Rocket.Chat, Element, Linphone -- runs on the server your operator already manages for you, with no monthly per-user fee (the one exception is Rocket.Chat's optional in-window phone subscription noted in the table). The recurring outside costs only apply when you want a real phone number that customers can dial. They come from a phone service provider, not from Rocket.Chat, Nextcloud, Element, or your operator.
 
-Element is the only option that combines business chat and regular phone calls in the same client without a paid add-on. Useful if your team's day is half phone, half chat, and switching windows feels wrong.
+| What                                                                  | Typical cost in Canada [^4]                                                                                |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Your business phone number                                            | About $1 to $3 per month, per number                                                                       |
+| Outgoing calls                                                        | About $0.01 per minute, OR a flat-rate bundle around $5 to $10 per month for unlimited North America        |
+| 9-1-1 emergency-services fee (required by Canadian law)               | About $1.50 per month, per number                                                                          |
 
-### Customer-support inbox AND regular phone calls in one window
+[^4]: Approximate at the time of writing. Examples of providers that offer this kind of pay-as-you-go phone service in Canada: VoIP.ms, Babytel, Twilio. Your operator confirms live numbers and helps you sign up the day we quote. You pay the phone provider directly; your operator does not mark these up.
 
-**Recommended:** there is no clean single-window option today. Pick Rocket.Chat for the inbox and accept Linphone for the phone, or pick Element for the phone and handle customer-support tickets in a separate tool. The other path -- paying for Rocket.Chat Premium + Voice -- collapses both into the Rocket.Chat window, but moves you to a per-user monthly subscription set by Rocket.Chat.
-
-### Mixed needs across a multi-team business
-
-**Recommended:** Talk for casual internal chat, Rocket.Chat for the customer-support team, Linphone for anyone who needs a phone extension.
-
-Each tool handles what it does best. Staff who only chat internally stay in Talk. Staff who handle customers live in Rocket.Chat. Staff who need a phone extension also install Linphone. This is the most common arrangement for businesses that combine internal collaboration and external customer-facing workflows.
-
-## What none of these gives you on its own
-
-- A regular phone number that customers can dial. That comes from a phone provider; your operator can recommend one that fits your jurisdiction.
-- 9-1-1 outbound calling. Provided by the phone provider and billed by them; mandatory in Canada.
-- Voicemail-to-email, hunt groups (one phone number rings several people), or an auto-attendant ("Press 1 for sales"). These come from an open-source phone system (FreeSWITCH or Asterisk) that your operator can add alongside any of the chat platforms above. Talk to your operator if you need a full phone system, not just a softphone.
-
-If you are not sure which combination fits your business, contact your operator. A short call sorts the lane faster than a checklist.
+If you are not sure which combination fits your business, contact your operator. A short call sorts it faster than a checklist.
