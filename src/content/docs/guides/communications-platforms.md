@@ -3,33 +3,7 @@ title: Choisir une plateforme de communications
 description: Comparez Nextcloud Talk, Rocket.Chat, Element et Linphone -- ce que chacun apporte, ce qui lui manque, ce qui tourne sur votre propre serveur sans frais supplémentaires, et quelles combinaisons conviennent à quelles situations.
 ---
 
-Aucun outil unique ne couvre tout ce dont une entreprise a besoin en communications. La discussion d'équipe interne, les visioconférences, les boîtes de support client et les appels téléphoniques classiques fonctionnent chacun mieux sur une plateforme différente. Le tableau ci-dessous montre ce que chaque option fait bien et où elle s'arrête.
-
-## Comparaison des fonctionnalités
-
-|                                                                       | Nextcloud Talk | Rocket.Chat | Element | Linphone              |
-| --------------------------------------------------------------------- | :------------: | :---------: | :-----: | :-------------------: |
-| Discussion d'équipe interne                                            |       ✅       |     ✅      |   ✅    |          s/o          |
-| Visioconférences de groupe                                            |       ✅       |     ✅      |   ✅    |          s/o          |
-| Accès à une réunion planifiée par téléphone classique [^1]            |       ✅       |     ✅      |   ✅    |          s/o          |
-| Boîte de support client (web, courriel, réseaux sociaux, SMS)         |       ❌       |     ✅      |   ❌    |          s/o          |
-| Appels téléphoniques classiques depuis la fenêtre de discussion       |       ❌       | payant [^2] |   ✅    | (c'est le téléphone)  |
-| Applications mobiles (iOS / Android)                                  |       ✅       |     ✅      |   ✅    |           ✅          |
-| Chiffrement de bout en bout sur les messages directs                  |       ✅       | optionnel   | ✅ (par défaut) |    optionnel    |
-| Fédération avec une autre organisation sur la même plateforme         |    limitée     |   limitée   |   ✅    |           ✅          |
-| Gratuit sur votre serveur, sans frais mensuels par utilisateur        |       ✅       |   ✅ [^3]   |   ✅    |           ✅          |
-
-[^1]: Nécessite un abonnement à un service téléphonique. Voir [Ce qui tourne sur votre serveur, ce qui coûte extra](#ce-qui-tourne-sur-votre-serveur-ce-qui-coûte-extra) plus bas.
-[^2]: Rocket.Chat vend cette fonction comme un forfait Premium accompagné d'un complément Voice, facturé par utilisateur et par mois, négocié directement avec leur équipe de ventes. Les autres options de cette page évitent ce frais.
-[^3]: L'édition Community de Rocket.Chat (gratuite) couvre tout ce qui figure dans le tableau, sauf les appels téléphoniques dans la fenêtre.
-
-## Choisir selon votre situation
-
-- **Petite équipe, communication interne seulement.** [Nextcloud Talk](/docs/nextcloud-apps-vs-suite/) seul.
-- **Discussion d'équipe et boîte de support client par web, courriel, réseaux sociaux et SMS.** [Rocket.Chat](/docs/apps/rocketchat-oidc/) pour la boîte ; Linphone pour le travail téléphonique sortant.
-- **Discussion d'équipe et appels téléphoniques classiques dans une seule fenêtre.** Element.
-- **Boîte de support client ET appels téléphoniques classiques dans une seule fenêtre.** Aucune option vraiment unifiée ; prenez Rocket.Chat avec Linphone, ou Element avec un outil de billetterie distinct.
-- **Besoins mixtes dans plusieurs équipes.** Talk pour la discussion interne, Rocket.Chat pour l'équipe de support, Linphone pour quiconque a besoin d'une extension téléphonique.
+Aucun outil unique ne couvre tout ce dont une entreprise a besoin en communications. La discussion d'équipe interne, les visioconférences, les boîtes de support client et les appels téléphoniques classiques fonctionnent chacun mieux sur une plateforme différente. Voici les quatre composantes que vous pouvez combiner : courtes descriptions d'abord, puis un tableau comparatif côte à côte, puis une liste « choisir selon votre situation ».
 
 ## Les quatre composantes
 
@@ -40,6 +14,33 @@ Aucun outil unique ne couvre tout ce dont une entreprise a besoin en communicati
 **Element** traite les appels téléphoniques classiques dans la même fenêtre que la discussion, sans complément payant, et permet à votre équipe de discuter avec n'importe qui sur le serveur Element d'une autre organisation. Il n'inclut pas de boîte de support client.
 
 **Linphone** est une application téléphonique gratuite pour ordinateur et mobile qui donne à chaque membre du personnel un numéro d'extension de bureau, une boîte vocale et la capacité de passer et recevoir des appels téléphoniques classiques. Ce n'est pas une plateforme de discussion ; c'est la pièce que vous ajoutez quand vous gardez Talk ou Rocket.Chat comme outil de discussion et que vous avez tout de même besoin d'un vrai téléphone de bureau. Le compromis : une fenêtre supplémentaire dans la journée de travail.
+
+## Comparaison des fonctionnalités
+
+|                                              | Talk    | Rocket.Chat | Element | Linphone |
+| -------------------------------------------- | :-----: | :---------: | :-----: | :------: |
+| Discussion d'équipe interne                  |   ✅    |     ✅      |   ✅    |    ❌    |
+| Visioconférences de groupe                   |   ✅    |     ✅      |   ✅    |    ❌    |
+| Accès à une réunion par téléphone [^1]       |   ✅    |     ✅      |   ✅    |    ❌    |
+| Boîte de support client [^2]                 |   ❌    |     ✅      |   ❌    |    ❌    |
+| Appels téléphoniques depuis la fenêtre       |   ❌    | payant [^3] |   ✅    |    ✅    |
+| Applications mobiles (iOS / Android)         |   ✅    |     ✅      |   ✅    |    ✅    |
+| Chiffrement de bout en bout (messages directs) |   ✅  |     ✅      |   ✅    |    ✅    |
+| Fédération entre organisations               | limitée |   limitée   |   ✅    |    ✅    |
+| Gratuit sur votre serveur, sans frais par utilisateur |   ✅ |   ✅ [^4]   |   ✅    |    ✅    |
+
+[^1]: Nécessite un abonnement à un service téléphonique. Voir [Ce qui tourne sur votre serveur, ce qui coûte extra](#ce-qui-tourne-sur-votre-serveur-ce-qui-coûte-extra) plus bas.
+[^2]: Une seule boîte qui traite ensemble le clavardage web, le courriel, les réseaux sociaux et les SMS.
+[^3]: Rocket.Chat vend cette fonction comme un forfait Premium accompagné d'un complément Voice, facturé par utilisateur et par mois, négocié directement avec leur équipe de ventes. Les autres options de cette page évitent ce frais.
+[^4]: L'édition Community de Rocket.Chat (gratuite) couvre tout ce qui figure dans le tableau, sauf les appels téléphoniques dans la fenêtre.
+
+## Choisir selon votre situation
+
+- **Petite équipe, communication interne seulement.** [Nextcloud Talk](/docs/nextcloud-apps-vs-suite/) seul.
+- **Discussion d'équipe et boîte de support client par web, courriel, réseaux sociaux et SMS.** [Rocket.Chat](/docs/apps/rocketchat-oidc/) pour la boîte ; Linphone pour le travail téléphonique sortant.
+- **Discussion d'équipe et appels téléphoniques classiques dans une seule fenêtre.** Element.
+- **Boîte de support client ET appels téléphoniques classiques dans une seule fenêtre.** Aucune option vraiment unifiée ; prenez Rocket.Chat avec Linphone, ou Element avec un outil de billetterie distinct.
+- **Besoins mixtes dans plusieurs équipes.** Talk pour la discussion interne, Rocket.Chat pour l'équipe de support, Linphone pour quiconque a besoin d'une extension téléphonique.
 
 ## Ce qui tourne sur votre serveur, ce qui coûte extra
 

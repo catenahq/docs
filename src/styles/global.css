@@ -92,3 +92,20 @@
   background: var(--sl-color-gray-6);
   outline: none;
 }
+
+/* Starlight's default `.sl-markdown-content table` rule sets
+   display: block + overflow: auto, which triggers an unwanted
+   scrollbar on narrow comparison tables that already fit. Render
+   tables as real tables and let the first column wrap. */
+.sl-markdown-content table {
+  display: table;
+  width: 100%;
+  overflow: visible;
+  table-layout: auto;
+}
+.sl-markdown-content table th,
+.sl-markdown-content table td {
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
