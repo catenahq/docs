@@ -22,17 +22,16 @@ Aucun outil unique ne couvre tout ce dont une entreprise a besoin en communicati
 | Discussion d'équipe interne                  |   ✅    |     ✅      |   ✅    |    ❌    |
 | Visioconférences de groupe                   |   ✅    |     ✅      |   ✅    |    ❌    |
 | Accès à une réunion par téléphone [^1]       |   ✅    |     ✅      |   ✅    |    ❌    |
-| Boîte de support client [^2]                 |   ❌    |     ✅      |   ❌    |    ❌    |
-| Appels téléphoniques depuis la fenêtre       |   ❌    | payant [^3] |   ✅    |    ✅    |
+| Boîte de support client (Omnichannel)        |   ❌    |     ✅      |   ❌    |    ❌    |
+| Appels téléphoniques depuis la fenêtre       |   ❌    | payant [^2] |   ✅    |    ✅    |
 | Applications mobiles (iOS / Android)         |   ✅    |     ✅      |   ✅    |    ✅    |
 | Chiffrement de bout en bout (messages directs) |   ✅  |     ✅      |   ✅    |    ✅    |
 | Fédération entre organisations               | limitée |   limitée   |   ✅    |    ✅    |
-| Gratuit sur votre serveur, sans frais par utilisateur |   ✅ |   ✅ [^4]   |   ✅    |    ✅    |
+| Gratuit sur votre serveur, sans frais par utilisateur |   ✅ |   ✅ [^3]   |   ✅    |    ✅    |
 
 [^1]: Nécessite un abonnement à un service téléphonique. Voir [Ce qui tourne sur votre serveur, ce qui coûte extra](#ce-qui-tourne-sur-votre-serveur-ce-qui-coûte-extra) plus bas.
-[^2]: Une seule boîte qui traite ensemble le clavardage web, le courriel, les réseaux sociaux et les SMS.
-[^3]: Rocket.Chat vend cette fonction comme un forfait Premium accompagné d'un complément Voice, facturé par utilisateur et par mois, négocié directement avec leur équipe de ventes. Les autres options de cette page évitent ce frais.
-[^4]: L'édition Community de Rocket.Chat (gratuite) couvre tout ce qui figure dans le tableau, sauf les appels téléphoniques dans la fenêtre.
+[^2]: Rocket.Chat vend cette fonction comme un forfait Premium accompagné d'un complément Voice, facturé par utilisateur et par mois, négocié directement avec leur équipe de ventes. Les autres options de cette page évitent ce frais.
+[^3]: L'édition Community de Rocket.Chat (gratuite) couvre tout ce qui figure dans le tableau, sauf les appels téléphoniques dans la fenêtre.
 
 ## Choisir selon votre situation
 

@@ -22,17 +22,16 @@ No single tool covers everything a business needs for communication. Internal te
 | Internal team chat                       |   ✅    |     ✅      |   ✅    |    ❌    |
 | Group video meetings                     |   ✅    |     ✅      |   ✅    |    ❌    |
 | Phone dial-in to meetings [^1]           |   ✅    |     ✅      |   ✅    |    ❌    |
-| Customer-support inbox [^2]              |   ❌    |     ✅      |   ❌    |    ❌    |
-| Phone calls from inside chat window      |   ❌    |  paid [^3]  |   ✅    |    ✅    |
+| Customer-support inbox (Omnichannel)     |   ❌    |     ✅      |   ❌    |    ❌    |
+| Phone calls from inside chat window      |   ❌    |  paid [^2]  |   ✅    |    ✅    |
 | Mobile apps (iOS / Android)              |   ✅    |     ✅      |   ✅    |    ✅    |
 | End-to-end encryption (DMs)              |   ✅    |     ✅      |   ✅    |    ✅    |
 | Federation between organizations         | limited |   limited   |   ✅    |    ✅    |
-| Free on your server, no per-user fee     |   ✅    |   ✅ [^4]   |   ✅    |    ✅    |
+| Free on your server, no per-user fee     |   ✅    |   ✅ [^3]   |   ✅    |    ✅    |
 
 [^1]: Requires a phone-service subscription. See [What runs on your server, what costs extra](#what-runs-on-your-server-what-costs-extra) below.
-[^2]: One inbox that handles webchat, email, social, and SMS conversations together.
-[^3]: Rocket.Chat sells this feature as a Premium plan plus a Voice add-on, priced per user per month, negotiated directly with their sales team. The other options on this page avoid this fee.
-[^4]: Rocket.Chat Community Edition (free) covers everything in the table except in-window phone calls.
+[^2]: Rocket.Chat sells this feature as a Premium plan plus a Voice add-on, priced per user per month, negotiated directly with their sales team. The other options on this page avoid this fee.
+[^3]: Rocket.Chat Community Edition (free) covers everything in the table except in-window phone calls.
 
 ## Pick by situation
 
