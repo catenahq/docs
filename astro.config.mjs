@@ -31,7 +31,6 @@ export default defineConfig({
         }),
       ],
       lastUpdated: true,
-      logo: { src: "./src/assets/logo.svg", replacesTitle: false },
       defaultLocale: "root",
       locales: {
         root: { label: "Français", lang: "fr" },

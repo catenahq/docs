@@ -1,24 +1,32 @@
 ---
-// Override of Starlight's default SiteTitle to add a "back to
-// catena.run" breadcrumb above the docs title. The link forwards to
-// the FR marketing home when the docs locale is FR; it is otherwise
-// the EN marketing home.
+// Header brand override for Starlight.
 //
-// Layout: small breadcrumb row above the logo+title row, brand-
-// accent colored, full-width clickable. Visually anchors the docs as
-// a sub-site of catena.run rather than a standalone surface.
+// Renders three elements on the Starlight header row, all peers:
+//   1. The catena logo (from @catenahq/contracts).
+//   2. The "catena docs" wordmark in Conthrax (also from contracts).
+//   3. A "catena.run" link out to the marketing site, treated as a
+//      full-fledged header member rather than a small breadcrumb.
+//
+// The logo + wordmark together link to the docs home; the
+// catena.run pill is a sibling link pointed at the marketing root
+// in the matching locale.
 
 import type { Props } from "@astrojs/starlight/props";
-import Default from "@astrojs/starlight/components/SiteTitle.astro";
+import { Image } from "astro:assets";
+import logo from "@catenahq/contracts/brand/assets/logo.svg";
 
 const lang = (Astro.props as Props).locale ?? "en";
-const homeHref = lang === "fr" ? "https://catena.run/fr/" : "https://catena.run/";
-const backLabel = lang === "fr" ? "catena.run" : "catena.run";
-const backAria = lang === "fr" ? "Retour à catena.run" : "Back to catena.run";
+const docsHomeHref = lang === "en" ? "/en/" : "/";
+const siteHomeHref = lang === "fr" ? "https://catena.run/fr/" : "https://catena.run/";
+const siteHomeAria = lang === "fr" ? "Aller à catena.run" : "Go to catena.run";
 ---
 <div class="catena-site-title">
-  <a class="catena-back" href={homeHref} aria-label={backAria}>
-    <svg class="catena-back-arrow" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+  <a class="catena-brand" href={docsHomeHref} aria-label="catena docs">
+    <Image src={logo} alt="" class="catena-brand-logo" loading="eager" />
+    <span class="catena-brand-text">catena docs</span>
+  </a>
+  <a class="catena-home-link" href={siteHomeHref} aria-label={siteHomeAria}>
+    <svg class="catena-home-arrow" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
       <path
         fill="none"
         stroke="currentColor"
@@ -28,41 +36,6 @@ const backAria = lang === "fr" ? "Retour à catena.run" : "Back to catena.run";
         d="M10 3 5 8l5 5"
       />
     </svg>
-    <span>{backLabel}</span>
+    <span>catena.run</span>
   </a>
-  <Default {...Astro.props}><slot /></Default>
 </div>
-
-<style>
-  .catena-site-title {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.2rem;
-    line-height: 1.1;
-  }
-  .catena-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3em;
-    padding: 0.15rem 0.45rem;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    color: var(--sl-color-text-accent, var(--sl-color-accent));
-    background: var(--sl-color-accent-low);
-    text-decoration: none;
-    transition: background-color 120ms ease, color 120ms ease;
-  }
-  .catena-back:hover,
-  .catena-back:focus-visible {
-    background: var(--sl-color-accent);
-    color: var(--sl-color-white);
-    outline: none;
-  }
-  .catena-back-arrow {
-    display: block;
-    flex: none;
-  }
-</style>
