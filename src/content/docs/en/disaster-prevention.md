@@ -6,7 +6,7 @@ description: "This page is a checklist of things to do **before** anything goes"
 This page is a checklist of things to do **before** anything goes
 wrong, so that if something does, you're on the "annoying Tuesday"
 side of the line instead of the "data loss" side. The companion page
-is [Disaster recovery](/docs/en/disaster-recovery/), which covers what to do
+is [Disaster recovery](/en/disaster-recovery/), which covers what to do
 once something has broken.
 
 The two pages are written to be read in order -- prevention first, then
@@ -15,8 +15,8 @@ recovery so you know what the prevention is protecting you against.
 > This page is written for non-technical readers -- owners, managers,
 > office staff. No terminal commands required outside the optional
 > "test it once" step. The companion
-> [Disaster recovery](/docs/en/disaster-recovery/) and
-> [Restore to a fresh VPS](/docs/en/self-restore/) pages assume more
+> [Disaster recovery](/en/disaster-recovery/) and
+> [Restore to a fresh VPS](/en/self-restore/) pages assume more
 > technical comfort and step into command-line territory.
 
 ## The principle: two independent paths, two independent backups
@@ -51,7 +51,7 @@ Some kits also include a **vault password** (also called a "master
 password" in older docs). That one only matters if your operator has
 also given you the encrypted secret file itself -- most clients do
 not have that file directly, because the recovery flow today uses
-the [Export recovery secrets](/docs/en/disaster-recovery/) button instead,
+the [Export recovery secrets](/en/disaster-recovery/) button instead,
 which lets you re-export an encrypted bundle on demand and protect
 it with a passphrase you choose at click time. If your kit does not
 include a vault password, you do not need one -- the export-button
@@ -204,7 +204,7 @@ VPS, and the provider has not changed Object Lock behaviour or
 pricing in a way that matters.
 
 If you ever need to restore from the secondary bucket, the
-[Restore to a fresh VPS](/docs/en/self-restore/) page covers it -- same
+[Restore to a fresh VPS](/en/self-restore/) page covers it -- same
 procedure, just with the secondary's credentials in the environment
 variables.
 
@@ -296,5 +296,5 @@ When prevention is in place, a three-month-from-now you can answer
       and the decrypted output looks sensible.
 
 If any of those are "no," work on them this week. The
-[Disaster recovery](/docs/en/disaster-recovery/) page walks through what to
+[Disaster recovery](/en/disaster-recovery/) page walks through what to
 do once prevention paid off.

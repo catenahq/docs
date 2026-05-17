@@ -14,14 +14,14 @@ recommended app + a setup guide.
 
 ### Customers booking time with my team (clinic, salon, repair shop, lessons)
 
-**Recommended:** [Easy!Appointments](/docs/apps/easyappointments/).
+**Recommended:** [Easy!Appointments](/apps/easyappointments/).
 
 One public booking page; independent provider calendars; email
 reminders; ICS export. Local staff sign-in (no SSO yet upstream).
 
 ### Just me taking bookings (one provider, paid or unpaid)
 
-**Recommended:** [cal.diy](/docs/apps/cal-diy/).
+**Recommended:** [cal.diy](/apps/cal-diy/).
 
 Single-provider booking page with native Stripe-paid bookings, a
 calendar app store (Google / Outlook / Apple / CalDAV), and a
@@ -38,7 +38,7 @@ here.
 
 ### Finding a meeting time across N people, one-shot
 
-**Recommended:** [Nextcloud Polls](/docs/nextcloud-apps-vs-suite/).
+**Recommended:** [Nextcloud Polls](/nextcloud-apps-vs-suite/).
 
 Nextcloud Polls covers this -- date pickers and multiple-choice polls
 with a public link, no account required for participants. Enable it
@@ -54,14 +54,14 @@ ship the right fit.
 
 ### Class / cohort signups (yoga, lessons, fitness)
 
-**Recommended:** [Easy!Appointments group sessions](/docs/apps/easyappointments/).
+**Recommended:** [Easy!Appointments group sessions](/apps/easyappointments/).
 
 Easy!Appointments supports group-session scheduling out of the box;
 same setup as the customer-bookings flow with capacity per slot.
 
 ### Internal staff calendar only (no customer-facing page)
 
-**Recommended:** [EspoCRM calendar](/docs/apps/espocrm/).
+**Recommended:** [EspoCRM calendar](/apps/espocrm/).
 
 Already in the suite as part of the CRM. No separate scheduler
 needed.

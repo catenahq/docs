@@ -7,8 +7,8 @@ Réponse en langage clair à la question "si le VPS part en fumée,
 qu'est-ce qui est perdu et qu'est-ce qui est récupérable ?" Lisez
 ceci une fois à la remise pour avoir une carte mentale avant que
 quoi que ce soit ne tourne mal ; les pages
-[Prévention des sinistres](/docs/disaster-prevention/) et
-[Reprise après sinistre](/docs/disaster-recovery/) supposent que vous
+[Prévention des sinistres](/disaster-prevention/) et
+[Reprise après sinistre](/disaster-recovery/) supposent que vous
 savez où se trouvent les choses.
 
 ## Version courte
@@ -32,7 +32,7 @@ tomber ou être détruit. Tout ce qui est dans restic + sur le VPS est
 à l'abri d'un seul incident. Tout ce qui est dans restic *ou*
 Nextcloud-S3 spécifiquement peut aussi tomber -- mais ces pannes sont
 indépendantes et couvertes par
-[Prévention des sinistres](/docs/disaster-prevention/).
+[Prévention des sinistres](/disaster-prevention/).
 
 ## Sur le VPS
 
@@ -67,7 +67,7 @@ Tout ce qui est plus ancien expire automatiquement.
 
 Le compartiment est chiffré de bout en bout avec le **mot de passe
 restic** que votre opérateur vous a remis à la remise (voir
-[Prévention des sinistres](/docs/disaster-prevention/)). Sans ce mot de
+[Prévention des sinistres](/disaster-prevention/)). Sans ce mot de
 passe, le compartiment est du texte chiffré illisible -- même pour
 l'opérateur. Avec lui, vous pouvez restaurer chez n'importe quel
 nuage, n'importe quand.
@@ -117,7 +117,7 @@ place.
 | Identifiants du compartiment fuités, un attaquant écrit/supprime des objets | Une partie ou l'ensemble des fichiers du compartiment | Versionnage des objets + règle de rétention de 30 jours sur le compartiment : les objets supprimés sont récupérables pendant 30 jours | Contactez votre opérateur immédiatement ; il fait tourner les identifiants et restaure les objets affectés |
 | Vous supprimez par accident le compartiment depuis la console du fournisseur | Tout ce qui est dans le compartiment une fois la période de grâce du fournisseur écoulée | La plupart des fournisseurs ont une période de grâce au niveau du compte de 7 à 90 jours | Contactez le support du fournisseur immédiatement pour récupérer le compartiment dans la fenêtre de grâce ; contactez votre opérateur |
 | La base Nextcloud (sur le VPS) est restaurée depuis la sauvegarde d'hier mais le compartiment a les écritures d'aujourd'hui | Les nouveaux fichiers ajoutés aujourd'hui apparaissent comme orphelins dans le compartiment | `occ files:scan` de Nextcloud reconstruit la correspondance base->fichier à partir de ce qui est dans le compartiment | Demandez à votre opérateur de lancer un scan des fichiers après la restauration ; il s'occupe de la partie technique |
-| Le fournisseur résilie votre compte | Tout ce qui est dans ce compartiment | Seul un second compartiment de sauvegarde chez un autre fournisseur vous protège ici | Si vous avez configuré un [second compartiment de sauvegarde](/docs/disaster-prevention/#5-optionnel--ajoutez-un-second-compartiment-de-sauvegarde-dont-vous-êtes-propriétaire), vous êtes couvert. Sinon -- c'est le pire cas |
+| Le fournisseur résilie votre compte | Tout ce qui est dans ce compartiment | Seul un second compartiment de sauvegarde chez un autre fournisseur vous protège ici | Si vous avez configuré un [second compartiment de sauvegarde](/disaster-prevention/#5-optionnel--ajoutez-un-second-compartiment-de-sauvegarde-dont-vous-êtes-propriétaire), vous êtes couvert. Sinon -- c'est le pire cas |
 
 À retenir : le compartiment Nextcloud-S3 est indépendant du VPS, ce
 qui est bon (la mort du VPS ne l'emporte pas avec lui) et risqué
@@ -125,7 +125,7 @@ qui est bon (la mort du VPS ne l'emporte pas avec lui) et risqué
 mitigations ci-dessus couvrent les cas courants ; les cas
 catastrophiques (suppression du compartiment, résiliation de
 compte) sont exactement ce contre quoi le **second compartiment de
-sauvegarde** dans [Prévention des sinistres](/docs/disaster-prevention/)
+sauvegarde** dans [Prévention des sinistres](/disaster-prevention/)
 sert.
 
 ## Hébergé à l'extérieur (pas sur votre VPS, pas dans vos compartiments)
@@ -139,14 +139,14 @@ de tiers plutôt que sur votre VPS :
 - **Tenant Tailscale + règles ACL** -- chez Tailscale, dans le
   compte Tailscale de votre opérateur (l'opérateur le possède pour
   la porte dérobée d'administration permanente -- voir
-  [Comment fonctionne cette suite logicielle](/docs/how-this-stack-works/)).
+  [Comment fonctionne cette suite logicielle](/how-this-stack-works/)).
 - **Compte du fournisseur SMTP** -- chez votre fournisseur d'e-mails
   transactionnels (Resend / Brevo / etc.) -- contrôle qui peut
   envoyer du courrier "depuis" votre domaine.
 
 Ces éléments sont recréés facilement si l'un d'eux tombe -- vous
 vous connectez à la console du tiers et vous cliquez. La page
-[Reprise après sinistre](/docs/disaster-recovery/) liste la voie de
+[Reprise après sinistre](/disaster-recovery/) liste la voie de
 récupération pour chacun.
 
 ## Non sauvegardé (intentionnellement)
@@ -183,5 +183,5 @@ Pire scénario : destruction physique du VPS, sans avertissement.
 - **Rien d'autre.** Restic + (facultatif) Nextcloud-S3 +
   Cloudflare + Tailscale portent le reste.
 
-La page [Restaurer sur un nouveau VPS](/docs/self-restore/) couvre à
+La page [Restaurer sur un nouveau VPS](/self-restore/) couvre à
 quoi "revenir" ressemble en pratique.

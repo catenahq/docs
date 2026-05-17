@@ -68,7 +68,7 @@ with your operator: tell them roughly when the message was sent or
 received and to whom, and they pull it from the archive.
 
 For full disaster recovery -- provider gone, VPS gone, both at the
-same time -- the [Disaster recovery](/docs/en/disaster-recovery/) page covers
+same time -- the [Disaster recovery](/en/disaster-recovery/) page covers
 the path. The archive comes back as part of that flow because it
 sits in the same backup as everything else.
 

@@ -1,17 +1,17 @@
-# catenahq/docs -- catena.run/docs
+# catenahq/docs -- docs.catena.run
 
 Astro + Starlight client wiki for the catena stack. Public-facing
-docs (EN + FR), served at `catena.run/docs/`.
+docs (EN + FR), served at `docs.catena.run`.
 
-Standalone build (`npm run build` -> `dist/`); nginx in front routes
-`/docs/` to the build output. No chained-build coupling with the
-marketing site.
+Standalone build (`npm run build` -> `dist/`); Dockerfile +
+`dokploy.compose.yml` ship it as its own Dokploy app behind nginx.
+No chained-build coupling with the marketing site.
 
 ## Develop
 
 ```bash
 npm install
-npm run dev       # -> http://localhost:4321/docs/
+npm run dev       # -> http://localhost:4321/
 npm run build     # -> dist/
 npm run check     # astro check + starlight-links-validator
 ```

@@ -1,0 +1,31 @@
+# catenahq/docs -- docs.catena.run
+#
+# Dokploy reads this compose when the "Source" tab points at
+# github.com/catenahq/docs and `composePath: dokploy.compose.yml`.
+#
+# Operator-side knobs (Environment tab in Dokploy):
+#   VPS_AUTH_MODE   default `public`
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    expose:
+      - "80"
+    # Public static site -- no auth gating in front.
+    labels:
+      - "vps.auth.mode=${VPS_AUTH_MODE:-public}"
+      - "vps.auto-update=major"
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+networks:
+  dokploy-network:
+    external: true

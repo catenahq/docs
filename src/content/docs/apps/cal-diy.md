@@ -39,7 +39,7 @@ cal.diy tourne sur Next.js + Postgres dans deux conteneurs. Prévoyez ~1-2 GB de
 
 ### Avertissement multi-locataire
 
-Déploiements mono-locataire uniquement. La version communautaire n'a pas de vraie coordination d'organisation/équipe. Si vous avez besoin de plusieurs prestataires avec disponibilités partagées (clinique / salon / atelier), utilisez plutôt [Easy!Appointments](/docs/apps/easyappointments/).
+Déploiements mono-locataire uniquement. La version communautaire n'a pas de vraie coordination d'organisation/équipe. Si vous avez besoin de plusieurs prestataires avec disponibilités partagées (clinique / salon / atelier), utilisez plutôt [Easy!Appointments](/apps/easyappointments/).
 
 ## Variables d'environnement
 
@@ -166,4 +166,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/docs/apps/)
+[<- Retour au catalogue des applications pré-configurées](/apps/)

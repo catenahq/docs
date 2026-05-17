@@ -30,7 +30,7 @@ tier that matches what you plan to deploy.
 
 CPU is normalized to one core: 100% means one full vCPU is busy. Peak
 values are what we observed while exercising the app the way the
-[setup steps](/docs/apps/) describe (the first mass-upload to
+[setup steps](/en/apps/) describe (the first mass-upload to
 Nextcloud, the first wizard pass on ERPNext, etc.).
 
 ## Tier guidance

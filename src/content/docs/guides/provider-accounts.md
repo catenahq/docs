@@ -7,13 +7,13 @@ Un déploiement catena typique repose sur quelques comptes externes qui restent 
 
 ## 1. Fournisseur de courriel : en choisir un
 
-Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que vous choisissez. Ouvrez le [comparatif des fournisseurs de courriel](/docs/guides/email-providers/) et choisissez l'un des cinq que nous recommandons (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence), puis créez le compte au nom de votre entreprise. Choisissez le plan qui correspond à la taille de votre équipe ; on s'occupe des enregistrements DNS et de l'expéditeur transactionnel à l'installation.
+Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que vous choisissez. Ouvrez le [comparatif des fournisseurs de courriel](/guides/email-providers/) et choisissez l'un des cinq que nous recommandons (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence), puis créez le compte au nom de votre entreprise. Choisissez le plan qui correspond à la taille de votre équipe ; on s'occupe des enregistrements DNS et de l'expéditeur transactionnel à l'installation.
 
 *Durée : 15-30 minutes (création de compte + vérification initiale du domaine).*
 
 [![Capture d'écran du parcours de choix d'un fournisseur de courriel](/img/guides/provider-accounts/email.fr.png)](/img/guides/provider-accounts/email.fr.png)
 
-[Comparer les six fournisseurs ->](/docs/guides/email-providers/)
+[Comparer les six fournisseurs ->](/guides/email-providers/)
 
 ## 2. Cloudflare : créer une clé API
 
@@ -37,7 +37,7 @@ Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que 
 
 ## 4. OVH (ou un autre fournisseur de VPS) : louer un VPS
 
-[Créez un compte OVH](https://www.ovhcloud.com/fr-ca/vps/) et commandez un VPS à votre nom. Pas certain de la taille qu'il vous faut ? Consultez le [guide de dimensionnement](/docs/sizing/) pour une recommandation rapide selon le nombre d'employés et la charge. Beauharnois (Québec) est la région par défaut pour garder vos données au Canada.
+[Créez un compte OVH](https://www.ovhcloud.com/fr-ca/vps/) et commandez un VPS à votre nom. Pas certain de la taille qu'il vous faut ? Consultez le [guide de dimensionnement](/sizing/) pour une recommandation rapide selon le nombre d'employés et la charge. Beauharnois (Québec) est la région par défaut pour garder vos données au Canada.
 
 *Durée : 30 minutes (la vérification de compte peut s'étirer à la première inscription).*
 

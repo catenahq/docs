@@ -6,7 +6,7 @@ description: "Something is already broken and you need to fix it. This page is t
 Something is already broken and you need to fix it. This page is the
 map of "what can go wrong" + "what still works when it does" + "how to
 get back from each situation." If you're reading this **before** an
-incident, the companion page is [Disaster prevention](/docs/en/disaster-prevention/)
+incident, the companion page is [Disaster prevention](/en/disaster-prevention/)
 -- that's where the off-laptop backups, off-site bucket, and proactive
 secret exports live.
 
@@ -28,7 +28,7 @@ section that walks the recovery in detail.
 | **All admins are locked out at once** (lost email, lost dashboard) | Contact your operator -- they have a separate recovery path that doesn't depend on email or the dashboard. | Out-of-band operator path (not client-side). |
 | **The whole VPS is encrypted by ransomware** | Contact your operator immediately. Recovery is from your last clean backup, before the ransomware reached the disk. | Recovery map below ("Entire VPS disk") |
 | **The VPS itself is compromised by malware / unauthorized access** | Contact your operator. The path is wipe + restore from a pre-compromise snapshot + rotate every secret. Your operator owns this; you receive a status update at each phase. | Recovery map below ("Entire VPS disk") |
-| **VPS provider's datacenter burns down** (or hardware failure) | Contact your operator. They restore your software suite to a fresh VPS at the same or different provider, using the off-site backup bucket. | Recovery map below ("Entire VPS disk") + [Restore to a fresh VPS](/docs/en/self-restore/) |
+| **VPS provider's datacenter burns down** (or hardware failure) | Contact your operator. They restore your software suite to a fresh VPS at the same or different provider, using the off-site backup bucket. | Recovery map below ("Entire VPS disk") + [Restore to a fresh VPS](/en/self-restore/) |
 | **VPS provider gives 48h notice / suspends the account** | Contact your operator. They migrate you to a new provider on a tight timeline; expect ~30-60 minutes of public-URL downtime during cutover. | Recovery map below ("VPS provider goes bankrupt") |
 | **Backup provider gives 48h notice** | Contact your operator. They re-target backups at a new bucket; existing data on the VPS is unaffected. | Recovery map below ("S3 backup provider goes bankrupt") |
 | **I think someone else has my password / API token** | Don't wait -- contact your operator and rotate the credential. | Recovery map below (per-credential rows) |
@@ -74,7 +74,7 @@ If your access to the dashboard is also broken, your operator can do
 the same thing remotely using the same tool over SSH.
 
 *The same button can be used before any incident, as a prevention
-step -- see [Disaster prevention](/docs/en/disaster-prevention/).*
+step -- see [Disaster prevention](/en/disaster-prevention/).*
 
 ## What the button can and cannot recover
 
@@ -106,20 +106,20 @@ know to re-mint them.
 | **SSH private key** | Your server, your apps, the dashboard | Your operator re-adds a new public key via their own admin path; if they're unavailable, see "Provider rescue mode" below |
 | **Dashboard access (SSO broken, Keycloak down)** | Your apps (their own logins still work), your data | Operator SSHes in to fix; worst case, restart the Keycloak container |
 | **One app's data (you deleted something)** | Everything else | Try the app's own trash first; if empty, contact your operator. |
-| **Entire VPS disk (corruption, accidental wipe)** | Backups (in your S3 bucket) | Follow [Restore to a fresh VPS](/docs/en/self-restore/) with the same cloud provider |
+| **Entire VPS disk (corruption, accidental wipe)** | Backups (in your S3 bucket) | Follow [Restore to a fresh VPS](/en/self-restore/) with the same cloud provider |
 | **Cloudflare API token (accidentally rotated)** | Your tunnel keeps running. Public apps stay up. **Functionality only**, not backup. | Generate a new API token at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens), then **contact your operator** with it -- they install the new token and confirm the tunnel still picks up DNS changes after rotation. Apps stay reachable while you wait. |
 | **Cloudflare tunnel token (rotated or leaked)** | Existing tunnel keeps running until cloudflared next reconnects, then drops. Public apps go dark until rotation completes. **Functionality**, not backup. | This is more disruptive than the API token: public traffic stops when cloudflared can't reauthenticate. **Contact your operator immediately** so they can mint and install the replacement. Find the token under [dash.cloudflare.com](https://dash.cloudflare.com) -> your zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> click your tunnel -> **Configure** -> reveal/rotate token. NOT in the "API Tokens" page. Expect 5-15 minutes of public-app downtime during install. |
 | **Tailscale OAuth client (accidentally rotated)** | Your server's tailnet access keeps working. Remote SSH stays up. | Generate a new OAuth client, update your secret file |
 | **Dokploy API key (accidentally rotated)** | All your apps keep running | Generate a new key in Dokploy UI, update your secret file |
 | **Cloudflare account terminated** | Your server, your apps (internally), your data | Create a new Cloudflare account, point your domain to it, re-run operator setup; your apps experience downtime only during DNS propagation |
 | **Tailscale account terminated** | Your server, your apps, your public path (CF Tunnel) | Switch to a different ops-access method; Tailscale's only the "admin back door," not part of the public serving path |
-| **Your VPS provider goes bankrupt / shuts down** | Your S3 backup bucket (different company) | [Restore to a fresh VPS](/docs/en/self-restore/) at a different provider using the backup |
+| **Your VPS provider goes bankrupt / shuts down** | Your S3 backup bucket (different company) | [Restore to a fresh VPS](/en/self-restore/) at a different provider using the backup |
 | **Your VPS provider's datacenter burns down (OVH Strasbourg 2021)** | Your S3 backup bucket (different region, different city) | Same as above -- restore to a fresh VPS at the same or different provider, different region |
-| **Your S3 backup provider goes bankrupt / shuts down** | Your VPS and its data | You still have the data -- copy your production VPS to a new S3 bucket *before* the deadline the provider gives you. If you set up a secondary backup (see [Prevention](/docs/en/disaster-prevention/)), it's already safe |
+| **Your S3 backup provider goes bankrupt / shuts down** | Your VPS and its data | You still have the data -- copy your production VPS to a new S3 bucket *before* the deadline the provider gives you. If you set up a secondary backup (see [Prevention](/en/disaster-prevention/)), it's already safe |
 | **S3 bucket accidentally deleted** | Your VPS and its data | Same -- recreate the bucket and repoint backups. Some providers keep deleted objects for a retention window, which might buy you time |
-| **VPS provider AND S3 provider outage at the same time** | Last weekly off-site copy (if you set one up -- see [Prevention](/docs/en/disaster-prevention/)) | Restore from the off-site copy to any fresh cloud |
-| **Master password AND SSH AND server dead** | S3 backup bucket | You can still decrypt the restic repo if you saved the **restic repo password** AND the **S3 access key + secret** separately (see [Prevention](/docs/en/disaster-prevention/)) -- restic needs all three to read the bucket -- follow [Restore to a fresh VPS](/docs/en/self-restore/) |
-| **Master password AND restic password AND server dead** | Your S3 bucket exists but every byte in it is ciphertext you can't open | **Data loss.** This is why [Disaster prevention](/docs/en/disaster-prevention/) says to save the restic password separately, even from your master password |
+| **VPS provider AND S3 provider outage at the same time** | Last weekly off-site copy (if you set one up -- see [Prevention](/en/disaster-prevention/)) | Restore from the off-site copy to any fresh cloud |
+| **Master password AND SSH AND server dead** | S3 backup bucket | You can still decrypt the restic repo if you saved the **restic repo password** AND the **S3 access key + secret** separately (see [Prevention](/en/disaster-prevention/)) -- restic needs all three to read the bucket -- follow [Restore to a fresh VPS](/en/self-restore/) |
+| **Master password AND restic password AND server dead** | Your S3 bucket exists but every byte in it is ciphertext you can't open | **Data loss.** This is why [Disaster prevention](/en/disaster-prevention/) says to save the restic password separately, even from your master password |
 
 ## Provider rescue mode -- when you've lost SSH
 

@@ -7,13 +7,13 @@ A typical catena deployment leans on a handful of external accounts that stay in
 
 ## 1. Email provider: choose one
 
-Catena does not host email; it integrates with the provider you pick. Open the [email provider comparison](/docs/en/guides/email-providers/) and choose one of the five we recommend (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence), then create the account in your business name. Pick the mailbox plan that matches your team size; we wire the DNS records and the transactional sender for you at install.
+Catena does not host email; it integrates with the provider you pick. Open the [email provider comparison](/en/guides/email-providers/) and choose one of the five we recommend (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence), then create the account in your business name. Pick the mailbox plan that matches your team size; we wire the DNS records and the transactional sender for you at install.
 
 *Time: 15-30 minutes (account creation + initial domain verification).*
 
 [![Email provider selection walkthrough screenshot](/img/guides/provider-accounts/email.en.png)](/img/guides/provider-accounts/email.en.png)
 
-[Compare the six providers ->](/docs/en/guides/email-providers/)
+[Compare the six providers ->](/en/guides/email-providers/)
 
 ## 2. Cloudflare: create an API key
 
@@ -37,7 +37,7 @@ Catena does not host email; it integrates with the provider you pick. Open the [
 
 ## 4. OVH (or another VPS provider): rent a VPS
 
-[Create an OVH account](https://www.ovhcloud.com/en-ca/vps/) and order a VPS in your name. Not sure which size fits your team? See the [sizing guide](/docs/en/sizing/) for a quick recommendation by headcount and workload. Beauharnois (Quebec) is the default region so your data stays in Canada.
+[Create an OVH account](https://www.ovhcloud.com/en-ca/vps/) and order a VPS in your name. Not sure which size fits your team? See the [sizing guide](/en/sizing/) for a quick recommendation by headcount and workload. Beauharnois (Quebec) is the default region so your data stays in Canada.
 
 *Time: 30 minutes (account verification can stretch on first sign-up).*
 

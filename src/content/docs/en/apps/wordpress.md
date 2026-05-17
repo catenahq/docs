@@ -221,4 +221,4 @@ networks:
 
 ---
 
-[<- Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/en/apps/)

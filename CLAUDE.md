@@ -1,6 +1,8 @@
 # catenahq/docs -- catena client wiki
 
-Astro 6 + Starlight. Client-facing documentation. Builds standalone
+Astro 6 + Starlight. Client-facing documentation served at
+`docs.catena.run` via its own Dokploy app (Dockerfile +
+`dokploy.compose.yml` + `nginx.conf`). Builds standalone
 (`npm run build` -> `dist/`).
 
 ## Build flow

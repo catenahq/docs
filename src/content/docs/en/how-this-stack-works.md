@@ -206,9 +206,9 @@ You don't have to touch Cloudflare, Traefik, the tunnel, or the
 backup engine. Your day-to-day surface is:
 
 - **Keycloak** -- add or remove staff, reset passwords, assign people
-  to teams (see [Add / remove users](/docs/en/how-to-add-users/)).
+  to teams (see [Add / remove users](/en/how-to-add-users/)).
 - **Dokploy** -- deploy new apps with access-control labels (see
-  [Deploy apps](/docs/en/how-to-deploy-apps/)).
+  [Deploy apps](/en/how-to-deploy-apps/)).
 - **Homepage** -- glance at service health and pinned links.
 - **Healthchecks** -- add the notification channels you want alerts on
   (see [How alerts reach you](#how-alerts-reach-you)).

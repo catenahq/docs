@@ -160,7 +160,7 @@ possible setup, no separate deploy.
 schedules, when you want a dedicated booking domain, or when you
 need services / capacity / multi-location modeling.
 
-See [How to pick a scheduler](/docs/en/how-to-pick-a-scheduler/) for the
+See [How to pick a scheduler](/en/how-to-pick-a-scheduler/) for the
 full decision tree across all booking patterns.
 
 Nextcloud Calendar (the staff CalDAV calendar) is complementary to
@@ -180,9 +180,9 @@ Nextcloud under Apps -> Your apps.
 | Use case | Recommended app |
 |---|---|
 | Internal forms (HR, RSVPs, surveys, intake) | Nextcloud Forms |
-| Form input that triggers a workflow (auto-create CRM contact, send email, post to chat) | [n8n](/docs/en/apps/n8n/) Form Trigger node |
+| Form input that triggers a workflow (auto-create CRM contact, send email, post to chat) | [n8n](/en/apps/n8n/) Form Trigger node |
 | Customer-facing lead capture tied to a sales pipeline | EspoCRM web-to-lead form |
-| Document-signing flow | [DocuSeal](/docs/en/apps/docuseal/) |
+| Document-signing flow | [DocuSeal](/en/apps/docuseal/) |
 
 For most inner-company needs, Nextcloud Forms is the right answer:
 results land in a Nextcloud spreadsheet, the form lives at a public

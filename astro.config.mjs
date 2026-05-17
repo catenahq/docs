@@ -2,17 +2,17 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
 
-// catena.run/docs -- public client docs.
+// docs.catena.run -- public client docs.
 //
 // Content lives under src/content/docs/{en,fr}/. Starlight handles
 // the sidebar nav + EN/FR routing automatically.
 //
-// Deployment: standalone Astro build (`npm run build` -> `dist/`).
-// This repo deploys independently from catenahq/website; nginx routes
-// /docs/ to this build's output. No chained-build coupling.
+// Deployment: standalone Astro build (`npm run build` -> `dist/`)
+// served by nginx via Dockerfile + dokploy.compose.yml at the root
+// of its own subdomain. No chained-build coupling with the marketing
+// site.
 export default defineConfig({
-  site: "https://catena.run",
-  base: "/docs",
+  site: "https://docs.catena.run",
   trailingSlash: "ignore",
   integrations: [
     starlight({
@@ -44,7 +44,7 @@ export default defineConfig({
       head: [
         {
           tag: "script",
-          attrs: { src: "/docs/domain-rewriter.js", defer: true },
+          attrs: { src: "/domain-rewriter.js", defer: true },
         },
       ],
       sidebar: [

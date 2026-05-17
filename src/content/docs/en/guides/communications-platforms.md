@@ -7,9 +7,9 @@ No single tool covers everything a business needs for communication. Internal te
 
 ## The four building blocks
 
-**[Nextcloud Talk](/docs/nextcloud-apps-vs-suite/)** is included with the Nextcloud suite already on your server. Internal team chat, voice and video meetings, and phone dial-in to those meetings when you sign up with a phone service. No customer-support inbox; no extension-style office phone.
+**[Nextcloud Talk](/nextcloud-apps-vs-suite/)** is included with the Nextcloud suite already on your server. Internal team chat, voice and video meetings, and phone dial-in to those meetings when you sign up with a phone service. No customer-support inbox; no extension-style office phone.
 
-**[Rocket.Chat](/docs/apps/rocketchat-oidc/)** is a richer team chat platform with strong mobile apps and a customer-support inbox that pulls webchat, email, social, and SMS into one place. Internal voice and video work out of the box. Making and receiving regular phone calls from inside the chat window requires a paid Rocket.Chat subscription; everything else stays free on your server.
+**[Rocket.Chat](/apps/rocketchat-oidc/)** is a richer team chat platform with strong mobile apps and a customer-support inbox that pulls webchat, email, social, and SMS into one place. Internal voice and video work out of the box. Making and receiving regular phone calls from inside the chat window requires a paid Rocket.Chat subscription; everything else stays free on your server.
 
 **Element** handles regular phone calls in the same window as the chat with no paid add-on, and lets your team chat with anyone on another organization's Element server. It does not include a customer-support inbox.
 
@@ -37,8 +37,8 @@ No single tool covers everything a business needs for communication. Internal te
 
 ## Pick by situation
 
-- **Small team, internal communication only.** [Nextcloud Talk](/docs/nextcloud-apps-vs-suite/) alone.
-- **Team chat plus a customer-support inbox across web, email, social, and SMS.** [Rocket.Chat](/docs/apps/rocketchat-oidc/) for the inbox; Linphone for outbound phone work.
+- **Small team, internal communication only.** [Nextcloud Talk](/nextcloud-apps-vs-suite/) alone.
+- **Team chat plus a customer-support inbox across web, email, social, and SMS.** [Rocket.Chat](/apps/rocketchat-oidc/) for the inbox; Linphone for outbound phone work.
 - **Team chat plus regular phone calls in the same window.** Element.
 - **Customer-support inbox AND regular phone calls in one window.** No clean single-window option; pick Rocket.Chat plus Linphone, or Element plus a separate ticketing tool.
 - **Mixed needs across several teams.** Talk for internal chat, Rocket.Chat for the customer-support team, Linphone for anyone needing a phone extension.

@@ -7,9 +7,9 @@ Aucun outil unique ne couvre tout ce dont une entreprise a besoin en communicati
 
 ## Les quatre composantes
 
-**[Nextcloud Talk](/docs/nextcloud-apps-vs-suite/)** est inclus avec la suite Nextcloud déjà installée sur votre serveur. Discussion d'équipe interne, appels voix et vidéo, et accès téléphonique aux réunions lorsque vous prenez un abonnement chez un service téléphonique. Pas de boîte de support client ; pas de téléphone de bureau à extension.
+**[Nextcloud Talk](/nextcloud-apps-vs-suite/)** est inclus avec la suite Nextcloud déjà installée sur votre serveur. Discussion d'équipe interne, appels voix et vidéo, et accès téléphonique aux réunions lorsque vous prenez un abonnement chez un service téléphonique. Pas de boîte de support client ; pas de téléphone de bureau à extension.
 
-**[Rocket.Chat](/docs/apps/rocketchat-oidc/)** est une plateforme de discussion d'équipe plus riche, avec de solides applications mobiles et une boîte de support client qui regroupe le clavardage web, le courriel, les réseaux sociaux et les SMS dans une seule fenêtre. Les appels voix et vidéo internes fonctionnent immédiatement. Passer et recevoir des appels téléphoniques classiques depuis la fenêtre de discussion exige un abonnement payant chez Rocket.Chat ; tout le reste demeure gratuit sur votre serveur.
+**[Rocket.Chat](/apps/rocketchat-oidc/)** est une plateforme de discussion d'équipe plus riche, avec de solides applications mobiles et une boîte de support client qui regroupe le clavardage web, le courriel, les réseaux sociaux et les SMS dans une seule fenêtre. Les appels voix et vidéo internes fonctionnent immédiatement. Passer et recevoir des appels téléphoniques classiques depuis la fenêtre de discussion exige un abonnement payant chez Rocket.Chat ; tout le reste demeure gratuit sur votre serveur.
 
 **Element** traite les appels téléphoniques classiques dans la même fenêtre que la discussion, sans complément payant, et permet à votre équipe de discuter avec n'importe qui sur le serveur Element d'une autre organisation. Il n'inclut pas de boîte de support client.
 
@@ -37,8 +37,8 @@ Aucun outil unique ne couvre tout ce dont une entreprise a besoin en communicati
 
 ## Choisir selon votre situation
 
-- **Petite équipe, communication interne seulement.** [Nextcloud Talk](/docs/nextcloud-apps-vs-suite/) seul.
-- **Discussion d'équipe et boîte de support client par web, courriel, réseaux sociaux et SMS.** [Rocket.Chat](/docs/apps/rocketchat-oidc/) pour la boîte ; Linphone pour le travail téléphonique sortant.
+- **Petite équipe, communication interne seulement.** [Nextcloud Talk](/nextcloud-apps-vs-suite/) seul.
+- **Discussion d'équipe et boîte de support client par web, courriel, réseaux sociaux et SMS.** [Rocket.Chat](/apps/rocketchat-oidc/) pour la boîte ; Linphone pour le travail téléphonique sortant.
 - **Discussion d'équipe et appels téléphoniques classiques dans une seule fenêtre.** Element.
 - **Boîte de support client ET appels téléphoniques classiques dans une seule fenêtre.** Aucune option vraiment unifiée ; prenez Rocket.Chat avec Linphone, ou Element avec un outil de billetterie distinct.
 - **Besoins mixtes dans plusieurs équipes.** Talk pour la discussion interne, Rocket.Chat pour l'équipe de support, Linphone pour quiconque a besoin d'une extension téléphonique.

@@ -24,7 +24,7 @@ Linux unzip) lorsque vous fournissez le mot de passe.
 1. L'archive de récupération (téléchargée depuis `recovery.<zone>`
    après avoir cliqué sur l'action "Générer l'archive de
    récupération (chiffrée)" -- voir la page
-   [Prévention des sinistres](/docs/disaster-prevention/) pour ce
+   [Prévention des sinistres](/disaster-prevention/) pour ce
    qu'il faut configurer au préalable). Le fichier ressemble à
    `recovery-<horodatage>.zip`.
 2. Le mot de passe à usage unique de cette archive.
@@ -296,7 +296,7 @@ cette façon :
   côté froid sont présents dans l'enveloppe, le script recopie
   chaque objet du miroir froid vers un nouveau bucket chaud avant
   que les utilisateurs ne se reconnectent. La page
-  [Prévention des sinistres](/docs/disaster-prevention/) liste ce que
+  [Prévention des sinistres](/disaster-prevention/) liste ce que
   votre opérateur doit activer pour que le miroir froid existe.
 
 ## En cas de doute -- rappelez votre opérateur
@@ -313,8 +313,8 @@ automatisation est plus rapide et plus fiable que la procédure manuelle.
 Si votre VPS est tombé et que vous avez besoin de cette page pour
 le relever, le site de documentation ne vous aidera pas. Enregistrez
 les pages que vous utiliseriez lors d'un sinistre (celle-ci +
-[Reprise après sinistre](/docs/disaster-recovery/) +
-[Où vivent vos données](/docs/where-is-my-data/)) sur votre poste
+[Reprise après sinistre](/disaster-recovery/) +
+[Où vivent vos données](/where-is-my-data/)) sur votre poste
 avec "Enregistrer sous..." de votre navigateur (ou imprimez-les en
 PDF) à la prise en charge, et rafraîchissez la copie une fois par
 an.

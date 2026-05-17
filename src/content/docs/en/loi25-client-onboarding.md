@@ -12,7 +12,7 @@ Your Catena Suite ships configured with infrastructure-level Loi 25 controls -- 
 ## Day 1 -- designate
 
 - [ ] **Designate a Privacy Officer (RPP)** -- typically the senior-most authority OR a delegate with required competence and decision-making power (CAI guideline). One person, named in writing.
-- [ ] **Publish RPP coordinates** on your website (your privacy policy page, deployed by Catena, already has the slot -- see [where-is-my-data](/docs/en/where-is-my-data/) for where it lives).
+- [ ] **Publish RPP coordinates** on your website (your privacy policy page, deployed by Catena, already has the slot -- see [where-is-my-data](/en/where-is-my-data/) for where it lives).
 - [ ] **Sign the DPA** with Catena (it's part of the master agreement; you signed it at onboarding -- check your engagement letter to confirm).
 - [ ] **Adopt the four internal policies** Catena drafted for you:
    1. Politique interne de protection des RP (internal)

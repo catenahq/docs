@@ -39,7 +39,7 @@ cal.diy runs Next.js + Postgres in two containers. Plan for ~1-2 GB RAM at rest,
 
 ### Multi-tenant warning
 
-Single-tenant deploys only. The community edition has no real org/team coordination. If you need multiple practitioners with shared availability (clinic / salon / repair shop), use [Easy!Appointments](/docs/apps/easyappointments/) instead.
+Single-tenant deploys only. The community edition has no real org/team coordination. If you need multiple practitioners with shared availability (clinic / salon / repair shop), use [Easy!Appointments](/apps/easyappointments/) instead.
 
 ## Environment variables
 
@@ -166,4 +166,4 @@ networks:
 
 ---
 
-[<- Back to all pre-configured apps](/docs/en/apps/)
+[<- Back to all pre-configured apps](/en/apps/)

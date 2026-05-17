@@ -170,7 +170,7 @@ ont besoin de leurs propres horaires, quand vous voulez un domaine
 de réservation dédié, ou quand vous avez besoin de modéliser des
 services / capacités / multi-emplacements.
 
-Voir [Comment choisir votre outil de réservation](/docs/how-to-pick-a-scheduler/)
+Voir [Comment choisir votre outil de réservation](/how-to-pick-a-scheduler/)
 pour l'arbre de décision complet de tous les besoins de réservation.
 
 Nextcloud Calendar (le calendrier CalDAV du personnel) est
@@ -192,9 +192,9 @@ Applications -> Vos applications.
 | Cas d'usage | Application recommandée |
 |---|---|
 | Formulaires internes (RH, RSVP, sondages, intégration) | Nextcloud Forms |
-| Saisie de formulaire qui déclenche un workflow (créer un contact CRM, envoyer un courriel, publier dans le clavardage) | Nœud Form Trigger de [n8n](/docs/apps/n8n/) |
+| Saisie de formulaire qui déclenche un workflow (créer un contact CRM, envoyer un courriel, publier dans le clavardage) | Nœud Form Trigger de [n8n](/apps/n8n/) |
 | Capture de pistes côté client liée à un pipeline de vente | Formulaire web-to-lead d'EspoCRM |
-| Flux de signature électronique | [DocuSeal](/docs/apps/docuseal/) |
+| Flux de signature électronique | [DocuSeal](/apps/docuseal/) |
 
 Pour la plupart des besoins inter-entreprise, Nextcloud Forms est la
 bonne réponse : les résultats atterrissent dans une feuille de calcul

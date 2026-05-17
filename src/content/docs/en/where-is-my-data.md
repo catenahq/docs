@@ -6,8 +6,8 @@ description: "Plain-language answer to \"if the VPS burns down, what's lost and"
 Plain-language answer to "if the VPS burns down, what's lost and
 what's recoverable?" Read this once at hand-off so you have a
 mental map before anything goes wrong; the
-[Disaster prevention](/docs/en/disaster-prevention/) and
-[Disaster recovery](/docs/en/disaster-recovery/) pages assume you know
+[Disaster prevention](/en/disaster-prevention/) and
+[Disaster recovery](/en/disaster-recovery/) pages assume you know
 where things live.
 
 ## The short version
@@ -27,7 +27,7 @@ Anything stored only on the VPS is at risk; the VPS can fail or
 be destroyed. Anything in restic + on the VPS is safe against any
 single thing breaking. Anything in restic *or* Nextcloud-S3
 specifically can also fail -- but those are independent failures
-covered by [Disaster prevention](/docs/en/disaster-prevention/).
+covered by [Disaster prevention](/en/disaster-prevention/).
 
 ## On the VPS
 
@@ -57,7 +57,7 @@ older expires automatically.
 
 The bucket is encrypted end-to-end with the **restic password**
 your operator handed you at hand-off (see
-[Disaster prevention](/docs/en/disaster-prevention/)). Without that
+[Disaster prevention](/en/disaster-prevention/)). Without that
 password, the bucket is unreadable ciphertext -- even to the
 operator. With it, you can restore to any cloud, any time.
 
@@ -102,14 +102,14 @@ separate "what if" plus the mitigation already in place.
 | Bucket credentials leaked, attacker writes/deletes objects | Some or all files in the bucket | Object versioning + 30-day retention rule on the bucket means deleted objects are recoverable for 30 days | Contact your operator immediately; they rotate credentials and roll back the affected objects |
 | You accidentally delete the bucket from the provider console | Everything in the bucket once the provider's grace period ends | Most providers have a 7-90 day account-level grace period | Contact provider support immediately to recover the bucket within the grace window; contact your operator |
 | Nextcloud database (on the VPS) is restored from yesterday's backup but bucket has today's writes | New files added today appear as orphans in the bucket | Nextcloud's `occ files:scan` rebuilds the database-to-file mapping from what's in the bucket | Tell your operator to run a file scan after the restore; they handle the technical part |
-| Provider terminates your account | Everything in that bucket | Only a second backup bucket at a different provider protects you here | If you've set up a [second backup bucket](/docs/en/disaster-prevention/#5-optional--add-a-client-owned-second-backup-bucket), you're covered. If not -- this is the worst case |
+| Provider terminates your account | Everything in that bucket | Only a second backup bucket at a different provider protects you here | If you've set up a [second backup bucket](/en/disaster-prevention/#5-optional--add-a-client-owned-second-backup-bucket), you're covered. If not -- this is the worst case |
 
 The takeaway: the Nextcloud-S3 bucket is independent of the VPS,
 which is good (the VPS dying doesn't take it with) and risky (the
 bucket can fail without the VPS noticing). The mitigations above
 cover the common cases; the catastrophic cases (bucket deletion,
 account termination) are exactly what the **second backup bucket**
-pattern in [Disaster prevention](/docs/en/disaster-prevention/) is for.
+pattern in [Disaster prevention](/en/disaster-prevention/) is for.
 
 ## Externally hosted (not on your VPS, not in your buckets)
 
@@ -121,14 +121,14 @@ on your VPS:
   account.
 - **Tailscale tenant + ACL rules** -- at Tailscale, in your operator's
   Tailscale account (the operator owns this for the persistent ops
-  back-door -- see [How this software suite works](/docs/en/how-this-stack-works/)).
+  back-door -- see [How this software suite works](/en/how-this-stack-works/)).
 - **SMTP provider account** -- at your transactional email provider
   (Resend / Brevo / etc.) -- controls who can send mail "from" your
   domain.
 
 These are recreated easily if any one of them fails -- you log in to
 the third-party console and click. The
-[Disaster recovery](/docs/en/disaster-recovery/) page lists the recovery
+[Disaster recovery](/en/disaster-recovery/) page lists the recovery
 path for each.
 
 ## Not backed up (by design)
@@ -160,5 +160,5 @@ Worst-case scenario: physical destruction of the VPS, no warning.
 - **Nothing else.** Restic + (optional) Nextcloud-S3 + Cloudflare
   + Tailscale carry the rest.
 
-The [Restore to a fresh VPS](/docs/en/self-restore/) page covers what
+The [Restore to a fresh VPS](/en/self-restore/) page covers what
 "come back" looks like in practice.

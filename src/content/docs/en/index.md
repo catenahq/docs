@@ -10,39 +10,39 @@ your inventory hostname, your S3 bucket) are surfaced in the
 [client portal](https://app.catena.run).
 
 If you are evaluating catena, start with
-[How this software suite works](/docs/how-this-stack-works/) for the
+[How this software suite works](/how-this-stack-works/) for the
 plain-language tour. If you are an existing client, your portal
 links into these docs in context for the operational tasks that come
 up day-to-day.
 
 ## Where to start
 
-- **[How this software suite works](/docs/how-this-stack-works/)** -- a
+- **[How this software suite works](/how-this-stack-works/)** -- a
   plain-language tour of the services and how they fit together.
   Start here if this is your first time.
-- **[Where your data lives](/docs/where-is-my-data/)** -- what's on
+- **[Where your data lives](/where-is-my-data/)** -- what's on
   the VPS, what's in your S3 backup bucket, what's lost if the VPS
   burns down.
-- **[Files you should not touch](/docs/do-not-touch/)** -- hand-edits
+- **[Files you should not touch](/do-not-touch/)** -- hand-edits
   get overwritten the next time your operator pushes an update.
   Here's what to leave alone.
 
 ## Day-to-day tasks
 
-- **[Add / remove users](/docs/how-to-add-users/)** -- Keycloak
+- **[Add / remove users](/how-to-add-users/)** -- Keycloak
   walkthrough for staff onboarding + password resets.
-- **[Deploy apps (per-department access)](/docs/how-to-deploy-apps/)**
+- **[Deploy apps (per-department access)](/how-to-deploy-apps/)**
   -- gate new apps to specific teams using compose labels.
-- **[What you can do yourself](/docs/self-service/)** -- day-to-day
+- **[What you can do yourself](/self-service/)** -- day-to-day
   tasks that never need your operator.
 
 ## Disaster handling
 
-- **[Disaster prevention](/docs/disaster-prevention/)** -- how the
+- **[Disaster prevention](/disaster-prevention/)** -- how the
   suite reduces the blast radius of common failures.
-- **[Disaster recovery](/docs/disaster-recovery/)** -- what happens
+- **[Disaster recovery](/disaster-recovery/)** -- what happens
   when the VPS is lost.
-- **[Self-restore](/docs/self-restore/)** -- the one-script flow you
+- **[Self-restore](/self-restore/)** -- the one-script flow you
   can run yourself to spin up a replacement.
 
 ## Your subdomains
