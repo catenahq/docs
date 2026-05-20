@@ -36,46 +36,49 @@ Partage de fichiers et collaboration auto-hébergés -- le hub auquel d'autres t
 ### 4. Rocket.Chat -- remplace Slack, Microsoft Teams, Discord (en usage pro)
 Messagerie d'équipe -- canaux, messages directs, partage de fichiers, apps mobiles, appels vidéo. Keycloak SSO pré-câblé. [-> Voir les détails](/apps/rocketchat-oidc/)
 
-### 5. DocuSeal -- remplace DocuSign, HelloSign, PandaDoc, Adobe Sign
+### 5. Element / Matrix -- remplace Slack, Microsoft Teams, Signal (en usage pro), Zoom (pour les petits appels de groupe)
+Element + serveur Matrix auto-hébergés -- messagerie d'équipe avec chiffrement de bout en bout, voix, visio de groupe (Jitsi embarqué), et entrée SIP par téléphone. Fédération capable mais désactivée par défaut. [-> Voir les détails](/apps/element/)
+
+### 6. DocuSeal -- remplace DocuSign, HelloSign, PandaDoc, Adobe Sign
 Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées. [-> Voir les détails](/apps/docuseal/)
 
-### 6. Outline -- remplace Notion, Confluence, Google Sites
+### 7. Outline -- remplace Notion, Confluence, Google Sites
 Wiki d'équipe / base de connaissances. Pages façon Notion, collections, documents imbriqués. Keycloak SSO pré-câblé. [-> Voir les détails](/apps/outline/)
 
-### 7. EspoCRM -- remplace Salesforce, HubSpot, Zoho CRM, Pipedrive
+### 8. EspoCRM -- remplace Salesforce, HubSpot, Zoho CRM, Pipedrive
 CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation. OIDC natif via un bouton post-déploiement. [-> Voir les détails](/apps/espocrm/)
 
-### 8. Twenty -- remplace Salesforce, HubSpot, Pipedrive
+### 9. Twenty -- remplace Salesforce, HubSpot, Pipedrive
 CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation email, pipelines. Alternative à EspoCRM (le CRM par défaut). [-> Voir les détails](/apps/twenty/)
 
-### 9. Plane -- remplace Jira, Linear, Asana, ClickUp
+### 10. Plane -- remplace Jira, Linear, Asana, ClickUp
 Gestion de projet open-source -- issues, cycles, modules, pages, workspaces. [-> Voir les détails](/apps/plane/)
 
-### 10. Zammad -- remplace Zendesk, Freshdesk, Jira Service Desk
+### 11. Zammad -- remplace Zendesk, Freshdesk, Jira Service Desk
 Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connaissances. OIDC natif. [-> Voir les détails](/apps/zammad/)
 
-### 11. Chatwoot -- remplace Intercom, Front, Help Scout (canaux de chat)
+### 12. Chatwoot -- remplace Intercom, Front, Help Scout (canaux de chat)
 Boîte de réception omnicanale orientée conversation. Email, widget de chat, WhatsApp, Facebook, Instagram, Twitter/X en une seule vue. [-> Voir les détails](/apps/chatwoot/)
 
-### 12. WordPress -- remplace Wix, Squarespace, Drupal auto-hébergé
+### 13. WordPress -- remplace Wix, Squarespace, Drupal auto-hébergé
 Plateforme CMS / site web public prête pour la production, avec cache FastCGI, cache d'objets Redis et un ensemble de plugins gratuits curatés pré-installés. Le site est accessible anonymement ; la connexion admin sur /wp-admin peut être câblée à Keycloak via un plugin. [-> Voir les détails](/apps/wordpress/)
 
-### 13. n8n -- remplace Zapier, Make (Integromat), Tray.io
+### 14. n8n -- remplace Zapier, Make (Integromat), Tray.io
 Automatisation de flux de travail -- enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code. [-> Voir les détails](/apps/n8n/)
 
-### 14. ERPNext -- remplace SAP Business One, Odoo, Oracle NetSuite
+### 15. ERPNext -- remplace SAP Business One, Odoo, Oracle NetSuite
 Suite ERP open-source complète -- comptabilité, inventaire, RH/paie, CRM, production, projets, et un module site web / e-commerce intégré. [-> Voir les détails](/apps/erpnext/)
 
-### 15. Actual Budget -- remplace YNAB (You Need A Budget), Mint, EveryDollar
+### 16. Actual Budget -- remplace YNAB (You Need A Budget), Mint, EveryDollar
 Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro bancaire via SimpleFIN ou GoCardless, chiffré de bout en bout. [-> Voir les détails](/apps/actualbudget/)
 
-### 16. Postiz -- remplace Buffer, Hootsuite, Later
+### 17. Postiz -- remplace Buffer, Hootsuite, Later
 Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, et d'autres. [-> Voir les détails](/apps/postiz/)
 
-### 17. Easy!Appointments -- remplace Calendly, Acuity, SimplyBook, Setmore
+### 18. Easy!Appointments -- remplace Calendly, Acuity, SimplyBook, Setmore
 Application de réservation côté client pour un ou plusieurs prestataires (clinique, salon, cours, atelier de réparation). Page de réservation publique ; calendriers du personnel ; rappels courriel + SMS ; export ICS. [-> Voir les détails](/apps/easyappointments/)
 
-### 18. Mautic -- remplace Mailchimp, ActiveCampaign, HubSpot Marketing, Brevo (Sendinblue)
+### 19. Mautic -- remplace Mailchimp, ActiveCampaign, HubSpot Marketing, Brevo (Sendinblue)
 Automatisation marketing open-source. Segments de contacts, campagnes courriel, séquences drip, pages de destination, formulaires, scoring de prospects. Remplace Mailchimp / ActiveCampaign / HubSpot Marketing. [-> Voir les détails](/apps/mautic/)
 
 ## À propos de la connexion (SSO)
