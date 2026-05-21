@@ -27,6 +27,11 @@ tier that matches what you plan to deploy.
 | Postiz | 480 MB | 680 MB | 2% | 35% | 200 MB |
 | DocuSeal | 320 MB | 540 MB | 1% | 35% | 140 MB |
 | Mautic | 1500 MB | 3000 MB | 3% | 75% | 420 MB |
+| Collabora Online (CODE) | _n/a_ | 1024 MB | _n/a_ | _n/a_ | _n/a_ |
+| Element / Matrix | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
+| Zammad | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
+| Chatwoot | _n/a_ | 768 MB | _n/a_ | _n/a_ | _n/a_ |
+| Easy!Appointments | _n/a_ | 384 MB | _n/a_ | _n/a_ | _n/a_ |
 
 CPU is normalized to one core: 100% means one full vCPU is busy. Peak
 values are what we observed while exercising the app the way the
@@ -121,6 +126,32 @@ MariaDB. Idle RAM is dominated by the worker and cron sidecars
 push peak RAM near 3 GB and CPU above 75% on one vCPU. Plan for
 a 6 GB tier if Mautic is co-located with Nextcloud + Rocket.Chat;
 otherwise a 4 GB tier holds for low-volume sending.
+### Collabora Online (CODE)
+
+Stateless document editor backed by Nextcloud. Sizing is dominated
+by per-document worker processes spawned during active editing;
+idle footprint is small. The peak figure above is a conservative
+pre-launch estimate, not yet a measured value.
+### Element / Matrix
+
+Element (Synapse + Postgres + Redis) is memory-hungry during the
+first federation sync; the value above is a launch-day floor.
+Conservative pre-launch estimate, not yet a measured value.
+### Zammad
+
+Zammad (Rails + Postgres + Elasticsearch + Redis) sizes around the
+Elastic JVM heap; budget room for it. Conservative pre-launch
+estimate, not yet a measured value.
+### Chatwoot
+
+Chatwoot (Rails + Postgres + Redis + Sidekiq); peak grows with
+active conversation count. Conservative pre-launch estimate, not
+yet a measured value.
+### Easy!Appointments
+
+PHP-Apache + MariaDB; lightweight footprint dominated by the
+database. Conservative pre-launch estimate, not yet a measured
+value.
 
 ---
 

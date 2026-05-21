@@ -27,6 +27,11 @@ un palier de VPS adapté à ce que vous comptez déployer.
 | Postiz | 480 MB | 680 MB | 2% | 35% | 200 MB |
 | DocuSeal | 320 MB | 540 MB | 1% | 35% | 140 MB |
 | Mautic | 1500 MB | 3000 MB | 3% | 75% | 420 MB |
+| Collabora Online (CODE) | _n/a_ | 1024 MB | _n/a_ | _n/a_ | _n/a_ |
+| Element / Matrix | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
+| Zammad | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
+| Chatwoot | _n/a_ | 768 MB | _n/a_ | _n/a_ | _n/a_ |
+| Easy!Appointments | _n/a_ | 384 MB | _n/a_ | _n/a_ | _n/a_ |
 
 Le CPU est normalisé sur un cœur : 100 % = un vCPU complet. Les pics
 correspondent à ce que nous avons observé en exerçant l'application
@@ -126,6 +131,34 @@ reconstructions de segments poussent le pic RAM vers 3 Go et le
 CPU au-dessus de 75 % sur un vCPU. Prévoyez un palier 6 Go si
 Mautic cohabite avec Nextcloud + Rocket.Chat ; sinon un palier
 4 Go tient pour de faibles volumes d'envoi.
+### Collabora Online (CODE)
+
+Éditeur de documents sans état adossé à Nextcloud. Le
+dimensionnement est dominé par les workers par document lors de
+l'édition active ; l'empreinte au repos est faible. La valeur de
+pic ci-dessus est une estimation prudente pré-lancement, pas
+encore une mesure réelle.
+### Element / Matrix
+
+Element (Synapse + Postgres + Redis) consomme beaucoup de mémoire
+lors de la première synchronisation fédérée ; la valeur ci-dessus
+est un plancher de mise en service. Estimation prudente
+pré-lancement, pas encore une mesure réelle.
+### Zammad
+
+Zammad (Rails + Postgres + Elasticsearch + Redis) se dimensionne
+autour du heap JVM d'Elastic ; prévoyez de la marge. Estimation
+prudente pré-lancement, pas encore une mesure réelle.
+### Chatwoot
+
+Chatwoot (Rails + Postgres + Redis + Sidekiq) ; le pic croît avec
+le nombre de conversations actives. Estimation prudente
+pré-lancement, pas encore une mesure réelle.
+### Easy!Appointments
+
+PHP-Apache + MariaDB ; empreinte légère dominée par la base de
+données. Estimation prudente pré-lancement, pas encore une mesure
+réelle.
 
 ---
 
