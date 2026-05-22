@@ -62,15 +62,13 @@ block.
 
 ## Brand assets
 
-Brand tokens come from `@catenahq/contracts/brand`, vendored
-locally under `vendor/catenahq-contracts-X.Y.Z.tgz`. Bumped via
-the `Bump @catenahq/contracts to latest` GitHub Action; the
-companion contracts-freshness CI gate fails the build if the
-vendored version drifts from the latest tag.
+Brand tokens come from `@catenahq/contracts/brand`, consumed via
+sibling-directory read (`file:../contracts` in `package.json`). Edit
+`catena/contracts/` and the change shows up on the next build. CI
+checks out catenahq/contracts as a sibling before running npm install.
 
 ## CI gates
 
-- contracts-freshness (vendored contracts version is current)
 - unicode hygiene (`npm run check:unicode` -- no em dashes, smart
   quotes, decorative Unicode per workspace CLAUDE.md)
 - Astro typecheck + Starlight build (catches broken internal links)

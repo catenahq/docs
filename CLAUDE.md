@@ -11,25 +11,26 @@ Astro 6 + Starlight. Client-facing documentation served at
 - `npm run build` -- standalone Starlight build into `dist/`.
 - `npm run check` -- typecheck (Astro check).
 
-## Brand assets
+## Brand assets (sibling read)
 
-Brand tokens come from `@catenahq/contracts/brand`, vendored locally
-under `vendor/catenahq-contracts-X.Y.Z.tgz`. Do not edit the
-vendored copy by hand.
+`@catenahq/contracts` is consumed via sibling-directory read, NOT a
+vendored tarball. `package.json` declares it as
+`"@catenahq/contracts": "file:../contracts"`, so npm symlinks
+`node_modules/@catenahq/contracts` to the sibling `catena/contracts/`
+checkout. Edits in `contracts/` are visible immediately on the next
+`npm run dev` / `npm run build`.
 
-To bump the vendored version: run the "Bump @catenahq/contracts to
-latest" workflow (Actions tab -> Run workflow), or wait for the
-daily cron. The companion `contracts-freshness` job in `ci.yml`
-fails the build whenever the vendored version drifts from the
-latest tag on `catenahq/contracts`, so a stale vendored copy blocks
-every merge until a bump PR lands.
+Local dev assumes the standard `catena/docs/` + `catena/contracts/`
+sibling layout. CI mirrors this: the docs job checks out docs into
+`docs/` and catenahq/contracts into `contracts/` under
+`$GITHUB_WORKSPACE`, then runs npm install + build with
+`working-directory: ./docs`.
 
 Required repository secret:
 
   CONTRACTS_READ_TOKEN  fine-grained GitHub PAT with
                         `Contents: read` on catenahq/contracts only.
-                        Used by both contracts-update.yml and the
-                        contracts-freshness gate.
+                        Used by the sibling-checkout step in ci.yml.
 
 ## Content rules
 
