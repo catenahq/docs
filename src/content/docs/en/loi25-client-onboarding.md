@@ -36,7 +36,7 @@ The RPP reviews + signs each. They become enforceable in your organization at si
 
 ## Day 1-90 -- communicate
 
-- [ ] **Add the consent checkbox to every form** that collects personal info. Catena ships standard embeds (Cal.com booking, EspoCRM contact form) with the consent slot; you write the consent text in your language.
+- [ ] **Add the consent checkbox to every form** that collects personal info. Catena ships standard embeds (Easy!Appointments booking, EspoCRM contact form) with the consent slot; you write the consent text in your language.
 - [ ] **Add the privacy notice link** to your email signatures and any printed correspondence.
 - [ ] **Confirm the public privacy policy** reflects your actual practice -- Catena's draft is generic across the baseline; review and adjust the data-categories section, the cookies section, and any per-sector specifics.
 

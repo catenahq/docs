@@ -78,6 +78,12 @@ Customer-facing booking app for one or many providers (clinic, salon, lessons, r
 ### 19. Mautic -- replaces Mailchimp, ActiveCampaign, HubSpot Marketing, Brevo (Sendinblue)
 Open-source marketing automation. Contact segments, email campaigns, drip sequences, landing pages, forms, lead scoring. Replaces Mailchimp / ActiveCampaign / HubSpot Marketing. [-> Full details](/en/apps/mautic/)
 
+### 20. Kimai -- replaces Toggl, Clockify, Harvest, TimeCamp
+Open-source time tracker. Customers, projects, activities, timesheets, multi-user teams, invoice generation from tracked time. SAML federates with Keycloak via the post-deploy admin UI. [-> Full details](/en/apps/kimai/)
+
+### 21. Invoice Ninja -- replaces FreshBooks, QuickBooks (invoicing module), Zoho Invoice, Harvest (invoicing)
+Open-source invoicing with Stripe + PayPal payment gateways, recurring billing, expense tracking, client portal for online payment. Self-hosted gets all Pro + Enterprise features. [-> Full details](/en/apps/invoiceninja/)
+
 ## A note on sign-in (SSO)
 
 Each template's reference page declares its SSO status (pre-wired, post-deploy UI, one-time curl, or not available). Apps without native OIDC just mean each user maintains a per-app login -- the app itself is still reachable, backed up, and secured by its own login wall. It just doesn't participate in the "one login for everything" flow.

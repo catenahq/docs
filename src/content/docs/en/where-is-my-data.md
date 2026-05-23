@@ -34,8 +34,8 @@ covered by [Disaster prevention](/en/disaster-prevention/).
 The day-to-day data that makes your apps work:
 
 - **Postgres databases** -- every app's records (Nextcloud users,
-  Outline pages, Cal.com bookings, etc.) live in a Postgres database
-  inside a Docker volume on the VPS.
+  Outline pages, Easy!Appointments bookings, etc.) live in a Postgres
+  database inside a Docker volume on the VPS.
 - **App config** -- what's configured, who has access, custom
   branding. Lives in app-specific Docker volumes.
 - **File uploads** -- for apps that store files locally (Outline

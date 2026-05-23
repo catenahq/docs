@@ -39,9 +39,9 @@ indépendantes et couvertes par
 Les données du quotidien qui font fonctionner vos applications :
 
 - **Bases Postgres** -- les enregistrements de chaque application
-  (utilisateurs Nextcloud, pages Outline, rendez-vous Cal.com, etc.)
-  vivent dans une base Postgres à l'intérieur d'un volume Docker
-  sur le VPS.
+  (utilisateurs Nextcloud, pages Outline, rendez-vous Easy!Appointments,
+  etc.) vivent dans une base Postgres à l'intérieur d'un volume
+  Docker sur le VPS.
 - **Configuration des applications** -- ce qui est configuré, qui a
   accès, l'image de marque personnalisée. Vit dans des volumes
   Docker propres à chaque application.

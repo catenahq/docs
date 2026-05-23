@@ -17,9 +17,9 @@ Une page de réservation publique ; calendriers indépendants par prestataire ; 
 
 ### Juste moi qui prends les réservations (un seul prestataire, payant ou non)
 
-**Recommandé :** [cal.diy](/apps/cal-diy/).
+**Recommandé :** [Easy!Appointments](/apps/easyappointments/) en mode mono-prestataire.
 
-Page de réservation mono-prestataire avec paiements Stripe natifs, un magasin d'apps calendrier (Google / Outlook / Apple / CalDAV), et un parcours de réservation client soigné. Version auto-hébergée de Cal.com.
+Une page de réservation publique ; synchronisation du calendrier via ICS / CalDAV ; rappels par courriel. Les paiements à la réservation passent par une passerelle Stripe Checkout ajoutée au déploiement lorsque vous en avez besoin.
 
 ### Réserver des salles, du matériel, ou d'autres ressources partagées
 
