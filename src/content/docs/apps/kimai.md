@@ -27,7 +27,7 @@ Kimai est le maître du suivi du temps dans la suite Catena. Les heures saisies 
 
 ### Facturation intégrée
 
-Kimai peut générer des factures PDF directement depuis le temps suivi. Utilisez cette voie si votre flux de facturation est « envoyer un PDF, le client paie par virement Interac ou bancaire ». Si vous avez besoin de paiements en ligne via Stripe, d'un portail client ou de facturation récurrente, demandez à votre contact de déployer Invoice Ninja et la suite acheminera les factures à travers lui.
+Kimai peut générer des factures PDF directement depuis le temps suivi. Utilisez cette voie si votre flux de facturation est "envoyer un PDF, le client paie par virement Interac ou bancaire". Si vous avez besoin de paiements en ligne via Stripe, d'un portail client ou de facturation récurrente, demandez à votre contact de déployer Invoice Ninja et la suite acheminera les factures à travers lui.
 
 ### Authentification
 

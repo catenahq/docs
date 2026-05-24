@@ -31,8 +31,8 @@ Invoice Ninja est le maître de la facturation dans la suite Catena. Les heures 
 
 L'édition auto-hébergée d'Invoice Ninja est sous Elastic License 2.0. Deux implications pratiques :
 - Héberger Invoice Ninja pour votre entreprise sur votre VPS, et votre contact qui l'héberge pour vous et facture pour le service d'hébergement, sont explicitement autorisés par la licence.
-- Revendre Invoice Ninja comme SaaS, ou l'intégrer comme partie d'un autre SaaS, requiert une licence commerciale d'Invoice Ninja LLC. Le modèle Catena est « nous déployons sur votre VPS ; vous possédez le déploiement » -- c'est la voie d'hébergement autorisée.
-- L'édition gratuite affiche un bandeau « Powered by Invoice Ninja » sur les surfaces client. Une licence white-label à 40 USD/an le retire. Recommandé dès que vous facturez de vrais clients.
+- Revendre Invoice Ninja comme SaaS, ou l'intégrer comme partie d'un autre SaaS, requiert une licence commerciale d'Invoice Ninja LLC. Le modèle Catena est "nous déployons sur votre VPS ; vous possédez le déploiement" -- c'est la voie d'hébergement autorisée.
+- L'édition gratuite affiche un bandeau "Powered by Invoice Ninja" sur les surfaces client. Une licence white-label à 40 USD/an le retire. Recommandé dès que vous facturez de vrais clients.
 
 ### Authentification
 
