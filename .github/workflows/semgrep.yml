@@ -1,8 +1,12 @@
-name: Semgrep (report-only)
+name: Semgrep
 
-# Wave 3 SAST gate. Astro 6 + Starlight wiki -- mostly content
-# but the Astro config + scripts/ are JS/TS surface worth scanning.
-# Report-only via continue-on-error.
+# Wave 4 (blocking) SAST gate. Astro 6 + Starlight wiki -- mostly
+# content but the Astro config + scripts/ are JS/TS surface worth
+# scanning.
+#
+# Promoted from report-only on 2026-05-24 (Wave 4). `--error` is the
+# rule-severity floor: only ERROR rules block; WARNING / INFO stay
+# advisory.
 # See ~/.claude/plans/make-a-plan-that-shimmying-dragon.md.
 
 on:
@@ -27,8 +31,7 @@ jobs:
       - name: Install semgrep
         run: pip install --no-cache-dir semgrep
 
-      - name: Scan (report-only)
-        continue-on-error: true
+      - name: Scan
         run: |
           semgrep scan \
             --config=p/javascript \
