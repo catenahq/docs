@@ -4,7 +4,7 @@
 # Standalone repo: build context is the repo root.
 
 # ---- Stage 1: build ----
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /app
 
 # Install deps first so source changes don't invalidate the cache.
