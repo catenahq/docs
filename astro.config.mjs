@@ -98,8 +98,13 @@ export default defineConfig({
         {
           label: "Apps",
           translations: { fr: "Applications" },
-          autogenerate: { directory: "apps" },
           collapsed: true,
+          // Starlight 0.39 requires `autogenerate` to live INSIDE an
+          // `items` array on a sidebar group. The legacy top-level
+          // `autogenerate` shape (still accepted in 0.38) was removed.
+          // This nested form is the canonical schema documented for
+          // 0.38 and 0.39, so it works on both.
+          items: [{ autogenerate: { directory: "apps" } }],
         },
       ],
     }),
