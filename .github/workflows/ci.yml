@@ -19,7 +19,7 @@ on:
 jobs:
   docs:
     name: docs (typecheck + build)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, laptop]
     steps:
       - name: Check out docs
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -34,8 +34,6 @@ jobs:
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: "24"
-          cache: "npm"
-          cache-dependency-path: docs/package-lock.json
       - name: Install
         working-directory: ./docs
         run: npm ci
