@@ -22,7 +22,7 @@ Automatisation marketing open-source. Segments de contacts, campagnes courriel, 
 
 ### Authentification
 
-Mautic édition communautaire ne fournit pas d'OIDC natif. Connexion locale par nom d'utilisateur/mot de passe par défaut. SAML2 est supporté en amont mais demande une configuration par déploiement ; des plugins OAuth2 génériques tiers existent. Si un SSO unifié pour la stack est requis, contactez votre opérateur pour ajouter une couche oauth2-proxy en façade (le groupe Keycloak `client-staff` filtre l'accès au niveau Traefik avant que le trafic n'atteigne Mautic).
+Mautic édition communautaire ne fournit pas d'OIDC natif. Connexion locale par nom d'utilisateur/mot de passe par défaut. SAML2 est supporté en amont mais demande une configuration par déploiement ; des plugins OAuth2 génériques tiers existent. Si un SSO unifié pour la stack est requis, contactez votre opérateur pour ajouter une couche oauth2-proxy en façade (le groupe Keycloak `staff` filtre l'accès au niveau Traefik avant que le trafic n'atteigne Mautic).
 
 ### SMTP et réputation d'envoi
 
