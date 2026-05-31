@@ -87,6 +87,9 @@ Suivi du temps open-source. Clients, projets, activités, feuilles de temps, éq
 ### 21. Invoice Ninja -- remplace FreshBooks, QuickBooks (module facturation), Zoho Invoice, Harvest (facturation)
 Facturation open-source avec passerelles de paiement Stripe + PayPal, facturation récurrente, suivi des dépenses, portail client pour paiement en ligne. L'auto-hébergement débloque toutes les fonctionnalités Pro + Enterprise. [-> Voir les détails](/apps/invoiceninja/)
 
+### 22. Serveur de courriel + webmail -- remplace Google Workspace (Gmail), Microsoft 365 (Exchange Online)
+Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi passe par un fournisseur de relais réputé pour éviter le classement en pourriel. [-> Voir les détails](/apps/mailserver/)
+
 ## À propos de la connexion (SSO)
 
 La page de référence de chaque template indique son statut SSO (pré-câblé, via l'UI admin, curl unique, ou non disponible). Les apps sans OIDC natif signifient simplement que chaque utilisateur garde une connexion par app -- l'app reste accessible, sauvegardée, et protégée par son propre écran de connexion. Elle ne participe simplement pas au flux "une connexion pour tout".

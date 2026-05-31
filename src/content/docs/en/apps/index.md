@@ -84,6 +84,9 @@ Open-source time tracker. Customers, projects, activities, timesheets, multi-use
 ### 21. Invoice Ninja -- replaces FreshBooks, QuickBooks (invoicing module), Zoho Invoice, Harvest (invoicing)
 Open-source invoicing with Stripe + PayPal payment gateways, recurring billing, expense tracking, client portal for online payment. Self-hosted gets all Pro + Enterprise features. [-> Full details](/en/apps/invoiceninja/)
 
+### 22. Mail server + webmail -- replaces Google Workspace (Gmail), Microsoft 365 (Exchange Online)
+Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound is relayed through a reputable provider so messages are not flagged as spam. [-> Full details](/en/apps/mailserver/)
+
 ## A note on sign-in (SSO)
 
 Each template's reference page declares its SSO status (pre-wired, post-deploy UI, one-time curl, or not available). Apps without native OIDC just mean each user maintains a per-app login -- the app itself is still reachable, backed up, and secured by its own login wall. It just doesn't participate in the "one login for everything" flow.
