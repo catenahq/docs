@@ -12,9 +12,12 @@ Short version:
 3. Fill in username + email. Set a strong password OR send an invite
    (Keycloak emails a set-password link via SMTP -- requires operator
    to have wired up SMTP).
-4. Assign to `client-staff` group (default access to gated apps).
-   For finer-grained access, use a per-department group (see your
-   operator's deployment docs).
+4. Pick the user's tier. New users land in `client` (your external
+   users) by default. For an employee, also add them to `staff` (your
+   team's baseline access). For finer-grained access, add a per-
+   department subgroup of staff (e.g. `accounting`, `engineering`).
+   `admin` is the operator tier -- assign it deliberately, never by
+   default.
 5. User can now log in at any app subdomain (`admin.yourdomain.com`,
    `monitor.yourdomain.com`,
    `actions.yourdomain.com`,

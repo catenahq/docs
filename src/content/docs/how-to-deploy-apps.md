@@ -309,57 +309,72 @@ service, ce qui rend toute dérive facile à repérer.
 
 ### `vps.auth.groups=<csv>`
 
-Liste séparée par virgules de noms de groupes Keycloak autorisés. Tout
+Liste séparée par virgules de noms de groupes Keycloak autorisés. Un
 utilisateur appartenant à AU MOINS UN des groupes listés passe
-(sémantique OU, comme l'utilitaire `app_proxy_gate`).
+(sémantique OU). Le groupe `admin` est TOUJOURS autorisé implicitement
+-- l'opérateur est super-utilisateur et n'est jamais verrouillé hors
+d'une application par une étiquette.
+
+Les groupes suivent le modèle à quatre niveaux : `visitor` (anonyme,
+voir ci-dessous), `client` (vos utilisateurs externes), `staff` (vos
+employés ; les départements comme `accounting` / `engineering` sont des
+sous-groupes de staff) et `admin` (opérateur).
 
 **Exemples :**
 
 ```yaml
 labels:
-  - "vps.auth.groups=accounting"                    # comptabilité seulement
-  - "vps.auth.groups=accounting,engineering"        # l'un ou l'autre département
-  - "vps.auth.groups=administrators"                # administrateurs seulement (équivaut à vps.auth.mode=admin-only)
-  - "vps.auth.groups=client-staff"                  # tout le monde dans client-staff (niveau de base)
+  - "vps.auth.groups=accounting"             # comptabilité seulement (+admin)
+  - "vps.auth.groups=accounting,engineering" # l'un ou l'autre département (+admin)
+  - "vps.auth.groups=staff"                  # tous les employés (+admin)
+  - "vps.auth.groups=client,staff"           # utilisateurs externes + employés
+  - "vps.auth.groups=visitor"                # PUBLIC -- sans connexion (voir note)
 ```
 
-**Création automatique.** Si un nom de groupe n'existe pas encore dans
-Keycloak, dashboard-sync le crée (vide) au prochain tick. L'opérateur
-(ou toute personne avec accès admin Keycloak) ajoute des membres via
-l'interface. L'application retournera 403 jusqu'à ce qu'au moins un
-utilisateur soit assigné.
+**`visitor` signifie public.** Lister `visitor` rend l'application
+accessible sans aucune authentification (c'est un mot-clé d'étiquette,
+pas une vraie connexion). Mélanger `visitor` avec d'autres groupes est
+contradictoire -- `visitor` l'emporte et l'application est publique.
 
-**Suppression.** Si vous supprimez une application dans Dokploy,
-dashboard-sync retire son fournisseur, son application et ses liaisons
-de politique Keycloak. Les groupes ayant des membres sont préservés ;
-les groupes vides sans référence à une application sont nettoyés.
+**Les groupes ne sont PAS créés automatiquement.** Un groupe nommé ici
+doit exister dans Keycloak et avoir des membres, sinon personne (sauf
+`admin`) ne peut accéder à l'application. Consultez d'un coup d'oeil qui
+peut atteindre quoi dans l'onglet Accès de votre tableau de bord, et
+ajoutez des membres dans Keycloak (lien depuis l'onglet Accès).
 
 ### `vps.auth.mode=<mode>`
 
-Choisissez la posture d'accès. Mutuellement exclusif avec
-`vps.auth.groups` sur le même service (utilisez l'un OU l'autre).
+Un raccourci pour les ensembles de groupes courants. Utilisez ceci OU
+`vps.auth.groups`.
 
 | Mode | Signification |
 |---|---|
-| `private` | Protégé par Keycloak ; les utilisateurs du groupe `client-staff` peuvent accéder. Valeur par défaut si non défini. |
-| `admin-only` | Protégé par Keycloak ; les utilisateurs du groupe `administrators` peuvent accéder. Équivaut à `vps.auth.groups=administrators`. |
-| `public` | Contourne Keycloak entièrement. L'application est accessible à quiconque a l'URL. À utiliser UNIQUEMENT pour des services vraiment publics (site vitrine, page d'accueil). |
+| `public` | Aucune authentification -- quiconque a l'URL. Identique à `vps.auth.groups=visitor`. À utiliser UNIQUEMENT pour des services vraiment publics (site vitrine, page d'accueil). |
+| `private` | Protégé par Keycloak ; `client` + `staff` (+ `admin`) peuvent accéder. Ajoutez un `vps.auth.groups` explicite pour restreindre à un département. |
+| `admin-only` | Protégé par Keycloak ; `admin` uniquement. |
 
-**Posture par défaut (aucune étiquette).** Une application déployée
-sans étiquettes `vps.auth.*` tombe sur le catchall de domaine, qui est
-lié au groupe `administrators`. En pratique : *les applications sans
-étiquettes sont réservées aux administrateurs, et non à tous les
-utilisateurs authentifiés.* C'est sécurisé par défaut -- il faut opter
-explicitement pour un accès plus large.
+**La posture par défaut (aucune étiquette) est le REFUS.** Une
+application déployée sans aucune étiquette `vps.auth.*` est accessible
+uniquement par `admin` -- inaccessible à tous les autres niveaux. C'est
+sécurisé par défaut : vous optez explicitement pour un accès plus large
+en ajoutant `vps.auth.groups` (ou `vps.auth.mode`). Une application sans
+étiquette qui devrait être accessible à votre équipe lui retournera 403
+jusqu'à ce que vous ajoutiez `vps.auth.groups=staff` (ou le bon
+département).
 
-**Pourquoi `mode=private` diffère de "aucune étiquette".** Sans
-aucune étiquette, l'application n'a pas d'application/fournisseur
-Keycloak dédié ; elle tombe sur le catchall (admins seulement). Avec
-`vps.auth.mode=private`, dashboard-sync crée une application + un
-fournisseur + une liaison dédiés à `client-staff`, de sorte que
-quiconque dans `client-staff` peut y accéder. Optez pour `private` (ou
-un `vps.auth.groups=...` explicite) dès qu'un non-administrateur doit
-y accéder.
+### `vps.auth.protected=true`
+
+Marque une application sensible qui ne doit JAMAIS être publique. Si une
+application `protected` est résolue en public (par exemple si quelqu'un
+ajoute `vps.auth.mode=public`), l'onglet Accès la signale par un
+avertissement garde-fou pour que l'erreur soit détectée avant la mise en
+service. Ajoutez-la à tout ce qui contient des données confidentielles.
+
+```yaml
+labels:
+  - "vps.auth.groups=accounting"
+  - "vps.auth.protected=true"
+```
 
 ## Ce que dashboard-sync fait pour vous
 
@@ -392,7 +407,7 @@ Toutes les 5 minutes (via un timer systemd), `dashboard-sync.service` :
   Keycloak, ou corrigez l'étiquette dans Dokploy et redéployez.
 - **Vous avez retiré l'étiquette mais gardé l'application.** Au
   prochain sync, les liaisons de politique reviennent à
-  `administrators` (catchall). Personne sauf les admins ne peut y
+  `admin` (catchall). Personne sauf les admins ne peut y
   accéder. Intentionnel -- échec fermé.
 - **Deux applications avec le même nom d'hôte mais des groupes
   différents.** La dernière liaison de politique écrite l'emporte. Ne
