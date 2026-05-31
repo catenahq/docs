@@ -36,7 +36,7 @@ Invoice Ninja's self-hosted edition ships under the Elastic License 2.0. Two pra
 
 ### Authentication
 
-Native OIDC for self-hosted is an open feature request upstream. Until it ships, Invoice Ninja uses local username/password. The Keycloak `client-staff` group gates access at the Traefik edge via oauth2-proxy before traffic reaches Invoice Ninja, so people outside your staff group cannot reach the login page.
+Native OIDC for self-hosted is an open feature request upstream. Until it ships, Invoice Ninja uses local username/password. The Keycloak `staff` group gates access at the Traefik edge via oauth2-proxy before traffic reaches Invoice Ninja, so people outside your staff group cannot reach the login page.
 
 ### Payment processing
 
@@ -88,10 +88,8 @@ Domains tabs (described above), never in the compose itself.
 # client portal. Picked 2026-05-21 as the invoicing master in the
 # Path E composition (EspoCRM -> Kimai -> Invoice Ninja -> ERPNext).
 # License: Elastic License 2.0; hosting on third-party infrastructure
-# and billing clients for the service is explicitly permitted.
-# See ops/internal_docs/operator/invoicing-comparison.md for the
-# license analysis + the disqualification of Akaunting (BSL cap) +
-# Crater (stale).
+# and billing clients for the service is explicitly permitted. Chosen
+# over Akaunting (BSL revenue cap) and Crater (stale).
 #
 # Topology (mirrors upstream github.com/invoiceninja/dockerfiles/debian
 # adapted to Catena's MariaDB + 4-service convention):
@@ -103,7 +101,7 @@ Domains tabs (described above), never in the compose itself.
 # (github.com/invoiceninja/invoiceninja/issues/10839). Until upstream
 # ships it, sso_mode=post-deploy-ui means the operator uses local
 # Invoice Ninja credentials; oauth2-proxy at the Traefik edge gates
-# access via the Keycloak client-staff group, so people outside the
+# access via the Keycloak staff group, so people outside the
 # group never reach the Invoice Ninja login page.
 #
 # Storage layout:
@@ -190,7 +188,7 @@ services:
       retries: 5
     labels:
       - "vps.auth.mode=public"
-      - "vps.auth.groups=client-staff"
+      - "vps.auth.groups=staff"
       - "vps.auto-update=patch"
     networks:
       dokploy-network:

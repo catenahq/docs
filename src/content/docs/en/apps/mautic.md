@@ -22,7 +22,7 @@ Open-source marketing automation. Contact segments, email campaigns, drip sequen
 
 ### Authentication
 
-Mautic community edition does not ship native OIDC. Local username/password is the default. SAML2 is supported upstream but requires per-deploy config; third-party generic-OAuth2 plugins exist. If single sign-on across the stack is required, contact your operator to add an oauth2-proxy front layer (Keycloak group `client-staff` gates access at the Traefik edge before traffic reaches Mautic).
+Mautic community edition does not ship native OIDC. Local username/password is the default. SAML2 is supported upstream but requires per-deploy config; third-party generic-OAuth2 plugins exist. If single sign-on across the stack is required, contact your operator to add an oauth2-proxy front layer (Keycloak group `staff` gates access at the Traefik edge before traffic reaches Mautic).
 
 ### SMTP and sending reputation
 

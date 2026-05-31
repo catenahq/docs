@@ -12,10 +12,12 @@ Version abrégée :
    passe fort OU envoyez une invitation (Keycloak expédie par SMTP un
    lien pour définir le mot de passe -- suppose que l'opérateur a
    configuré SMTP).
-4. Attribuez le groupe `client-staff` (accès de base aux applications
-   protégées). Pour un contrôle plus fin, utilisez un groupe par
-   département (consultez la documentation de déploiement de votre
-   opérateur).
+4. Choisissez le niveau de l'utilisateur. Les nouveaux utilisateurs
+   atterrissent dans `client` (vos utilisateurs externes) par défaut.
+   Pour un employé, ajoutez-le aussi à `staff` (accès de base de votre
+   équipe). Pour un contrôle plus fin, ajoutez un sous-groupe de staff
+   par département (p. ex. `accounting`, `engineering`). `admin` est le
+   niveau opérateur -- attribuez-le délibérément, jamais par défaut.
 5. L'utilisateur peut alors se connecter à n'importe quel sous-domaine
    d'application (`admin.yourdomain.com`,
    `monitor.yourdomain.com`,

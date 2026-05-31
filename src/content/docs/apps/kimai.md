@@ -31,7 +31,7 @@ Kimai peut générer des factures PDF directement depuis le temps suivi. Utilise
 
 ### Authentification
 
-Tant que SAML n'est pas câblé (étape 3 ci-dessus), Kimai utilise un identifiant local. Même après SAML, la connexion admin locale continue de fonctionner comme issue de secours. Le groupe Keycloak `client-staff` filtre l'accès au bord Traefik via oauth2-proxy avant que le trafic n'atteigne Kimai, donc les personnes hors de votre équipe ne peuvent pas atteindre la page de connexion.
+Tant que SAML n'est pas câblé (étape 3 ci-dessus), Kimai utilise un identifiant local. Même après SAML, la connexion admin locale continue de fonctionner comme issue de secours. Le groupe Keycloak `staff` filtre l'accès au bord Traefik via oauth2-proxy avant que le trafic n'atteigne Kimai, donc les personnes hors de votre équipe ne peuvent pas atteindre la page de connexion.
 
 ### Ressources
 
@@ -79,7 +79,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 # Marked sso_mode=post-deploy-ui in the catalog -- the operator wires
 # Keycloak SAML federation from the Kimai admin UI after first deploy.
 # Until SAML is wired, oauth2-proxy at the Traefik edge gates access
-# via the Keycloak `client-staff` group; local Kimai auth still works
+# via the Keycloak `staff` group; local Kimai auth still works
 # as a break-glass.
 #
 # Storage: kimai-data volume holds /opt/kimai/var (Symfony var/ dir
@@ -111,7 +111,7 @@ services:
         condition: service_healthy
     labels:
       - "vps.auth.mode=public"
-      - "vps.auth.groups=client-staff"
+      - "vps.auth.groups=staff"
       - "vps.auto-update=patch"
     networks:
       dokploy-network:

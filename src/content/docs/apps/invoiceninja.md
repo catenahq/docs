@@ -36,7 +36,7 @@ L'édition auto-hébergée d'Invoice Ninja est sous Elastic License 2.0. Deux im
 
 ### Authentification
 
-OIDC natif en auto-hébergement est une demande ouverte côté upstream. En attendant, Invoice Ninja utilise un identifiant local. Le groupe Keycloak `client-staff` filtre l'accès au bord Traefik via oauth2-proxy avant que le trafic n'atteigne Invoice Ninja, donc les personnes hors de votre équipe ne peuvent pas atteindre la page de connexion.
+OIDC natif en auto-hébergement est une demande ouverte côté upstream. En attendant, Invoice Ninja utilise un identifiant local. Le groupe Keycloak `staff` filtre l'accès au bord Traefik via oauth2-proxy avant que le trafic n'atteigne Invoice Ninja, donc les personnes hors de votre équipe ne peuvent pas atteindre la page de connexion.
 
 ### Traitement des paiements
 
@@ -88,10 +88,8 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 # client portal. Picked 2026-05-21 as the invoicing master in the
 # Path E composition (EspoCRM -> Kimai -> Invoice Ninja -> ERPNext).
 # License: Elastic License 2.0; hosting on third-party infrastructure
-# and billing clients for the service is explicitly permitted.
-# See ops/internal_docs/operator/invoicing-comparison.md for the
-# license analysis + the disqualification of Akaunting (BSL cap) +
-# Crater (stale).
+# and billing clients for the service is explicitly permitted. Chosen
+# over Akaunting (BSL revenue cap) and Crater (stale).
 #
 # Topology (mirrors upstream github.com/invoiceninja/dockerfiles/debian
 # adapted to Catena's MariaDB + 4-service convention):
@@ -103,7 +101,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 # (github.com/invoiceninja/invoiceninja/issues/10839). Until upstream
 # ships it, sso_mode=post-deploy-ui means the operator uses local
 # Invoice Ninja credentials; oauth2-proxy at the Traefik edge gates
-# access via the Keycloak client-staff group, so people outside the
+# access via the Keycloak staff group, so people outside the
 # group never reach the Invoice Ninja login page.
 #
 # Storage layout:
@@ -190,7 +188,7 @@ services:
       retries: 5
     labels:
       - "vps.auth.mode=public"
-      - "vps.auth.groups=client-staff"
+      - "vps.auth.groups=staff"
       - "vps.auto-update=patch"
     networks:
       dokploy-network:

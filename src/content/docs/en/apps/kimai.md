@@ -31,7 +31,7 @@ Kimai can generate PDF invoices directly from tracked time. Use this if your bil
 
 ### Authentication
 
-Until SAML is wired (step 3 above), Kimai uses local username/password. Even after SAML is wired, local admin login keeps working as a break-glass path. The Keycloak `client-staff` group gates access at the Traefik edge via oauth2-proxy before traffic reaches Kimai, so people outside your staff group cannot reach the login page.
+Until SAML is wired (step 3 above), Kimai uses local username/password. Even after SAML is wired, local admin login keeps working as a break-glass path. The Keycloak `staff` group gates access at the Traefik edge via oauth2-proxy before traffic reaches Kimai, so people outside your staff group cannot reach the login page.
 
 ### Resource note
 
@@ -79,7 +79,7 @@ Domains tabs (described above), never in the compose itself.
 # Marked sso_mode=post-deploy-ui in the catalog -- the operator wires
 # Keycloak SAML federation from the Kimai admin UI after first deploy.
 # Until SAML is wired, oauth2-proxy at the Traefik edge gates access
-# via the Keycloak `client-staff` group; local Kimai auth still works
+# via the Keycloak `staff` group; local Kimai auth still works
 # as a break-glass.
 #
 # Storage: kimai-data volume holds /opt/kimai/var (Symfony var/ dir
@@ -111,7 +111,7 @@ services:
         condition: service_healthy
     labels:
       - "vps.auth.mode=public"
-      - "vps.auth.groups=client-staff"
+      - "vps.auth.groups=staff"
       - "vps.auto-update=patch"
     networks:
       dokploy-network:

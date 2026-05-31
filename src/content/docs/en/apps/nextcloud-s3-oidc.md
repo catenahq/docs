@@ -169,6 +169,58 @@ services:
           'versions_retention_obligation' => '$${NEXTCLOUD_VERSIONS_RETENTION}',
         ];
         PHP
+        # Server-side encryption (SSE), master-key mode. Encrypts file
+        # content before it is handed to the S3 object-store driver, so
+        # the storage provider only ever sees ciphertext at rest.
+        # Master-key mode encrypts against a single, operator-recoverable
+        # key (held in DB + the config `secret`) -- NOT per-user keys,
+        # which would put files out of reach of an operator restore.
+        # Idempotent: this hook runs on every container start, but
+        # master-key SELECTION runs only once -- on the fresh install,
+        # before any file is encrypted. Switching modes on already-
+        # encrypted data is destructive, hence the useMasterKey guard.
+        # `encryption:enable-master-key` prompts y/n and treats
+        # --no-interaction as "no", so the confirmation is fed on stdin.
+        php occ app:enable encryption
+        if [ "$$(php occ config:app:get encryption useMasterKey 2>/dev/null)" != "1" ]; then
+          printf 'y\n' | php occ encryption:enable-master-key
+        fi
+        php occ encryption:enable
+        # --- Catena SSE diagnostic sentinel ------------------------------
+        # Captures the bytes that would diverge under the three Bad-
+        # Signature theories (secret rotation, hook ordering, S3 master-
+        # key corruption) so the bench / operator can compare runtime
+        # state against install-time state when WebDAV PUT 503s with
+        # "Encryption not ready". Hashes never leak the secret in
+        # clear -- only sha256 prints land in the sentinel. The file
+        # sits under the local nc-data volume (NOT objectstore), so it
+        # survives container recreate but goes away with the VM disk.
+        # Rewritten on every container boot so a redeploy that bumps
+        # the secret would show in a fresh capture.
+        diag_inst="$$(php occ config:system:get instanceid 2>/dev/null | tr -d '\n')"
+        diag_secret="$$(php occ config:system:get secret 2>/dev/null)"
+        diag_salt="$$(php occ config:system:get passwordsalt 2>/dev/null)"
+        diag_secret_h="$$(printf '%s' "$$diag_secret" | sha256sum | cut -d' ' -f1)"
+        diag_salt_h="$$(printf '%s' "$$diag_salt" | sha256sum | cut -d' ' -f1)"
+        diag_useMK="$$(php occ config:app:get encryption useMasterKey 2>/dev/null | tr -d '\n')"
+        diag_encE="$$(php occ config:app:get core encryption_enabled 2>/dev/null | tr -d '\n')"
+        diag_defM="$$(php occ config:app:get core default_encryption_module 2>/dev/null | tr -d '\n')"
+        diag_apps_enc="$$(php occ app:list 2>/dev/null | awk '/^- encryption:/{getline; print $$2}' | tr -d '\n')"
+        diag_now="$$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        mkdir -p /var/www/html/data
+        cat > /var/www/html/data/.catena-encryption-setup.json <<EOF_DIAG
+        {
+          "captured_at": "$$diag_now",
+          "container_hostname": "$$(hostname)",
+          "instanceid": "$$diag_inst",
+          "secret_sha256": "$$diag_secret_h",
+          "passwordsalt_sha256": "$$diag_salt_h",
+          "encryption_app_useMasterKey": "$$diag_useMK",
+          "core_encryption_enabled": "$$diag_encE",
+          "core_default_encryption_module": "$$diag_defM",
+          "encryption_app_version": "$$diag_apps_enc"
+        }
+        EOF_DIAG
         HOOK
         chmod 0755 /docker-entrypoint-hooks.d/before-starting/zz-catena.sh
         # Remove the predecessor hook if present from a prior catalog
@@ -257,7 +309,7 @@ services:
     labels:
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
-      - "vps.auth.groups=client-staff"
+      - "vps.auth.groups=staff"
       - "vps.auth.oidc.redirect_uris=https://${NEXTCLOUD_HOSTNAME}/apps/user_oidc/code"
       - "vps.auth.oidc.scopes=openid email profile groups"
       - "vps.auto-update=patch"

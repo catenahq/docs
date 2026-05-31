@@ -289,53 +289,65 @@ concrete running version per service so drift is easy to spot.
 ### `vps.auth.groups=<csv>`
 
 Comma-separated list of Keycloak group names that can access the app.
-Any user in ANY listed group passes (OR semantics, matches the
-`app_proxy_gate` helper).
+A user in ANY listed group passes (OR semantics). The `admin` group is
+ALWAYS allowed implicitly -- the operator is a superuser and is never
+locked out of an app by a label.
+
+Groups follow the four-tier model: `visitor` (anonymous, see below),
+`client` (your external users), `staff` (your employees; departments
+like `accounting` / `engineering` are subgroups of staff), and `admin`
+(operator).
 
 **Examples:**
 
 ```yaml
 labels:
-  - "vps.auth.groups=accounting"                    # only accounting
-  - "vps.auth.groups=accounting,engineering"        # either department
-  - "vps.auth.groups=administrators"                # admins only (equivalent to vps.auth.mode=admin-only)
-  - "vps.auth.groups=client-staff"                  # everyone in client-staff (baseline)
+  - "vps.auth.groups=accounting"             # only accounting (+admin)
+  - "vps.auth.groups=accounting,engineering" # either department (+admin)
+  - "vps.auth.groups=staff"                  # all employees (+admin)
+  - "vps.auth.groups=client,staff"           # external users + employees
+  - "vps.auth.groups=visitor"                # PUBLIC -- no login (see note)
 ```
 
-**Auto-creation.** If a group name is not yet in Keycloak, dashboard-sync
-creates it (empty) on next run. Operator (or anyone with Keycloak admin
-access) adds members via the Keycloak UI. The app will 403 until at
-least one user is assigned.
+**`visitor` means public.** Listing `visitor` makes the app reachable
+with no authentication at all (it is a label keyword, not a real
+login). Mixing `visitor` with other groups is contradictory -- visitor
+wins and the app is public.
 
-**Removal.** If you delete an app from Dokploy, dashboard-sync removes
-its Keycloak provider + application + policybindings. Groups with
-members are preserved; empty groups with no app references are cleaned
-up.
+**Groups are NOT auto-created.** A group named here must exist in
+Keycloak and have members, otherwise no one (except `admin`) can reach
+the app. See who-can-reach-what at a glance on the Access tab of your
+dashboard, and add members in Keycloak (link from the Access tab).
 
 ### `vps.auth.mode=<mode>`
 
-Pick the access posture. Mutually exclusive with `vps.auth.groups` on
-the same service (use one OR the other).
+A shorthand for common group sets. Use this OR `vps.auth.groups`.
 
 | Mode | Meaning |
 |---|---|
-| `private` | Gate behind Keycloak; users in `client-staff` can reach. Default if unset. |
-| `admin-only` | Gate behind Keycloak; users in `administrators` can reach. Equivalent to `vps.auth.groups=administrators`. |
-| `public` | Skip Keycloak entirely. App is reachable by anyone with the URL. Use ONLY for truly-public services (marketing site, landing page). |
+| `public` | No authentication -- anyone with the URL. Same as `vps.auth.groups=visitor`. Use ONLY for truly-public services (marketing site, landing page). |
+| `private` | Gate behind Keycloak; `client` + `staff` (+ `admin`) can reach. Add explicit `vps.auth.groups` to narrow to a department. |
+| `admin-only` | Gate behind Keycloak; only `admin`. |
 
-**Default posture (no labels).** An app deployed without `vps.auth.*`
-labels falls through to the domain catchall, which is bound to the
-`administrators` group. In practice this means: *unlabeled apps are
-admin-only, not everyone-who-logged-in.* This is secure-by-default --
-you have to explicitly opt in to wider access.
+**Default posture (no labels) is DENY.** An app deployed without any
+`vps.auth.*` label is reachable by `admin` only -- unreachable to every
+other tier. This is secure-by-default: you explicitly opt in to wider
+access by adding `vps.auth.groups` (or `vps.auth.mode`). A label-less
+app that should be reachable by your team will 403 for them until you
+add `vps.auth.groups=staff` (or the right department).
 
-**Why `mode=private` differs from "no labels".** With no labels at all,
-the app has no per-app Keycloak application/provider; it falls through
-to the catchall (admins only). With `vps.auth.mode=private`, dashboard-
-sync creates a dedicated Keycloak app + provider + binding to
-`client-staff`, so anyone in `client-staff` can reach it. Pick `private`
-(or an explicit `vps.auth.groups=...`) the moment a non-admin needs
-access.
+### `vps.auth.protected=true`
+
+Marks a sensitive app that must NEVER be public. If a `protected` app
+is ever resolved to public (e.g. someone adds `vps.auth.mode=public`),
+the Access tab flags it as a guardrail warning so the mistake is caught
+before it ships. Add it to anything holding confidential data.
+
+```yaml
+labels:
+  - "vps.auth.groups=accounting"
+  - "vps.auth.protected=true"
+```
 
 ## What dashboard-sync does for you
 
@@ -361,7 +373,7 @@ Every 5 minutes (via systemd timer), `dashboard-sync.service`:
   (empty). You'll notice because the app 403s. Fix: rename the group in
   Keycloak UI, or fix the label in Dokploy and re-deploy.
 - **You removed the label but kept the app.** On next sync, policy
-  bindings collapse to `administrators` (catchall). No one except admins
+  bindings collapse to `admin` (catchall). No one except admins
   can reach it. Intentional -- failing closed.
 - **Two apps with the same hostname but different groups.** The last-
   written policy binding wins. Don't do this; give each app a unique
