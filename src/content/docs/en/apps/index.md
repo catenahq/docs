@@ -85,7 +85,7 @@ Open-source time tracker. Customers, projects, activities, timesheets, multi-use
 Open-source invoicing with Stripe + PayPal payment gateways, recurring billing, expense tracking, client portal for online payment. Self-hosted gets all Pro + Enterprise features. [-> Full details](/en/apps/invoiceninja/)
 
 ### 22. Mail server + webmail -- replaces Google Workspace (Gmail), Microsoft 365 (Exchange Online)
-Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound is relayed through a reputable provider so messages are not flagged as spam. [-> Full details](/en/apps/mailserver/)
+Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound requires an SMTP relay through a reputable provider (set up before deploy) so messages are not flagged as spam. [-> Full details](/en/apps/mailserver/)
 
 ## A note on sign-in (SSO)
 

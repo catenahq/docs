@@ -88,7 +88,7 @@ Suivi du temps open-source. Clients, projets, activités, feuilles de temps, éq
 Facturation open-source avec passerelles de paiement Stripe + PayPal, facturation récurrente, suivi des dépenses, portail client pour paiement en ligne. L'auto-hébergement débloque toutes les fonctionnalités Pro + Enterprise. [-> Voir les détails](/apps/invoiceninja/)
 
 ### 22. Serveur de courriel + webmail -- remplace Google Workspace (Gmail), Microsoft 365 (Exchange Online)
-Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi passe par un fournisseur de relais réputé pour éviter le classement en pourriel. [-> Voir les détails](/apps/mailserver/)
+Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi requiert un relais SMTP via un fournisseur réputé (configuré avant le déploiement) pour éviter le classement en pourriel. [-> Voir les détails](/apps/mailserver/)
 
 ## À propos de la connexion (SSO)
 

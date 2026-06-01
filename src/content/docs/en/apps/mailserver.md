@@ -3,7 +3,7 @@ title: "Mail server + webmail"
 description: "Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on."
 ---
 
-Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound is relayed through a reputable provider so messages are not flagged as spam.
+Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound requires an SMTP relay through a reputable provider (set up before deploy) so messages are not flagged as spam.
 
 - **Upstream project:** <https://docker-mailserver.github.io/>
 - **Replaces:** **Google Workspace (Gmail)**, **Microsoft 365 (Exchange Online)**

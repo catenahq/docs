@@ -3,7 +3,7 @@ title: "Serveur de courriel + webmail"
 description: "Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak."
 ---
 
-Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi passe par un fournisseur de relais réputé pour éviter le classement en pourriel.
+Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi requiert un relais SMTP via un fournisseur réputé (configuré avant le déploiement) pour éviter le classement en pourriel.
 
 - **Projet original :** <https://docker-mailserver.github.io/>
 - **Remplace :** **Google Workspace (Gmail)**, **Microsoft 365 (Exchange Online)**
