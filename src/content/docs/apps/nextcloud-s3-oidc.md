@@ -80,6 +80,7 @@ premier semi du template -- vous n'avez pas à les générer vous-même.
 | `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
 | `NEXTCLOUD_LOGLEVEL` | `1` |
 | `NEXTCLOUD_VERSIONS_RETENTION` | `auto, 7` |
+| `NEXTCLOUD_TRASH_RETENTION` | `auto, 30` |
 | `S3_BUCKET` | _(à définir avant déploiement)_ |
 | `S3_REGION` | `bhs` |
 | `S3_HOST` | `s3.bhs.io.cloud.ovh.net` |
@@ -170,11 +171,13 @@ services:
         set -e
         : "$${NEXTCLOUD_LOGLEVEL:=1}"
         : "$${NEXTCLOUD_VERSIONS_RETENTION:=auto, 7}"
+        : "$${NEXTCLOUD_TRASH_RETENTION:=auto, 30}"
         cat > /var/www/html/config/zz-catena.config.php <<PHP
         <?php
         \$$CONFIG = [
           'loglevel' => $${NEXTCLOUD_LOGLEVEL},
           'versions_retention_obligation' => '$${NEXTCLOUD_VERSIONS_RETENTION}',
+          'trashbin_retention_obligation' => '$${NEXTCLOUD_TRASH_RETENTION}',
         ];
         PHP
         # Server-side encryption (SSE), master-key mode. Encrypts file
@@ -190,6 +193,22 @@ services:
         # `encryption:enable-master-key` prompts y/n and treats
         # --no-interaction as "no", so the confirmation is fed on stdin.
         php occ app:enable encryption
+        # Force-set the useMasterKey config flag BEFORE any path that
+        # might trigger the encryption module's per-user-mode bootstrap.
+        # Bench diag (run 2026-05-31T14-26-35-ad7b nc_s3_hot_recovery)
+        # caught the failure mode this guards against: master_<id>.{pub,
+        # priv}Key files DID land in S3, but useMasterKey stayed empty
+        # in oc_appconfig. Nextcloud's KeyManager::getPrivateKey then
+        # took the per-user branch (because isMasterKeyEnabled returns
+        # false when useMasterKey != "1") and threw PrivateKeyMissing-
+        # Exception for admin -- the admin user has no per-user key
+        # because we never went through that setup. occ encryption:
+        # enable-master-key shorts out with "Master key already enabled"
+        # if the FILES exist, regardless of the config flag, so the
+        # original guard could not self-heal. Setting the flag
+        # idempotently FIRST flips KeyManager into master-key mode for
+        # every subsequent occ + Apache request.
+        php occ config:app:set encryption useMasterKey --value=1
         if [ "$$(php occ config:app:get encryption useMasterKey 2>/dev/null)" != "1" ]; then
           printf 'y\n' | php occ encryption:enable-master-key
         fi
@@ -258,8 +277,20 @@ services:
       # ~50-70% less storage than the upstream default 30-day cap;
       # raise to `auto, 14` or `auto, 30` for clients who routinely
       # need deeper undo. Direct lever on hot+cold bucket storage cost.
+      #
+      # NEXTCLOUD_TRASH_RETENTION: passed verbatim into the
+      # `trashbin_retention_obligation` config key (same `auto, <N>`
+      # format). This is the mass-DELETE safety net: a runaway desktop
+      # sync that deletes a tree propagates the deletes server-side, but
+      # the files land in each user's trash and are recoverable for at
+      # least N days regardless of free space. Default `auto, 30` keeps a
+      # 30-day undo window for accidental/ransomware bulk deletion; lower
+      # it only for storage-constrained clients who accept a shorter
+      # recovery window. (versions_retention covers OVERWRITES; this
+      # covers DELETES -- both are needed.)
       NEXTCLOUD_LOGLEVEL: ${NEXTCLOUD_LOGLEVEL:-1}
       NEXTCLOUD_VERSIONS_RETENTION: ${NEXTCLOUD_VERSIONS_RETENTION:-auto, 7}
+      NEXTCLOUD_TRASH_RETENTION: ${NEXTCLOUD_TRASH_RETENTION:-auto, 30}
 
       # TLS is terminated upstream (Cloudflare Tunnel -> Traefik). Force
       # Nextcloud to render https:// links + trust the reverse-proxy
