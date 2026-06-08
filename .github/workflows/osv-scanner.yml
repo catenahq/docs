@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: OSV-Scanner (latest user-space binary, no docker)
         run: |
-          set -euo pipefail
+          set -uo pipefail
           case "$(uname -m)" in
             x86_64) arch=amd64 ;;
             aarch64|arm64) arch=arm64 ;;
@@ -40,4 +40,15 @@ jobs:
           curl -fsSL -o "$bindir/osv-scanner" \
             "https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_linux_${arch}"
           chmod +x "$bindir/osv-scanner"
-          "$bindir/osv-scanner" scan source --recursive .
+          # GitHub runs steps with `bash -e`; capture rc with -e OFF so the
+          # no-lockfile case (osv-scanner exits 128, "No package sources
+          # found") can be treated as green instead of aborting the step.
+          set +e
+          out=$("$bindir/osv-scanner" scan source --recursive . 2>&1); rc=$?
+          set -e
+          echo "$out"
+          if [ "$rc" -ne 0 ] && printf '%s' "$out" | grep -q "No package sources found"; then
+            echo "::notice ::OSV-Scanner found no lockfiles to scan -- treating as green."
+            exit 0
+          fi
+          exit "$rc"
