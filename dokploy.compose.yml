@@ -13,7 +13,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     expose:
-      - "80"
+      - "8080"
     # Public static site -- no auth gating in front.
     labels:
       - "vps.auth.mode=${VPS_AUTH_MODE:-public}"
@@ -21,7 +21,7 @@ services:
     networks:
       - dokploy-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8080/"]
       interval: 30s
       timeout: 5s
       retries: 5
