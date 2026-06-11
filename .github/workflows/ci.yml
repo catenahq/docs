@@ -16,6 +16,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   docs:
     name: docs (typecheck + build)
@@ -25,12 +28,14 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           path: docs
+          persist-credentials: false
       - name: Check out sibling contracts
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           repository: catenahq/contracts
           token: ${{ secrets.CONTRACTS_READ_TOKEN }}
           path: contracts
+          persist-credentials: false
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: "24"
