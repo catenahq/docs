@@ -19,8 +19,9 @@ export default defineConfig({
       title: "catena docs",
       editLink: {
         // "Suggest edit" link in every page footer; opens the file
-        // on GitHub for the post-split source of truth.
-        baseUrl: "https://github.com/catenahq/docs/edit/main/",
+        // on GitHub on the active branch (dev = default; main is the
+        // protected deploy branch).
+        baseUrl: "https://github.com/catenahq/docs/edit/dev/",
       },
       plugins: [
         starlightLinksValidator({
