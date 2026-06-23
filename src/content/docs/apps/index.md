@@ -1,95 +1,92 @@
 ---
-title: "Applications pré-configurées à activer"
-description: "Catalogue d'applications à un clic que votre opérateur peut amorcer dans Dokploy : auth, réseau, SSO, stockage et SSL pré-configurés."
+title: "Pre-configured apps you can enable"
+description: "Catalog of one-click apps your operator can seed into Dokploy: each is fully wired (auth, networking, SSO, storage, SSL)."
 ---
 
-Dokploy est livré avec un projet **Templates** sur votre VPS. Chaque
-entrée est une application compose entièrement câblée, à l'état
-non-déployé -- authentification, réseau, SSO, stockage et SSL sont
-pré-configurés.
+Dokploy ships with a **Templates** project on your VPS. Each entry is
+a fully-wired compose app in an un-deployed state -- authentication,
+networking, SSO hooks, storage, and SSL are pre-configured.
 
-Cliquez sur le projet **Templates** dans la barre latérale de Dokploy.
-Pour chaque entrée :
+Click the **Templates** project in Dokploy's sidebar. For each entry:
 
-- **Cliquez Deploy** -> l'application démarre avec toutes les intégrations actives.
-- **Cliquez Delete** -> l'entrée est supprimée et reste supprimée. Une
-  ré-exécution de l'installation ne recrée PAS les entrées supprimées.
+- **Click Deploy** -> the app starts with all integrations active.
+- **Click Delete** -> the entry is removed and stays removed. Re-running
+  setup does NOT recreate deleted entries.
 
-Si un template ne vous est pas utile, un clic le fait disparaître.
+If a template isn't useful for you, one click makes it go away.
 
-## Templates disponibles
+## Available templates
 
-Listés dans l'ordre de déploiement suggéré -- hubs en premier,
-intégrations ensuite, indépendants à la fin. Chaque entrée pointe
-vers une page de référence complète avec les étapes, les variables
-d'environnement, le domaine et le fichier compose.
+Listed in suggested deployment order -- hubs first, integrations next,
+independents last. Each entry links to a full reference page with the
+setup steps, environment variables, domain, and compose file.
 
-### 1. Nextcloud -- remplace Google Drive, Dropbox, OneDrive Entreprise
-Partage de fichiers et collaboration auto-hébergés -- le hub auquel d'autres templates se connectent. [-> Voir les détails](/apps/nextcloud-s3-oidc/)
+### 1. Nextcloud -- replaces Google Drive, Dropbox, OneDrive for Business
+Self-hosted file sharing and collaboration -- the file hub that other templates plug into. [-> Full details](/apps/nextcloud-s3-oidc/)
 
-### 2. Collabora Online (CODE) -- remplace Microsoft Office Online, Google Docs (éditeur embarqué)
-Édition collaborative ODT/DOCX/XLSX/PPTX -- s'intègre à Nextcloud pour la co-édition temps réel. Basé sur LibreOffice ; plus léger qu'OnlyOffice ; meilleure fidélité pour les formats ODF. [-> Voir les détails](/apps/collabora/)
+### 2. Collabora Online (CODE) -- replaces Microsoft Office Online, Google Docs (as embedded editor)
+Collaborative ODT/DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing. LibreOffice-based; lighter than OnlyOffice; better fidelity for ODF formats. [-> Full details](/apps/collabora/)
 
-### 3. OnlyOffice -- remplace Microsoft Office Online, Google Docs (éditeur embarqué)
-Édition collaborative DOCX/XLSX/PPTX -- s'intègre à Nextcloud pour la co-édition temps réel avec une haute fidélité aux formats MS Office. [-> Voir les détails](/apps/onlyoffice/)
+### 3. OnlyOffice -- replaces Microsoft Office Online, Google Docs (as embedded editor)
+Collaborative DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing with high MS Office fidelity. [-> Full details](/apps/onlyoffice/)
 
-### 4. Rocket.Chat -- remplace Slack, Microsoft Teams, Discord (en usage pro)
-Messagerie d'équipe -- canaux, messages directs, partage de fichiers, apps mobiles, appels vidéo. Keycloak SSO pré-câblé. [-> Voir les détails](/apps/rocketchat-oidc/)
+### 4. Rocket.Chat -- replaces Slack, Microsoft Teams, Discord (for work)
+Team chat -- channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired. [-> Full details](/apps/rocketchat-oidc/)
 
-### 5. Element / Matrix -- remplace Slack, Microsoft Teams, Signal (en usage pro), Zoom (pour les petits appels de groupe)
-Element + serveur Matrix auto-hébergés -- messagerie d'équipe avec chiffrement de bout en bout, voix, visio de groupe (Jitsi embarqué), et entrée SIP par téléphone. Fédération capable mais désactivée par défaut. [-> Voir les détails](/apps/element/)
+### 5. Element / Matrix -- replaces Slack, Microsoft Teams, Signal (for team use), Zoom (for small group calls)
+Self-hosted Element + Matrix homeserver -- federated-capable team chat with end-to-end encryption, voice, group video (bundled Jitsi), and SIP dial-in. [-> Full details](/apps/element/)
 
-### 6. DocuSeal -- remplace DocuSign, HelloSign, PandaDoc, Adobe Sign
-Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées. [-> Voir les détails](/apps/docuseal/)
+### 6. DocuSeal -- replaces DocuSign, HelloSign, PandaDoc, Adobe Sign
+Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in. [-> Full details](/apps/docuseal/)
 
-### 7. Outline -- remplace Notion, Confluence, Google Sites
-Wiki d'équipe / base de connaissances. Pages façon Notion, collections, documents imbriqués. Keycloak SSO pré-câblé. [-> Voir les détails](/apps/outline/)
+### 7. Outline -- replaces Notion, Confluence, Google Sites
+Team wiki / knowledge base. Notion-style pages, collections, nested docs. Keycloak SSO pre-wired. [-> Full details](/apps/outline/)
 
-### 8. EspoCRM -- remplace Salesforce, HubSpot, Zoho CRM, Pipedrive
-CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calendrier, intégration email, mass mail, automatisation. OIDC natif via un bouton post-déploiement. [-> Voir les détails](/apps/espocrm/)
+### 8. EspoCRM -- replaces Salesforce, HubSpot, Zoho CRM, Pipedrive
+Default CRM in the stack. Contacts, accounts, opportunities, leads, calendar, email integration, mass mail, workflow automation. Native OIDC via post-deploy toggle. [-> Full details](/apps/espocrm/)
 
-### 9. Twenty -- remplace Salesforce, HubSpot, Pipedrive
-CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation email, pipelines. Alternative à EspoCRM (le CRM par défaut). [-> Voir les détails](/apps/twenty/)
+### 9. Twenty -- replaces Salesforce, HubSpot, Pipedrive
+Modern open-source CRM. Contacts, companies, opportunities, email sync, pipelines. Alternative to EspoCRM (the default CRM). [-> Full details](/apps/twenty/)
 
-### 10. Plane -- remplace Jira, Linear, Asana, ClickUp
-Gestion de projet open-source -- issues, cycles, modules, pages, workspaces. [-> Voir les détails](/apps/plane/)
+### 10. Plane -- replaces Jira, Linear, Asana, ClickUp
+Open-source project management -- issues, cycles, modules, pages, workspaces. [-> Full details](/apps/plane/)
 
-### 11. Zammad -- remplace Zendesk, Freshdesk, Jira Service Desk
-Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connaissances. OIDC natif. [-> Voir les détails](/apps/zammad/)
+### 11. Zammad -- replaces Zendesk, Freshdesk, Jira Service Desk
+Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. Native OIDC. [-> Full details](/apps/zammad/)
 
-### 12. Chatwoot -- remplace Intercom, Front, Help Scout (canaux de chat)
-Boîte de réception omnicanale orientée conversation. Email, widget de chat, WhatsApp, Facebook, Instagram, Twitter/X en une seule vue. [-> Voir les détails](/apps/chatwoot/)
+### 12. Chatwoot -- replaces Intercom, Front, Help Scout (for chat channels)
+Conversation-first omnichannel inbox. Email, live-chat widget, WhatsApp, Facebook, Instagram, Twitter/X in one inbox. [-> Full details](/apps/chatwoot/)
 
-### 13. WordPress -- remplace Wix, Squarespace, Drupal auto-hébergé
-Plateforme CMS / site web public prête pour la production, avec cache FastCGI, cache d'objets Redis et un ensemble de plugins gratuits curatés pré-installés. Le site est accessible anonymement ; la connexion admin sur /wp-admin peut être câblée à Keycloak via un plugin. [-> Voir les détails](/apps/wordpress/)
+### 13. WordPress -- replaces Wix, Squarespace, self-hosted Drupal
+Production-ready public CMS / website platform with FastCGI cache, Redis object cache, and a curated free-tier plugin set pre-installed. The site serves anonymously; admin sign-in runs on /wp-admin and can be wired to Keycloak via a plugin. [-> Full details](/apps/wordpress/)
 
-### 14. n8n -- remplace Zapier, Make (Integromat), Tray.io
-Automatisation de flux de travail -- enchaînez visuellement des centaines d'intégrations (APIs, apps, bases de données) en workflows no-code/low-code. [-> Voir les détails](/apps/n8n/)
+### 14. n8n -- replaces Zapier, Make (Integromat), Tray.io
+Workflow automation -- visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows. [-> Full details](/apps/n8n/)
 
-### 15. ERPNext -- remplace SAP Business One, Odoo, Oracle NetSuite
-Suite ERP open-source complète -- comptabilité, inventaire, RH/paie, CRM, production, projets, et un module site web / e-commerce intégré. [-> Voir les détails](/apps/erpnext/)
+### 15. ERPNext -- replaces SAP Business One, Odoo, Oracle NetSuite
+Full open-source ERP suite -- accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module. [-> Full details](/apps/erpnext/)
 
-### 16. Actual Budget -- remplace YNAB (You Need A Budget), Mint, EveryDollar
-Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro bancaire via SimpleFIN ou GoCardless, chiffré de bout en bout. [-> Voir les détails](/apps/actualbudget/)
+### 16. Actual Budget -- replaces YNAB (You Need A Budget), Mint, EveryDollar
+Self-hosted personal finance. Envelope budgeting, bank account syncing via SimpleFIN or GoCardless, encrypted end-to-end. [-> Full details](/apps/actualbudget/)
 
-### 17. Postiz -- remplace Buffer, Hootsuite, Later
-Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, et d'autres. [-> Voir les détails](/apps/postiz/)
+### 17. Postiz -- replaces Buffer, Hootsuite, Later
+Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, and more. [-> Full details](/apps/postiz/)
 
-### 18. Easy!Appointments -- remplace Calendly, Acuity, SimplyBook, Setmore
-Application de réservation côté client pour un ou plusieurs prestataires (clinique, salon, cours, atelier de réparation). Page de réservation publique ; calendriers du personnel ; rappels courriel + SMS ; export ICS. [-> Voir les détails](/apps/easyappointments/)
+### 18. Easy!Appointments -- replaces Calendly, Acuity, SimplyBook, Setmore
+Customer-facing booking app for one or many providers (clinic, salon, lessons, repair shop). Public booking page; staff calendars; email + SMS reminders; ICS export. [-> Full details](/apps/easyappointments/)
 
-### 19. Mautic -- remplace Mailchimp, ActiveCampaign, HubSpot Marketing, Brevo (Sendinblue)
-Automatisation marketing open-source. Segments de contacts, campagnes courriel, séquences drip, pages de destination, formulaires, scoring de prospects. Remplace Mailchimp / ActiveCampaign / HubSpot Marketing. [-> Voir les détails](/apps/mautic/)
+### 19. Mautic -- replaces Mailchimp, ActiveCampaign, HubSpot Marketing, Brevo (Sendinblue)
+Open-source marketing automation. Contact segments, email campaigns, drip sequences, landing pages, forms, lead scoring. Replaces Mailchimp / ActiveCampaign / HubSpot Marketing. [-> Full details](/apps/mautic/)
 
-### 20. Kimai -- remplace Toggl, Clockify, Harvest, TimeCamp
-Suivi du temps open-source. Clients, projets, activités, feuilles de temps, équipes multi-utilisateur, facturation à partir du temps suivi. SAML fédère avec Keycloak via l'UI admin post-déploiement. [-> Voir les détails](/apps/kimai/)
+### 20. Kimai -- replaces Toggl, Clockify, Harvest, TimeCamp
+Open-source time tracker. Customers, projects, activities, timesheets, multi-user teams, invoice generation from tracked time. SAML federates with Keycloak via the post-deploy admin UI. [-> Full details](/apps/kimai/)
 
-### 21. Invoice Ninja -- remplace FreshBooks, QuickBooks (module facturation), Zoho Invoice, Harvest (facturation)
-Facturation open-source avec passerelles de paiement Stripe + PayPal, facturation récurrente, suivi des dépenses, portail client pour paiement en ligne. L'auto-hébergement débloque toutes les fonctionnalités Pro + Enterprise. [-> Voir les détails](/apps/invoiceninja/)
+### 21. Invoice Ninja -- replaces FreshBooks, QuickBooks (invoicing module), Zoho Invoice, Harvest (invoicing)
+Open-source invoicing with Stripe + PayPal payment gateways, recurring billing, expense tracking, client portal for online payment. Self-hosted gets all Pro + Enterprise features. [-> Full details](/apps/invoiceninja/)
 
-### 22. Serveur de courriel + webmail -- remplace Google Workspace (Gmail), Microsoft 365 (Exchange Online)
-Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi requiert un relais SMTP via un fournisseur réputé (configuré avant le déploiement) pour éviter le classement en pourriel. [-> Voir les détails](/apps/mailserver/)
+### 22. Mail server + webmail -- replaces Google Workspace (Gmail), Microsoft 365 (Exchange Online)
+Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound requires an SMTP relay through a reputable provider (set up before deploy) so messages are not flagged as spam. [-> Full details](/apps/mailserver/)
 
-## À propos de la connexion (SSO)
+## A note on sign-in (SSO)
 
-La page de référence de chaque template indique son statut SSO (pré-câblé, via l'UI admin, curl unique, ou non disponible). Les apps sans OIDC natif signifient simplement que chaque utilisateur garde une connexion par app -- l'app reste accessible, sauvegardée, et protégée par son propre écran de connexion. Elle ne participe simplement pas au flux "une connexion pour tout".
+Each template's reference page declares its SSO status (pre-wired, post-deploy UI, one-time curl, or not available). Apps without native OIDC just mean each user maintains a per-app login -- the app itself is still reachable, backed up, and secured by its own login wall. It just doesn't participate in the "one login for everything" flow.

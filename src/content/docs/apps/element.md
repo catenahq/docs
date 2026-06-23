@@ -1,53 +1,53 @@
 ---
 title: "Element / Matrix"
-description: "Element + serveur Matrix auto-hébergés -- messagerie d'équipe avec chiffrement de bout en bout, voix, visio de groupe (Jitsi embarqué), et entrée SIP par tél..."
+description: "Self-hosted Element + Matrix homeserver -- federated-capable team chat with end-to-end encryption, voice, group video (bundled Jitsi), and SIP dial-in."
 ---
 
-Element + serveur Matrix auto-hébergés -- messagerie d'équipe avec chiffrement de bout en bout, voix, visio de groupe (Jitsi embarqué), et entrée SIP par téléphone. Fédération capable mais désactivée par défaut.
+Self-hosted Element + Matrix homeserver -- federated-capable team chat with end-to-end encryption, voice, group video (bundled Jitsi), and SIP dial-in.
 
-- **Projet original :** <https://element.io/>
-- **Remplace :** **Slack**, **Microsoft Teams**, **Signal (en usage pro)**, **Zoom (pour les petits appels de groupe)**
-- **Connexion (SSO) :** Pré-câblé -- la page de connexion affiche "Se connecter avec Keycloak" d'emblée, aucune étape post-déploiement.
+- **Upstream project:** <https://element.io/>
+- **Replaces:** **Slack**, **Microsoft Teams**, **Signal (for team use)**, **Zoom (for small group calls)**
+- **Sign-in (SSO):** Pre-wired -- the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Le premier démarrage prend ~3 min (Synapse génère ses clés de signature, postgres s'initialise, les composants Jitsi s'enregistrent).
-2. Ouvrez `element.<votre-domaine>` -- le client web Element s'ouvre. Cliquez **Se connecter avec Keycloak**.
-3. Le premier utilisateur Keycloak arrive comme utilisateur Matrix normal. Pour le promouvoir admin du homeserver, ouvrez `synapseadmin.<votre-domaine>` (réservé opérateur, protégé par le groupe admin Keycloak), trouvez l'utilisateur, et activez l'indicateur admin.
-4. *(Optionnel)* Activez l'entrée SIP : remplissez `JIGASI_SIP_URI`, `JIGASI_SIP_PASSWORD`, `JIGASI_SIP_SERVER` dans l'onglet Environment avec les identifiants de votre fournisseur SIP, puis redéployez. Sans ces valeurs, chat / voix / vidéo fonctionnent quand même -- seule l'entrée par téléphone est désactivée.
-5. *(Optionnel)* Ouvrez la fédération : éditez `FEDERATION_DOMAIN_WHITELIST` dans l'onglet Environment (ex : `"matrix.org","example.com"`) puis redéployez. Par défaut vide (pas de fédération -- le homeserver ne parle qu'à lui-même).
+1. Click **Deploy**. First boot takes ~3 minutes (Synapse generates signing keys, postgres initialises, Jitsi components register).
+2. Open `element.<your-domain>` -- the Element web client opens. Click **Sign in with Keycloak**.
+3. The first Keycloak user lands as a regular Matrix user. To promote them to homeserver admin, open `synapseadmin.<your-domain>` (operator-only, gated by Keycloak admin group), find the user, and toggle the admin flag.
+4. *(Optional)* Enable SIP dial-in: fill `JIGASI_SIP_URI`, `JIGASI_SIP_PASSWORD`, `JIGASI_SIP_SERVER` in the Environment tab with your SIP provider's credentials, then redeploy. Without these, chat / voice / video still work -- only dial-in from a phone is off.
+5. *(Optional)* Open federation: edit `FEDERATION_DOMAIN_WHITELIST` in the Environment tab (e.g. `"matrix.org","example.com"`) and redeploy. Default is empty (no federation -- the homeserver only talks to itself).
 
-### Chiffrement de bout en bout
+### End-to-end encryption
 
-Les nouveaux messages directs et les nouveaux salons sur invitation sont chiffrés par défaut. Les salons publics restent en clair (le E2EE dans des salons publics nombreux dégrade la synchro mobile). Chaque utilisateur est invité à configurer le **Coffre-fort de récupération** lors de sa première connexion -- une clé de 24 caractères qui lui permet de lire l'historique chiffré depuis un nouvel appareil. Perdre la clé verrouille l'utilisateur hors de ses anciens messages chiffrés ; sauvegardez-la comme un mot de passe maître.
+New direct messages and new invite-only rooms are encrypted by default. Public rooms stay unencrypted (E2EE in large public rooms hurts mobile sync UX). Each user is prompted to set up **Secure Backup** the first time they log in -- this is a 24-character recovery key that lets them read encrypted history from a new device. Losing the key locks the user out of old encrypted messages; back it up the same way you back up a password manager.
 
-### Voix et vidéo
+### Voice and video
 
-- **Appels 1:1** utilisent le moteur d'appel Element/Matrix et le serveur TURN/STUN partagé `turn.<votre-domaine>` pour relayer les médias en réseau restrictif.
-- **Appels de groupe** s'ouvrent dans un widget Jitsi embarqué sur `elementmeet.<votre-domaine>` (l'instance Jitsi embarquée). Les appels ne quittent jamais votre serveur -- pas de repli sur `meet.jit.si`.
-- **Entrée SIP** (jigasi) permet à un téléphone classique d'appeler un numéro SIP pour rejoindre un salon Jitsi. Activez en remplissant les variables d'environnement `JIGASI_SIP_*` (voir étape 4 ci-dessus).
+- **1:1 calls** use the bundled Element/Matrix call stack and the shared TURN/STUN server at `turn.<your-domain>` for restrictive-network media relay.
+- **Group video calls** open in an embedded Jitsi widget at `elementmeet.<your-domain>` (the bundled Jitsi instance). Calls never leave your server -- there is no fallback to `meet.jit.si`.
+- **SIP dial-in** (jigasi) lets a regular phone dial a SIP number to join a Jitsi room. Enable by filling the `JIGASI_SIP_*` env vars (see step 4 above).
 
-### Applications mobiles
+### Mobile apps
 
-Les apps iOS et Android d'Element se connectent directement à votre homeserver. Les utilisateurs touchent **Utiliser un serveur personnalisé** au premier lancement et saisissent `matrix.<votre-domaine>`. La connexion via Keycloak fonctionne dans l'app.
+Element's iOS and Android apps connect straight to your homeserver. Users tap **Use custom server** at first launch and enter `matrix.<your-domain>`. SSO via Keycloak works in-app.
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `ELEMENT_HOSTNAME` | `element.yourdomain.com` |
 | `MATRIX_HOSTNAME` | `matrix.yourdomain.com` |
 | `ELEMENT_JITSI_HOSTNAME` | `elementmeet.yourdomain.com` |
-| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `SYNAPSE_REGISTRATION_SHARED_SECRET` | _valeur aléatoire auto-générée_ |
-| `SYNAPSE_MACAROON_SECRET` | _valeur aléatoire auto-générée_ |
-| `SYNAPSE_FORM_SECRET` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _auto-generated random value_ |
+| `SYNAPSE_REGISTRATION_SHARED_SECRET` | _auto-generated random value_ |
+| `SYNAPSE_MACAROON_SECRET` | _auto-generated random value_ |
+| `SYNAPSE_FORM_SECRET` | _auto-generated random value_ |
 | `ALLOW_PUBLIC_REGISTRATION` | `false` |
-| `FEDERATION_DOMAIN_WHITELIST` | _(à définir avant déploiement)_ |
+| `FEDERATION_DOMAIN_WHITELIST` | _(set before deploy)_ |
 | `OIDC_BASE_URL` | `https://auth.yourdomain.com` |
 | `OIDC_CLIENT_ID` | `element` |
 | `OIDC_CLIENT_SECRET` | `<your-element_oidc_client_secret>` |
@@ -58,25 +58,25 @@ premier semi du template -- vous n'avez pas à les générer vous-même.
 | `JITSI_JICOFO_COMPONENT_SECRET` | `<your-element_jitsi_jicofo_component_secret>` |
 | `JITSI_JVB_AUTH_PASSWORD` | `<your-element_jitsi_jvb_auth_password>` |
 | `JIGASI_XMPP_PASSWORD` | `<your-element_jigasi_xmpp_password>` |
-| `JIGASI_SIP_URI` | _(à définir avant déploiement)_ |
-| `JIGASI_SIP_PASSWORD` | _(à définir avant déploiement)_ |
-| `JIGASI_SIP_SERVER` | _(à définir avant déploiement)_ |
+| `JIGASI_SIP_URI` | _(set before deploy)_ |
+| `JIGASI_SIP_PASSWORD` | _(set before deploy)_ |
+| `JIGASI_SIP_SERVER` | _(set before deploy)_ |
 
-## Domaine
+## Domain
 
-- **Service et port :** `element-web:80`
-- **Nom d'hôte :** `element.yourdomain.com`
+- **Service and port:** `element-web:80`
+- **Hostname:** `element.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # Element / Matrix (Synapse) -- chat, voice, video, SIP, E2EE.
@@ -626,4 +626,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

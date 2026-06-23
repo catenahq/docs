@@ -1,70 +1,70 @@
 ---
-title: Créer vos comptes fournisseurs
-description: Pas-à-pas -- créer les comptes fournisseurs externes (courriel, Cloudflare, Tailscale, OVH, eazybackup, Resend) qu'un déploiement catena typique requiert.
+title: Create your provider accounts
+description: Step-by-step -- create the external provider accounts (email, Cloudflare, Tailscale, OVH, eazybackup, Resend) that a typical catena deployment needs.
 ---
 
-Un déploiement catena typique repose sur quelques comptes externes qui restent à votre nom. Passez à travers ce que vous pouvez ; on couvrira le reste ensemble à la rencontre d'installation.
+A typical catena deployment leans on a handful of external accounts that stay in your name. Walk through what you can; we will cover the rest together at the install meeting.
 
-## 1. Fournisseur de courriel : en choisir un
+## 1. Email provider: choose one
 
-Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que vous choisissez. Ouvrez le [comparatif des fournisseurs de courriel](/guides/email-providers/) et choisissez l'un des cinq que nous recommandons (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence), puis créez le compte au nom de votre entreprise. Choisissez le plan qui correspond à la taille de votre équipe ; on s'occupe des enregistrements DNS et de l'expéditeur transactionnel à l'installation.
+Catena does not host email; it integrates with the provider you pick. Open the [email provider comparison](/guides/email-providers/) and choose one of the five we recommend (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence), then create the account in your business name. Pick the mailbox plan that matches your team size; we wire the DNS records and the transactional sender for you at install.
 
-*Durée : 15-30 minutes (création de compte + vérification initiale du domaine).*
+*Time: 15-30 minutes (account creation + initial domain verification).*
 
-[![Capture d'écran du parcours de choix d'un fournisseur de courriel](/img/guides/provider-accounts/email.fr.png)](/img/guides/provider-accounts/email.fr.png)
+[![Email provider selection walkthrough screenshot](/img/guides/provider-accounts/email.en.png)](/img/guides/provider-accounts/email.en.png)
 
-[Comparer les six fournisseurs ->](/guides/email-providers/)
+[Compare the six providers ->](/guides/email-providers/)
 
-## 2. Cloudflare : créer une clé API
+## 2. Cloudflare: create an API key
 
-[Inscrivez-vous](https://dash.cloudflare.com/sign-up) avec l'adresse courriel que vous voulez voir sur la facture et ajoutez votre nom de domaine au DNS de Cloudflare (le palier gratuit suffit). Créez ensuite un jeton API limité à votre zone afin que l'installation puisse publier les enregistrements DNS et le tunnel public en votre nom.
+[Sign up](https://dash.cloudflare.com/sign-up) with the email address you want on the invoice and add your business domain to Cloudflare DNS (free tier is enough). Then create an API token scoped to your zone so the install can publish DNS records and the public tunnel on your behalf.
 
-*Durée : 10-15 minutes (propagation DNS).*
+*Time: 10-15 minutes (DNS propagation).*
 
-[![Capture d'écran du parcours de création d'un jeton API Cloudflare](/img/guides/provider-accounts/cloudflare.fr.png)](/img/guides/provider-accounts/cloudflare.fr.png)
+[![Cloudflare API token walkthrough screenshot](/img/guides/provider-accounts/cloudflare.en.png)](/img/guides/provider-accounts/cloudflare.en.png)
 
-[Documentation Cloudflare complète ->](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
+[Full Cloudflare docs ->](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
 
-## 3. Tailscale : créer un client OAuth
+## 3. Tailscale: create an OAuth client ID
 
-[Démarrez un tailnet](https://login.tailscale.com/start) via le SSO de votre fournisseur courriel actuel (Google, Microsoft, GitHub). Créez ensuite un client OAuth afin que l'installation puisse ajouter le nouveau serveur à votre réseau privé sans que vous ayez à partager un identifiant personnel.
+[Start a tailnet](https://login.tailscale.com/start) using SSO from your existing email provider (Google, Microsoft, GitHub). Then create an OAuth client so the install can add the new server to your private network without you sharing a personal login.
 
-*Durée : 5-10 minutes.*
+*Time: 5-10 minutes.*
 
-[![Capture d'écran du parcours de création d'un client OAuth Tailscale](/img/guides/provider-accounts/tailscale.fr.png)](/img/guides/provider-accounts/tailscale.fr.png)
+[![Tailscale OAuth client walkthrough screenshot](/img/guides/provider-accounts/tailscale.en.png)](/img/guides/provider-accounts/tailscale.en.png)
 
-[Documentation Tailscale complète ->](https://tailscale.com/kb/1215/oauth-clients)
+[Full Tailscale docs ->](https://tailscale.com/kb/1215/oauth-clients)
 
-## 4. OVH (ou un autre fournisseur de VPS) : louer un VPS
+## 4. OVH (or another VPS provider): rent a VPS
 
-[Créez un compte OVH](https://www.ovhcloud.com/fr-ca/vps/) et commandez un VPS à votre nom. Pas certain de la taille qu'il vous faut ? Consultez le [guide de dimensionnement](/sizing/) pour une recommandation rapide selon le nombre d'employés et la charge. Beauharnois (Québec) est la région par défaut pour garder vos données au Canada.
+[Create an OVH account](https://www.ovhcloud.com/en-ca/vps/) and order a VPS in your name. Not sure which size fits your team? See the [sizing guide](/sizing/) for a quick recommendation by headcount and workload. Beauharnois (Quebec) is the default region so your data stays in Canada.
 
-*Durée : 30 minutes (la vérification de compte peut s'étirer à la première inscription).*
+*Time: 30 minutes (account verification can stretch on first sign-up).*
 
-[![Capture d'écran du parcours de commande VPS OVH](/img/guides/provider-accounts/ovh.fr.png)](/img/guides/provider-accounts/ovh.fr.png)
+[![OVH VPS order walkthrough screenshot](/img/guides/provider-accounts/ovh.en.png)](/img/guides/provider-accounts/ovh.en.png)
 
-[Documentation OVH complète ->](https://help.ovhcloud.com/csm/fr-ca-vps-getting-started?id=kb_article_view&sysparm_article=KB0047708)
+[Full OVH docs ->](https://help.ovhcloud.com/csm/en-ca-vps-getting-started?id=kb_article_view&sysparm_article=KB0047708)
 
-## 5. eazybackup : créer un stockage S3 de sauvegarde immuable
+## 5. eazybackup: create immutable S3 backup storage
 
-[Ouvrez un compte eazybackup](https://eazybackup.ca/) et créez un bucket S3-compatible avec Object Lock et le versioning activés. eazybackup est canadien et opère depuis Ottawa, donc vos sauvegardes hors-site restent au Canada et ne peuvent pas être écrasées ou supprimées silencieusement.
+[Open an eazybackup account](https://eazybackup.ca/) and create an S3-compatible bucket with Object Lock and versioning turned on. eazybackup is Canadian-owned and runs in Ottawa, so your offsite backups stay in Canada and cannot be silently overwritten or deleted.
 
-*Durée : 15 minutes.*
+*Time: 15 minutes.*
 
-[![Capture d'écran du parcours d'inscription eazybackup](/img/guides/provider-accounts/eazybackup.fr.png)](/img/guides/provider-accounts/eazybackup.fr.png)
+[![eazybackup signup walkthrough screenshot](/img/guides/provider-accounts/eazybackup.en.png)](/img/guides/provider-accounts/eazybackup.en.png)
 
-[Documentation eazybackup complète ->](https://eazybackup.ca/)
+[Full eazybackup docs ->](https://eazybackup.ca/)
 
-## 6. Relais SMTP : configurer un expéditeur pour les courriels automatiques
+## 6. SMTP relay: configure a sender for automated email
 
-Catena n'opère pas de serveur de messagerie ; il relaie les courriels automatiques (réinitialisations de mot de passe, invitations calendrier, notifications de tickets) via un expéditeur de votre choix. Par défaut : [Resend](https://resend.com/) (configuration en un clic -- ajoutez votre domaine, copiez les enregistrements DNS dans Cloudflare, générez une clé API). Alternatives : [Brevo](https://www.brevo.com/) (palier gratuit généreux), ou votre fournisseur courriel transactionnel actuel.
+Catena does not run a mail server; it relays automated email (password resets, calendar invites, ticket notifications) through a sender of your choice. Default: [Resend](https://resend.com/) (one-click setup -- add your domain, drop the DNS records into Cloudflare, generate an API key). Alternatives: [Brevo](https://www.brevo.com/) (generous free tier), or your existing transactional-email provider.
 
-*Durée : 10-20 minutes avec Resend (aller-retour DNS).*
+*Time: 10-20 minutes with Resend (DNS verification round-trip).*
 
-[![Capture d'écran de la configuration domaine + clé API Resend](/img/guides/provider-accounts/resend.fr.png)](/img/guides/provider-accounts/resend.fr.png)
+[![Resend domain + API key walkthrough screenshot](/img/guides/provider-accounts/resend.en.png)](/img/guides/provider-accounts/resend.en.png)
 
-[Documentation Resend complète ->](https://resend.com/docs/dashboard/domains/introduction)
+[Full Resend docs ->](https://resend.com/docs/dashboard/domains/introduction)
 
 ---
 
-Plus vous avancez dans cette liste, plus la rencontre d'installation sera rapide. Si vous n'avez le temps que de créer les comptes avant la rencontre, pas de souci : on passera chaque étape ensemble lors de l'appel.
+The further you get through this list, the faster the install meeting goes. If you only have time to create the accounts before we meet, that is fine too: we will walk through every step together on the call.

@@ -4,8 +4,9 @@ import starlightLinksValidator from "starlight-links-validator";
 
 // docs.catena.run -- public client docs.
 //
-// Content lives under src/content/docs/{en,fr}/. Starlight handles
-// the sidebar nav + EN/FR routing automatically.
+// Content lives under src/content/docs/ (EN, the default at root) and
+// src/content/docs/fr/ (FR). Starlight handles the sidebar nav +
+// EN/FR routing automatically.
 //
 // Deployment: standalone Astro build (`npm run build` -> `dist/`)
 // served by nginx via Dockerfile + dokploy.compose.yml at the root
@@ -34,8 +35,8 @@ export default defineConfig({
       lastUpdated: true,
       defaultLocale: "root",
       locales: {
-        root: { label: "Français", lang: "fr" },
-        en: { label: "English", lang: "en" },
+        root: { label: "English", lang: "en" },
+        fr: { label: "Français", lang: "fr" },
       },
       components: {
         SiteTitle: "./src/components/SiteTitle.astro",

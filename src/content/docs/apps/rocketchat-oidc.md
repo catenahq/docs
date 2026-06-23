@@ -1,32 +1,32 @@
 ---
 title: "Rocket.Chat"
-description: "Messagerie d'équipe -- canaux, messages directs, partage de fichiers, apps mobiles, appels vidéo. Keycloak SSO pré-câblé."
+description: "Team chat -- channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired."
 ---
 
-Messagerie d'équipe -- canaux, messages directs, partage de fichiers, apps mobiles, appels vidéo. Keycloak SSO pré-câblé.
+Team chat -- channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired.
 
-- **Projet original :** <https://www.rocket.chat/>
-- **Remplace :** **Slack**, **Microsoft Teams**, **Discord (en usage pro)**
-- **Connexion (SSO) :** Pré-câblé -- la page de connexion affiche "Se connecter avec Keycloak" d'emblée, aucune étape post-déploiement.
+- **Upstream project:** <https://www.rocket.chat/>
+- **Replaces:** **Slack**, **Microsoft Teams**, **Discord (for work)**
+- **Sign-in (SSO):** Pre-wired -- the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Rien à remplir dans l'onglet Environment sauf si vous voulez un autre nom de domaine.
-2. Patientez ~5 min pour la synchro initiale. La page de connexion affichera **Se connecter avec Keycloak**.
-3. Connectez-vous. Le premier utilisateur devient l'admin du workspace.
-4. *(Optionnel, ~30 s)* Joindre des fichiers Nextcloud : Administration -> Apps -> Marketplace -> cherchez `Nextcloud` -> installez -> indiquez votre domaine Nextcloud. Les utilisateurs tapent ensuite `/nextcloud` dans un chat pour parcourir et joindre leurs fichiers.
+1. Click **Deploy**. Nothing to fill in the Environment tab unless you want a different hostname.
+2. Wait ~5 minutes for the first sync. The login page will show **Sign in with Keycloak**.
+3. Sign in. The first user becomes the workspace admin.
+4. *(Optional, ~30 s)* Attach Nextcloud files in chats: Administration -> Apps -> Marketplace -> search `Nextcloud` -> install -> set your Nextcloud domain in the app settings. Users can then type `/nextcloud` in any chat to browse and attach files.
 
-### Applications mobiles
+### Mobile apps
 
-Les apps iOS et Android de Rocket.Chat se connectent directement à votre serveur. Les utilisateurs collent `https://chat.<votre-domaine>` au premier lancement et se connectent via Keycloak.
+Rocket.Chat's iOS and Android apps connect straight to your server. Users paste `https://chat.<your-domain>` into the app on first launch and sign in via Keycloak.
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `ROCKETCHAT_HOSTNAME` | `chat.yourdomain.com` |
 | `ROCKETCHAT_HOSTNAME_BASE` | `yourdomain.com` |
@@ -40,21 +40,21 @@ premier semi du template -- vous n'avez pas à les générer vous-même.
 | `JITSI_JICOFO_COMPONENT_SECRET` | `<your-jitsi_jicofo_component_secret>` |
 | `JITSI_JVB_AUTH_PASSWORD` | `<your-jitsi_jvb_auth_password>` |
 
-## Domaine
+## Domain
 
-- **Service et port :** `rocketchat:3000`
-- **Nom d'hôte :** `chat.yourdomain.com`
+- **Service and port:** `rocketchat:3000`
+- **Hostname:** `chat.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # Rocket.Chat -- team chat + Keycloak SSO.
@@ -303,4 +303,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

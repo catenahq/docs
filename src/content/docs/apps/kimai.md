@@ -1,74 +1,74 @@
 ---
 title: "Kimai"
-description: "Suivi du temps open-source. Clients, projets, activités, feuilles de temps, équipes multi-utilisateur, facturation à partir du temps suivi."
+description: "Open-source time tracker. Customers, projects, activities, timesheets, multi-user teams, invoice generation from tracked time."
 ---
 
-Suivi du temps open-source. Clients, projets, activités, feuilles de temps, équipes multi-utilisateur, facturation à partir du temps suivi. SAML fédère avec Keycloak via l'UI admin post-déploiement.
+Open-source time tracker. Customers, projects, activities, timesheets, multi-user teams, invoice generation from tracked time. SAML federates with Keycloak via the post-deploy admin UI.
 
-- **Projet original :** <https://www.kimai.org/>
-- **Remplace :** **Toggl**, **Clockify**, **Harvest**, **TimeCamp**
-- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Upstream project:** <https://www.kimai.org/>
+- **Replaces:** **Toggl**, **Clockify**, **Harvest**, **TimeCamp**
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Patientez ~1 min pour le premier démarrage (les migrations de base s'exécutent au premier lancement).
-2. Visitez votre domaine Kimai. Connectez-vous avec `KIMAI_ADMIN_EMAIL` / `KIMAI_ADMIN_PASSWORD` de l'onglet Environment.
-3. *(Optionnel)* Activez Keycloak SAML SSO : **System** -> **Settings** -> **SAML** -> activez et collez :
-   - **Identity Provider Entity ID :** `<OIDC_ISSUER_URL>/protocol/saml/descriptor` (votre contact peut générer un client SAML dans Keycloak)
-   - **URL de connexion unique :** `<OIDC_ISSUER_URL>/protocol/saml`
-   - **Certificat X.509 :** tiré des métadonnées du realm Keycloak
-   - **Attribut nom d'utilisateur :** `username` (ou `email`)
-   - Validez. La connexion admin locale continue de fonctionner comme issue de secours.
-4. Configurez votre modèle de facture par défaut sous **Invoices** -> **Templates** -> choisissez-en un (DOCX / HTML / PDF). Réglez le logo, l'adresse et les taux de taxe sous **System** -> **Configuration**.
+1. Click **Deploy**. Wait ~1 min for the first boot (database migrations run on first start).
+2. Visit your Kimai domain. Sign in as `KIMAI_ADMIN_EMAIL` / `KIMAI_ADMIN_PASSWORD` from the Environment tab.
+3. *(Optional)* Enable Keycloak SAML SSO: **System** -> **Settings** -> **SAML** -> enable + paste:
+   - **Identity Provider Entity ID:** `<OIDC_ISSUER_URL>/protocol/saml/descriptor` (your operator can mint a SAML client in Keycloak)
+   - **Single Sign-On URL:** `<OIDC_ISSUER_URL>/protocol/saml`
+   - **X.509 Certificate:** from the Keycloak realm metadata
+   - **Username Attribute:** `username` (or `email`)
+   - Save. Local admin login keeps working as break-glass.
+4. Configure your default invoice template under **Invoices** -> **Templates** -> pick one (DOCX / HTML / PDF). Set your company logo, address, and tax rates under **System** -> **Configuration**.
 
-### Suivi du temps dans la suite Catena
+### Time tracking in the Catena suite
 
-Kimai est le maître du suivi du temps dans la suite Catena. Les heures saisies ici alimentent votre application de facturation (Invoice Ninja) via la synchronisation mensuelle de votre contact (demandez-lui de l'automatiser si vous le souhaitez). Les fiches clients dans Kimai portent un champ personnalisé `espo_account_id` afin que chaque feuille de temps soit liée au compte EspoCRM correspondant.
+Kimai is the time-tracking master in the Catena suite. Hours tracked here flow downstream to your invoicing app (Invoice Ninja) via the operator's monthly sync (see your operator if you want this automated). Customer records in Kimai carry an `espo_account_id` custom field so each timesheet ties back to the EspoCRM Account.
 
-### Facturation intégrée
+### Invoicing built in
 
-Kimai peut générer des factures PDF directement depuis le temps suivi. Utilisez cette voie si votre flux de facturation est "envoyer un PDF, le client paie par virement Interac ou bancaire". Si vous avez besoin de paiements en ligne via Stripe, d'un portail client ou de facturation récurrente, demandez à votre contact de déployer Invoice Ninja et la suite acheminera les factures à travers lui.
+Kimai can generate PDF invoices directly from tracked time. Use this if your billing flow is "email a PDF; client pays via e-transfer or wire." If you need Stripe-driven online payment, a client portal, or recurring billing, ask your operator to deploy Invoice Ninja and the suite will route invoices through that instead.
 
-### Authentification
+### Authentication
 
-Tant que SAML n'est pas câblé (étape 3 ci-dessus), Kimai utilise un identifiant local. Même après SAML, la connexion admin locale continue de fonctionner comme issue de secours. Le groupe Keycloak `staff` filtre l'accès au bord Traefik via oauth2-proxy avant que le trafic n'atteigne Kimai, donc les personnes hors de votre équipe ne peuvent pas atteindre la page de connexion.
+Until SAML is wired (step 3 above), Kimai uses local username/password. Even after SAML is wired, local admin login keeps working as a break-glass path. The Keycloak `staff` group gates access at the Traefik edge via oauth2-proxy before traffic reaches Kimai, so people outside your staff group cannot reach the login page.
 
-### Ressources
+### Resource note
 
-Kimai tourne en PHP-Apache + MariaDB. Prévoyez ~250 Mo de RAM au repos, ~500 Mo lors d'exports en masse ou de rendu de factures en fin de mois chargée.
+Kimai runs as PHP-Apache + MariaDB. Plan for ~250 MB RAM at idle, ~500 MB under bulk export or invoice rendering on busy month-end.
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `KIMAI_HOSTNAME` | `time.yourdomain.com` |
 | `KIMAI_ADMIN_EMAIL` | `admin@yourdomain.com` |
-| `KIMAI_ADMIN_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `KIMAI_APP_SECRET` | _valeur aléatoire auto-générée_ |
-| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `DB_ROOT_PASSWORD` | _valeur aléatoire auto-générée_ |
+| `KIMAI_ADMIN_PASSWORD` | _auto-generated random value_ |
+| `KIMAI_APP_SECRET` | _auto-generated random value_ |
+| `DB_PASSWORD` | _auto-generated random value_ |
+| `DB_ROOT_PASSWORD` | _auto-generated random value_ |
 | `KIMAI_MAIL_FROM` | `time@yourdomain.com` |
 | `KIMAI_MAIL_URL` | `null://localhost` |
 
-## Domaine
+## Domain
 
-- **Service et port :** `kimai:8001`
-- **Nom d'hôte :** `time.yourdomain.com`
+- **Service and port:** `kimai:8001`
+- **Hostname:** `time.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # Kimai -- open-source time tracker. Picked 2026-05-21 as the time-
@@ -150,4 +150,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

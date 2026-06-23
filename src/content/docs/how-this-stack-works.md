@@ -1,242 +1,222 @@
 ---
-title: "Comment fonctionne cette suite logicielle"
-description: "Une visite guidée, en langage clair, de ce qui tourne sur"
+title: "How this software suite works"
+description: "A plain-language tour of what's running on `your VPS`"
 ---
 
-Une visite guidée, en langage clair, de ce qui tourne sur
-`your VPS` et de la façon dont les pièces s'emboîtent.
-Vous n'avez rien à mémoriser -- c'est ici pour que, si quelque chose
-cloche, vous ayez un modèle mental du premier endroit à regarder.
+A plain-language tour of what's running on `your VPS`
+and how the pieces fit together. You don't need to memorize any of
+this -- it's here so that if something misbehaves, you have a mental
+model for where to look first.
 
-## La version en un paragraphe
+## The one-paragraph version
 
-Quand un membre du personnel tape une de vos URLs dans son navigateur,
-la requête entre par **Cloudflare** (qui cache l'adresse réelle de
-votre VPS), traverse un tunnel privé jusqu'à `your VPS`,
-frappe un routeur (**Traefik**) qui déduit à quelle application elle
-est destinée, puis est arrêtée par **Keycloak** -- votre couche
-d'identité -- pour vérifier que la personne est bien connectée et dans
-la bonne équipe. Ce n'est qu'ensuite que la requête atteint
-l'application elle-même. Pendant ce temps, un autre processus
-sauvegarde discrètement tout vers votre seau S3 chaque jour, et un
-moniteur teste chaque service chaque minute pour attraper les pannes
-avant vous.
+When a staff member types one of your URLs into their browser, the
+request enters through **Cloudflare** (which hides your VPS's real
+address), crosses a private tunnel into `your VPS`,
+hits a router (**Traefik**) that figures out which app it's for,
+then gets stopped at **Keycloak** -- your identity layer -- to prove
+the person is logged in and in the right team. Only then does the
+request reach the actual application. Meanwhile, another process
+quietly backs everything up to your S3 bucket every day, and a
+monitor pings each service every minute to catch outages before you
+do.
 
-## Les services en bref
+## The services at a glance
 
-| Service | Ce qu'il fait pour vous |
+| Service | What it does for you |
 |---|---|
-| **Cloudflare** | Votre porte d'entrée publique. Cache l'IP du VPS, émet les certificats HTTPS, absorbe le trafic malveillant. |
-| **Tunnel Cloudflare** | Un lien privé entre Cloudflare et votre VPS. Rien sur `your VPS` n'est exposé directement à Internet. |
-| **Tailscale** | La porte arrière privée de votre opérateur. Un réseau maillé réservé aux machines autorisées -- c'est par là que l'opérateur rejoint `your VPS` pour les mises à jour et les enquêtes. SSH public est fermé ; sans Tailscale (ou Cloudflare, pour le trafic du personnel), rien n'atteint le VPS. Vous gardez le contrôle : Tailscale peut être désactivé ou retiré par vous à tout moment depuis la console de votre fournisseur VPS (ou physiquement, pour du matériel sur site). Si vous ne savez pas comment faire, vous ne devriez pas. |
-| **Traefik** | Le standard téléphonique. Lit l'URL de chaque requête et l'oriente vers la bonne application. |
-| **Keycloak** | Votre serveur d'identité. Gère la connexion, les réinitialisations de mot de passe et le contrôle d'accès par équipe. La seule page de connexion que vos utilisateurs verront. |
-| **Dokploy** | Le panneau de déploiement. Là où les nouvelles applications sont installées et mises à jour. Vous pouvez consulter les journaux ici. |
-| **Vos applications** | Tout ce que vous avez déployé via Dokploy -- un conteneur par application, tournant sur un réseau Docker privé. |
-| **Gatus** | Le moniteur de santé. Teste chaque service toutes les minutes sous deux angles : à l'interne (le conteneur répond-il ?) et à l'externe (le chemin complet de Cloudflare à l'application fonctionne-t-il ?). |
-| **Healthchecks** | Le centre de notifications. Toutes les alertes de Gatus (services en panne) et du moteur de sauvegarde (image nocturne manquée) arrivent ici, et vous les branchez aux canaux que vous voulez -- courriel, Slack, Discord, ntfy, et une trentaine d'autres. Voir [Comment les alertes vous parviennent](#comment-les-alertes-vous-parviennent). |
-| **Homepage** | Le tableau de bord. Rassemble les liens et les statuts sur une seule page. |
-| **OliveTin** | Actions en un clic, restreintes au groupe `administrators` (opérateur + équipe administratrice). Le bouton "synchroniser maintenant", par exemple. |
-| **Restic -> S3** | Le moteur de sauvegarde. Prend une image chiffrée et dédupliquée de vos données chaque nuit, l'envoie vers un seau de stockage que vous possédez. |
+| **Cloudflare** | Your public front door. Hides the VPS's IP, issues HTTPS certificates, and absorbs bad traffic. |
+| **Cloudflare Tunnel** | A private link between Cloudflare and your VPS. Nothing on `your VPS` is exposed directly to the internet. |
+| **Tailscale** | Your operator's private back door. A mesh network only authorised machines are on -- it's how the operator reaches `your VPS` to run updates and investigate issues. Public SSH is closed, so without Tailscale (or Cloudflare, for staff traffic) nothing reaches the VPS. You stay in control: Tailscale can be disabled or removed by you at any time from your VPS provider's console (or physically, for on-premises hardware). If you don't know how, you shouldn't. |
+| **Traefik** | The switchboard. Reads the URL in each request and routes it to the right application. |
+| **Keycloak** | Your identity server. Handles sign-in, password resets, and team-based access control. The only login page your users ever see. |
+| **Dokploy** | The deployment panel. Where new apps are installed and updated. You can watch logs here. |
+| **Apps (yours)** | Whatever you've deployed through Dokploy -- one container per app, running on a private Docker network. |
+| **Gatus** | The health monitor. Probes every service every minute from two angles: internally (is the container up?) and externally (is the whole path from Cloudflare to the app still working?). |
+| **Healthchecks** | The notification hub. Every alert from Gatus (services down) and the backup engine (missed nightly snapshot) lands here, and you wire it to the channels you want -- email, Slack, Discord, ntfy, and ~30 others. See [How alerts reach you](#how-alerts-reach-you). |
+| **Homepage** | The dashboard you're probably used to. Collects links and status into one page. |
+| **OliveTin** | One-click shell actions, gated to the `administrators` group (operators + administrator-tier staff). The "sync now" button, for example. |
+| **Restic -> S3** | The backup engine. Takes an encrypted, deduplicated snapshot of your data nightly, pushes it to a storage bucket you own. |
 
-## Le parcours d'une requête
+## How a page request flows
 
-Voici ce qui se passe quand un membre du personnel ouvre, par exemple,
-`https://paperless.yourdomain.com` :
+This is what happens when a staff member opens, say,
+`https://paperless.yourdomain.com`:
 
 ```mermaid
 flowchart LR
-    U[Navigateur de l'utilisateur]
-    CF[Périphérie<br/>Cloudflare]
-    TUN[Tunnel Cloudflare<br/>sur le VPS]
-    T[Routeur<br/>Traefik]
-    A[Keycloak<br/>vérif. connexion]
-    APP[Votre application<br/>ex. Paperless]
+    U[Staff member's browser]
+    CF[Cloudflare edge]
+    TUN[Cloudflare Tunnel<br/>on the VPS]
+    T[Traefik<br/>router]
+    A[Keycloak<br/>sign-in check]
+    APP[Your app<br/>e.g. Paperless]
 
-    U -->|1. requête HTTPS| CF
-    CF -->|2. via tunnel privé| TUN
-    TUN -->|3. dans le VPS| T
-    T -->|4. utilisateur connecté ?| A
-    A -->|5. oui, rôle X| T
-    T -->|6. transmet la requête| APP
-    APP -->|7. réponse| U
+    U -->|1. HTTPS request| CF
+    CF -->|2. through private tunnel| TUN
+    TUN -->|3. into the VPS| T
+    T -->|4. ask: is this user signed in?| A
+    A -->|5. yes, with role X| T
+    T -->|6. forward request| APP
+    APP -->|7. response back| U
 ```
 
-Si l'étape 5 répond "non" (l'utilisateur n'est pas connecté, ou
-n'est pas dans la bonne équipe), il est redirigé vers la page de
-connexion Keycloak -- il ne voit jamais l'application avant d'avoir
-prouvé son identité.
+If step 5 says "no" (the user isn't signed in, or isn't in the right
+team), they're bounced to the Keycloak sign-in page instead -- they
+never see the app until they prove who they are.
 
-## Comment vos données sont protégées
+## How your data is protected
 
 ```mermaid
 flowchart LR
-    APPS[Vos applications<br/>sur le VPS]
-    PG[(Bases Postgres)]
-    VOL[(Volumes Docker<br/>fichiers des apps)]
-    RESTIC[Moteur Restic]
-    S3[(Votre seau S3<br/>chiffré, dédupliqué)]
-    HC[Healthchecks<br/>déclencheur d'alerte]
-    YOU[Vous + votre équipe<br/>sur les canaux choisis]
+    APPS[Your apps<br/>on the VPS]
+    PG[(Postgres<br/>databases)]
+    VOL[(Docker volumes<br/>app files)]
+    RESTIC[Restic<br/>backup engine]
+    S3[(Your S3 bucket<br/>encrypted, deduplicated)]
+    HC[Healthchecks<br/>dead-man alert]
+    YOU[You + your team<br/>via channels you pick]
 
     APPS --> PG
     APPS --> VOL
     PG --> RESTIC
     VOL --> RESTIC
-    RESTIC -->|image nocturne| S3
-    RESTIC -->|ping après succès| HC
-    HC -.->|aucun ping à l'heure| YOU
+    RESTIC -->|nightly snapshot| S3
+    RESTIC -->|ping after success| HC
+    HC -.->|no ping on schedule| YOU
 ```
 
-Deux points à retenir :
+Two things worth knowing:
 
-- Le seau S3 est **le vôtre**. Votre opérateur configure les
-  identifiants sur le VPS, mais le compte et la relation de
-  facturation avec le fournisseur de stockage vous appartiennent.
-  Si vous changez d'opérateur un jour, les sauvegardes restent avec
-  vous.
-- La sauvegarde est **chiffrée sur le VPS avant d'en sortir**, avec
-  une clé que votre opérateur conserve séparément. Même quelqu'un
-  avec un accès complet au seau S3 ne peut pas lire la sauvegarde
-  sans cette clé.
+- The S3 bucket is **yours**. Your operator configures the credentials
+  in the VPS, but the account and the billing relationship with the
+  storage provider belong to you. If you ever fire your operator, the
+  backups stay with you.
+- The backup is **encrypted on the VPS before it leaves**, using a key
+  your operator holds separately from the VPS itself. Even someone
+  with full access to the S3 bucket cannot read the backup without
+  that key.
 
-## Comment la surveillance attrape les problèmes
+## How monitoring catches problems
 
-Gatus exécute deux sondes par service chaque minute :
+Gatus runs two probes per service every minute:
 
-- **Sonde interne** -- le conteneur répond-il sur le réseau Docker
-  privé ? Si non, l'application elle-même est en panne.
-- **Sonde publique** -- le chemin complet (Cloudflare -> Tunnel ->
-  Traefik -> Keycloak -> application) retourne-t-il la réponse
-  attendue ? Si celle-ci échoue mais que la sonde interne réussit,
-  quelque chose entre Cloudflare et votre application dysfonctionne --
-  un enregistrement DNS, le tunnel, la couche de connexion.
+- **Internal probe** -- does the container reply on the private Docker
+  network? If not, the app itself is broken.
+- **Public probe** -- does the full path (Cloudflare -> Tunnel -> Traefik
+  -> Keycloak -> app) return the expected response? If this fails but
+  the internal probe succeeds, something between Cloudflare and your
+  app is misbehaving -- a DNS record, the tunnel, the sign-in layer.
 
-Deux sondes, deux scénarios de panne distincts. Quand une alerte
-tombe, celle qui se déclenche vous indique quelle moitié de la suite
-regarder en premier.
+Two probes, two different failure stories. When you see an alert, the
+one that fires tells you which half of the suite to look at first.
 
-## Comment les alertes vous parviennent
+## How alerts reach you
 
-Chaque sonde Gatus qui passe au rouge envoie une notification via
-**Healthchecks** à [`checks.yourdomain.com`](https://checks.yourdomain.com).
-Chaque service a sa propre vérification, nommée `gatus-<service>`
-(p. ex. `gatus-actualbudget`, `gatus-homepage-internal`), donc la
-notification reçue nomme directement le service en panne. Les
-rétablissements déclenchent aussi une notification, donc vous savez
-quand le problème est réglé sans avoir à rafraîchir Gatus.
+Every Gatus probe that goes red sends a notification through
+**Healthchecks** at [`checks.yourdomain.com`](https://checks.yourdomain.com).
+Each service has its own check, named `gatus-<service>` (e.g.
+`gatus-actualbudget`, `gatus-homepage-internal`), so the push you receive
+names the failing service directly. Recoveries notify too, so you know
+when a problem has cleared without having to refresh Gatus.
 
-Votre opérateur est notifié par défaut -- il reçoit les alertes sur son
-téléphone via **ntfy** (un service de notifications push gratuit,
-configuré automatiquement à l'installation, aucun compte requis côté
-client). **Vous ajoutez vos propres canaux** -- configuration unique,
-sans intervention de l'opérateur :
+Your operator is notified by default -- they get alerts on their phone
+through **ntfy** (a free push-notification service, auto-configured at
+setup, no account required on the client side). **You add your own
+channels** -- one-time setup, no operator involvement:
 
-1. Connectez-vous à [`checks.yourdomain.com`](https://checks.yourdomain.com)
-   (même identifiant Keycloak que pour les autres services).
-2. **Settings -> Integrations -> Add Integration**. Choisissez le canal
-   voulu : courriel, Slack, Discord, Telegram, Microsoft Teams,
-   Pushover, ntfy, Matrix, PagerDuty, un webhook, ou n'importe lequel
-   des ~30 autres. Collez la cible (adresse courriel, URL webhook
-   Slack, etc.) et enregistrez. Les nouvelles intégrations s'appliquent
-   automatiquement à toutes les vérifications `gatus-*` -- pas besoin de
-   les cocher une par une.
-3. Si vous voulez un canal sur *certains* services seulement, ouvrez la
-   vérification `gatus-<service>` spécifique, cliquez sur
-   **Integrations**, et cochez uniquement ceux voulus pour ce service.
-   Utile si p. ex. le portail du personnel en panne doit vous joindre
-   par SMS mais le tableau de bord interne non.
-4. Faites pareil pour **Daily backup ping** si vous voulez être
-   notifié des sauvegardes manquées.
+1. Sign in to [`checks.yourdomain.com`](https://checks.yourdomain.com)
+   (same Keycloak login as every other service).
+2. **Settings -> Integrations -> Add Integration**. Pick the channel you
+   want: Email, Slack, Discord, Telegram, Microsoft Teams, Pushover,
+   ntfy, Matrix, PagerDuty, a webhook, or any of the ~30 others. Paste
+   the target (email address, Slack webhook URL, etc.) and save. New
+   integrations automatically apply to every `gatus-*` check -- you
+   don't have to tick them one-by-one.
+3. If you want a channel on *some* services but not others, open the
+   specific `gatus-<service>` check, click **Integrations**, and tick
+   only the ones you want for that service. Useful if e.g. the staff
+   portal going down should page you by SMS but the internal dashboard
+   shouldn't.
+4. Do the same for **Daily backup ping** if you want to hear about
+   missed backups too.
 
-Le retrait d'un canal se fait de la même façon. Le canal par défaut
-de l'opérateur n'est pas exposé dans cette interface -- il reste en
-place peu importe ce que vous ajoutez ou retirez. Les nouveaux services
-surveillés (p. ex. une application que vous venez de déployer) reçoivent
-leur propre vérification à la première panne, avec vos canaux
-automatiquement rattachés.
+Removing a channel is the same flow in reverse. The operator's default
+channel isn't exposed in this UI -- it stays attached regardless of what
+you add or remove. New services that start being monitored (e.g. an app
+you just deployed) get their own check on the first failure, with your
+channels automatically attached.
 
-## Mises à jour et retour en arrière
+## Updates and rollback
 
-Vos applications et l'infrastructure qui les fait tourner sont
-rafraîchies selon un horaire hebdomadaire -- dimanche matin avant
-les heures de bureau, avec un retour en arrière automatique si
-quelque chose se met à échouer.
+Your apps + the infrastructure they run on get refreshed on a weekly
+schedule -- Sunday morning before business hours, with an automatic
+rollback if anything starts failing.
 
-Toutes les applications ne sont pas traitées de la même façon. Ça
-dépend de comment le tag d'image est épinglé dans la configuration
-de l'application :
+Not every app gets the same treatment. It depends on how the image
+tag is pinned in the app's configuration:
 
-| Le tag ressemble à...   | Exemple              | Mise à jour auto ? |
+| Tag looks like...   | Example              | Gets auto-updated? |
 |---|---|---|
-| Version complète      | `paperless:2.12.3`   | **Oui** -- avec retour en arrière auto en cas d'échec. |
-| Épingle majeure seule | `postgres:16-alpine` | Non. Géré par l'opérateur ; ignoré par la mise à jour hebdomadaire. |
-| Flottant              | `nginx:latest`       | Non. Dangereux à toucher sans surveillance. |
+| Full version      | `paperless:2.12.3`   | **Yes** -- with auto-rollback on failure. |
+| Major-only pin    | `postgres:16-alpine` | No. Operator-managed; ignored by the weekly updater. |
+| Floating          | `nginx:latest`       | No. Unsafe to touch unsupervised. |
 
-Pour les applications épinglées à une version complète, chaque
-service peut optionnellement étiqueter une politique dans son
-fichier compose Dokploy :
+For apps on a full version pin, each service can optionally tag a
+policy in its Dokploy compose:
 
-- `vps.auto-update=patch` *(défaut)* -- accepte uniquement les
-  correctifs (p. ex. 2.12.3 -> 2.12.4).
-- `vps.auto-update=minor` -- accepte aussi les versions mineures
-  dans la même série majeure (2.12.3 -> 2.13.0).
-- `vps.auto-update=major` -- accepte tout ce qui est plus récent,
-  y compris les sauts de version majeure.
-- `vps.auto-update=off` -- saute complètement ce service.
+- `vps.auto-update=patch` *(default)* -- accept bug-fix releases only
+  (e.g., 2.12.3 -> 2.12.4).
+- `vps.auto-update=minor` -- also accept feature releases within the
+  same major line (2.12.3 -> 2.13.0).
+- `vps.auto-update=major` -- accept anything newer, including major
+  version jumps.
+- `vps.auto-update=off` -- skip this service entirely.
 
-Si vous mettez l'étiquette sur une app avec un tag flottant ou
-majeur-seul, elle est **silencieusement ignorée** -- la règle gérée
-par l'opérateur l'emporte. C'est délibéré : un retour en arrière
-automatique a besoin d'une version précédente connue-bonne, et un
-tag flottant ne nous en donne pas.
+If you set the label on an app with a floating or major-only tag, it
+is silently ignored -- the operator-managed rule wins. This is
+deliberate: auto-rollback needs a known-good prior version to revert
+to, and a floating tag doesn't give us one.
 
-**Ce qui se passe à 3 h du matin quand une mise à jour casse :**
+**What happens at 3 a.m. when an update breaks:**
 
-1. Les sondes de santé Gatus détectent la régression en ~3 minutes
-   (sondes interne ET publique).
-2. La mise à jour revient au service à la version connue-bonne
-   précédente et le redéploie.
-3. La mauvaise version est mémorisée -- la prochaine exécution essaie
-   la version *suivante*, pas celle qui vient de casser.
-4. Votre opérateur est alerté via **Healthchecks** avec le nom du
-   service et la version qui a échoué. La version exécutée par
-   chaque service est visible sur la **surface de monitoring
-   Gatus** à `monitor.<votre-zone>` -- un service en quarantaine
-   affiche le tag épinglé précédent avec la mauvaise version
-   annotée à côté.
+1. Gatus health probes catch the regression within ~3 minutes
+   (internal + public probes both).
+2. The updater reverts the service to the previous known-good
+   version and redeploys it.
+3. The bad version is remembered -- next week's run picks the *next*
+   version up, not the one that just broke.
+4. Your operator is paged through **Healthchecks** with the service
+   name + the version that failed. The running version of every
+   service is visible on the **Gatus monitoring surface** at
+   `monitor.<your-zone>` -- a quarantined service shows the prior
+   pinned tag with the bad version annotated next to it.
 
-Vous n'avez rien à faire. L'application revient d'elle-même.
-L'opérateur enquête à un rythme d'heures de bureau, pas à 3 h.
+You don't have to do anything. The app comes back on its own. The
+operator investigates at business-hour pace, not 3 a.m.
 
-Si vous préférez sauter une semaine de mises à jour (p. ex. vous
-êtes en démo et rien ne doit changer), l'opérateur peut **mettre
-en pause** la mise à jour depuis le panneau d'actions OliveTin -- le
-statut reste visible sur la surface Gatus jusqu'à la reprise.
+If you'd rather skip a week of updates entirely (e.g., you're
+demoing something and don't want anything to change), the
+operator can **pause** the updater from the OliveTin action panel
+-- status stays visible on the Gatus surface until they resume.
 
-## Votre rôle
+## Where you fit in
 
-Vous n'avez pas à toucher Cloudflare, Traefik, le tunnel ni le moteur
-de sauvegarde. Votre surface d'interaction quotidienne est :
+You don't have to touch Cloudflare, Traefik, the tunnel, or the
+backup engine. Your day-to-day surface is:
 
-- **Keycloak** -- ajouter ou retirer du personnel, réinitialiser des
-  mots de passe, assigner les personnes aux équipes (voir
-  [Ajouter / retirer des utilisateurs](/how-to-add-users/)).
-- **Dokploy** -- déployer de nouvelles applications avec des étiquettes
-  de contrôle d'accès (voir
-  [Déployer des applications](/how-to-deploy-apps/)).
-- **Homepage** -- coup d'œil rapide sur la santé des services et les
-  liens épinglés.
-- **Healthchecks** -- ajouter les canaux de notification que vous
-  souhaitez recevoir (voir
-  [Comment les alertes vous parviennent](#comment-les-alertes-vous-parviennent)).
-- **OliveTin** (administrateurs uniquement) -- cliquer sur un bouton
-  nommé pour déclencher une action que votre opérateur a
-  pré-approuvée (comme "resynchroniser le tableau de bord
-  maintenant"). Visible aux membres du personnel dans le groupe
-  Keycloak `administrators` ; le personnel non-administrateur voit
-  la tuile sur le tableau de bord mais y accéder le redirige vers
-  l'écran de connexion.
+- **Keycloak** -- add or remove staff, reset passwords, assign people
+  to teams (see [Add / remove users](/how-to-add-users/)).
+- **Dokploy** -- deploy new apps with access-control labels (see
+  [Deploy apps](/how-to-deploy-apps/)).
+- **Homepage** -- glance at service health and pinned links.
+- **Healthchecks** -- add the notification channels you want alerts on
+  (see [How alerts reach you](#how-alerts-reach-you)).
+- **OliveTin** (administrators only) -- click a named button to
+  trigger an action your operator has pre-approved (like "resync
+  the dashboard now"). Visible to staff in the `administrators`
+  Keycloak group; non-admin staff see the dashboard tile but
+  hitting it bounces them through login.
 
-Tout le reste tourne tout seul. Si quelque chose s'arrête, Gatus vous
-alerte avant qu'un membre du personnel ne vous le signale.
+Everything else runs on its own. If any of it stops running, Gatus
+pages you before you find out from a staff complaint.

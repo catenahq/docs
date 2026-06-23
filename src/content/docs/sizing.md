@@ -1,17 +1,17 @@
 ---
-title: "Quel VPS me faut-il ?"
-description: "Empreinte ressources par application pour choisir un palier de VPS. Dernière mesure : 2026-04-29."
+title: "How big a VPS do I need?"
+description: "Per-app resource footprint to size your VPS. Last measured: 2026-04-29."
 ---
 
-Empreinte ressources de chaque application pré-configurée, pour choisir
-un palier de VPS adapté à ce que vous comptez déployer.
+Resource footprint of every pre-configured app, so you can pick a VPS
+tier that matches what you plan to deploy.
 
-**Dernière mesure :** 2026-04-29
-**Mesuré sur :** dev1 (1 vCPU / 2 GB OVH VPS)
+**Last measured:** 2026-04-29
+**Measured on:** dev1 (1 vCPU / 2 GB OVH VPS)
 
-## Tableau d'empreinte
+## Footprint table
 
-| Application | RAM (repos) | RAM (pic) | CPU (repos) | CPU (pic) | Disque (base) |
+| Template | RAM (idle) | RAM (peak) | CPU (idle) | CPU (peak) | Disk (baseline) |
 |---|---|---|---|---|---|
 | Nextcloud | 420 MB | 880 MB | 2% | 65% | 320 MB |
 | Rocket.Chat | 520 MB | 720 MB | 3% | 35% | 180 MB |
@@ -32,137 +32,166 @@ un palier de VPS adapté à ce que vous comptez déployer.
 | Zammad | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
 | Chatwoot | _n/a_ | 768 MB | _n/a_ | _n/a_ | _n/a_ |
 | Easy!Appointments | _n/a_ | 384 MB | _n/a_ | _n/a_ | _n/a_ |
+| Kimai | 250 MB | 500 MB | 1% | 35% | 180 MB |
+| Invoice Ninja | 400 MB | 800 MB | 2% | 45% | 350 MB |
+| Mail server + webmail | 520 MB | 900 MB | 3% | 40% | 600 MB |
 
-Le CPU est normalisé sur un cœur : 100 % = un vCPU complet. Les pics
-correspondent à ce que nous avons observé en exerçant l'application
-selon les [étapes de configuration](/apps/) (premier import
-massif Nextcloud, première passe de l'assistant ERPNext, etc.).
+CPU is normalized to one core: 100% means one full vCPU is busy. Peak
+values are what we observed while exercising the app the way the
+[setup steps](/apps/) describe (the first mass-upload to
+Nextcloud, the first wizard pass on ERPNext, etc.).
 
-## Recommandations par palier
+## Tier guidance
 
-Ce sont des points de départ ; vos chiffres réels dépendent du nombre
-d'utilisateurs et de l'intensité de la charge.
+These are starting points; your real numbers depend on how many users
+log in and how heavy the workload is.
 
-- **VPS 6 Go (palier de départ) :** confortable pour le combo
-  productivité (Nextcloud + EspoCRM + Rocket.Chat + Outline) plus une
-  application de poids moyen (Plane, Twenty, Postiz, Outline). À
-  éviter pour ERPNext.
-- **VPS 8 Go :** indispensable pour ERPNext avec une autre
-  application significative, ou pour toute combinaison qui ajoute
-  une deuxième application de poids moyen au combo productivité.
-- **VPS 12 Go ou plus :** ERPNext avec le combo productivité complet,
-  ou toute combinaison de deux applications lourdes.
+- **6 GB VPS (starting tier):** comfortable for the productivity bundle
+  (Nextcloud + EspoCRM + Rocket.Chat + Outline) plus one mid-weight
+  template (Plane, Twenty, Postiz, Outline). Don't run ERPNext on
+  this tier.
+- **8 GB VPS:** required for ERPNext beside one other meaningful
+  template, or for any combination that adds a second mid-weight
+  template to the productivity bundle.
+- **12 GB+ VPS:** ERPNext alongside the full productivity bundle, or
+  any combination of two heavy templates.
 
-## Notes par application
+## Notes per template
 
 ### Nextcloud
 
-La pile app + db + redis + cron tourne à ~420 Mo au repos. Le
-service le plus lourd est `app` (PHP-FPM) à ~280 Mo au repos,
-~600 Mo lors du premier import massif. Avec S3 en stockage
-primaire, le disque du VPS reste stable -- c'est le seau qui
-grossit.
+The app + db + redis + cron stack idles at ~420 MB. Heaviest single
+service is `app` (PHP-FPM) at ~280 MB idle, ~600 MB during the
+first user's mass-upload pass. With S3 primary storage configured,
+disk on the VPS stays roughly constant -- bucket grows instead.
+Antivirus (files_antivirus, Daemon mode) is wired by ops to the
+SHARED ops-managed clamd (catena-clamav network, ~1.5 GB resident),
+NOT counted in these figures -- it is base infra shared with the
+mail server; budget it once at the VPS level.
 ### Rocket.Chat
 
-Le replica set MongoDB + le process Node Rocket.Chat. Le cache
-WiredTiger de MongoDB domine ; les réglages par défaut tiennent
-sans difficulté sur le palier de départ 6 Go.
+MongoDB replica set + Rocket.Chat node process. MongoDB's WiredTiger
+cache is the dominant cost; default settings fit comfortably on the
+6 GB starting tier.
 ### OnlyOffice
 
-Au repos, c'est léger ; chaque session d'édition lance des
-workers par document. Trois éditeurs concurrents poussent le CPU
-à 80 % sur un seul vCPU. À utiliser avec Nextcloud (pas d'UI
-directe).
+Idle is light; a single editing session spawns per-document worker
+processes. Three concurrent editors push CPU to 80% on a single
+vCPU. Pair with Nextcloud (it's a backend, no direct UI).
 ### Outline
 
-App Node + Postgres + Redis. Léger en régime de croisière ; la
-couche websocket de l'éditeur collaboratif ajoute ~50 Mo par
-éditeur connecté.
+Node app + Postgres + Redis. Lightweight in steady state; the
+collaborative-editor websocket layer adds ~50 MB per simultaneous
+editor.
 ### EspoCRM
 
-PHP-Apache + MariaDB + sidecar cron. Léger au quotidien ; envoi
-mass-email ou import en masse poussent à ~480 Mo et ~40 % CPU sur
-un vCPU.
+PHP-Apache + MariaDB + cron sidecar. Lightweight day-to-day; mass
+email or bulk import pushes peak RAM to ~480 MB and CPU to ~40%
+on one vCPU.
 ### Twenty
 
-Server + worker + Postgres + Redis -- quatre conteneurs ; RAM au
-repos plus élevée qu'EspoCRM. Choisissez Twenty pour l'UI
-moderne ; EspoCRM pour l'empreinte plus légère.
+Server + worker + Postgres + Redis -- four containers; idle RAM is
+higher than EspoCRM. Choose Twenty for the modern UI; choose
+EspoCRM for tighter footprint.
 ### Plane
 
-Pile multi-conteneurs (api + worker + beat + frontend + space +
-MinIO + Postgres + Redis). Empreinte RAM importante ; prévoyez
-1 Go au-dessus du reste de la suite.
+Multi-container stack (api + worker + beat + frontend + space +
+MinIO + Postgres + Redis). Heavy idle RAM; budget 1 GB
+headroom over the rest of your suite.
 ### WordPress
 
-nginx + php-fpm + MariaDB + Redis. Le cache FastCGI absorbe le
-trafic anonyme ; PHP ne s'active que sur cache miss + sessions
-admin. Pic de connexions éditeurs ou install plugin font monter
-le CPU.
+nginx + php-fpm + MariaDB + Redis. FastCGI cache absorbs
+anonymous traffic; PHP only fires on cache misses + admin sessions.
+A burst of editor logins or a plugin install spikes CPU.
 ### n8n
 
-Léger au repos ; un workflow lance des processus Node par nœud
-et peut faire pointer RAM/CPU. Si vous automatisez beaucoup,
-dimensionnez sur le pic, pas le repos.
+Lightweight at rest; a workflow run spawns Node child processes
+per node and can spike RAM/CPU sharply. Heavy automation users
+should size for the peak, not the idle.
 ### ERPNext
 
-~10 conteneurs. Le template le plus lourd du catalogue. Prévoyez
-un VPS dédié de 8 Go ou plus ; colocaliser ERPNext avec le combo
-productivité complet demande un palier de 12 Go.
+~10 containers. Heaviest template in the catalog. Plan for a
+dedicated 8 GB+ VPS; co-locating ERPNext with the full productivity
+bundle wants a 12 GB tier.
 ### Actual Budget
 
-Un seul conteneur Node, sqlite. Empreinte négligeable ; ajout
-quasi gratuit.
+Single Node container, sqlite-backed. Negligible footprint;
+effectively free to add.
 ### Postiz
 
-Postiz + Postgres + Redis. Poids moyen ; les publications avec
-images sollicitent fortement la bibliothèque Sharp lors de la
-planification.
+Postiz + Postgres + Redis. Mid-weight; image-heavy posts push the
+Sharp library hard during scheduling.
 ### DocuSeal
 
-Rails + Postgres. Léger au repos ; le tamponnage PDF du flux de
-signature est le pic de charge.
+Rails + Postgres. Light at idle; signing flow's PDF cert-stamping
+is the peak workload.
 ### Mautic
 
-Trois conteneurs Apache/PHP (web + worker + cron) au-dessus de
-MariaDB. La RAM au repos est dominée par les sidecars worker et
-cron (~300 Mo chacun, même à l'arrêt). Les envois de campagne et
-reconstructions de segments poussent le pic RAM vers 3 Go et le
-CPU au-dessus de 75 % sur un vCPU. Prévoyez un palier 6 Go si
-Mautic cohabite avec Nextcloud + Rocket.Chat ; sinon un palier
-4 Go tient pour de faibles volumes d'envoi.
+Three Apache/PHP containers (web + worker + cron) on top of
+MariaDB. Idle RAM is dominated by the worker and cron sidecars
+(~300 MB each, even at rest). Campaign sends and segment rebuilds
+push peak RAM near 3 GB and CPU above 75% on one vCPU. Plan for
+a 6 GB tier if Mautic is co-located with Nextcloud + Rocket.Chat;
+otherwise a 4 GB tier holds for low-volume sending.
 ### Collabora Online (CODE)
 
-Éditeur de documents sans état adossé à Nextcloud. Le
-dimensionnement est dominé par les workers par document lors de
-l'édition active ; l'empreinte au repos est faible. La valeur de
-pic ci-dessus est une estimation prudente pré-lancement, pas
-encore une mesure réelle.
+Stateless document editor backed by Nextcloud. Sizing is dominated
+by per-document worker processes spawned during active editing;
+idle footprint is small. The peak figure above is a conservative
+pre-launch estimate, not yet a measured value.
 ### Element / Matrix
 
-Element (Synapse + Postgres + Redis) consomme beaucoup de mémoire
-lors de la première synchronisation fédérée ; la valeur ci-dessus
-est un plancher de mise en service. Estimation prudente
-pré-lancement, pas encore une mesure réelle.
+Element (Synapse + Postgres + Redis) is memory-hungry during the
+first federation sync; the value above is a launch-day floor.
+Conservative pre-launch estimate, not yet a measured value.
 ### Zammad
 
-Zammad (Rails + Postgres + Elasticsearch + Redis) se dimensionne
-autour du heap JVM d'Elastic ; prévoyez de la marge. Estimation
-prudente pré-lancement, pas encore une mesure réelle.
+Zammad (Rails + Postgres + Elasticsearch + Redis) sizes around the
+Elastic JVM heap; budget room for it. Conservative pre-launch
+estimate, not yet a measured value.
 ### Chatwoot
 
-Chatwoot (Rails + Postgres + Redis + Sidekiq) ; le pic croît avec
-le nombre de conversations actives. Estimation prudente
-pré-lancement, pas encore une mesure réelle.
+Chatwoot (Rails + Postgres + Redis + Sidekiq); peak grows with
+active conversation count. Conservative pre-launch estimate, not
+yet a measured value.
 ### Easy!Appointments
 
-PHP-Apache + MariaDB ; empreinte légère dominée par la base de
-données. Estimation prudente pré-lancement, pas encore une mesure
-réelle.
+PHP-Apache + MariaDB; lightweight footprint dominated by the
+database. Conservative pre-launch estimate, not yet a measured
+value.
+### Kimai
+
+PHP-Apache + MariaDB. Idle is comparable to EspoCRM. Bulk
+timesheet export or end-of-month invoice rendering pushes peak
+RAM to ~500 MB and CPU briefly to ~35% on one vCPU. Conservative
+pre-launch estimate, not yet a measured value.
+### Invoice Ninja
+
+Four containers: PHP-FPM + nginx + MariaDB + Redis. Idle RAM
+higher than Kimai because supervisord runs both the queue worker
+and the scheduler inside the app container. Peak occurs during
+bulk-invoice generation or queue-catch-up after a network outage
+(bundled Chromium spins up for PDF rendering). Conservative
+pre-launch estimate, not yet a measured value.
+### Mail server + webmail
+
+docker-mailserver (Postfix + Dovecot + Rspamd + Fail2ban) is the
+dominant cost; Rspamd and its Redis-backed stats account for most
+of the idle footprint. Roundcube (Apache + PHP, SQLite prefs) adds
+~120 MB; the mta-sts nginx is negligible (~5 MB). Peak is during a
+mailbox sync + spam-scan burst on a busy inbound window. Disk
+baseline excludes stored mail (grows with the mailboxes).
+IMPORTANT base-infra cost NOT counted here: the bundled ClamAV is
+OFF; antivirus is the SHARED ops-managed clamd (catena-clamav
+network), which holds the signature DB resident at ~1.5 GB. That
+clamd is a separate service (not in this compose), so it does not
+appear in these per-template figures -- budget it once at the VPS
+level. The same clamd also serves Nextcloud, so co-deploying the
+two is a net saving vs two clamds. Conservative pre-launch
+estimate, not yet measured.
 
 ---
 
-Si vous avez besoin d'un palier différent de celui initialement
-provisionné, contactez votre opérateur -- un changement de palier est
-une migration en une commande vers un nouveau VPS avec les mêmes
-données.
+If you need a different tier than what your operator initially
+provisioned, contact them -- a tier change is a one-command migration
+to a fresh VPS with the same data.

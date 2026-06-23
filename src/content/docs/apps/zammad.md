@@ -1,48 +1,48 @@
 ---
 title: "Zammad"
-description: "Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connaissances. OIDC natif."
+description: "Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. Native OIDC."
 ---
 
-Helpdesk orienté tickets. Email, Telegram, canaux sociaux, SLA, base de connaissances. OIDC natif.
+Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. Native OIDC.
 
-- **Projet original :** <https://zammad.com/>
-- **Remplace :** **Zendesk**, **Freshdesk**, **Jira Service Desk**
-- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Upstream project:** <https://zammad.com/>
+- **Replaces:** **Zendesk**, **Freshdesk**, **Jira Service Desk**
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Le premier démarrage est lent (2-3 min) -- Elasticsearch et les migrations Rails se lancent au démarrage.
-2. Visitez votre domaine Zammad. Complétez l'assistant de configuration (compte admin, nom d'organisation).
-3. *(Optionnel)* Activez Keycloak SSO : **Settings** -> **Security** -> **Third-party authentication** -> **OpenID Connect** -> collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
+1. Click **Deploy**. First boot is slow (2-3 min) -- Elasticsearch and Rails migrations run on startup.
+2. Visit your Zammad domain. Complete the setup wizard (admin account, organization name).
+3. *(Optional)* Enable Keycloak SSO: **Settings** -> **Security** -> **Third-party authentication** -> **OpenID Connect** -> paste `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` from the Environment tab. Save.
 
-**Ressources :** Zammad intègre Elasticsearch qui réserve ~1,5 GB de RAM. Prévoyez un VPS ≥4 GB si vous lancez Zammad avec d'autres apps.
+**Resource note:** Zammad bundles Elasticsearch which reserves ~1.5 GB RAM. Plan for a ≥4 GB VPS if you run Zammad alongside other apps.
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `ZAMMAD_HOSTNAME` | `help.yourdomain.com` |
-| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _auto-generated random value_ |
 
-## Domaine
+## Domain
 
-- **Service et port :** `zammad-nginx:8080`
-- **Nom d'hôte :** `help.yourdomain.com`
+- **Service and port:** `zammad-nginx:8080`
+- **Hostname:** `help.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # Zammad -- ticket-first help desk / omnichannel support. Native OIDC
@@ -215,4 +215,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

@@ -1,49 +1,49 @@
 ---
 title: "Collabora Online (CODE)"
-description: "Édition collaborative ODT/DOCX/XLSX/PPTX -- s'intègre à Nextcloud pour la co-édition temps réel."
+description: "Collaborative ODT/DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing."
 ---
 
-Édition collaborative ODT/DOCX/XLSX/PPTX -- s'intègre à Nextcloud pour la co-édition temps réel. Basé sur LibreOffice ; plus léger qu'OnlyOffice ; meilleure fidélité pour les formats ODF.
+Collaborative ODT/DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing. LibreOffice-based; lighter than OnlyOffice; better fidelity for ODF formats.
 
-- **Projet original :** <https://www.collaboraonline.com/>
-- **Remplace :** **Microsoft Office Online**, **Google Docs (éditeur embarqué)**
-- **Connexion (SSO) :** Sans objet -- ce template n'a pas de connexion utilisateur (usage serveur-à-serveur uniquement).
+- **Upstream project:** <https://www.collaboraonline.com/>
+- **Replaces:** **Microsoft Office Online**, **Google Docs (as embedded editor)**
+- **Sign-in (SSO):** Not applicable -- this template has no user-facing login (server-to-server usage only).
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Patientez ~30 s le démarrage du serveur d'édition.
-2. Depuis le tableau de bord opérateur, cliquez le bouton **Wire Nextcloud Collabora**. Le bouton installe l'application Nextcloud Office, la pointe vers ce serveur, et -- si OnlyOffice était précédemment câblé -- retire proprement l'application Nextcloud OnlyOffice.
-3. Ouvrez n'importe quel fichier DOCX/XLSX/PPTX/ODT dans Nextcloud. Il s'ouvre dans l'éditeur Collabora embarqué.
+1. Click **Deploy**. Wait ~30 s for the document server to boot.
+2. From the operator dashboard, click the **Wire Nextcloud Collabora** button. The button installs the Nextcloud Office app, points it at this server, and -- if you previously had OnlyOffice wired -- removes the OnlyOffice Nextcloud app cleanly.
+3. Open any DOCX/XLSX/PPTX/ODT file in Nextcloud. It opens in the embedded Collabora editor.
 
-Pour revenir à OnlyOffice plus tard : arrêtez ce conteneur Collabora, déployez `onlyoffice`, puis cliquez le bouton **Wire Nextcloud OnlyOffice**.
+Switching back to OnlyOffice later is one click: stop this Collabora compose, deploy `onlyoffice`, then click the **Wire Nextcloud OnlyOffice** button.
 
-N'accédez pas au domaine Collabora directement dans un navigateur -- il n'a pas d'interface utilisateur. Les utilisateurs ne le voient qu'à travers Nextcloud.
+Don't visit the Collabora domain directly in a browser -- it has no UI of its own. Users only ever see it through Nextcloud when they open a document.
 
 
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-_(aucune variable d'environnement à configurer)_
+_(no environment variables to configure)_
 
-## Domaine
+## Domain
 
-- **Service et port :** `collabora:9980`
-- **Nom d'hôte :** `office.yourdomain.com`
+- **Service and port:** `collabora:9980`
+- **Hostname:** `office.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # Collabora CODE -- collaborative editing for ODT/DOCX/XLSX/PPTX,
@@ -92,4 +92,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

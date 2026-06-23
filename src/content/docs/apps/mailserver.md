@@ -1,65 +1,69 @@
 ---
-title: "Serveur de courriel + webmail"
-description: "Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak."
+title: "Mail server + webmail"
+description: "Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on."
 ---
 
-Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi requiert un relais SMTP via un fournisseur réputé (configuré avant le déploiement) pour éviter le classement en pourriel.
+Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound requires an SMTP relay through a reputable provider (set up before deploy) so messages are not flagged as spam.
 
-- **Projet original :** <https://docker-mailserver.github.io/>
-- **Remplace :** **Google Workspace (Gmail)**, **Microsoft 365 (Exchange Online)**
-- **Connexion (SSO) :** Câblé automatiquement -- la convergence de votre opérateur exécute un hook CLI idempotent qui enregistre Keycloak dans l'app à chaque passage. Aucune étape post-déploiement côté client.
+- **Upstream project:** <https://docker-mailserver.github.io/>
+- **Replaces:** **Google Workspace (Gmail)**, **Microsoft 365 (Exchange Online)**
+- **Sign-in (SSO):** Wired automatically -- your operator's converge runs an idempotent CLI hook that registers Keycloak inside the app on every run. Zero post-deploy step on the client side.
 
-## Étapes de configuration
+## Setup steps
 
-1. **Avant le déploiement -- DNS + relais.** Le courriel nécessite des enregistrements DNS et un relais d'envoi configurés au préalable. Votre contact s'occupe des enregistrements MX, SPF, DKIM, DMARC et DNS inverse, et colle les identifiants du relais. Voir le guide de l'exploitant.
-2. Cliquez **Deploy**. Patientez ~3 minutes pour le premier démarrage (services de courriel + Roundcube).
-3. Connectez-vous à votre domaine webmail (`webmail.<votre-domaine>`). La connexion passe par Keycloak -- un seul compte pour toutes les applications de la suite. Aucun mot de passe de courriel distinct.
-4. Les boîtes sont créées automatiquement pour vos utilisateurs staff et client depuis Keycloak. Un nouvel utilisateur peut se connecter au webmail dès que son compte existe.
+1. **Before deploy -- DNS + relay.** Mail needs DNS records and an outbound relay set up first. Your contact handles the MX, SPF, DKIM, DMARC, reverse-DNS, and MTA-STS / TLS-RPT records and pastes the relay credentials. See the operator runbook.
+2. Click **Deploy**. Wait ~3 minutes for the first boot (mail services + Roundcube).
+3. Sign in at your webmail domain (`webmail.<your-domain>`). The login goes through Keycloak -- one account for every app in the suite. There is no separate mail password.
+4. Mailboxes are created automatically for your staff and client users from Keycloak. A new user can sign in to webmail as soon as their account exists.
 
-### Fonctionnement de la connexion
+### How sign-in works
 
-Roundcube vous redirige vers Keycloak pour vous connecter, puis accède à votre boîte en votre nom à l'aide d'un jeton d'authentification unique. Vous ne saisissez jamais de mot de passe de courriel distinct, et aucun n'est stocké. Comme cela exige un onglet de navigateur standard, le webmail s'ouvre dans son propre onglet depuis le menu de la suite plutôt qu'intégré dans une autre application.
+Roundcube sends you to Keycloak to log in, then connects to your mailbox on your behalf using a single-sign-on token. You never type a separate email password, and nothing stores one. Because this needs a normal browser tab, webmail opens in its own tab from the suite menu rather than embedded inside another app.
 
-### Applications de bureau et mobiles
+### Desktop and phone mail apps
 
-Ce modèle vise le **webmail**. Les clients de bureau classiques (Thunderbird, Apple Mail) et les apps Mail des téléphones ne peuvent pas utiliser l'authentification unique Keycloak avec un serveur auto-hébergé ; ils ne sont donc pas pris en charge ici -- utilisez Roundcube dans le navigateur.
+This template targets **webmail**. Standard desktop clients (Thunderbird, Apple Mail) and phone Mail apps cannot use Keycloak single sign-on with a self-hosted server, so they are not supported here -- use Roundcube in the browser.
 
-### Pourquoi l'envoi passe par un relais
+### Why outbound goes through a relay
 
-Envoyer du courriel directement depuis un VPS finit en pourriel : les grands fournisseurs se méfient des nouvelles IP de serveur. L'envoi passe par un fournisseur réputé pour que vos messages soient livrés, tandis que votre boîte et vos données restent sur votre VPS. Ce relais est distinct du courriel de notification de la suite.
+Sending mail straight from a VPS lands in spam: large providers distrust new server IPs. Outbound is relayed through a reputable provider so your messages are delivered, while your inbox and data stay on your VPS. This relay is separate from the suite's notification email.
 
-## Variables d'environnement
+### Spam and virus scanning
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+Incoming mail is checked for spam (sender reputation, content scoring) and every attachment is scanned for viruses before it reaches your inbox, the same protection a hosted suite gives you. The virus scanner is shared with Nextcloud when both are deployed, so files you upload there are scanned by the same engine.
 
-| Variable | Valeur par défaut |
+## Environment variables
+
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
+
+| Variable | Default |
 |---|---|
 | `MAIL_HOSTNAME` | `mail.yourdomain.com` |
 | `MAIL_DOMAIN` | `yourdomain.com` |
 | `WEBMAIL_HOSTNAME` | `webmail.yourdomain.com` |
 | `OIDC_INTROSPECTION_URL` | `https://auth.yourdomain.com/realms/catena/protocol/openid-connect/token/introspect` |
-| `RELAY_HOST` | _(à définir avant déploiement)_ |
+| `RELAY_HOST` | _(set before deploy)_ |
 | `RELAY_PORT` | `587` |
-| `RELAY_USER` | _(à définir avant déploiement)_ |
+| `RELAY_USER` | _(set before deploy)_ |
 | `RELAY_PASSWORD` | `<your-mailserver_relay_password>` |
 
-## Domaine
+## Domain
 
-- **Service et port :** `roundcube:80`
-- **Nom d'hôte :** `webmail.yourdomain.com`
+- **Service and port:** `roundcube:80`
+- **Hostname:** `webmail.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # Self-hosted mailserver -- docker-mailserver (Postfix + Dovecot + Rspamd)
@@ -98,11 +102,17 @@ services:
     environment:
       # Inbound + storage on this host; outbound relayed.
       POSTMASTER_ADDRESS: postmaster@${MAIL_DOMAIN}
-      # TLS via the mounted cert (ops manages issuance like coturn).
+      # TLS via the mounted cert (ops issues + injects it like coturn).
+      # Path lives UNDER the mounted mail-config volume so an injected
+      # cert survives container recreate (ops mailserver_cert.yml writes
+      # here via docker cp + deploy hook).
       SSL_TYPE: manual
-      SSL_CERT_PATH: /tmp/dms/custom-certs/fullchain.pem
-      SSL_KEY_PATH: /tmp/dms/custom-certs/privkey.pem
-      # Spam/AV tuned for SMB volume.
+      SSL_CERT_PATH: /tmp/docker-mailserver/custom-certs/fullchain.pem
+      SSL_KEY_PATH: /tmp/docker-mailserver/custom-certs/privkey.pem
+      # Spam via rspamd. ClamAV is NOT the DMS-bundled one: a shared
+      # clamd (ops-managed, on the catena-clamav network) is scanned by
+      # rspamd over TCP -- see ops rspamd antivirus.conf + force_actions.
+      # The same clamd serves Nextcloud, so keep the bundled one off.
       ENABLE_RSPAMD: "1"
       ENABLE_CLAMAV: "0"
       ENABLE_FAIL2BAN: "1"
@@ -143,6 +153,10 @@ services:
       - "vps.auto-update=patch"
     networks:
       default: {}
+      # Shared antivirus: rspamd reaches the ops-managed clamd at
+      # clamav:3310 over this dedicated network (also joined by the
+      # Nextcloud app service). External so it spans composes.
+      catena-clamav: {}
 
   roundcube:
     image: roundcube/roundcubemail:1.7.1-apache
@@ -182,6 +196,52 @@ services:
           - roundcube
       default: {}
 
+  # MTA-STS policy host. docker-mailserver serves no HTTPS, so this tiny
+  # nginx publishes the RFC 8461 policy at
+  # mta-sts.<zone>/.well-known/mta-sts.txt. Routed via Traefik + the
+  # tunnel like any HTTP app (catalog extra_domains adds the router).
+  # The policy is baked from MAIL_HOSTNAME at container start.
+  mta-sts:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        mkdir -p /usr/share/nginx/html/.well-known
+        cat > /usr/share/nginx/html/.well-known/mta-sts.txt <<EOF
+        version: STSv1
+        mode: enforce
+        mx: ${MAIL_HOSTNAME}
+        max_age: 604800
+        EOF
+        cat > /etc/nginx/conf.d/default.conf <<'EOF'
+        server {
+          listen 80;
+          root /usr/share/nginx/html;
+          location = /.well-known/mta-sts.txt {
+            default_type text/plain;
+            add_header Cache-Control "max-age=604800";
+          }
+          location / { return 404; }
+        }
+        EOF
+        exec nginx -g 'daemon off;'
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/.well-known/mta-sts.txt >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    labels:
+      - "vps.auth.mode=public"
+      - "vps.auto-update=patch"
+    networks:
+      dokploy-network:
+        aliases:
+          - mta-sts
+      default: {}
+
 volumes:
   mail-data:
   mail-state:
@@ -193,8 +253,12 @@ volumes:
 networks:
   dokploy-network:
     external: true
+  # Shared antivirus network (clamd), created + owned by ops. External
+  # so dms here and the Nextcloud app service share one clamd.
+  catena-clamav:
+    external: true
 ```
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

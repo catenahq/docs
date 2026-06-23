@@ -1,56 +1,56 @@
 ---
 title: "ERPNext"
-description: "Suite ERP open-source complète -- comptabilité, inventaire, RH/paie, CRM, production, projets, et un module site web / e-commerce intégré."
+description: "Full open-source ERP suite -- accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module."
 ---
 
-Suite ERP open-source complète -- comptabilité, inventaire, RH/paie, CRM, production, projets, et un module site web / e-commerce intégré.
+Full open-source ERP suite -- accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module.
 
-- **Projet original :** <https://erpnext.com/>
-- **Remplace :** **SAP Business One**, **Odoo**, **Oracle NetSuite**
-- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Upstream project:** <https://erpnext.com/>
+- **Replaces:** **SAP Business One**, **Odoo**, **Oracle NetSuite**
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Le premier démarrage dure 5-10 min -- le site est créé, MariaDB initialisé, les apps Python installées. Consultez les logs du conteneur `create-site` dans Dokploy si vous voulez suivre.
-2. Visitez votre domaine ERPNext. Connectez-vous avec `Administrator` / `ERPNEXT_ADMIN_PASSWORD` de l'onglet Environment.
-3. Complétez l'assistant : nom de société, exercice fiscal, devise, plan comptable.
-4. *(Optionnel)* Activez Keycloak SSO : **Integrations** -> **Social Login Keys** -> **New** -> **Provider: OpenID Connect**. Remplissez :
-   - **Client ID :** `OIDC_CLIENT_ID` depuis Environment
-   - **Client Secret :** `OIDC_CLIENT_SECRET`
-   - **Base URL :** `OIDC_ISSUER_URL`
-   - Validez. La page de connexion affiche **Login with OpenID Connect**.
+1. Click **Deploy**. First boot takes 5-10 min -- the site must be created, MariaDB initialized, Python apps installed. Watch the `create-site` container logs in Dokploy if you want to follow along.
+2. Visit your ERPNext domain. Sign in as `Administrator` / `ERPNEXT_ADMIN_PASSWORD` from the Environment tab.
+3. Complete the setup wizard: company name, fiscal year, base currency, chart of accounts template.
+4. *(Optional)* Enable Keycloak SSO: **Integrations** -> **Social Login Keys** -> **New** -> **Provider: OpenID Connect**. Fill:
+   - **Client ID:** `OIDC_CLIENT_ID` from Environment
+   - **Client Secret:** `OIDC_CLIENT_SECRET`
+   - **Base URL:** `OIDC_ISSUER_URL`
+   - Save. The login page shows **Login with OpenID Connect**.
 
-**Ressources.** ERPNext est lourd -- 10+ conteneurs, minimum ~3 GB RAM + 2 CPUs recommandés. Envisagez un VPS dédié si vous déployez aussi Nextcloud + chat + autres apps en parallèle.
+**Resource note.** ERPNext is heavy -- 10+ containers, ~3 GB RAM + 2 CPUs recommended minimum. Consider running it on a dedicated VPS tier if you also deploy Nextcloud + chat + other apps alongside.
 
-**Montées de version.** Les bumps majeurs (v15 -> v16) nécessitent `bench migrate`. Le template laisse `vps.auto-update=patch` sur chaque service : les mises à jour hebdomadaires automatiques restent en v15.x.x -- les majeurs sont une action opérateur délibérée, pas une auto-update à 3 h du matin.
+**Upgrade path.** Major version bumps (v15 -> v16) require `bench migrate`. The compose template leaves `vps.auto-update=patch` on every service so weekly automated updates stay within v15.x.x -- majors are a deliberate operator action, not a 3 a.m. auto-update.
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `ERPNEXT_HOSTNAME` | `erp.yourdomain.com` |
-| `ERPNEXT_ADMIN_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `DB_ROOT_PASSWORD` | _valeur aléatoire auto-générée_ |
+| `ERPNEXT_ADMIN_PASSWORD` | _auto-generated random value_ |
+| `DB_ROOT_PASSWORD` | _auto-generated random value_ |
 
-## Domaine
+## Domain
 
-- **Service et port :** `frontend:8080`
-- **Nom d'hôte :** `erp.yourdomain.com`
+- **Service and port:** `frontend:8080`
+- **Hostname:** `erp.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # ERPNext -- full ERP suite (accounting, inventory, HR, CRM, manufacturing,
@@ -303,4 +303,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)
