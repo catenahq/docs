@@ -1,89 +1,80 @@
 ---
-title: "Restaurer sur un nouveau VPS (sans l'opérateur)"
-description: "Si votre opérateur n'est pas disponible et que vous devez déplacer votre"
+title: "Restore to a fresh VPS (without the operator)"
+description: "If your operator is unavailable and you need to move your software suite to a"
 ---
 
-Si votre opérateur n'est pas disponible et que vous devez déplacer votre
-suite logicielle vers un autre VPS, cette page détaille la procédure manuelle, avec
-les mêmes outils qu'utilise votre opérateur. Comptez quelques heures.
-Vos données vous appartiennent -- ceci est la voie de secours.
+If your operator is unavailable and you need to move your software suite to a
+different VPS, this page walks you through doing it manually with the
+same building blocks your operator uses. It takes a few hours. You own
+your data; this is the fallback path.
 
-## Voie rapide -- archive de récupération préchargée (recommandée)
+## Fast path -- pre-filled recovery archive (recommended)
 
-La récupération la plus rapide est celle où vous n'avez aucun
-identifiant à taper. Votre opérateur peut générer un fichier zip
-unique protégé par mot de passe contenant tout ce qu'il faut pour
-remettre ce VPS en marche : un script prêt à exécuter, tous les
-identifiants de bucket de *ce* VPS, et une copie candidate du
-coffre-fort de secrets. Le zip est chiffré en AES-256, ouvrable par
-n'importe quel système moderne (macOS Finder, Windows Explorer,
-Linux unzip) lorsque vous fournissez le mot de passe.
+The fastest recovery is the one where you do not have to type any
+credentials. Your operator can generate a single password-protected
+zip file containing everything you need to bring this VPS back: a
+ready-to-run script, all the bucket credentials for *this* VPS, and
+a candidate copy of the secret vault. The zip is encrypted with
+AES-256, openable by any modern OS (macOS Finder, Windows Explorer,
+Linux unzip) when you provide the password.
 
-**Ce que votre opérateur vous remet, hors ligne :**
+**What your operator hands you, out of band:**
 
-1. L'archive de récupération (téléchargée depuis `recovery.<zone>`
-   après avoir cliqué sur l'action "Générer l'archive de
-   récupération (chiffrée)" -- voir la page
-   [Prévention des sinistres](/disaster-prevention/) pour ce
-   qu'il faut configurer au préalable). Le fichier ressemble à
-   `recovery-<horodatage>.zip`.
-2. Le mot de passe à usage unique de cette archive.
+1. The recovery archive (downloaded from `recovery.<zone>` after
+   they click the "Generate recovery archive (encrypted)" action --
+   see the [Disaster prevention](/disaster-prevention/) page for
+   what to set up beforehand). The file looks like
+   `recovery-<timestamp>.zip`.
+2. The one-time password for that archive.
 
-**Sur votre poste :**
+**On your laptop:**
 
-Double-cliquez sur le zip. Votre OS demande le mot de passe ;
-tapez-le. Six fichiers apparaissent dans le dossier extrait :
+Double-click the zip. Your OS prompts for the password; type it.
+Six files appear in the extracted folder:
 
-- `README.txt` (anglais) et `LISEZ-MOI.txt` (français) -- ces
-  instructions.
-- `recover.sh` -- le wrapper à lancer sur le nouveau VPS.
-- `restore.sh` -- le script de récupération (aucun accès Internet
-  requis au moment de la reprise ; l'archive est entièrement
-  autonome).
-- `envelope.env` -- les identifiants pour les buckets de *ce* VPS.
-- `vault.recovered.yml` -- copie de référence des secrets
-  récupérables depuis l'hôte vivant, pour votre opérateur si votre
-  coffre principal est aussi perdu. À traiter comme un fichier de
-  mots de passe.
+- `README.txt` (English) and `LISEZ-MOI.txt` (French) -- these instructions.
+- `recover.sh` -- the wrapper you run on the fresh VPS.
+- `restore.sh` -- the recovery script (no internet required at
+  recovery time; the archive is fully self-contained).
+- `envelope.env` -- the credentials for *this* VPS's buckets.
+- `vault.recovered.yml` -- a reference copy of the live host's
+  recoverable secrets, for your operator if your full vault is also
+  lost. Treat it like a password file.
 
-**Sur le nouveau VPS, en root :**
+**On the fresh VPS as root:**
 
 ```
-# scp le dossier extrait sur le nouveau VPS, puis :
-cd catena-recovery   # ou là où vous l'avez extrait
+# scp the extracted folder to the new VPS, then:
+cd catena-recovery   # or wherever you extracted it
 chmod +x recover.sh restore.sh
 sudo ./recover.sh
 ```
 
-`recover.sh` source `envelope.env` (pour que les identifiants
-soient en portée) puis exécute `restore.sh` de bout en bout :
-préparer l'hôte, vérifier le dépôt restic, restaurer le dernier
-snapshot, installer Dokploy, rejouer les dumps Postgres par
-application, réparer le bucket S3 Nextcloud si nécessaire,
-installer cloudflared, résumé.
+`recover.sh` sources `envelope.env` (so the credentials are in scope)
+and runs `restore.sh` end to end: prepare host, verify the restic
+repo, restore the latest snapshot, install Dokploy, replay per-app
+Postgres dumps, repair the Nextcloud S3 bucket if needed, install
+cloudflared, summary.
 
-Idempotent en cas d'échec partiel -- relancez-le après avoir
-corrigé le problème, il reprend où il s'est arrêté.
+It is idempotent on partial failures -- re-run after fixing whatever
+broke and it picks up where it left off.
 
-Si le bucket de sauvegarde "chaud" est injoignable (rare, p. ex.
-le bucket lui-même a été supprimé) et que l'enveloppe contient
-aussi les identifiants du bucket "froid", le script bascule
-automatiquement sur le miroir froid. Si vous utilisez Nextcloud
-avec stockage S3 et que le bucket Nextcloud chaud est vide ou
-manquant, le script recopie le miroir froid vers le bucket chaud
-avant que les utilisateurs Nextcloud ne se reconnectent.
+If the hot backup bucket is unreachable (rare, e.g. the bucket
+itself was deleted) and the envelope also carries cold-bucket
+credentials, the script automatically falls back to the cold
+mirror. If you also use Nextcloud with S3 storage and the hot
+Nextcloud bucket is empty/missing, the script replays the cold
+copy back to hot before Nextcloud users log in.
 
-Une fois la récupération terminée, supprimez le dossier extrait et
-le zip d'origine de votre poste et du VPS. Les identifiants qu'ils
-contiennent sont sensibles et n'ont besoin d'exister que le temps
-de la reprise.
+When you are done, delete the extracted folder and the original
+zip from your laptop and from the VPS. The credentials inside are
+sensitive and only need to live as long as the recovery takes.
 
-## Voie rapide brute -- invites interactives pour les identifiants
+## Plain fast path -- interactive credential prompts
 
-Si vous avez les identifiants listés à la section suivante mais pas
-de script préchargé, vous pouvez exécuter la version non chiffrée
-qui demande chaque identifiant interactivement. Depuis le nouveau
-VPS, en root :
+If you have the credentials listed in the next section but no
+pre-filled script, you can run the unencrypted version that prompts
+for each credential interactively. From the fresh VPS as root:
 
 ```
 curl -fsSLo restore.sh https://docs.yourdomain.com/restore.sh
@@ -91,113 +82,109 @@ chmod +x restore.sh
 sudo ./restore.sh
 ```
 
-Il déroule les mêmes huit étapes. La bascule sur le bucket froid
-et la réparation du bucket Nextcloud S3 ne tournent que lorsque
-les variables d'environnement correspondantes sont exportées
-avant l'appel (`RESTIC_REPOSITORY_COLD`,
+It walks the same eight steps. Cold-bucket fallback and Nextcloud
+S3 repair only run when their corresponding environment variables
+are exported before the call (`RESTIC_REPOSITORY_COLD`,
 `AWS_ACCESS_KEY_ID_COLD`, `AWS_SECRET_ACCESS_KEY_COLD`,
 `NEXTCLOUD_S3_HOT_*`, `NEXTCLOUD_S3_COLD_*`).
 
-Si vous préférez dérouler les étapes à la main (ou si le script
-trébuche sur quelque chose qu'il ne gère pas proprement), la
-procédure manuelle suit.
+If you prefer to walk through the steps by hand (or you hit
+something the script doesn't handle cleanly), the manual procedure
+follows.
 
-## Ce qu'il vous faut avant de commencer
+## What you need before you start
 
-- Un nouveau VPS (n'importe quel fournisseur -- OVH, Hetzner,
-  DigitalOcean, AWS). 2 vCPU / 6 Go de RAM / 40 Go de disque
-  correspond au palier de départ et fait tourner la suite de base.
-  Avec plus de services déployés ou sous charge soutenue, passez à
-  4 vCPU / 8 Go de RAM / 80 Go de disque. Les apps lourdes comme
-  ERPNext méritent le palier supérieur à elles seules.
-- Un accès SSH `root` sur ce VPS.
-- Depuis votre gestionnaire de mots de passe ou votre opérateur :
-  - le **mot de passe de chiffrement du dépôt restic**
-  - la **clé d'accès S3** et la **clé secrète S3** du bucket de
-    sauvegarde
-  - l'URL du dépôt restic (format :
-    `s3:s3.<région>.fournisseur.example/<bucket>`)
-- Une aisance avec SSH et le terminal. Ansible n'est pas requis.
+- A fresh VPS (any provider -- OVH, Hetzner, DigitalOcean, AWS). 2 vCPU /
+  6 GB RAM / 40 GB disk matches the starting tier and runs the base
+  suite. With more services deployed or under sustained load, step up
+  to 4 vCPU / 8 GB RAM / 80 GB disk. Heavy apps like ERPNext want the
+  larger tier on their own.
+- Root SSH access to that VPS.
+- From your password manager or your operator:
+  - the **restic repository encryption password**
+  - the **S3 access key** and **secret key** that point to the backup bucket
+  - the restic repo URL (looks like
+    `s3:s3.<region>.provider.example/<bucket>`)
+- Familiarity with SSH + a terminal. No Ansible required.
 
-## Étape 1 -- Préparer le nouveau VPS
+## Step 1 -- Prepare the new VPS
 
 ```bash
-ssh root@IP-DU-NOUVEAU-VPS
+ssh root@NEW-VPS-IP
 apt update && apt upgrade -y
 apt install -y restic curl ca-certificates
 mkdir -p /mnt/data
 ```
 
-N'installez pas Docker ici -- l'étape 4 ci-dessous lance l'installeur
-officiel de Dokploy (`curl -sSL https://dokploy.com/install.sh | sh`)
-qui installe la bonne version de Docker, initialise Docker Swarm et
-lance Traefik en une seule fois. Installer Docker en amont mène à une
-configuration discordante que Dokploy doit ensuite combattre.
+Don't install Docker here -- Step 4 below runs Dokploy's official
+installer (`curl -sSL https://dokploy.com/install.sh | sh`) which
+installs the correct Docker version, initializes Docker Swarm, and
+brings up Traefik in one shot. Installing Docker first leads to a
+mismatched setup that Dokploy then has to fight.
 
-Si votre jeu de sauvegarde s'attend à un `/mnt/data` sur un volume
-séparé, attachez-en un via la console du fournisseur et montez-le là.
-Sinon un simple répertoire sur la racine suffit.
+If your backup set expects `/mnt/data` to be on a separate volume, attach
+one via your provider's console and mount it there. Otherwise a
+directory on root works.
 
-## Étape 2 -- Configurer les identifiants restic
+## Step 2 -- Configure restic credentials
 
 ```bash
-export RESTIC_REPOSITORY='s3:s3.<région>.fournisseur.example/<bucket>'
-export RESTIC_PASSWORD='<mot-de-passe-chiffrement-dépôt>'
-export AWS_ACCESS_KEY_ID='<clé-accès-s3>'
-export AWS_SECRET_ACCESS_KEY='<clé-secrète-s3>'
+export RESTIC_REPOSITORY='s3:s3.<region>.provider.example/<bucket>'
+export RESTIC_PASSWORD='<repository-encryption-password>'
+export AWS_ACCESS_KEY_ID='<s3-access-key>'
+export AWS_SECRET_ACCESS_KEY='<s3-secret-key>'
 ```
 
-Vérifiez que le dépôt est joignable :
+Verify the repo is reachable:
 
 ```bash
 restic snapshots --latest 5
 ```
 
-Vous devriez voir la liste des snapshots (un par nuit). Sinon, vérifiez
-que l'URL et le mot de passe correspondent à ceux transmis par
-l'opérateur.
+You should see a list of snapshots (one per night). If not, check that
+the repository URL and password match what the operator gave you.
 
-## Étape 3 -- Restaurer le dernier snapshot
+## Step 3 -- Restore the latest snapshot
 
 ```bash
 restic restore latest --target /
 ```
 
-restic remet chaque fichier du snapshot à son emplacement d'origine sur
-le nouvel hôte. Comptez 5 à 30 minutes selon la taille et la bande
-passante.
+This walks every file in the snapshot back into its original path on the
+new host. Expect 5-30 minutes depending on bucket size and bandwidth.
 
-À la fin, votre VPS contient :
+After it finishes, your VPS has:
 
-- `/etc/dokploy/` -- configuration de Dokploy
-- `/mnt/data/docker/volumes/` -- données persistantes de chaque
-  application (bases Postgres, Redis, téléversements)
-- `/mnt/data/apps/` -- fichiers compose de chaque projet
-- `/mnt/data/backup-staging/pg/` -- dumps SQL nocturnes, un par
-  conteneur Postgres
-- `/etc/ssh`, `/etc/ufw`, `/etc/fstab` -- configuration système
-- `/etc`, `/var/lib/dpkg`, `/usr/local/bin` -- état des paquets et
-  scripts auxiliaires
+- `/etc/dokploy/` -- Dokploy configuration
+- `/mnt/data/docker/volumes/` -- every app's persistent data (Postgres
+  databases, Redis, uploads)
+- `/mnt/data/apps/` -- per-app compose project files
+- `/mnt/data/backup-staging/pg/` -- nightly SQL dumps, one per Postgres
+  container
+- `/etc/ssh`, `/etc/ufw`, `/etc/fstab` -- system configuration
+- `/etc`, `/var/lib/dpkg`, `/usr/local/bin` -- package state + helper
+  scripts
 
-## Étape 4 -- Installer Dokploy
+## Step 4 -- Install Dokploy
 
-Suivez les instructions d'installation officielles :
-<https://dokploy.com/docs/core/installation>. En résumé :
+Follow Dokploy's own install instructions:
+<https://dokploy.com/docs/core/installation>. In short:
 
 ```bash
 curl -sSL https://dokploy.com/install.sh | sh
 ```
 
-Cela initialise Docker Swarm, déploie Traefik et lance le plan de
-contrôle Dokploy. Le port 3000 expose l'interface admin.
+It initializes Docker Swarm, deploys Traefik, and brings up the Dokploy
+control plane. Port 3000 is the admin UI.
 
-`/etc/dokploy/` et `/mnt/data/docker/volumes/` étant déjà restaurés,
-Dokploy se reconnecte au volume Postgres existant au démarrage.
+Because `/etc/dokploy/` and `/mnt/data/docker/volumes/` are already
+restored, Dokploy will reconnect to the existing Postgres volume on
+startup.
 
-!!! warning "Mot de passe Postgres"
-    Le script d'installation Dokploy génère un nouveau mot de passe
-    aléatoire pour son Postgres interne. La base restaurée contient
-    l'ancien mot de passe haché. Si la connexion échoue, alignez-les :
+!!! warning "Postgres password"
+    Dokploy's install script generates a new random password for its
+    internal Postgres. The restored database has the OLD password baked
+    in. If login fails, align them with:
 
     ```bash
     PG_CTR=$(docker ps --format '{{.Names}}' | grep dokploy-postgres | head -1)
@@ -206,115 +193,109 @@ Dokploy se reconnecte au volume Postgres existant au démarrage.
         -c "ALTER USER dokploy WITH PASSWORD '$NEW_PW';"
     ```
 
-    (L'automatisation de votre opérateur évite cette étape en
-    pré-positionnant le secret depuis leur coffre.)
+    (Your operator's automation avoids this step by pre-seeding the
+    secret from their vault.)
 
-## Étape 5 -- Rejouer les dumps Postgres par application
+## Step 5 -- Replay per-app Postgres dumps
 
-Chaque base applicative est aussi dumpée en SQL chaque nuit et
-restaurée à l'étape 3. Une fois les conteneurs relancés par Dokploy :
+Each app's database was also dumped as SQL nightly and restored in step
+3. For each application container that runs Postgres, once the
+container is up via Dokploy:
 
 ```bash
 for dump in /mnt/data/backup-staging/pg/*.sql.gz; do
     ctr=$(basename "$dump" | sed -E 's/-[0-9]+T[0-9]+Z\.sql\.gz$//')
     if docker ps --format '{{.Names}}' | grep -Fxq "$ctr"; then
-        echo "Rejoue $dump dans $ctr"
+        echo "Replaying $dump into $ctr"
         zcat "$dump" | docker exec -i "$ctr" psql -U postgres -v ON_ERROR_STOP=0
     fi
 done
 ```
 
-Le volume brut sous `/mnt/data/docker/volumes/` suffit généralement ;
-les dumps SQL sont la solution de repli si le volume est corrompu ou si
-vous migrez entre versions Postgres incompatibles.
+The raw volume in `/mnt/data/docker/volumes/` is usually sufficient; the
+SQL dumps are a fallback for the "raw volume is corrupt or from a
+different Postgres version" case.
 
-## Étape 6 -- Reprovisionner la passerelle publique
+## Step 6 -- Reprovision the public gateway
 
-L'**identifiant + les identifiants** du tunnel Cloudflare ne sont pas
-inclus dans la sauvegarde restic (ils sont liés à un serveur
-spécifique). À refaire :
+The Cloudflare Tunnel's **tunnel ID + credentials** are not in the
+restic backup (they bind to a specific server at provisioning time).
+Recreate:
 
-1. Dans le tableau de bord Cloudflare, supprimer l'ancien tunnel.
-2. Créer un nouveau tunnel, copier le jeton.
-3. Faire pointer les CNAME DNS (`auth.<zone>`, `apps.<zone>`,
-   `monitor.<zone>`, etc.) vers le nouveau nom public du tunnel.
-4. Installer `cloudflared` sur le nouveau VPS avec le jeton :
+1. In the Cloudflare dashboard, delete the old tunnel for this zone.
+2. Create a new tunnel, copy the token.
+3. Point the DNS CNAMEs (`auth.<zone>`, `apps.<zone>`, `monitor.<zone>`,
+   etc.) at the new tunnel's public hostname.
+4. Install `cloudflared` on the new VPS and start it with the token:
 
     ```bash
-    cloudflared service install <jeton>
+    cloudflared service install <token>
     ```
 
-Si vous préférez le déploiement Swarm utilisé par votre opérateur,
-consultez `/root/README.md` sur le VPS restauré -- la commande exacte y
-figure. À noter : la variante Swarm tourne comme service Docker
-attaché au réseau `dokploy-network` pour atteindre les noms d'hôte
-internes de vos applis ; la commande standalone
-`cloudflared service install <jeton>` ci-dessus tourne comme service
-système et passe par le réseau de l'hôte. Les deux fonctionnent ; la
-version Swarm est celle que l'automatisation de votre opérateur
-reconstruit, à privilégier si vous comptez lui rendre le serveur plus
-tard.
+If you prefer the Swarm-deployed `cloudflared` your operator uses,
+consult `/root/README.md` on the restored VPS -- it has the exact command
+baked in. Note that the Swarm-deployed variant runs as a Docker service
+attached to the `dokploy-network` so it can reach your apps' internal
+hostnames; the standalone `cloudflared service install <token>` above
+runs as a system service and reaches them via the host network. Either
+works; the Swarm version is what your operator's automation rebuilds and
+the one to pick if you plan to hand the server back to them later.
 
-## Étape 7 -- Vérifications
+## Step 7 -- Sanity check
 
-Ouvrez :
+Visit:
 
-- `https://auth.<zone>` -> page de connexion Keycloak ; vos
-  utilisateurs existants doivent fonctionner
-- `https://apps.<zone>` -> tableau Dokploy ; tous les projets compose
-  sont visibles (possiblement "arrêtés" -- cliquez Deploy une fois par
-  projet pour les relancer)
-- `https://<votre-app>.<zone>` -> l'application elle-même
+- `https://auth.<zone>` -> Keycloak login page, your existing users
+  should work
+- `https://apps.<zone>` -> Dokploy dashboard, all your compose projects
+  visible (may show "stopped" -- click Deploy on each once to start them)
+- `https://<your-app>.<zone>` -> the app itself
 
-Si les trois chargent, vos données sont bien de retour.
+If all three load, you have your data back.
 
-## Si vous utilisez Nextcloud avec stockage S3
+## If you use Nextcloud with S3 storage
 
-Certaines applications qui gèrent beaucoup de fichiers -- Nextcloud en
-est le cas courant -- rangent leurs fichiers dans un bucket S3 séparé,
-pas dans le dépôt restic. Si votre opérateur a déployé Nextcloud de
-cette façon :
+Some file-heavy apps -- Nextcloud being the common one -- store their
+files in a separate S3 bucket, not in the restic repo. If your
+operator deployed Nextcloud this way:
 
-- L'archive restic **ne contient pas vos fichiers Nextcloud**. Elle
-  contient le code de l'application, sa configuration et sa base de
-  données, mais les fichiers vivent dans le bucket S3 que
-  l'opérateur a provisionné dans votre compte nuagique.
-- Au démarrage, le conteneur Nextcloud restauré se reconnecte
-  automatiquement au même bucket avec les identifiants enregistrés
-  dans sa configuration -- aucune restauration séparée nécessaire.
-- Si vous avez volontairement fait tourner les clés S3 depuis la
-  sauvegarde, mettez à jour les variables d'environnement Nextcloud
-  dans l'interface Dokploy avant de redéployer, sinon l'application
-  démarrera mais tous les fichiers paraîtront corrompus.
-- Le bucket survit indépendamment du VPS. Si vous souhaitez un jour
-  télécharger tous vos fichiers manuellement, le bucket se lit avec
-  n'importe quel outil compatible S3 (`aws s3 sync`, `rclone`) avec
-  les mêmes identifiants.
-- Si le bucket Nextcloud chaud lui-même n'est plus là (supprimé, ou
-  ses identifiants ont été révoqués), l'archive de récupération
-  chiffrée gère cela automatiquement : lorsque les identifiants
-  côté froid sont présents dans l'enveloppe, le script recopie
-  chaque objet du miroir froid vers un nouveau bucket chaud avant
-  que les utilisateurs ne se reconnectent. La page
-  [Prévention des sinistres](/disaster-prevention/) liste ce que
-  votre opérateur doit activer pour que le miroir froid existe.
+- The restic tarball **does not contain your Nextcloud files**. It
+  contains the Nextcloud app code, config, and database, but the file
+  bytes live in the S3 bucket your operator provisioned in your
+  cloud account.
+- When the restored Nextcloud container starts up, it reconnects to
+  the same bucket using credentials stored in the configuration -- no
+  separate restore needed.
+- If you intentionally rotated the S3 credentials after the backup,
+  update the Nextcloud env vars in Dokploy's environment UI before
+  deploying, otherwise the app will come up but every file will
+  appear broken.
+- The bucket itself survives independently of the VPS. If you ever
+  wanted to download every file manually, the bucket is readable
+  with any S3-compatible tool (`aws s3 sync`, `rclone`) using those
+  same credentials.
+- If the hot Nextcloud bucket itself is gone (deleted, or its
+  credentials were revoked), the encrypted recovery archive handles
+  this automatically: when the cold-side credentials are present in
+  the envelope, the script copies every object from the cold mirror
+  back into a fresh hot bucket before users log in. The
+  [Disaster prevention](/disaster-prevention/) page lists what your
+  operator must enable for the cold mirror to exist.
 
-## En cas de doute -- rappelez votre opérateur
+## When in doubt -- call your operator back
 
-Cette page existe pour qu'aucune situation ne vous bloque. Mais le
-flux scripté (`./catena restore && ./catena site`) de votre opérateur
-remplace chaque étape ci-dessus par deux commandes, aligne le mot de
-passe Postgres automatiquement, redéploie les composes et
-reprovisionne le tunnel Cloudflare seul. S'il est joignable, son
-automatisation est plus rapide et plus fiable que la procédure manuelle.
+This page exists so you are never stuck. But the scripted flow
+(`./catena restore && ./catena site`) your operator runs replaces every
+step above with a single two-command sequence and handles the
+Postgres-password alignment, the Dokploy redeploys, and the Cloudflare
+tunnel re-provisioning automatically. If you can reach your operator,
+their automation is faster and less error-prone than the manual path.
 
-## Garder une copie hors ligne
+## Keep an offline copy
 
-Si votre VPS est tombé et que vous avez besoin de cette page pour
-le relever, le site de documentation ne vous aidera pas. Enregistrez
-les pages que vous utiliseriez lors d'un sinistre (celle-ci +
-[Reprise après sinistre](/disaster-recovery/) +
-[Où vivent vos données](/where-is-my-data/)) sur votre poste
-avec "Enregistrer sous..." de votre navigateur (ou imprimez-les en
-PDF) à la prise en charge, et rafraîchissez la copie une fois par
-an.
+If your server is down and you need this page to bring it back up, the
+docs site won't help. Save the pages you'd want during a
+disaster (this one + [Disaster recovery](/disaster-recovery/) +
+[Where is my data](/where-is-my-data/)) to your laptop with
+your browser's "Save Page As..." (or print them to PDF) at hand-off
+and refresh once a year.

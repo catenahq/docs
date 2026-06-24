@@ -1,73 +1,73 @@
 ---
 title: "DocuSeal"
-description: "Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature."
+description: "Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature."
 ---
 
-Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées.
+Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in.
 
-- **Projet original :** <https://www.docuseal.com/>
-- **Remplace :** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**
-- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Upstream project:** <https://www.docuseal.com/>
+- **Replaces:** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Patientez ~1 min pour le premier démarrage.
-2. Visitez votre domaine DocuSeal et complétez l'assistant initial (création du compte admin).
-3. *(Optionnel)* Activez Keycloak SSO : **Settings** -> **SSO** -> choisissez **OpenID Connect** -> collez :
-   - **Client ID :** `OIDC_CLIENT_ID` depuis Environment (`docuseal`)
-   - **Client Secret :** `OIDC_CLIENT_SECRET` depuis Environment (demandez à votre opérateur de le générer côté Keycloak si vide)
-   - **Issuer URL :** `OIDC_ISSUER_URL`
-   - Validez. La page de connexion affiche **Sign in with Keycloak**. La connexion admin locale continue de fonctionner comme issue de secours.
-4. *(Optionnel)* Configurez SMTP pour les e-mails de demande de signature : remplissez `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_ADDRESS` dans l'onglet Environment puis redéployez. Sans SMTP, les destinataires ne voient que les demandes en attente dans leur tableau de bord.
+1. Click **Deploy**. Wait ~1 min for the first boot.
+2. Visit your DocuSeal domain and complete the first-run wizard (creates the initial admin account).
+3. *(Optional)* Enable Keycloak SSO: **Settings** -> **SSO** -> choose **OpenID Connect** -> paste:
+   - **Client ID:** `OIDC_CLIENT_ID` from Environment (`docuseal`)
+   - **Client Secret:** `OIDC_CLIENT_SECRET` from Environment (ask your operator to mint one in Keycloak if blank)
+   - **Issuer URL:** `OIDC_ISSUER_URL`
+   - Save. The login page gains a **Sign in with Keycloak** button. Local admin login keeps working as a break-glass.
+4. *(Optional)* Configure SMTP for signature-request emails: fill `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_ADDRESS` in the Environment tab and redeploy. Without SMTP, recipients only see pending requests in their DocuSeal dashboard.
 
-### Pourquoi DocuSeal est par défaut
+### Why DocuSeal is the default
 
-DocuSeal remplace Documenso (toujours au catalogue avec un bandeau de dépréciation). Démarrage plus rapide, gestion du certificat de signature simplifiée (pas d'étape PKCS12 au premier déploiement), et apps iOS/Android maintenues. Documenso reste au catalogue le temps que les clients existants migrent.
+DocuSeal supersedes Documenso (still in the catalog under a deprecation banner). Faster boot, simpler signing-cert handling (no PKCS12 mint step on first deploy), and a maintained iOS/Android app. Documenso remains in catalog while existing clients migrate.
 
-### Certificat de signature
+### Signing certificate
 
-DocuSeal génère des PDF signés d'emblée sans étape de génération de certificat. Adobe Acrobat affiche la signature comme cryptographiquement valide mais avec un avertissement "racine auto-signée" par défaut -- même limite que Documenso. Pour des signatures à valeur légale, contactez votre opérateur pour installer un certificat émis par une AC via l'UI admin DocuSeal (Settings -> Signature -> Certificates).
+DocuSeal generates signed PDFs out of the box without a separate signing-cert mint step. Adobe Acrobat shows the signature as cryptographically valid but with a "self-signed root" warning by default -- same caveat as Documenso. For legally-binding signatures, contact your operator to install a CA-issued cert via DocuSeal's admin UI (Settings -> Signature -> Certificates).
 
 ### SMTP
 
-Sans SMTP configuré, les e-mails de demande de signature ne sont pas envoyés. Les destinataires voient les demandes en attente dans leur tableau de bord. Pour activer les e-mails, renseignez les variables `SMTP_*` dans l'onglet Environment.
+Without SMTP configured, signature-request emails are not delivered. Recipients still see pending requests in their dashboard. To enable email, fill the `SMTP_*` env vars in the Environment tab.
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `DOCUSEAL_HOSTNAME` | `sign.yourdomain.com` |
-| `SECRET_KEY_BASE` | _valeur aléatoire auto-générée_ |
-| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `SMTP_HOST` | _(à définir avant déploiement)_ |
+| `SECRET_KEY_BASE` | _auto-generated random value_ |
+| `DB_PASSWORD` | _auto-generated random value_ |
+| `SMTP_HOST` | _(set before deploy)_ |
 | `SMTP_PORT` | `587` |
-| `SMTP_USERNAME` | _(à définir avant déploiement)_ |
-| `SMTP_PASSWORD` | _(à définir avant déploiement)_ |
-| `SMTP_FROM_ADDRESS` | _(à définir avant déploiement)_ |
+| `SMTP_USERNAME` | _(set before deploy)_ |
+| `SMTP_PASSWORD` | _(set before deploy)_ |
+| `SMTP_FROM_ADDRESS` | _(set before deploy)_ |
 | `SMTP_AUTH` | `plain` |
 | `OIDC_CLIENT_ID` | `docuseal` |
-| `OIDC_CLIENT_SECRET` | _(à définir avant déploiement)_ |
+| `OIDC_CLIENT_SECRET` | _(set before deploy)_ |
 | `OIDC_ISSUER_URL` | `https://auth.yourdomain.com/realms/catena` |
 
-## Domaine
+## Domain
 
-- **Service et port :** `docuseal:3000`
-- **Nom d'hôte :** `sign.yourdomain.com`
+- **Service and port:** `docuseal:3000`
+- **Hostname:** `sign.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # DocuSeal -- open-source document signing. Replaces Documenso in this
@@ -158,4 +158,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

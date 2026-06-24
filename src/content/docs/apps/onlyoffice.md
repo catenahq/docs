@@ -1,51 +1,51 @@
 ---
 title: "OnlyOffice"
-description: "Édition collaborative DOCX/XLSX/PPTX -- s'intègre à Nextcloud pour la co-édition temps réel avec une haute fidélité aux formats MS Office."
+description: "Collaborative DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing with high MS Office fidelity."
 ---
 
-Édition collaborative DOCX/XLSX/PPTX -- s'intègre à Nextcloud pour la co-édition temps réel avec une haute fidélité aux formats MS Office.
+Collaborative DOCX/XLSX/PPTX editing -- bolts into Nextcloud for real-time co-editing with high MS Office fidelity.
 
-- **Projet original :** <https://www.onlyoffice.com/>
-- **Remplace :** **Microsoft Office Online**, **Google Docs (éditeur embarqué)**
-- **Connexion (SSO) :** Sans objet -- ce template n'a pas de connexion utilisateur (usage serveur-à-serveur uniquement).
+- **Upstream project:** <https://www.onlyoffice.com/>
+- **Replaces:** **Microsoft Office Online**, **Google Docs (as embedded editor)**
+- **Sign-in (SSO):** Not applicable -- this template has no user-facing login (server-to-server usage only).
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Patientez ~1 min le démarrage du Document Server.
-2. Depuis le tableau de bord opérateur, cliquez le bouton **Wire Nextcloud OnlyOffice**. Le bouton installe l'application Nextcloud OnlyOffice, lit la clé JWT depuis ce template, pointe l'application vers ce serveur, et -- si Collabora était précédemment câblé -- retire proprement l'application Nextcloud Collabora.
-3. Ouvrez n'importe quel fichier DOCX/XLSX/PPTX dans Nextcloud. Il s'ouvre dans l'éditeur OnlyOffice embarqué.
+1. Click **Deploy**. Wait ~1 min for the document server to boot.
+2. From the operator dashboard, click the **Wire Nextcloud OnlyOffice** button. The button installs the Nextcloud OnlyOffice app, reads the JWT secret from this template, points the app at this server, and -- if you previously had Collabora wired -- removes the Collabora Nextcloud app cleanly.
+3. Open any DOCX/XLSX/PPTX file in Nextcloud. It opens in the embedded OnlyOffice editor.
 
-Pour passer à Collabora plus tard : arrêtez ce conteneur OnlyOffice, déployez `collabora`, puis cliquez le bouton **Wire Nextcloud Collabora**.
+Switching to Collabora later is one click: stop this OnlyOffice compose, deploy `collabora`, then click the **Wire Nextcloud Collabora** button.
 
-N'accédez pas au domaine OnlyOffice directement dans un navigateur -- il n'a pas d'interface utilisateur. Les utilisateurs ne le voient qu'à travers Nextcloud.
+Don't visit the OnlyOffice domain directly in a browser -- it has no UI of its own. Users only ever see it through Nextcloud when they open a document.
 
 
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
-| `JWT_SECRET` | _valeur aléatoire auto-générée_ |
+| `JWT_SECRET` | _auto-generated random value_ |
 
-## Domaine
+## Domain
 
-- **Service et port :** `documentserver:80`
-- **Nom d'hôte :** `office.yourdomain.com`
+- **Service and port:** `documentserver:80`
+- **Hostname:** `office.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # OnlyOffice Document Server -- collaborative DOCX/XLSX/PPTX editing,
@@ -101,4 +101,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

@@ -1,63 +1,63 @@
 ---
 title: "Easy!Appointments"
-description: "Application de réservation côté client pour un ou plusieurs prestataires (clinique, salon, cours, atelier de réparation)."
+description: "Customer-facing booking app for one or many providers (clinic, salon, lessons, repair shop)."
 ---
 
-Application de réservation côté client pour un ou plusieurs prestataires (clinique, salon, cours, atelier de réparation). Page de réservation publique ; calendriers du personnel ; rappels courriel + SMS ; export ICS.
+Customer-facing booking app for one or many providers (clinic, salon, lessons, repair shop). Public booking page; staff calendars; email + SMS reminders; ICS export.
 
-- **Projet original :** <https://easyappointments.org/>
-- **Remplace :** **Calendly**, **Acuity**, **SimplyBook**, **Setmore**
-- **Connexion (SSO) :** Non disponible -- l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
+- **Upstream project:** <https://easyappointments.org/>
+- **Replaces:** **Calendly**, **Acuity**, **SimplyBook**, **Setmore**
+- **Sign-in (SSO):** Not available -- this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Patientez ~1 min pour le premier démarrage (la base de données s'initialise au premier lancement).
-2. Visitez votre domaine Easy!Appointments et complétez l'assistant initial (compte admin, nom de l'entreprise, heures d'ouverture).
-3. Ajoutez les prestataires (membres du personnel avec calendriers réservables), les services (durées + prix), et les clients au besoin.
-4. *(Optionnel)* Configurez SMTP sous **Settings** -> **Business Logic** -> **Email** pour envoyer les confirmations et rappels de rendez-vous. Sans SMTP, les clients et le personnel voient les réservations dans l'application, mais aucun courriel n'est envoyé.
-5. *(Optionnel)* Intégrez la page de réservation à votre site web : copiez l'URL publique depuis **Settings** -> **Booking Settings** et liez-la depuis votre site ou vos fiches d'établissement.
+1. Click **Deploy**. Wait ~1 min for the first boot (database initializes on first run).
+2. Visit your Easy!Appointments domain and complete the first-run installer (creates the initial admin account, business name, working hours).
+3. Add providers (staff with bookable calendars), services (durations + prices), and customers as needed.
+4. *(Optional)* Configure SMTP under **Settings** -> **Business Logic** -> **Email** to send appointment confirmations and reminders. Without SMTP, customers and staff still see bookings inside the app, but no emails go out.
+5. *(Optional)* Embed the booking page on your website: copy the public booking URL from **Settings** -> **Booking Settings** and link to it from your site or business listings.
 
-### Authentification
+### Authentication
 
-Easy!Appointments v1.5.2 utilise une connexion locale par courriel/mot de passe pour le personnel. Pas d'OIDC natif dans la version upstream. La page de réservation côté client est publique par conception -- les visiteurs réservent un créneau sans compte, en fournissant seulement leur nom, courriel et téléphone. L'absence de SSO ne touche donc que la connexion du personnel et reste gérable pour les petites équipes (1 à 10 personnes) ciblées par l'application.
+Easy!Appointments v1.5.2 uses local email/password sign-in for staff. No native OIDC in the upstream release. The customer-facing booking page is public by design -- visitors book a slot without creating an account, only providing name, email, and phone. The SSO gap therefore only affects staff sign-in and is typically manageable for the small teams (1-10 staff) the app targets.
 
-Si un SSO unifié pour le personnel est requis, contactez votre opérateur pour discuter d'un proxy oauth2 en façade ; le déploiement par défaut utilise des comptes locaux.
+If a single sign-on for staff is required, contact your operator to discuss an oauth2-proxy front layer; default deployment ships with local accounts.
 
-### Rappels courriel + SMS
+### Email + SMS reminders
 
-Les rappels par courriel fonctionnent dès que SMTP est configuré. Les rappels SMS nécessitent un compte Twilio (configuré sous **Settings** -> **Notifications** -> **SMS**). Les SMS sont consentis par le client au moment de la réservation.
+Email reminders work as soon as SMTP is configured. SMS reminders require a Twilio account (configured under **Settings** -> **Notifications** -> **SMS**). SMS is opt-in per customer at booking time.
 
-### URL de réservation publique
+### Public booking URL
 
-L'URL publique par défaut est `https://book.<votre-domaine>/`. Partagez-la directement avec vos clients, intégrez-la comme bouton sur votre site web, ou listez-la sur votre fiche Google Business.
+The default public URL is `https://book.<your-domain>/`. Share this directly with customers, embed it as a button on your business website, or list it on Google Business Profile.
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `EASYAPPOINTMENTS_HOSTNAME` | `book.yourdomain.com` |
-| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `DB_ROOT_PASSWORD` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _auto-generated random value_ |
+| `DB_ROOT_PASSWORD` | _auto-generated random value_ |
 
-## Domaine
+## Domain
 
-- **Service et port :** `easyappointments:80`
-- **Nom d'hôte :** `book.yourdomain.com`
+- **Service and port:** `easyappointments:80`
+- **Hostname:** `book.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # Easy!Appointments -- open-source customer-facing booking app. Sole
@@ -137,4 +137,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

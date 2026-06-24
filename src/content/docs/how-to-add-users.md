@@ -1,33 +1,30 @@
 ---
-title: "Comment ajouter des utilisateurs"
-description: "Version abrégée :"
+title: "How to add users"
+description: "TODO -- Keycloak UI walkthrough with screenshots."
 ---
 
-Version abrégée :
+TODO -- Keycloak UI walkthrough with screenshots.
 
-1. Rendez-vous sur `https://auth.yourdomain.com` et connectez-vous
-   en tant qu'administrateur.
-2. Interface d'administration -> Directory -> Users -> "Create".
-3. Remplissez le nom d'utilisateur et le courriel. Définissez un mot de
-   passe fort OU envoyez une invitation (Keycloak expédie par SMTP un
-   lien pour définir le mot de passe -- suppose que l'opérateur a
-   configuré SMTP).
-4. Choisissez le niveau de l'utilisateur. Les nouveaux utilisateurs
-   atterrissent dans `client` (vos utilisateurs externes) par défaut.
-   Pour un employé, ajoutez-le aussi à `staff` (accès de base de votre
-   équipe). Pour un contrôle plus fin, ajoutez un sous-groupe de staff
-   par département (p. ex. `accounting`, `engineering`). `admin` est le
-   niveau opérateur -- attribuez-le délibérément, jamais par défaut.
-5. L'utilisateur peut alors se connecter à n'importe quel sous-domaine
-   d'application (`admin.yourdomain.com`,
+Short version:
+
+1. Go to `https://auth.yourdomain.com` and log in as admin.
+2. Admin interface -> Directory -> Users -> "Create"
+3. Fill in username + email. Set a strong password OR send an invite
+   (Keycloak emails a set-password link via SMTP -- requires operator
+   to have wired up SMTP).
+4. Pick the user's tier. New users land in `client` (your external
+   users) by default. For an employee, also add them to `staff` (your
+   team's baseline access). For finer-grained access, add a per-
+   department subgroup of staff (e.g. `accounting`, `engineering`).
+   `admin` is the operator tier -- assign it deliberately, never by
+   default.
+5. User can now log in at any app subdomain (`admin.yourdomain.com`,
    `monitor.yourdomain.com`,
    `actions.yourdomain.com`,
-   `dash.yourdomain.com`) avec son courriel et son mot
-   de passe.
+   `dash.yourdomain.com`) with their email + password.
 
-Les flux en libre-service qui fonctionnent sans intervention de
-l'opérateur :
+Self-service flows that work without operator involvement:
 
-- Réinitialisation du mot de passe (lien par courriel).
-- Modification du profil (nom affiché, courriel).
-- Activation de l'authentification multifacteur sur son propre compte.
+- Password reset (email link)
+- Profile edits (display name, email)
+- Enabling MFA on own account

@@ -1,173 +1,160 @@
 ---
-title: "Reprise après sinistre : que faire quand ça tourne mal"
-description: "Quelque chose est déjà cassé et vous devez le réparer. Cette page est"
+title: "Disaster recovery: what to do when things go wrong"
+description: "Something is already broken and you need to fix it. This page is the"
 ---
 
-Quelque chose est déjà cassé et vous devez le réparer. Cette page est
-la carte "ce qui peut tourner mal" + "ce qui fonctionne encore
-quand ça arrive" + "comment s'en sortir dans chaque situation". Si
-vous lisez ceci **avant** un incident, la page compagne est
-[Prévention des sinistres](/disaster-prevention/) -- c'est là que
-vivent les sauvegardes hors portable, le compartiment hors site et
-les exports proactifs des clés.
+Something is already broken and you need to fix it. This page is the
+map of "what can go wrong" + "what still works when it does" + "how to
+get back from each situation." If you're reading this **before** an
+incident, the companion page is [Disaster prevention](/disaster-prevention/)
+-- that's where the off-laptop backups, off-site bucket, and proactive
+secret exports live.
 
-Version courte : votre infrastructure est conçue pour qu'**aucun clic
-accidentel ne puisse à lui seul vous mettre à la porte**. Il faut un
-concours de circonstances pour vraiment perdre l'accès, et pour chaque
-scénario, il existe un chemin de récupération.
+The short version: your software suite is designed so that **no single
+accidental click can lock you out**. It takes a combination of events
+to lose access, and for every scenario there's a recovery
+path.
 
-## Scénarios de perte de données -- FAQ rapide
+## Data-loss scenarios -- quick FAQ
 
-Si vous parcourez la page à la recherche de la seule chose qui
-correspond à votre situation actuelle, voici l'index. Chaque entrée
-renvoie à la page ou la section qui détaille la récupération.
+If you're skimming for the one thing that matches your current
+situation, this is the index. Each entry links to the page or
+section that walks the recovery in detail.
 
-| Situation | Premier réflexe | Où en lire plus |
+| Situation | First move | Where to read more |
 |---|---|---|
-| **J'ai supprimé un fichier par accident** (un utilisateur, un fichier/dossier) | Essayez la corbeille de l'application. Si vide, contactez votre opérateur. | Suivez d'abord la corbeille; sinon contactez votre opérateur. |
-| **J'ai perdu mon mot de passe ou mon 2FA** (juste moi) | Réinitialisation libre-service ; pour le 2FA, contactez votre opérateur. | Réinitialisation libre-service via le portail; 2FA via votre opérateur. |
-| **Tous les administrateurs sont verrouillés en même temps** (email perdu, tableau de bord perdu) | Contactez votre opérateur -- il a un chemin de récupération séparé qui ne dépend ni de l'email ni du tableau de bord. | Chemin opérateur hors-bande (non documenté côté client). |
-| **Le VPS entier est chiffré par un rançongiciel** | Contactez votre opérateur immédiatement. La récupération se fait depuis votre dernière sauvegarde saine, antérieure au rançongiciel. | Carte de récupération ci-dessous ("Disque VPS entier") |
-| **Le VPS lui-même est compromis par un malware / accès non autorisé** | Contactez votre opérateur. Le chemin est : effacement + restauration depuis un snapshot pré-compromis + rotation de tous les secrets. Votre opérateur s'en charge ; vous recevez une mise à jour à chaque phase. | Carte de récupération ci-dessous ("Disque VPS entier") |
-| **Le centre de données du fournisseur VPS brûle** (ou panne matérielle) | Contactez votre opérateur. Il restaure votre infrastructure sur un nouveau VPS chez le même ou un autre fournisseur, depuis le compartiment de sauvegarde hors site. | Carte de récupération ci-dessous ("Disque VPS entier") + [Restaurer sur un nouveau VPS](/self-restore/) |
-| **Le fournisseur VPS donne un préavis de 48 h / suspend le compte** | Contactez votre opérateur. Il migre vers un nouveau fournisseur dans un délai serré ; comptez ~30-60 min d'indisponibilité publique pendant la bascule. | Carte de récupération ci-dessous ("Le fournisseur VPS fait faillite") |
-| **Le fournisseur de sauvegarde donne un préavis de 48 h** | Contactez votre opérateur. Il re-cible les sauvegardes vers un nouveau compartiment ; les données sur le VPS ne sont pas affectées. | Carte de récupération ci-dessous ("Le fournisseur S3 fait faillite") |
-| **Je crois que quelqu'un d'autre a mon mot de passe / mon jeton API** | N'attendez pas -- contactez votre opérateur et faites tourner la clé. | Carte de récupération ci-dessous (lignes par identifiant) |
+| **I deleted a file by accident** (one user, one file/folder) | Try the app's own trash. If empty, contact your operator. | Trash first; if empty, contact your operator. |
+| **I lost my password or my 2FA** (just me) | Self-service password reset; for 2FA, contact your operator. | Self-service reset via the portal; 2FA goes through your operator. |
+| **All admins are locked out at once** (lost email, lost dashboard) | Contact your operator -- they have a separate recovery path that doesn't depend on email or the dashboard. | Out-of-band operator path (not client-side). |
+| **The whole VPS is encrypted by ransomware** | Contact your operator immediately. Recovery is from your last clean backup, before the ransomware reached the disk. | Recovery map below ("Entire VPS disk") |
+| **The VPS itself is compromised by malware / unauthorized access** | Contact your operator. The path is wipe + restore from a pre-compromise snapshot + rotate every secret. Your operator owns this; you receive a status update at each phase. | Recovery map below ("Entire VPS disk") |
+| **VPS provider's datacenter burns down** (or hardware failure) | Contact your operator. They restore your software suite to a fresh VPS at the same or different provider, using the off-site backup bucket. | Recovery map below ("Entire VPS disk") + [Restore to a fresh VPS](/self-restore/) |
+| **VPS provider gives 48h notice / suspends the account** | Contact your operator. They migrate you to a new provider on a tight timeline; expect ~30-60 minutes of public-URL downtime during cutover. | Recovery map below ("VPS provider goes bankrupt") |
+| **Backup provider gives 48h notice** | Contact your operator. They re-target backups at a new bucket; existing data on the VPS is unaffected. | Recovery map below ("S3 backup provider goes bankrupt") |
+| **I think someone else has my password / API token** | Don't wait -- contact your operator and rotate the credential. | Recovery map below (per-credential rows) |
 
-La carte de récupération ci-dessous contient le tableau complet, y
-compris les rotations d'identifiants d'infrastructure (jeton
-Cloudflare, compte Tailscale, etc.) -- continuez à lire.
+The recovery map below has the full table including infrastructure
+edges (Cloudflare token rotation, Tailscale account, etc.) -- keep
+reading.
 
-## Le seul bouton dont vous aurez peut-être besoin : "Exporter les clés de récupération"
+## The one button you may need: "Export recovery secrets"
 
-Sur [actions.yourdomain.com](https://actions.yourdomain.com/),
-dans la section **Ops / divers**, il y a un bouton intitulé **"Exporter
-les clés de récupération (chiffrées)"** (🔐). Cliquez dessus lorsque :
+On [actions.yourdomain.com](https://actions.yourdomain.com/),
+under the **Ops** section, there's a button labelled **"Export
+recovery secrets (encrypted)"** (🔐). Click it when:
 
-- Vous avez perdu le mot de passe maître qui déchiffre votre fichier
-  de secrets.
-- Vous avez encore accès au tableau de bord.
+- You have lost the master password that decrypts your secret file.
+- You can still log into this dashboard.
 
-Il vous demandera une phrase de passe (tapez-en une solide -- votre
-gestionnaire de mots de passe peut en générer une), reconstituera une
-copie chiffrée de tous les secrets récupérables depuis le VPS en
-marche, et déposera un fichier sur le serveur que vous pouvez
-télécharger avec votre navigateur.
+It will prompt you for a passphrase (type a strong one -- your password
+manager can generate one), reconstruct an encrypted copy of every
+recoverable secret from the live VPS, and drop a file on the server
+that you can download with your browser.
 
-**Pour télécharger le fichier** -- pas besoin de SSH ni de ligne de
-commande :
+**To download the file** -- no SSH or command line needed:
 
-1. Ouvrez [recovery.yourdomain.com](https://recovery.yourdomain.com/) dans
-   votre navigateur.
-2. Connectez-vous comme administrateur (le même compte qui a cliqué
-   sur le bouton ci-dessus). Les membres d'équipe non-administrateurs
-   voient une page de refus ici, c'est voulu -- les paquets de
-   récupération ne doivent atteindre que les personnes habilitées à
-   déclencher une restauration.
-3. Cliquez sur le plus récent fichier `secrets-*.yml.gpg` pour
-   l'enregistrer sur votre portable. Déchiffrez-le localement avec
-   votre phrase de passe :
+1. Open [recovery.yourdomain.com](https://recovery.yourdomain.com/) in your
+   browser.
+2. Sign in as an administrator (same account you used to click the
+   button above). Non-admin team members see a deny page here, which
+   is intentional -- recovery bundles should only reach people who can
+   already trigger a restore.
+3. Click the newest `secrets-*.yml.gpg` file to save it to your
+   laptop. Decrypt it locally with your passphrase:
 
     ```
     gpg --pinentry-mode loopback -o vault-recovered.yml -d secrets-*.yml.gpg
     ```
 
-Le fichier est inutile sans la phrase de passe -- il peut rester
-quelques jours sur le VPS pendant que vous gérez le reste du
-rétablissement.
+The file is useless without the passphrase -- it's safe to leave
+sitting on the VPS for a few days while you handle the rest of your
+recovery.
 
-Si votre accès au tableau de bord est lui aussi cassé, votre opérateur
-peut faire la même chose à distance en utilisant le même outil par
-SSH.
+If your access to the dashboard is also broken, your operator can do
+the same thing remotely using the same tool over SSH.
 
-*Le même bouton peut être utilisé avant tout incident, comme étape de
-prévention -- voir [Prévention des sinistres](/disaster-prevention/).*
+*The same button can be used before any incident, as a prevention
+step -- see [Disaster prevention](/disaster-prevention/).*
 
-## Ce que le bouton peut et ne peut pas récupérer
+## What the button can and cannot recover
 
-Tout ce qui vit dans l'environnement d'un conteneur ou dans un fichier
-sur disque est récupérable depuis un serveur en marche : mots de passe
-de base de données, clés SSO, identifiants SMTP, mots de passe de
-chiffrement des sauvegardes. Cela représente la majorité de ce qu'il
-faut pour reconstituer votre fichier de secrets.
+Everything that lives in a container's environment or a file on disk
+is recoverable from a running server: database passwords, SSO keys,
+SMTP credentials, backup encryption passwords. Those make up the bulk
+of what you'd need to reassemble your secret file.
 
-Trois identifiants **ne peuvent pas** provenir du serveur -- ils vivent
-dans les consoles d'administration d'autres entreprises, pas sur
-votre VPS :
+Three credentials **cannot** come from the server -- they live in other
+companies' admin consoles, not on your VPS:
 
-- **Client OAuth Tailscale** -- régénérez à
+- **Tailscale OAuth client** -- regenerate at
   [login.tailscale.com](https://login.tailscale.com/admin/settings/oauth)
-- **Jeton API Cloudflare** -- régénérez à
+- **Cloudflare API token** -- regenerate at
   [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
-- **Clé API Dokploy** -- régénérez dans l'interface Dokploy
-  (Paramètres -> Profil -> Clés API)
+- **Dokploy API key** -- regenerate in the Dokploy UI
+  (Settings -> Profile -> API Keys)
 
-Le fichier exporté les liste comme des valeurs à remplacer clairement
-marquées, pour que vous sachiez qu'il faut les régénérer.
+The exported file lists these as clearly-marked placeholders so you
+know to re-mint them.
 
-## Carte de récupération -- ce qui casse et quoi faire
+## Recovery map -- what breaks and what to do
 
-| Ce que vous perdez | Ce qui fonctionne encore | Comment récupérer |
+| What you lose | What still works | How to recover |
 |---|---|---|
-| **Mot de passe maître (votre portable va bien)** | Tout -- serveur, applis, SSH | Cliquez sur **Exporter les clés de récupération**, sauvegardez le fichier, redémarrez la configuration de votre opérateur avec le nouveau fichier |
-| **Mot de passe maître ET vous êtes verrouillé hors du tableau de bord** | Serveur, applis, SSH | Votre opérateur lance le même outil d'export par SSH et vous envoie le fichier |
-| **Portable (avec le mot de passe maître)** | Serveur, applis, sauvegardes | Votre opérateur a une copie du mot de passe maître (s'il l'a sauvegardée à la remise) OU cliquez sur le bouton de récupération depuis n'importe quel navigateur |
-| **Clé SSH privée** | Serveur, applis, tableau de bord | Votre opérateur ajoute une nouvelle clé publique via sa propre voie d'administration ; s'il est indisponible, voir "Mode secours du fournisseur" plus bas |
-| **Accès au tableau de bord (SSO cassé, Keycloak tombé)** | Vos applis (leurs propres logins fonctionnent encore), vos données | L'opérateur se connecte par SSH pour réparer ; au pire, redémarrer le conteneur Keycloak |
-| **Données d'une appli (vous avez supprimé quelque chose)** | Tout le reste | Restaurez uniquement les données de cette appli à partir de la sauvegarde de la nuit dernière via la liste des snapshots restic |
-| **Disque entier du VPS (corruption, effacement accidentel)** | Les sauvegardes (dans votre compartiment S3) | Suivez [Restaurer sur un nouveau VPS](/self-restore/) chez le même fournisseur |
-| **Jeton API Cloudflare (régénéré par accident)** | Votre tunnel continue à tourner. Les applis publiques restent en ligne. **Fonctionnalité seulement**, pas la sauvegarde. | Générez un nouveau jeton API à [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens), puis **contactez votre opérateur** avec celui-ci -- il installe le nouveau jeton et confirme que le tunnel continue de prendre en compte les changements DNS après rotation. Les applis restent joignables pendant que vous attendez. |
-| **Jeton de tunnel Cloudflare (régénéré ou fuité)** | Le tunnel existant continue à tourner jusqu'à la prochaine reconnexion de cloudflared, puis tombe. Les applis publiques sont coupées jusqu'à la fin de la rotation. **Fonctionnalité**, pas la sauvegarde. | Plus perturbant que le jeton API : le trafic public s'arrête quand cloudflared ne peut plus s'authentifier. **Contactez votre opérateur immédiatement** pour qu'il génère et installe le remplacement. Trouvez le jeton sous [dash.cloudflare.com](https://dash.cloudflare.com) -> votre zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> cliquez sur votre tunnel -> **Configure** -> afficher/régénérer le jeton. **PAS** dans la page "API Tokens". Comptez 5 à 15 minutes d'arrêt des applis publiques pendant l'installation. |
-| **Client OAuth Tailscale (régénéré par accident)** | L'accès du serveur au tailnet continue à fonctionner. Le SSH distant reste actif. | Générez un nouveau client OAuth, puis **contactez votre opérateur** avec les identifiants pour la mise en place. |
-| **Clé API Dokploy (régénérée par accident)** | Toutes vos applis continuent à tourner | Générez une nouvelle clé dans l'interface Dokploy, puis **contactez votre opérateur** avec celle-ci. |
-| **Compte Cloudflare résilié** | Serveur, applis (en interne), données | Créez un nouveau compte Cloudflare, pointez votre domaine dessus, relancez la configuration de l'opérateur ; vos applis subissent un temps d'arrêt uniquement pendant la propagation DNS |
-| **Compte Tailscale résilié** | Serveur, applis, voie publique (Tunnel CF) | Passez à une autre méthode d'accès admin ; Tailscale n'est que la "porte dérobée d'administration", pas une partie du chemin de service public |
-| **Votre fournisseur VPS fait faillite / ferme** | Votre compartiment de sauvegarde S3 (entreprise différente) | [Restaurer sur un nouveau VPS](/self-restore/) chez un autre fournisseur à partir de la sauvegarde |
-| **Le centre de données de votre fournisseur VPS brûle (OVH Strasbourg 2021)** | Votre compartiment de sauvegarde S3 (région et ville différentes) | Idem -- restaurer sur un nouveau VPS chez le même ou un autre fournisseur, dans une autre région |
-| **Votre fournisseur S3 de sauvegarde fait faillite / ferme** | Votre VPS et ses données | Vous avez toujours les données -- copiez votre VPS de production vers un nouveau compartiment S3 *avant* la date butoir du fournisseur. Si vous avez configuré une sauvegarde secondaire (voir [Prévention](/disaster-prevention/)), elle est déjà en sécurité |
-| **Compartiment S3 supprimé par accident** | Votre VPS et ses données | Idem -- recréez le compartiment et repointez les sauvegardes. Certains fournisseurs conservent les objets supprimés pendant une période de rétention, ce qui peut vous laisser du temps |
-| **Panne simultanée du fournisseur VPS ET du fournisseur S3** | Dernière copie hors site hebdomadaire (si vous en avez configuré une -- voir [Prévention](/disaster-prevention/)) | Restaurer à partir de la copie hors site vers n'importe quel nouveau cloud |
-| **Mot de passe maître ET SSH ET serveur mort** | Compartiment S3 de sauvegarde | Vous pouvez toujours déchiffrer le dépôt restic si vous avez sauvegardé le **mot de passe du dépôt restic** ET la **clé d'accès S3 + clé secrète** séparément (voir [Prévention](/disaster-prevention/)) -- restic a besoin des trois pour lire le compartiment -- suivez [Restaurer sur un nouveau VPS](/self-restore/) |
-| **Mot de passe maître ET mot de passe restic ET serveur mort** | Votre compartiment S3 existe mais chaque octet est du texte chiffré indéchiffrable | **Perte de données.** C'est pour cela que [Prévention des sinistres](/disaster-prevention/) dit de sauvegarder le mot de passe restic séparément, même du mot de passe maître |
+| **Master password (your laptop is fine)** | Everything -- your server, your apps, your SSH | Click the **Export recovery secrets** button above, save the file, restart your operator's setup with the new file |
+| **Master password AND you locked yourself out of the dashboard** | Your server, your apps, SSH | Your operator runs the same export tool over SSH and sends you the file |
+| **Laptop (with master password on it)** | Your server, your apps, your backups | Your operator has a copy of the master password (if they saved it on hand-off) OR click the recovery button from any browser |
+| **SSH private key** | Your server, your apps, the dashboard | Your operator re-adds a new public key via their own admin path; if they're unavailable, see "Provider rescue mode" below |
+| **Dashboard access (SSO broken, Keycloak down)** | Your apps (their own logins still work), your data | Operator SSHes in to fix; worst case, restart the Keycloak container |
+| **One app's data (you deleted something)** | Everything else | Try the app's own trash first; if empty, contact your operator. |
+| **Entire VPS disk (corruption, accidental wipe)** | Backups (in your S3 bucket) | Follow [Restore to a fresh VPS](/self-restore/) with the same cloud provider |
+| **Cloudflare API token (accidentally rotated)** | Your tunnel keeps running. Public apps stay up. **Functionality only**, not backup. | Generate a new API token at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens), then **contact your operator** with it -- they install the new token and confirm the tunnel still picks up DNS changes after rotation. Apps stay reachable while you wait. |
+| **Cloudflare tunnel token (rotated or leaked)** | Existing tunnel keeps running until cloudflared next reconnects, then drops. Public apps go dark until rotation completes. **Functionality**, not backup. | This is more disruptive than the API token: public traffic stops when cloudflared can't reauthenticate. **Contact your operator immediately** so they can mint and install the replacement. Find the token under [dash.cloudflare.com](https://dash.cloudflare.com) -> your zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> click your tunnel -> **Configure** -> reveal/rotate token. NOT in the "API Tokens" page. Expect 5-15 minutes of public-app downtime during install. |
+| **Tailscale OAuth client (accidentally rotated)** | Your server's tailnet access keeps working. Remote SSH stays up. | Generate a new OAuth client, update your secret file |
+| **Dokploy API key (accidentally rotated)** | All your apps keep running | Generate a new key in Dokploy UI, update your secret file |
+| **Cloudflare account terminated** | Your server, your apps (internally), your data | Create a new Cloudflare account, point your domain to it, re-run operator setup; your apps experience downtime only during DNS propagation |
+| **Tailscale account terminated** | Your server, your apps, your public path (CF Tunnel) | Switch to a different ops-access method; Tailscale's only the "admin back door," not part of the public serving path |
+| **Your VPS provider goes bankrupt / shuts down** | Your S3 backup bucket (different company) | [Restore to a fresh VPS](/self-restore/) at a different provider using the backup |
+| **Your VPS provider's datacenter burns down (OVH Strasbourg 2021)** | Your S3 backup bucket (different region, different city) | Same as above -- restore to a fresh VPS at the same or different provider, different region |
+| **Your S3 backup provider goes bankrupt / shuts down** | Your VPS and its data | You still have the data -- copy your production VPS to a new S3 bucket *before* the deadline the provider gives you. If you set up a secondary backup (see [Prevention](/disaster-prevention/)), it's already safe |
+| **S3 bucket accidentally deleted** | Your VPS and its data | Same -- recreate the bucket and repoint backups. Some providers keep deleted objects for a retention window, which might buy you time |
+| **VPS provider AND S3 provider outage at the same time** | Last weekly off-site copy (if you set one up -- see [Prevention](/disaster-prevention/)) | Restore from the off-site copy to any fresh cloud |
+| **Master password AND SSH AND server dead** | S3 backup bucket | You can still decrypt the restic repo if you saved the **restic repo password** AND the **S3 access key + secret** separately (see [Prevention](/disaster-prevention/)) -- restic needs all three to read the bucket -- follow [Restore to a fresh VPS](/self-restore/) |
+| **Master password AND restic password AND server dead** | Your S3 bucket exists but every byte in it is ciphertext you can't open | **Data loss.** This is why [Disaster prevention](/disaster-prevention/) says to save the restic password separately, even from your master password |
 
-## Mode secours du fournisseur -- quand vous avez perdu SSH
+## Provider rescue mode -- when you've lost SSH
 
-Chaque fournisseur VPS sérieux propose un "mode secours" qui permet
-de démarrer une image de secours temporaire avec votre disque monté,
-pour que vous puissiez ajouter une nouvelle clé SSH ou récupérer des
-fichiers sans réinstaller. Quelques exemples :
+Every serious VPS provider offers a "rescue mode" that lets you boot a
+temporary rescue image with your existing disk mounted, so you can add
+a new SSH key or recover files without re-installing. A few examples:
 
-- **OVH** : Panneau de configuration -> votre VPS -> **Secours /
-  rescue-customer**. Redémarrez en mode secours, montez votre disque,
-  ajoutez votre nouvelle clé publique à
-  `/home/ops/.ssh/authorized_keys`, redémarrez normalement.
-- **Hetzner** : Robot -> système Rescue -> activez et redémarrez.
-- **DigitalOcean / Linode / Vultr** : chacun a une console de
-  récupération (parfois un terminal web VNC) -- cherchez "Recovery" /
-  "Console" dans la barre latérale du fournisseur.
+- **OVH**: Control Panel -> your VPS -> **Rescue / rescue-customer**.
+  Reboot into rescue, mount your disk, add your new public key to
+  `/home/ops/.ssh/authorized_keys`, reboot normally.
+- **Hetzner**: Robot -> Rescue system -> enable and reboot.
+- **DigitalOcean / Linode / Vultr**: each has a recovery console
+  (sometimes a VNC web terminal) -- look for "Recovery" / "Console" in
+  the provider's sidebar.
 
-Votre opérateur peut vous guider lors d'un appel vidéo si besoin ; les
-étapes sont les mêmes d'un fournisseur à l'autre, seuls les libellés
-d'interface changent.
+Your operator can walk you through this over a video call if needed;
+the steps are the same across providers, just different UI labels.
 
-**Le SSH de l'opérateur et la console de secours du fournisseur sont
-équivalents pour vous.** Si votre opérateur est joignable, il se
-connecte par SSH et corrige le problème. S'il ne l'est pas -- ou si SSH
-lui-même est cassé -- la console de secours du fournisseur donne le
-même accès root au disque. Les deux voies vous ramènent à un serveur
-fonctionnel ; la console de secours n'est que le repli quand la
-voie habituelle est indisponible. Ne perdez pas de temps à attendre
-l'une si l'autre est devant vous.
+**Operator SSH and provider rescue console are equivalent for your
+purposes.** If your operator is reachable, they SSH in and fix things.
+If they're not -- or if SSH itself is broken -- the provider's rescue
+console gives you the same root-level access to the disk. Either path
+gets you back to a working server; the rescue console is just the
+fallback when the normal one is unavailable. Don't burn time waiting
+on one if the other is in front of you.
 
-## Comment ça se passe en pratique
+## How this plays out in practice
 
-La plupart des situations "j'ai perdu X" sont bien moins graves
-qu'elles n'en ont l'air dans les cinq premières minutes. Le site
-continue à servir le trafic. Votre base de données va bien. Vous avez
-24 à 72 heures pour gérer la récupération sans pression -- tout sauf
-un désastre total est surmontable un mardi matin avec un café.
+Most "I lost X" situations are nowhere near as bad as they feel in the
+first five minutes. The site keeps serving traffic. Your database is
+fine. You have 24-72 hours to handle the recovery without pressure --
+everything but total disaster is survivable on a weekday morning with
+a coffee.
 
-Si quelque chose dans la carte ci-dessus ne correspond pas à votre
-situation, appelez votre opérateur. Tout l'intérêt du kit de remise +
-de cette page est de vous donner toutes les voies possibles, mais
-rien ne remplace une seconde paire d'yeux dans un vrai incident.
+If something in the map above doesn't match your situation, call your
+operator. The whole point of the hand-off kit + this page is to give
+you every path we can, but nothing replaces a second pair of eyes in a
+real incident.

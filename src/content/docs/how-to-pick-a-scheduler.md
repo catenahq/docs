@@ -1,56 +1,72 @@
 ---
-title: "Comment choisir votre outil de réservation"
-description: "Arbre de décision pour choisir la bonne application open-source de réservation pour votre entreprise : prises de rendez-vous clients, réservation de ressources, sondages de groupe, événements publics, inscriptions aux classes, ou calendrier interne."
+title: "How to pick a scheduler"
+description: "Decision tree for picking the right open-source scheduling app for your business: customer bookings, resource booking, group polls, public events, class signups, or internal staff calendar."
 ---
 
-Les besoins en réservation sont trop variés pour qu'une seule application par défaut convienne à toutes les entreprises. Ce guide parcourt un court arbre de décision, puis recommande une application à déployer sur votre serveur.
+Scheduling needs are too varied for a single default app to fit every
+business. This guide walks you through a short decision tree, then
+recommends one app you can deploy on your server.
 
-## Que voulez-vous gérer ?
+## What are you scheduling?
 
-Choisissez la ligne qui correspond à votre situation. Chaque branche aboutit à une application recommandée et son guide d'installation.
+Pick the line that matches your situation. Each branch lands on a
+recommended app + a setup guide.
 
-### Des clients qui réservent du temps avec mon équipe (clinique, salon, atelier, cours)
+### Customers booking time with my team (clinic, salon, repair shop, lessons)
 
-**Recommandé :** [Easy!Appointments](/apps/easyappointments/).
+**Recommended:** [Easy!Appointments](/apps/easyappointments/).
 
-Une page de réservation publique ; calendriers indépendants par prestataire ; rappels par courriel ; export ICS. Connexion locale du personnel (pas de SSO côté upstream pour l'instant).
+One public booking page; independent provider calendars; email
+reminders; ICS export. Local staff sign-in (no SSO yet upstream).
 
-### Juste moi qui prends les réservations (un seul prestataire, payant ou non)
+### Just me taking bookings (one provider, paid or unpaid)
 
-**Recommandé :** [Easy!Appointments](/apps/easyappointments/) en mode mono-prestataire.
+**Recommended:** [Easy!Appointments](/apps/easyappointments/) in
+single-provider mode.
 
-Une page de réservation publique ; synchronisation du calendrier via ICS / CalDAV ; rappels par courriel. Les paiements à la réservation passent par une passerelle Stripe Checkout ajoutée au déploiement lorsque vous en avez besoin.
+One public booking page; calendar sync via ICS / CalDAV; email
+reminders. Paid bookings are wired through a Stripe Checkout
+bridge added at deploy time when you need it.
 
-### Réserver des salles, du matériel, ou d'autres ressources partagées
+### Reserving rooms, equipment, or other shared resources
 
-**Recommandé :** LibreBooking.
+**Recommended:** LibreBooking.
 
-La réservation de ressources est une voie étroite dans le segment PME. Parlez à votre opérateur du besoin concret pour que le picker vous y dirige.
+Resource booking is a narrow lane in the SMB segment. Reach out to
+your operator with the concrete need so the picker can route you
+here.
 
-### Trouver un moment de réunion à plusieurs, ponctuel
+### Finding a meeting time across N people, one-shot
 
-**Recommandé :** [Nextcloud Polls](/nextcloud-apps-vs-suite/).
+**Recommended:** [Nextcloud Polls](/nextcloud-apps-vs-suite/).
 
-Nextcloud Polls couvre le besoin -- sélecteurs de date et sondages à choix multiples avec un lien public, sans compte requis pour les participants. Activez l'application sous Applications -> Vos applications dans Nextcloud.
+Nextcloud Polls covers this -- date pickers and multiple-choice polls
+with a public link, no account required for participants. Enable it
+under Apps -> Your apps inside Nextcloud.
 
-### Inscription aux événements publics / annuaire d'événements communautaires
+### Public event RSVP / community events listing
 
-**Recommandé :** Mobilizon ou Gancio.
+**Recommended:** Mobilizon or Gancio.
 
-Deux candidats : Mobilizon pour les organisations multi-régions fédérées ; Gancio pour les annuaires hyperlocaux. Parlez à votre opérateur pour que le picker livre le bon outil.
+Two candidates: Mobilizon for federated multi-region orgs; Gancio for
+hyperlocal listings. Reach out to your operator so the picker can
+ship the right fit.
 
-### Inscriptions aux classes / cohortes (yoga, cours, fitness)
+### Class / cohort signups (yoga, lessons, fitness)
 
-**Recommandé :** [Easy!Appointments en mode groupe](/apps/easyappointments/).
+**Recommended:** [Easy!Appointments group sessions](/apps/easyappointments/).
 
-Easy!Appointments gère les séances de groupe d'emblée ; même configuration que le flux réservations clients, avec capacité par créneau.
+Easy!Appointments supports group-session scheduling out of the box;
+same setup as the customer-bookings flow with capacity per slot.
 
-### Calendrier interne du personnel uniquement (pas de page client)
+### Internal staff calendar only (no customer-facing page)
 
-**Recommandé :** [Calendrier EspoCRM](/apps/espocrm/).
+**Recommended:** [EspoCRM calendar](/apps/espocrm/).
 
-Déjà dans la suite via le CRM. Pas besoin d'un outil séparé.
+Already in the suite as part of the CRM. No separate scheduler
+needed.
 
-### Je ne suis pas certain / aucune des options
+### Not sure / none of the above
 
-Parlez à votre opérateur. Les besoins en réservation varient ; un appel de 30 minutes clarifie votre cas plus vite qu'une liste de cases à cocher.
+Talk to your operator. Scheduling needs vary; a 30-minute call sorts
+which lane your business falls in faster than a checklist.

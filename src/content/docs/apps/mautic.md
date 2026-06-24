@@ -1,73 +1,73 @@
 ---
 title: "Mautic"
-description: "Automatisation marketing open-source. Segments de contacts, campagnes courriel, séquences drip, pages de destination, formulaires, scoring de prospects."
+description: "Open-source marketing automation. Contact segments, email campaigns, drip sequences, landing pages, forms, lead scoring."
 ---
 
-Automatisation marketing open-source. Segments de contacts, campagnes courriel, séquences drip, pages de destination, formulaires, scoring de prospects. Remplace Mailchimp / ActiveCampaign / HubSpot Marketing.
+Open-source marketing automation. Contact segments, email campaigns, drip sequences, landing pages, forms, lead scoring. Replaces Mailchimp / ActiveCampaign / HubSpot Marketing.
 
-- **Projet original :** <https://www.mautic.org/>
-- **Remplace :** **Mailchimp**, **ActiveCampaign**, **HubSpot Marketing**, **Brevo (Sendinblue)**
-- **Connexion (SSO) :** Non disponible -- l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
+- **Upstream project:** <https://www.mautic.org/>
+- **Replaces:** **Mailchimp**, **ActiveCampaign**, **HubSpot Marketing**, **Brevo (Sendinblue)**
+- **Sign-in (SSO):** Not available -- this app's community edition doesn't support OIDC. Users keep a per-app email/password login.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Patientez ~2 min pour le premier démarrage (les migrations de base s'exécutent au premier lancement).
-2. Visitez votre domaine Mautic et complétez l'assistant initial :
-   - **Base de données** : pré-remplie (hôte `db`, nom `mautic`, utilisateur `mautic`, mot de passe depuis la variable `DB_PASSWORD`).
-   - **Utilisateur admin** : créez votre compte admin initial.
-   - **Paramètres courriel** : collez les identifiants SMTP de votre relais géré (hôte, port `587`, nom d'utilisateur, mot de passe, adresse expéditeur). Sautez cette étape si vous préférez la configurer plus tard sous **Settings** -> **Configuration** -> **Email Settings**.
-3. Vérifiez que les conteneurs cron + worker tournent dans Dokploy (Mautic a besoin de `mautic_cron` pour les campagnes planifiées + `mautic_worker` pour la file d'envoi).
-4. Créez votre premier segment : **Segments** -> **New** -> filtrez par attribut de contact.
-5. Créez votre première campagne : **Campaigns** -> **New** -> glissez l'action **Send email** sur un déclencheur de segment.
+1. Click **Deploy**. Wait ~2 min for the first boot (database migrations run on first start).
+2. Visit your Mautic domain and complete the first-run wizard:
+   - **Database**: pre-filled (host `db`, name `mautic`, user `mautic`, password from the `DB_PASSWORD` env var).
+   - **Admin user**: create your initial admin account.
+   - **Email settings**: paste your managed-relay SMTP creds (host, port `587`, username, password, from-address). Skip if you'll do this later under **Settings** -> **Configuration** -> **Email Settings**.
+3. Verify the cron + worker containers are running in Dokploy (Mautic needs `mautic_cron` for scheduled campaigns + `mautic_worker` for the email queue).
+4. Build your first segment: **Segments** -> **New** -> filter by contact attribute.
+5. Build your first email campaign: **Campaigns** -> **New** -> drag the **Send email** action onto a segment trigger.
 
-### Authentification
+### Authentication
 
-Mautic édition communautaire ne fournit pas d'OIDC natif. Connexion locale par nom d'utilisateur/mot de passe par défaut. SAML2 est supporté en amont mais demande une configuration par déploiement ; des plugins OAuth2 génériques tiers existent. Si un SSO unifié pour la stack est requis, contactez votre opérateur pour ajouter une couche oauth2-proxy en façade (le groupe Keycloak `staff` filtre l'accès au niveau Traefik avant que le trafic n'atteigne Mautic).
+Mautic community edition does not ship native OIDC. Local username/password is the default. SAML2 is supported upstream but requires per-deploy config; third-party generic-OAuth2 plugins exist. If single sign-on across the stack is required, contact your operator to add an oauth2-proxy front layer (Keycloak group `staff` gates access at the Traefik edge before traffic reaches Mautic).
 
-### SMTP et réputation d'envoi
+### SMTP and sending reputation
 
-Mautic n'envoie PAS directement les courriels. Il remet chaque envoi à votre relais SMTP géré (voir le [guide des fournisseurs courriel](/guides/email-providers/) pour les choix recommandés). Réputation d'envoi, SPF/DKIM/DMARC, et gestion des rebonds vivent au niveau du relais. Configurez SMTP sous **Settings** -> **Configuration** -> **Email Settings** avec les identifiants de votre relais avant la première campagne.
+Mautic does NOT send email directly. It hands every outbound to your managed SMTP relay (see the [email providers guide](/guides/email-providers/) for recommended choices). Sending reputation, SPF/DKIM/DMARC, and bounce handling all live at the relay layer. Configure SMTP under **Settings** -> **Configuration** -> **Email Settings** with your relay's credentials before the first campaign goes out.
 
-### Contenu d'aimant à prospects et copie des séquences drip
+### Lead-magnet content and drip-campaign copy
 
-Le template fournit le moteur. La rédaction des PDF d'aimants, des séquences drip et des modèles d'envoi est le travail de votre équipe (ou de votre opérateur, s'il offre des services de contenu marketing). Mautic lui-même ne livre aucune campagne pré-bâtie.
+The template ships the engine. Authoring the lead-magnet PDFs, drip-sequence copy, and email templates is your team's job (or your operator's, if they offer marketing-content services). Mautic itself does not ship pre-built campaigns.
 
-### Ressources
+### Resource note
 
-Mautic tourne en Apache + MariaDB + un worker sidecar + un cron sidecar. Prévoyez ~1.5 GB RAM au repos (worker + cron consomment ~300 MB chacun), ~3 GB sous envois de campagne ou reconstruction de segments. Le stockage croît avec les uploads de médias et l'historique des événements courriel ; budgétez ~10 GB après la première année d'usage régulier.
+Mautic runs as Apache + MariaDB + a worker sidecar + a cron sidecar. Plan for ~1.5 GB RAM at idle (worker + cron eat ~300 MB each), ~3 GB under campaign sends or segment rebuilds. Storage grows with media uploads and email-event history; budget ~10 GB after the first year of regular use.
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `MAUTIC_HOSTNAME` | `marketing.yourdomain.com` |
-| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `DB_ROOT_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `SMTP_HOST` | _(à définir avant déploiement)_ |
+| `DB_PASSWORD` | _auto-generated random value_ |
+| `DB_ROOT_PASSWORD` | _auto-generated random value_ |
+| `SMTP_HOST` | _(set before deploy)_ |
 | `SMTP_PORT` | `587` |
-| `SMTP_USERNAME` | _(à définir avant déploiement)_ |
-| `SMTP_PASSWORD` | _(à définir avant déploiement)_ |
-| `SMTP_FROM_ADDRESS` | _(à définir avant déploiement)_ |
+| `SMTP_USERNAME` | _(set before deploy)_ |
+| `SMTP_PASSWORD` | _(set before deploy)_ |
+| `SMTP_FROM_ADDRESS` | _(set before deploy)_ |
 
-## Domaine
+## Domain
 
-- **Service et port :** `mautic_web:80`
-- **Nom d'hôte :** `marketing.yourdomain.com`
+- **Service and port:** `mautic_web:80`
+- **Hostname:** `marketing.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # Mautic -- open-source marketing automation (Mailchimp / ActiveCampaign /
@@ -226,4 +226,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

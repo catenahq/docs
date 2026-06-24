@@ -1,87 +1,87 @@
 ---
 title: "Invoice Ninja"
-description: "Facturation open-source avec passerelles de paiement Stripe + PayPal, facturation récurrente, suivi des dépenses, portail client pour paiement en ligne."
+description: "Open-source invoicing with Stripe + PayPal payment gateways, recurring billing, expense tracking, client portal for online payment."
 ---
 
-Facturation open-source avec passerelles de paiement Stripe + PayPal, facturation récurrente, suivi des dépenses, portail client pour paiement en ligne. L'auto-hébergement débloque toutes les fonctionnalités Pro + Enterprise.
+Open-source invoicing with Stripe + PayPal payment gateways, recurring billing, expense tracking, client portal for online payment. Self-hosted gets all Pro + Enterprise features.
 
-- **Projet original :** <https://www.invoiceninja.com/>
-- **Remplace :** **FreshBooks**, **QuickBooks (module facturation)**, **Zoho Invoice**, **Harvest (facturation)**
-- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Upstream project:** <https://www.invoiceninja.com/>
+- **Replaces:** **FreshBooks**, **QuickBooks (invoicing module)**, **Zoho Invoice**, **Harvest (invoicing)**
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Patientez ~2 min pour le premier démarrage (migrations Laravel + création de l'admin par `init.sh`).
-2. **Une seule fois : générez APP_KEY**. Depuis un terminal sur votre VPS :
+1. Click **Deploy**. Wait ~2 min for the first boot (Laravel migrations + admin user seeding via `init.sh`).
+2. **One-time: generate APP_KEY**. From a shell on your VPS:
    ```
    docker exec $(docker ps --filter name=invoiceninja-app --format '{{.Names}}' | head -1) \
      runuser -u www-data -- php artisan key:generate --show --no-interaction
    ```
-   Copiez la sortie `base64:...`. Dans Dokploy : **Environment** -> réglez `INVOICENINJA_APP_KEY` à la valeur copiée. Cliquez **Redeploy**.
-3. Visitez votre domaine Invoice Ninja. Connectez-vous avec `INVOICENINJA_ADMIN_EMAIL` / `INVOICENINJA_ADMIN_PASSWORD` de l'onglet Environment.
-4. Configurez votre **profil d'entreprise** (Settings -> Company Details) : logo, adresse, identifiants fiscaux (TPS/TVQ au Canada), devise par défaut.
-5. Connectez **Stripe** : Settings -> Online Payments -> Add Gateway -> Stripe. Collez vos clés publishable + secret. Le portail client accepte les paiements par carte après cela.
-6. *(Optionnel)* Configurez SMTP : collez `INVOICENINJA_SMTP_*` dans l'onglet Environment, cliquez Redeploy. L'envoi de courriel reste en file d'attente silencieusement tant que SMTP n'est pas câblé.
+   Copy the `base64:...` output. In Dokploy: **Environment** -> set `INVOICENINJA_APP_KEY` to the copied value. Click **Redeploy**.
+3. Visit your Invoice Ninja domain. Sign in as `INVOICENINJA_ADMIN_EMAIL` / `INVOICENINJA_ADMIN_PASSWORD` from the Environment tab.
+4. Configure your **company profile** (Settings -> Company Details): logo, address, tax IDs (GST/QST for Canada), default currency.
+5. Wire **Stripe**: Settings -> Online Payments -> Add Gateway -> Stripe. Paste your Stripe publishable + secret keys. The client portal will accept card payments after this.
+6. *(Optional)* Configure SMTP: paste `INVOICENINJA_SMTP_*` in the Environment tab, click Redeploy. Mail send fails silently into the queue until SMTP is wired.
 
-### Facturation dans la suite Catena
+### Invoicing in the Catena suite
 
-Invoice Ninja est le maître de la facturation dans la suite Catena. Les heures depuis Kimai (maître du suivi du temps) alimentent les factures Invoice Ninja via la synchronisation mensuelle de votre contact, et les factures payées depuis Invoice Ninja alimentent ERPNext (maître de la comptabilité) via l'action de fin de mois de votre contact. Les clients dans Invoice Ninja portent un champ personnalisé `espo_account_id` afin que chaque facture soit liée au compte EspoCRM correspondant.
+Invoice Ninja is the invoicing master in the Catena suite. Hours from Kimai (the time-tracking master) flow into Invoice Ninja invoices via the operator's monthly sync, and paid invoices from Invoice Ninja flow into ERPNext (the accounting master) via the operator's month-end close action. Clients in Invoice Ninja carry an `espo_account_id` custom field so each invoice ties back to the EspoCRM Account.
 
-### Licence
+### License
 
-L'édition auto-hébergée d'Invoice Ninja est sous Elastic License 2.0. Deux implications pratiques :
-- Héberger Invoice Ninja pour votre entreprise sur votre VPS, et votre contact qui l'héberge pour vous et facture pour le service d'hébergement, sont explicitement autorisés par la licence.
-- Revendre Invoice Ninja comme SaaS, ou l'intégrer comme partie d'un autre SaaS, requiert une licence commerciale d'Invoice Ninja LLC. Le modèle Catena est "nous déployons sur votre VPS ; vous possédez le déploiement" -- c'est la voie d'hébergement autorisée.
-- L'édition gratuite affiche un bandeau "Powered by Invoice Ninja" sur les surfaces client. Une licence white-label à 40 USD/an le retire. Recommandé dès que vous facturez de vrais clients.
+Invoice Ninja's self-hosted edition ships under the Elastic License 2.0. Two practical implications:
+- Hosting Invoice Ninja for your business on your VPS, and your operator hosting it for you and billing for the hosting service, are both explicitly within the license terms.
+- Reselling Invoice Ninja as a SaaS product, or bundling it into another SaaS, requires a commercial license from Invoice Ninja LLC. Catena's deployment model is "we deploy onto your VPS; you own the deployment" -- the licensed-and-permitted hosting path.
+- The free self-hosted edition shows "Powered by Invoice Ninja" branding on client-facing surfaces. A US$40/year white-label license removes this. Recommended once you're invoicing real clients.
 
-### Authentification
+### Authentication
 
-OIDC natif en auto-hébergement est une demande ouverte côté upstream. En attendant, Invoice Ninja utilise un identifiant local. Le groupe Keycloak `staff` filtre l'accès au bord Traefik via oauth2-proxy avant que le trafic n'atteigne Invoice Ninja, donc les personnes hors de votre équipe ne peuvent pas atteindre la page de connexion.
+Native OIDC for self-hosted is an open feature request upstream. Until it ships, Invoice Ninja uses local username/password. The Keycloak `staff` group gates access at the Traefik edge via oauth2-proxy before traffic reaches Invoice Ninja, so people outside your staff group cannot reach the login page.
 
-### Traitement des paiements
+### Payment processing
 
-Invoice Ninja gère le côté paiement client. Quand un client paie via le portail, Stripe traite la carte et Invoice Ninja marque la facture payée + enregistre le paiement. Le montant est versé sur votre compte Stripe (à votre nom, votre identifiant fiscal) ; Catena ne fait transiter aucun paiement par un compte appartenant au contact.
+Invoice Ninja handles the client-payment side. When a client pays via the portal, Stripe processes the card and Invoice Ninja marks the invoice paid + records the payment. The amount is settled into your Stripe account (under your name, your tax ID); Catena does not route payments through any operator-owned account.
 
-### Ressources
+### Resource note
 
-Invoice Ninja tourne en PHP-FPM + nginx + MariaDB + Redis -- quatre conteneurs. Prévoyez ~400 Mo de RAM au repos, ~800 Mo en génération de factures en masse ou rattrapage de file. Le rendu PDF utilise Chromium intégré et a des pointes brèves lors d'exports multi-pages.
+Invoice Ninja runs as PHP-FPM + nginx + MariaDB + Redis -- four containers. Plan for ~400 MB RAM at idle, ~800 MB under bulk-invoice generation or queue backlog catch-up. PDF rendering for invoices uses bundled Chromium and spikes briefly during multi-page exports.
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `INVOICENINJA_HOSTNAME` | `invoice.yourdomain.com` |
-| `INVOICENINJA_APP_KEY` | _(à définir avant déploiement)_ |
+| `INVOICENINJA_APP_KEY` | _(set before deploy)_ |
 | `INVOICENINJA_ADMIN_EMAIL` | `admin@yourdomain.com` |
-| `INVOICENINJA_ADMIN_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `DB_ROOT_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `INVOICENINJA_SMTP_HOST` | _(à définir avant déploiement)_ |
+| `INVOICENINJA_ADMIN_PASSWORD` | _auto-generated random value_ |
+| `DB_PASSWORD` | _auto-generated random value_ |
+| `DB_ROOT_PASSWORD` | _auto-generated random value_ |
+| `INVOICENINJA_SMTP_HOST` | _(set before deploy)_ |
 | `INVOICENINJA_SMTP_PORT` | `587` |
-| `INVOICENINJA_SMTP_USERNAME` | _(à définir avant déploiement)_ |
-| `INVOICENINJA_SMTP_PASSWORD` | _(à définir avant déploiement)_ |
+| `INVOICENINJA_SMTP_USERNAME` | _(set before deploy)_ |
+| `INVOICENINJA_SMTP_PASSWORD` | _(set before deploy)_ |
 | `INVOICENINJA_MAIL_FROM` | `invoice@yourdomain.com` |
 | `INVOICENINJA_MAIL_FROM_NAME` | `Invoicing` |
 
-## Domaine
+## Domain
 
-- **Service et port :** `nginx:80`
-- **Nom d'hôte :** `invoice.yourdomain.com`
+- **Service and port:** `nginx:80`
+- **Hostname:** `invoice.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # Invoice Ninja -- invoicing + Stripe payments + recurring billing +
@@ -248,4 +248,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

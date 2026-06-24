@@ -1,29 +1,29 @@
 ---
-title: Choisir votre fournisseur de courriel
-description: Comparez les cinq fournisseurs de courriel recommandés (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence) -- où ils sont, ce qu'ils coûtent, quelles langues ils parlent, et comment ils gèrent les boîtes partagées.
+title: Choose your email provider
+description: Compare the five recommended email providers (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence) -- where they are, what they cost, what languages they speak, and how they handle shared mailboxes.
 ---
 
-Cinq fournisseurs de courriel matures, axés sur la confidentialité, couvrent les situations qu'on voit typiquement. Ils font tous bien les bases ; le tableau ci-dessous montre ce qui diffère réellement entre eux, pour que vous puissiez choisir selon les critères qui comptent pour vous.
+Five privacy-focused, full-featured email providers cover every situation we typically see. They all do the basics well; the table below shows what actually differs between them, so you can pick on the criteria that matter to you.
 
-## Ce que les cinq font bien
+## What all five do well
 
-- **Applications courriel standards.** Utilisez ce que vous connaissez déjà -- Gmail, Outlook / Microsoft 365, Apple Mail, Thunderbird, l'application Mail iPhone / Android -- et changez plus tard pour n'importe quel autre fournisseur sans perdre vos messages, agendas ou contacts.
-- **Mots de passe d'application.** Créez un mot de passe distinct par appareil ou application, pour qu'un téléphone perdu ne vous oblige pas à changer votre mot de passe principal partout.
-- **Boîtes courriel à votre propre domaine.** Votre adresse ressemble à `vous@votreentreprise.ca`, pas à `vous@gmail.com`. Votre identité vous appartient.
+- **Standard email apps.** Use whatever you already know -- Gmail, Outlook / Microsoft 365, Apple Mail, Thunderbird, the iPhone / Android mail app -- and switch later to any other provider without losing your messages, calendars, or contacts.
+- **App passwords.** Create a separate password for each device or app, so a lost phone does not force you to change your main password everywhere.
+- **Mailboxes at your own domain.** Your address looks like `you@yourcompany.ca`, not `you@gmail.com`. Your identity is yours.
 
-Là où ils diffèrent : où ils sont basés, ce qu'ils coûtent, quelles langues parlent leur admin et leur webmail, s'ils offrent de vraies boîtes partagées, et si la gestion des comptes peut se faire en lot ou uniquement par l'admin web.
+Where they differ: where they are based, what they cost, what languages their admin and webmail speak, whether they offer real shared mailboxes, and whether your account list can be managed in bulk or only through their web admin.
 
-|                                            | Migadu                                                                | Mailbox.org                              | Infomaniak                                       | OVH Pro Mail                   | Mailfence                       |
-| ------------------------------------------ | --------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------ | ------------------------------ | ------------------------------- |
-| Où l'entreprise et les serveurs sont basés | Suisse                                                                | Allemagne                                | Suisse                                           | France + région Canada         | Belgique                        |
-| Tarification (CAD, approximatif) [^1]      | 12-40 $ / mois par domaine (boîtes illimitées dans une limite souple) | 40 $ de base + 1,60 $ / utilisateur / mois | 2,50 $ / utilisateur / mois (palier gratuit existe) | 7 $ / utilisateur / mois       | 5,60 $ / utilisateur / mois     |
-| Interface française                        | non                                                                   | non                                      | oui                                              | oui                            | oui                             |
-| Interface anglaise                         | oui                                                                   | oui                                      | oui                                              | non                            | oui                             |
-| Boîte partagée                             | oui (identités partagées)                                             | non                                      | non                                              | non                            | non                             |
-| Gestion des comptes en lot                 | oui                                                                   | partielle                                | oui                                              | oui                            | partielle                       |
+|                                              | Migadu                                                              | Mailbox.org                          | Infomaniak                                     | OVH Pro Mail                   | Mailfence                      |
+| -------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------ | ---------------------------------------------- | ------------------------------ | ------------------------------ |
+| Where the company and servers are based      | Switzerland                                                         | Germany                              | Switzerland                                    | France + Canada region         | Belgium                        |
+| Pricing (CAD, approximate) [^1]              | $12-40 / month per domain (unlimited mailboxes within a soft cap)   | $40 base + $1.60 / user / month      | $2.50 / user / month (free tier exists)        | $7 / user / month              | $5.60 / user / month           |
+| French interface                             | no                                                                  | no                                   | yes                                            | yes                            | yes                            |
+| English interface                            | yes                                                                 | yes                                  | yes                                            | no                             | yes                            |
+| Shared mailbox                               | yes (shared identities)                                             | no                                   | no                                             | no                             | no                             |
+| Bulk account management                      | yes                                                                 | partial                              | yes                                            | yes                            | partial                        |
 
-[^1]: Prix en dollars canadiens, approximatifs au 2026-05-11. Les prix du courriel bougent ; on confirme les chiffres réels le jour du devis.
+[^1]: Prices in Canadian dollars, approximate at 2026-05-11. Email pricing moves; we confirm live numbers the day we quote.
 
-La "gestion des comptes en lot" compte quand votre équipe a beaucoup de roulement : les fournisseurs marqués **oui** permettent de créer et retirer les boîtes par automatisation ; **partielle** fonctionne pour certaines opérations mais pas toutes ; **non** veut dire que quelqu'un doit se connecter à l'admin du fournisseur à chaque fois.
+"Bulk account management" matters when your team turns over often: providers marked **yes** let mailboxes be created and retired through automation; **partial** works for some operations but not others; **no** means somebody has to log into the provider's admin panel every time.
 
-Dites-nous vers lequel vous penchez et pourquoi ; on confirmera la tarification et que le choix tient vos contraintes juridictionnelles et linguistiques avant que vous vous engagiez.
+Tell us which one you are leaning toward and why; we will confirm pricing and that the choice fits your jurisdictional and language requirements before you commit.

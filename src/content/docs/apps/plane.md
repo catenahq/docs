@@ -1,51 +1,51 @@
 ---
 title: "Plane"
-description: "Gestion de projet open-source -- issues, cycles, modules, pages, workspaces."
+description: "Open-source project management -- issues, cycles, modules, pages, workspaces."
 ---
 
-Gestion de projet open-source -- issues, cycles, modules, pages, workspaces.
+Open-source project management -- issues, cycles, modules, pages, workspaces.
 
-- **Projet original :** <https://plane.so/>
-- **Remplace :** **Jira**, **Linear**, **Asana**, **ClickUp**
-- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Upstream project:** <https://plane.so/>
+- **Replaces:** **Jira**, **Linear**, **Asana**, **ClickUp**
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Patientez ~2-3 min (pile multi-services avec MinIO).
-2. Visitez votre domaine Plane et créez le compte admin initial + le premier workspace.
-3. *(Optionnel)* Activez Keycloak SSO : une fois connecté, visitez `https://projects.<votre-domaine>/god-mode` -> **Authentication** -> **OpenID Connect** -> collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
+1. Click **Deploy**. Wait ~2-3 min (multi-service stack with MinIO).
+2. Visit your Plane domain and sign up to create the instance admin + first workspace.
+3. *(Optional)* Enable Keycloak SSO: while signed in, visit `https://projects.<your-domain>/god-mode` -> **Authentication** -> **OpenID Connect** -> paste `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` from the Environment tab. Save.
 
 
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `PLANE_HOSTNAME` | `projects.yourdomain.com` |
-| `PLANE_SECRET_KEY` | _valeur aléatoire auto-générée_ |
-| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `PLANE_MINIO_ACCESS_KEY` | _valeur aléatoire auto-générée_ |
-| `PLANE_MINIO_SECRET_KEY` | _valeur aléatoire auto-générée_ |
+| `PLANE_SECRET_KEY` | _auto-generated random value_ |
+| `DB_PASSWORD` | _auto-generated random value_ |
+| `PLANE_MINIO_ACCESS_KEY` | _auto-generated random value_ |
+| `PLANE_MINIO_SECRET_KEY` | _auto-generated random value_ |
 
-## Domaine
+## Domain
 
-- **Service et port :** `proxy:80`
-- **Nom d'hôte :** `projects.yourdomain.com`
+- **Service and port:** `proxy:80`
+- **Hostname:** `projects.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # Plane -- open-source project management (Jira/Linear alternative).
@@ -57,7 +57,7 @@ Domains (décrits plus haut), jamais dans le compose lui-même.
 
 services:
   web:
-    image: makeplane/plane-frontend:v1.3.0
+    image: makeplane/plane-frontend:v1.3.1
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_API_BASE_URL: ""
@@ -69,7 +69,7 @@ services:
       - default
 
   space:
-    image: makeplane/plane-space:v1.3.0
+    image: makeplane/plane-space:v1.3.1
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_API_BASE_URL: ""
@@ -81,7 +81,7 @@ services:
       - default
 
   admin:
-    image: makeplane/plane-admin:v1.3.0
+    image: makeplane/plane-admin:v1.3.1
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_API_BASE_URL: ""
@@ -93,7 +93,7 @@ services:
       - default
 
   api:
-    image: makeplane/plane-backend:v1.3.0
+    image: makeplane/plane-backend:v1.3.1
     restart: unless-stopped
     command: ./bin/docker-entrypoint-api.sh
     environment: &backend-env
@@ -132,7 +132,7 @@ services:
       - default
 
   worker:
-    image: makeplane/plane-backend:v1.3.0
+    image: makeplane/plane-backend:v1.3.1
     restart: unless-stopped
     command: ./bin/docker-entrypoint-worker.sh
     environment: *backend-env
@@ -144,7 +144,7 @@ services:
       - default
 
   beat-worker:
-    image: makeplane/plane-backend:v1.3.0
+    image: makeplane/plane-backend:v1.3.1
     restart: unless-stopped
     command: ./bin/docker-entrypoint-beat.sh
     environment: *backend-env
@@ -156,7 +156,7 @@ services:
       - default
 
   live:
-    image: makeplane/plane-live:v1.3.0
+    image: makeplane/plane-live:v1.3.1
     restart: unless-stopped
     environment:
       API_BASE_URL: http://api:8000
@@ -168,7 +168,7 @@ services:
       - default
 
   proxy:
-    image: makeplane/plane-proxy:v1.3.0
+    image: makeplane/plane-proxy:v1.3.1
     restart: unless-stopped
     environment:
       FILE_SIZE_LIMIT: "5242880"
@@ -246,4 +246,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)

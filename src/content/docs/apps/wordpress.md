@@ -1,63 +1,63 @@
 ---
 title: "WordPress"
-description: "Plateforme CMS / site web public prête pour la production, avec cache FastCGI, cache d'objets Redis et un ensemble de plugins gratuits curatés pré-installés."
+description: "Production-ready public CMS / website platform with FastCGI cache, Redis object cache, and a curated free-tier plugin set pre-installed."
 ---
 
-Plateforme CMS / site web public prête pour la production, avec cache FastCGI, cache d'objets Redis et un ensemble de plugins gratuits curatés pré-installés. Le site est accessible anonymement ; la connexion admin sur /wp-admin peut être câblée à Keycloak via un plugin.
+Production-ready public CMS / website platform with FastCGI cache, Redis object cache, and a curated free-tier plugin set pre-installed. The site serves anonymously; admin sign-in runs on /wp-admin and can be wired to Keycloak via a plugin.
 
-- **Projet original :** <https://wordpress.org/>
-- **Remplace :** **Wix**, **Squarespace**, **Drupal auto-hébergé**
-- **Connexion (SSO) :** À activer via l'interface admin -- collez les valeurs `OIDC_*` depuis l'onglet Environment une fois.
+- **Upstream project:** <https://wordpress.org/>
+- **Replaces:** **Wix**, **Squarespace**, **self-hosted Drupal**
+- **Sign-in (SSO):** Enable via the app's admin UI -- paste the `OIDC_*` values from the Environment tab once.
 
-## Étapes de configuration
+## Setup steps
 
-1. Cliquez **Deploy**. Patientez ~1 min le temps que MariaDB + Redis + nginx + WordPress s'initialisent.
-2. Visitez votre domaine WordPress. Suivez l'assistant d'installation (titre du site, admin, mot de passe, email).
-3. Une fois l'assistant terminé, le prochain converge opérateur installe et configure automatiquement la liste curatée : kadence-blocks, performance-lab et ses sept modules (auto-sizes, dominant-color-images, embed-optimizer, image-prioritizer, optimization-detective, speculation-rules, webp-uploads), nginx-cache-purge-and-preload (NPP -- purge le cache FastCGI à la publication puis le réchauffe via votre sitemap Rank Math), redis-cache (câblé au Redis embarqué), wp-mail-smtp (câblé au SMTP configuré côté opérateur), wp-mail-logging, complianz-gdpr, wp-consent-api, seo-by-rank-math, et Fluent Forms.
-4. Visitez `/wp-admin/admin.php?page=rank-math` et `/wp-admin/admin.php?page=cmplz-wizard` pour exécuter les assistants de première utilisation Rank Math + Complianz. Leurs réponses dépendent du site (secteur, UE / hors-UE, etc.) et ne sont volontairement pas pré-remplies.
-5. *(Optionnel)* Connectez `/wp-admin` à Keycloak : **Extensions** -> **Ajouter** -> chercher `OpenID Connect Generic` -> **Installer** -> **Activer**. Puis **Réglages** -> **OpenID Connect Client** et remplissez :
-   - **Client ID :** `OIDC_CLIENT_ID` depuis Environment
-   - **Client Secret :** `OIDC_CLIENT_SECRET`
-   - **Login Endpoint URL :** `<OIDC_ISSUER_URL>/authorize/`
-   - **Userinfo Endpoint URL :** `<OIDC_ISSUER_URL>/userinfo/`
-   - **Token Validation Endpoint URL :** `<OIDC_ISSUER_URL>/token/`
-   - **Identity Key :** `preferred_username`
-   - **Link Existing Users :** ✔
+1. Click **Deploy**. Wait ~1 min for MariaDB + Redis + nginx + WordPress to initialize.
+2. Visit your WordPress domain. Run through the install wizard (site title, admin username, admin password, email).
+3. After the install wizard completes, the next operator converge auto-installs and configures the curated plugin set: kadence-blocks, performance-lab + its seven feature modules (auto-sizes, dominant-color-images, embed-optimizer, image-prioritizer, optimization-detective, speculation-rules, webp-uploads), nginx-cache-purge-and-preload (NPP -- purges + re-warms the FastCGI cache via your Rank Math sitemap), redis-cache (wired to the bundled Redis), wp-mail-smtp (wired to your operator-configured SMTP), wp-mail-logging, complianz-gdpr, wp-consent-api, seo-by-rank-math, and Fluent Forms.
+4. Visit `/wp-admin/admin.php?page=rank-math` and `/wp-admin/admin.php?page=cmplz-wizard` to run the Rank Math + Complianz first-run wizards. Their answers are site-specific (industry, EU/non-EU, etc.) and intentionally not pre-filled.
+5. *(Optional)* Wire `/wp-admin` login to Keycloak: **Plugins** -> **Add New** -> search `OpenID Connect Generic` -> **Install** -> **Activate**. Go to **Settings** -> **OpenID Connect Client** and fill:
+   - **Client ID:** `OIDC_CLIENT_ID` from Environment
+   - **Client Secret:** `OIDC_CLIENT_SECRET`
+   - **Login Endpoint URL:** `<OIDC_ISSUER_URL>/authorize/`
+   - **Userinfo Endpoint URL:** `<OIDC_ISSUER_URL>/userinfo/`
+   - **Token Validation Endpoint URL:** `<OIDC_ISSUER_URL>/token/`
+   - **Identity Key:** `preferred_username`
+   - **Link Existing Users:** ✔
 
-   Validez. La page de connexion affiche un bouton **Login with OpenID Connect**. Le site public reste accessible anonymement et indexable.
+   Save. The login page gains a **Login with OpenID Connect** button. The public-facing site stays anonymous and indexable.
 
-**Stack.** WordPress tourne en nginx + php-fpm + MariaDB + Redis. Nginx sert directement les ressources statiques, met en cache les réponses PHP avec son cache FastCGI (purgé automatiquement par NPP à chaque édition / publication, puis réchauffé via le sitemap), et délègue le reste à php-fpm. Redis sert de cache d'objets WordPress. Dimensionné pour un VPS unique ; pour absorber un pic de trafic, scaler verticalement.
+**Stack.** WordPress runs as nginx + php-fpm + MariaDB + Redis. Nginx serves static assets directly, caches PHP responses with FastCGI cache (purged automatically by NPP on edit/publish, then re-warmed via your sitemap), and proxies the rest to php-fpm. Redis backs the WordPress object cache. Sized for a single-VPS deploy; for traffic spikes scale vertically.
 
-**Auth mixte.** Les pages publiques du site sont servies anonymement -- les moteurs de recherche crawlent normalement, les visiteurs ne voient pas Keycloak. Seul `/wp-admin` passe par le plugin OIDC optionnel pour les connexions admin/éditeur. C'est ce qui rend WordPress sur cette stack hybride : tourné vers les lecteurs mais administré en SSO.
+**Split-auth note.** Public pages (the website itself) are served anonymously -- search engines crawl normally, visitors don't see Keycloak. Only `/wp-admin` goes through the optional OIDC plugin for admin/editor logins. That's what makes WordPress on this stack a hybrid: reader-facing but SSO-managed for staff.
 
-## Variables d'environnement
+## Environment variables
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
 
-| Variable | Valeur par défaut |
+| Variable | Default |
 |---|---|
 | `WORDPRESS_HOSTNAME` | `www.yourdomain.com` |
 | `WPMS_SMTP_PASS` | `<your-smtp_password>` |
-| `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `DB_ROOT_PASSWORD` | _valeur aléatoire auto-générée_ |
+| `DB_PASSWORD` | _auto-generated random value_ |
+| `DB_ROOT_PASSWORD` | _auto-generated random value_ |
 
-## Domaine
+## Domain
 
-- **Service et port :** `nginx:80`
-- **Nom d'hôte :** `www.yourdomain.com`
+- **Service and port:** `nginx:80`
+- **Hostname:** `www.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
 
-## Fichier compose
+## Compose file
 
-Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
 
 ```yaml
 # WordPress -- production-ready stack with FastCGI cache + Redis object
@@ -221,4 +221,4 @@ networks:
 
 ---
 
-[<- Retour au catalogue des applications pré-configurées](/apps/)
+[<- Back to all pre-configured apps](/apps/)
