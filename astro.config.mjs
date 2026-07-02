@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
+import { fileURLToPath } from "node:url";
 
 // docs.catena.run -- public client docs.
 //
@@ -123,4 +124,21 @@ export default defineConfig({
       ],
     }),
   ],
+  vite: {
+    // The sibling `../contracts/` checkout holds brand assets (the
+    // Conthrax .otf, logo.svg) that `@catenahq/contracts` imports via
+    // src/styles/global.css. npm symlinks it into node_modules but
+    // Vite's dev fs-allow-list resolves through the symlink to the REAL
+    // path and rejects it as outside the project root, throwing "outside
+    // of Vite serving allow list" for the .otf/.svg request. Allow the
+    // sibling explicitly. See CLAUDE.md "Brand assets (sibling read)".
+    server: {
+      fs: {
+        allow: [
+          fileURLToPath(new URL(".", import.meta.url)),
+          fileURLToPath(new URL("../contracts", import.meta.url)),
+        ],
+      },
+    },
+  },
 });
