@@ -4,9 +4,11 @@ import starlightLinksValidator from "starlight-links-validator";
 
 // docs.catena.run -- public client docs.
 //
-// Content lives under src/content/docs/ (EN, the default at root) and
-// src/content/docs/fr/ (FR). Starlight handles the sidebar nav +
-// EN/FR routing automatically.
+// Content lives under src/content/docs/en/ (EN) and
+// src/content/docs/fr/ (FR). Every locale is prefixed (/en/, /fr/); a
+// bare / request is language-detected by nginx (Accept-Language + lang
+// cookie) with src/pages/index.astro as the dev/preview fallback.
+// Starlight handles the sidebar nav + EN/FR routing automatically.
 //
 // Deployment: standalone Astro build (`npm run build` -> `dist/`)
 // served by nginx via Dockerfile + dokploy.compose.yml at the root
@@ -33,9 +35,9 @@ export default defineConfig({
         }),
       ],
       lastUpdated: true,
-      defaultLocale: "root",
+      defaultLocale: "en",
       locales: {
-        root: { label: "English", lang: "en" },
+        en: { label: "English", lang: "en" },
         fr: { label: "Français", lang: "fr" },
       },
       components: {
@@ -46,6 +48,12 @@ export default defineConfig({
         {
           tag: "script",
           attrs: { src: "/domain-rewriter.js", defer: true },
+        },
+        {
+          // Remember the language the visitor is reading (reads
+          // <html lang>) so the nginx redirect at / honours it later.
+          tag: "script",
+          attrs: { src: "/lang-cookie.js", defer: true },
         },
       ],
       sidebar: [

@@ -1,0 +1,30 @@
+---
+// Root language selector. In production nginx intercepts / with an
+// Accept-Language + `lang` cookie 302 before this file is ever served;
+// this page is the dev/preview and no-nginx fallback. It prefers the
+// `lang` cookie (a remembered manual choice), then the browser
+// language, defaulting to English. The <meta refresh> covers no-JS.
+// A real file route at / wins over Starlight's [...slug] catch-all.
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content="0; url=/en/" />
+    <link rel="canonical" href="https://docs.catena.run/en/" />
+    <title>catena docs</title>
+    <script is:inline>
+      (function () {
+        var m = document.cookie.match(/(?:^|;\s*)lang=(en|fr)\b/);
+        var lang = m
+          ? m[1]
+          : (navigator.language || "en").toLowerCase().slice(0, 2) === "fr"
+            ? "fr"
+            : "en";
+        location.replace("/" + lang + "/");
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

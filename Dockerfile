@@ -28,6 +28,6 @@ COPY --from=build /app/dist /usr/share/nginx/html
 USER nginx
 
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD wget --quiet --spider http://127.0.0.1:8080/ || exit 1
+  CMD wget --quiet --spider http://127.0.0.1:8080/en/ || exit 1
 
 EXPOSE 8080

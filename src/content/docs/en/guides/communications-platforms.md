@@ -1,0 +1,60 @@
+---
+title: Choosing a communications platform
+description: Compare Nextcloud Talk, Rocket.Chat, Element, and Linphone -- what each one brings, what each one lacks, what runs on your own server at no extra cost, and which combinations fit which situations.
+---
+
+No single tool covers everything a business needs for communication. Internal team chat, video meetings, customer-support inboxes, and regular phone calls each work best on a different platform. Below are the four building blocks you can combine: short descriptions first, then a side-by-side comparison, then a pick-by-situation list.
+
+## The four building blocks
+
+**[Nextcloud Talk](/en/nextcloud-apps-vs-suite/)** is included with the Nextcloud suite already on your server. Internal team chat, voice and video meetings, and phone dial-in to those meetings when you sign up with a phone service. No customer-support inbox; no extension-style office phone.
+
+**[Rocket.Chat](/en/apps/rocketchat-oidc/)** is a richer team chat platform with strong mobile apps and a customer-support inbox that pulls webchat, email, social, and SMS into one place. Internal voice and video work out of the box. Making and receiving regular phone calls from inside the chat window requires a paid Rocket.Chat subscription; everything else stays free on your server.
+
+**[Element](/en/apps/element/)** is an end-to-end-encrypted team chat built on the Matrix protocol. Native voice and video are included, a bundled Jitsi handles group video meetings, and a SIP gateway lets phone callers dial into those meetings from a regular phone number. Federation with other Matrix or Element servers is supported but disabled by default in the Catena deployment -- your operator can turn it on per peer when you need it. No customer-support inbox; no outbound calls from Element to phone numbers (see Linphone for that).
+
+**Linphone** is a free phone app for desktop and mobile that gives each staff member an office extension number, a voicemail box, and the ability to make and receive regular phone calls. It is not a chat platform; it is the piece you add when you keep Talk or Rocket.Chat as your chat tool and still need a real office phone. The trade-off: one extra window during the workday.
+
+## Feature comparison
+
+|                                          | Talk    | Rocket.Chat | Element | Linphone |
+| ---------------------------------------- | :-----: | :---------: | :-----: | :------: |
+| Internal team chat                       |   ✅    |     ✅      |   ✅    |    ❌    |
+| Group video meetings                     |   ✅    |     ✅      |   ✅    |    ❌    |
+| Phone dial-in to meetings [^1]           |   ✅    |     ✅      |   ✅    |    ❌    |
+| Customer-support inbox (Omnichannel)     |   ❌    |     ✅      |   ❌    |    ❌    |
+| Outbound phone calls from inside the app |   ❌    |  paid [^2]  | via meeting [^5] |    ✅    |
+| Mobile apps (iOS / Android)              |   ✅    |     ✅      |   ✅    |    ✅    |
+| End-to-end encryption (DMs)              |   ✅    |     ✅      | ✅ default-on |    ✅    |
+| Federation between organizations         | limited |   limited   | ✅ off by default [^6] |    ✅    |
+| Nextcloud integration [^4]               |  full   | files + SSO | SSO only|    ❌    |
+| Free on your server, no per-user fee     |   ✅    |   ✅ [^3]   |   ✅    |    ✅    |
+
+[^1]: Requires a phone-service subscription. See [What runs on your server, what costs extra](#what-runs-on-your-server-what-costs-extra) below.
+[^2]: Rocket.Chat sells this feature as a Premium plan plus a Voice add-on, priced per user per month, negotiated directly with their sales team. The other options on this page avoid this fee.
+[^3]: Rocket.Chat Community Edition (free) covers everything in the table except in-window phone calls.
+[^4]: Talk is a Nextcloud app: file picker, calendar entries, contacts, polls, and presence are shared with the rest of Nextcloud automatically. Rocket.Chat shares Keycloak single sign-on with Nextcloud and offers an optional marketplace extension that adds a Nextcloud Files picker; calendar and contacts stay separate. Element shares only Keycloak single sign-on -- file picker, calendar, and contacts live in Nextcloud and have to be opened in a separate tab.
+[^5]: Element supports phone dial-IN to its meetings via a bundled SIP gateway (jigasi): a regular phone caller dials a SIP number and lands in your Jitsi room. Direct OUTBOUND calls from Element to an arbitrary phone number are not supported -- pair Element with Linphone if your team needs to call out from their workstation.
+[^6]: Element / Matrix is built for federation, but the Catena deployment ships with federation disabled by default. Your operator can open it to specific peers (`matrix.org`, a partner org's homeserver, etc.) per deployment without altering the rest of the stack.
+
+## Pick by situation
+
+- **Small team, internal communication only.** [Nextcloud Talk](/en/nextcloud-apps-vs-suite/) alone.
+- **Team chat plus a customer-support inbox across web, email, social, and SMS.** [Rocket.Chat](/en/apps/rocketchat-oidc/) for the inbox; Linphone for outbound phone work.
+- **End-to-end-encrypted team chat with phone dial-in to your meetings.** [Element](/en/apps/element/). Add Linphone alongside if your team also needs to place outbound phone calls.
+- **Customer-support inbox AND regular phone calls in one window.** No clean single-window option; pick Rocket.Chat plus Linphone, or Element plus a separate ticketing tool.
+- **Mixed needs across several teams.** Talk for internal chat, Rocket.Chat for the customer-support team, Linphone for anyone needing a phone extension.
+
+## What runs on your server, what costs extra
+
+Everything above -- Talk, Rocket.Chat, Element, Linphone -- runs on the server your operator already manages for you, with no monthly per-user fee (the one exception is Rocket.Chat's optional in-window phone subscription noted in the table). The recurring outside costs only apply when you want a real phone number that customers can dial. They come from a phone service provider, not from Rocket.Chat, Nextcloud, Element, or your operator.
+
+| What                                                                  | Typical cost in Canada [^4]                                                                                |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Your business phone number                                            | About $1 to $3 per month, per number                                                                       |
+| Outgoing calls                                                        | About $0.01 per minute, OR a flat-rate bundle around $5 to $10 per month for unlimited North America        |
+| 9-1-1 emergency-services fee (required by Canadian law)               | About $1.50 per month, per number                                                                          |
+
+[^4]: Approximate at the time of writing. Examples of providers that offer this kind of pay-as-you-go phone service in Canada: VoIP.ms, Babytel, Twilio. Your operator confirms live numbers and helps you sign up the day we quote. You pay the phone provider directly; your operator does not mark these up.
+
+If you are not sure which combination fits your business, contact your operator. A short call sorts it faster than a checklist.
