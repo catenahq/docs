@@ -1,0 +1,306 @@
+---
+title: "Rocket.Chat"
+description: "Team chat -- channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired."
+---
+
+Team chat -- channels, direct messages, file sharing, mobile apps, and video calls. Keycloak SSO pre-wired.
+
+- **Upstream project:** <https://www.rocket.chat/>
+- **Replaces:** **Slack**, **Microsoft Teams**, **Discord (for work)**
+- **Sign-in (SSO):** Pre-wired -- the login page shows 'Sign in with Keycloak' out of the box, no post-deploy step.
+
+## Setup steps
+
+1. Click **Deploy**. Nothing to fill in the Environment tab unless you want a different hostname.
+2. Wait ~5 minutes for the first sync. The login page will show **Sign in with Keycloak**.
+3. Sign in. The first user becomes the workspace admin.
+4. *(Optional, ~30 s)* Attach Nextcloud files in chats: Administration -> Apps -> Marketplace -> search `Nextcloud` -> install -> set your Nextcloud domain in the app settings. Users can then type `/nextcloud` in any chat to browse and attach files.
+
+### Mobile apps
+
+Rocket.Chat's iOS and Android apps connect straight to your server. Users paste `https://chat.<your-domain>` into the app on first launch and sign in via Keycloak.
+
+## Environment variables
+
+These values live in the Dokploy compose's **Environment** tab. Random
+secrets are minted automatically when the template is first seeded --
+you don't need to generate them yourself.
+
+| Variable | Default |
+|---|---|
+| `ROCKETCHAT_HOSTNAME` | `chat.yourdomain.com` |
+| `ROCKETCHAT_HOSTNAME_BASE` | `yourdomain.com` |
+| `OIDC_BASE_URL` | `https://auth.yourdomain.com` |
+| `ADMIN_USERNAME` | `admin` |
+| `ADMIN_PASS` | `<your-admin_password>` |
+| `VPS_PUBLIC_IP` | `<your-server-public-ip>` |
+| `TURN_STATIC_AUTH_SECRET` | `<your-turn_static_auth_secret>` |
+| `JITSI_PROSODY_PASSWORD` | `<your-jitsi_prosody_password>` |
+| `JITSI_JICOFO_AUTH_PASSWORD` | `<your-jitsi_jicofo_auth_password>` |
+| `JITSI_JICOFO_COMPONENT_SECRET` | `<your-jitsi_jicofo_component_secret>` |
+| `JITSI_JVB_AUTH_PASSWORD` | `<your-jitsi_jvb_auth_password>` |
+
+## Domain
+
+- **Service and port:** `rocketchat:3000`
+- **Hostname:** `chat.yourdomain.com`
+
+The hostname is attached automatically when the template is seeded;
+change it in the **Domains** tab before clicking Deploy if you want
+something else.
+
+## Compose file
+
+For reference -- this is what the template deploys. **Do not paste this
+anywhere.** The compose is seeded into Dokploy automatically; the
+client-facing adjustments you make happen in the Environment and
+Domains tabs (described above), never in the compose itself.
+
+```yaml
+# Rocket.Chat -- team chat + Keycloak SSO.
+#
+# All values come from the Environment tab. Sign-in with Keycloak
+# is pre-wired via OVERWRITE_SETTING_* env vars; no admin-UI steps
+# needed after deploy (unlike Nextcloud's user_oidc which needs the
+# DB-stored config).
+
+services:
+  mongodb:
+    image: mongo:7.0.32
+    restart: unless-stopped
+    # Rocket.Chat tails the oplog, which requires a replica set. Starting
+    # mongod with --replSet enables the rs; the healthcheck calls
+    # rs.initiate() on first boot (idempotent: subsequent runs hit the
+    # catch branch and just report status). Single-node rs is fine for
+    # small SMB deployments.
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--oplogSize", "128"]
+    healthcheck:
+      test: |
+        mongosh --quiet --eval "
+          try { rs.status().ok }
+          catch (e) {
+            rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'mongodb:27017'}]}).ok
+          }
+        "
+      interval: 10s
+      start_period: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+    labels:
+      - "vps.auto-update=patch"
+    networks:
+      default:
+        aliases:
+          - mongodb
+
+  rocketchat:
+    image: docker.io/rocketchat/rocket.chat:8.4.1
+    restart: unless-stopped
+    environment:
+      ROOT_URL: https://${ROCKETCHAT_HOSTNAME}
+      PORT: "3000"
+      MONGO_URL: mongodb://mongodb:27017/rocketchat?replicaSet=rs0
+      MONGO_OPLOG_URL: mongodb://mongodb:27017/local?replicaSet=rs0
+      DEPLOY_METHOD: docker
+
+      # Keycloak OIDC, wired via OVERWRITE_SETTING_* env vars. Rocket.Chat
+      # reads these on boot and writes them into its Settings collection,
+      # overriding any admin-UI changes -- lets us ship a working SSO out of
+      # the box without a post-deploy config step. To take manual control
+      # after deploy, remove the relevant OVERWRITE_SETTING_* line here.
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak: "true"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-url: ${OIDC_BASE_URL}
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-authorize_path: "/realms/vps/protocol/openid-connect/auth"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-token_path: "/realms/vps/protocol/openid-connect/token"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-identity_path: "/realms/vps/protocol/openid-connect/userinfo"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-scope: "openid email profile groups"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-id: ${OIDC_CLIENT_ID}
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-secret: ${OIDC_CLIENT_SECRET}
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-login_style: "redirect"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-button_label_text: "Sign in with Keycloak"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-username_field: "preferred_username"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-email_field: "email"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-name_field: "name"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-groups_claim: "groups"
+      OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-merge_users: "true"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    labels:
+      - "vps.auth.mode=public"
+      - "vps.auth.oidc=true"
+      - "vps.auth.groups=staff"
+      - "vps.auth.oidc.redirect_uris=https://${ROCKETCHAT_HOSTNAME}/_oauth/keycloak"
+      - "vps.auth.oidc.scopes=openid email profile groups"
+      - "vps.auto-update=patch"
+    networks:
+      dokploy-network:
+        aliases:
+          - rocketchat
+      default: {}
+
+  # === JITSI BEGIN -- bundled on-server video conferencing ================
+  # Always-on. The catena.run product story requires sovereign video --
+  # no calls leave the server, no fallback to public meet.jit.si.
+  # The shared coturn at turn.<base> (roles/coturn) handles
+  # restrictive-network media relay; JVB advertises ${VPS_PUBLIC_IP}
+  # in ICE candidates so direct peer-to-JVB UDP works for the typical
+  # case (no relay needed).
+  #
+  # Wire-up: rocketchat-jitsi-wire.sh (OliveTin button) hits
+  # https://rocketchat.<base>/api/v1/settings/Jitsi_* with the bootstrap
+  # admin credentials and flips Jitsi_Enabled=true,
+  # Jitsi_Domain=meet.<base>, etc. Idempotent.
+
+  prosody:
+    image: jitsi/prosody:stable-10888
+    restart: unless-stopped
+    expose:
+      - "5222"
+      - "5347"
+      - "5280"
+    environment:
+      AUTH_TYPE: internal
+      ENABLE_AUTH: "1"
+      ENABLE_GUESTS: "1"
+      GLOBAL_MODULES: ""
+      GLOBAL_CONFIG: ""
+      LDAP_URL: ""
+      LDAP_BASE: ""
+      XMPP_DOMAIN: meet.jitsi
+      XMPP_AUTH_DOMAIN: auth.meet.jitsi
+      XMPP_GUEST_DOMAIN: guest.meet.jitsi
+      XMPP_MUC_DOMAIN: muc.meet.jitsi
+      XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+      XMPP_MODULES: ""
+      XMPP_MUC_MODULES: ""
+      XMPP_INTERNAL_MUC_MODULES: ""
+      XMPP_RECORDER_DOMAIN: recorder.meet.jitsi
+      JICOFO_AUTH_USER: focus
+      JICOFO_AUTH_PASSWORD: ${JITSI_JICOFO_AUTH_PASSWORD}
+      JICOFO_COMPONENT_SECRET: ${JITSI_JICOFO_COMPONENT_SECRET}
+      JVB_AUTH_USER: jvb
+      JVB_AUTH_PASSWORD: ${JITSI_JVB_AUTH_PASSWORD}
+      TZ: Etc/UTC
+    labels:
+      - "vps.auto-update=patch"
+    networks:
+      default:
+        aliases:
+          # The jicofo + jvb compose images expect to resolve these
+          # XMPP virtual hosts via DNS to a single host that runs
+          # prosody. Aliasing the prosody container under all the
+          # XMPP_*_DOMAIN names lets the bundled config defaults
+          # work without further wiring.
+          - meet.jitsi
+          - auth.meet.jitsi
+          - guest.meet.jitsi
+          - muc.meet.jitsi
+          - internal-muc.meet.jitsi
+          - recorder.meet.jitsi
+
+  jicofo:
+    image: jitsi/jicofo:stable-10888
+    restart: unless-stopped
+    environment:
+      XMPP_DOMAIN: meet.jitsi
+      XMPP_AUTH_DOMAIN: auth.meet.jitsi
+      XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+      XMPP_MUC_DOMAIN: muc.meet.jitsi
+      XMPP_SERVER: prosody
+      JICOFO_COMPONENT_SECRET: ${JITSI_JICOFO_COMPONENT_SECRET}
+      JICOFO_AUTH_USER: focus
+      JICOFO_AUTH_PASSWORD: ${JITSI_JICOFO_AUTH_PASSWORD}
+      TZ: Etc/UTC
+    depends_on:
+      - prosody
+    labels:
+      - "vps.auto-update=patch"
+    networks:
+      - default
+
+  jvb:
+    image: jitsi/jvb:stable-10888
+    restart: unless-stopped
+    # Media UDP MUST be host-published. mode: host bypasses Swarm's
+    # routing mesh so packets carry the real public source IP and
+    # JVB's ICE candidates point at a routable address.
+    ports:
+      - target: 10000
+        published: 10000
+        protocol: udp
+        mode: host
+    environment:
+      XMPP_AUTH_DOMAIN: auth.meet.jitsi
+      XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+      XMPP_SERVER: prosody
+      JVB_AUTH_USER: jvb
+      JVB_AUTH_PASSWORD: ${JITSI_JVB_AUTH_PASSWORD}
+      JVB_BREWERY_MUC: jvbbrewery
+      JVB_PORT: "10000"
+      JVB_ADVERTISE_IPS: ${VPS_PUBLIC_IP}
+      # Restrictive-network fallback. JVB hands clients an `iceServers`
+      # list pointing at the shared coturn; clients that cannot reach
+      # JVB on UDP/10000 directly relay through turn.<base>:5349.
+      JVB_TURN_HOST: turn.${ROCKETCHAT_HOSTNAME_BASE}
+      JVB_TURN_PORT: "5349"
+      JVB_TURN_TRANSPORT: tcp
+      JVB_TURN_SECRET: ${TURN_STATIC_AUTH_SECRET}
+      TZ: Etc/UTC
+    depends_on:
+      - prosody
+    labels:
+      - "vps.auto-update=patch"
+    networks:
+      - default
+
+  jitsi-web:
+    image: jitsi/web:stable-10888
+    restart: unless-stopped
+    expose:
+      - "80"
+    environment:
+      ENABLE_LETSENCRYPT: "0"
+      ENABLE_HTTP_REDIRECT: "0"
+      ENABLE_HSTS: "0"
+      DISABLE_HTTPS: "1"
+      PUBLIC_URL: https://meet.${ROCKETCHAT_HOSTNAME_BASE}
+      XMPP_DOMAIN: meet.jitsi
+      XMPP_AUTH_DOMAIN: auth.meet.jitsi
+      XMPP_BOSH_URL_BASE: http://prosody:5280
+      XMPP_GUEST_DOMAIN: guest.meet.jitsi
+      XMPP_MUC_DOMAIN: muc.meet.jitsi
+      XMPP_RECORDER_DOMAIN: recorder.meet.jitsi
+      TZ: Etc/UTC
+    depends_on:
+      - prosody
+    labels:
+      # Routed via Traefik on meet.<base>; HTTP only on the container
+      # side, TLS terminates at cloudflared/Traefik upstream like every
+      # other dokploy app. vps.auth.mode=public so room URLs work for
+      # anonymous participants (Jitsi rooms are by-link, not
+      # Keycloak-gated for v1).
+      - "vps.auth.mode=public"
+      - "vps.auto-update=patch"
+    networks:
+      dokploy-network:
+        aliases:
+          - jitsi-web
+      default: {}
+  # === JITSI END ============================================================
+
+volumes:
+  mongodb-data:
+  mongodb-config:
+
+networks:
+  dokploy-network:
+    external: true
+```
+
+---
+
+[<- Back to all pre-configured apps](/en/apps/)

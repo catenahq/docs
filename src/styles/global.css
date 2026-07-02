@@ -1,14 +1,16 @@
 @import "@catenahq/contracts/brand/tokens/all.css";
 @import "@catenahq/contracts/brand/wordmark/conthrax.css";
 
-/* Override Starlight's default accent with catena brand colors.
-   Light theme keeps the deep brand blue; dark theme bumps to a
-   lighter primary so links and accent text stay readable on the
-   dark navy background. */
+/* Map Starlight's palette onto catena brand tokens.
+   Starlight ships its own palette (and its light-mode inversion) inside
+   `@layer starlight.base`. These rules are UNLAYERED, so they win over
+   both. That means we have to supply BOTH themes here: an unlayered
+   `:root` alone would also override Starlight's layered light palette and
+   freeze the page at dark values (the theme switcher would then only
+   half-apply). `:root` = dark (Starlight's default); the higher-
+   specificity `:root[data-theme="light"]` block inverts the ramp. */
 :root {
-  --sl-color-accent-low: color-mix(in srgb, var(--catena-accent) 18%, var(--catena-surface-bg));
-  --sl-color-accent: var(--catena-accent);
-  --sl-color-accent-high: var(--catena-primary-700);
+  /* Neutral ramp: white (text) -> black (page bg) on a dark surface. */
   --sl-color-white: var(--catena-neutral-0);
   --sl-color-gray-1: var(--catena-neutral-100);
   --sl-color-gray-2: var(--catena-neutral-200);
@@ -17,15 +19,32 @@
   --sl-color-gray-5: var(--catena-neutral-700);
   --sl-color-gray-6: var(--catena-neutral-800);
   --sl-color-black: var(--catena-neutral-900);
+  /* Lighter brand blue so links/accents stay readable on dark navy. */
+  --sl-color-accent-low: var(--catena-primary-900);
+  --sl-color-accent: var(--catena-primary-400);
+  --sl-color-accent-high: var(--catena-primary-200);
+  --sl-color-text-accent: var(--catena-primary-300);
   --sl-font: var(--catena-font-sans);
   --sl-font-mono: var(--catena-font-mono);
 }
 
-:root[data-theme="dark"] {
-  --sl-color-accent-low: color-mix(in srgb, var(--catena-primary-400) 22%, var(--catena-neutral-900));
-  --sl-color-accent: var(--catena-primary-400);
-  --sl-color-accent-high: var(--catena-primary-200);
-  --sl-color-text-accent: var(--catena-primary-300);
+:root[data-theme="light"] {
+  /* Invert the ramp: white (text) is now the darkest neutral, black
+     (page bg) is pure white. Mirrors Starlight's own light inversion. */
+  --sl-color-white: var(--catena-neutral-900);
+  --sl-color-gray-1: var(--catena-neutral-800);
+  --sl-color-gray-2: var(--catena-neutral-700);
+  --sl-color-gray-3: var(--catena-neutral-500);
+  --sl-color-gray-4: var(--catena-neutral-400);
+  --sl-color-gray-5: var(--catena-neutral-200);
+  --sl-color-gray-6: var(--catena-neutral-100);
+  --sl-color-gray-7: var(--catena-neutral-50);
+  --sl-color-black: var(--catena-neutral-0);
+  /* Deep brand blue for accents/links on a light surface (AA on white). */
+  --sl-color-accent-low: var(--catena-primary-100);
+  --sl-color-accent: var(--catena-accent);
+  --sl-color-accent-high: var(--catena-primary-700);
+  --sl-color-text-accent: var(--catena-primary-700);
 }
 
 /* Header brand: logo + "catena docs" wordmark + sibling

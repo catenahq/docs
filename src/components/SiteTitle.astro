@@ -11,13 +11,12 @@
 // catena.run pill is a sibling link pointed at the marketing root
 // in the matching locale.
 
-import type { Props } from "@astrojs/starlight/props";
 import { Image } from "astro:assets";
 import logo from "@catenahq/contracts/brand/assets/logo.svg";
 
-const lang = (Astro.props as Props).locale ?? "en";
-const docsHomeHref = lang === "fr" ? "/fr/" : "/";
-const siteHomeHref = lang === "fr" ? "https://catena.run/fr/" : "https://catena.run/";
+const lang = Astro.locals.starlightRoute.locale ?? "en";
+const docsHomeHref = lang === "fr" ? "/fr/" : "/en/";
+const siteHomeHref = lang === "fr" ? "https://catena.run/fr/" : "https://catena.run/en/";
 const siteHomeAria = lang === "fr" ? "Aller à catena.run" : "Go to catena.run";
 ---
 <div class="catena-site-title">

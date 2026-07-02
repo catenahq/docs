@@ -1,0 +1,344 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "semgrep"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "package_managers.renovate.renovate-missing-minimum-release-age.renovate-missing-minimum-release-age",
+          "message": {
+            "text": "This Renovate configuration does not set a minimum release age. Newly published packages can be malicious or unstable. Add `\"minimumReleaseAge\": \"7 days\"` within a `packageRules` entry to wait 7 days before proposing updates to newly published package versions. Set `\"minimumReleaseAge\": false` to set an exception for minimal release age for the package rule. Added in: v42"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "renovate.json"
+                },
+                "region": {
+                  "startLine": 5
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "package_managers.renovate.renovate-missing-minimum-release-age.renovate-missing-minimum-release-age",
+          "message": {
+            "text": "This Renovate configuration does not set a minimum release age. Newly published packages can be malicious or unstable. Add `\"minimumReleaseAge\": \"7 days\"` within a `packageRules` entry to wait 7 days before proposing updates to newly published package versions. Set `\"minimumReleaseAge\": false` to set an exception for minimal release age for the package rule. Added in: v42"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "renovate.json"
+                },
+                "region": {
+                  "startLine": 12
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "package_managers.renovate.renovate-missing-minimum-release-age.renovate-missing-minimum-release-age",
+          "message": {
+            "text": "This Renovate configuration does not set a minimum release age. Newly published packages can be malicious or unstable. Add `\"minimumReleaseAge\": \"7 days\"` within a `packageRules` entry to wait 7 days before proposing updates to newly published package versions. Set `\"minimumReleaseAge\": false` to set an exception for minimal release age for the package rule. Added in: v42"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "renovate.json"
+                },
+                "region": {
+                  "startLine": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "trivy-license"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "@img/sharp-libvips-darwin-arm64:LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense LGPL-3.0-or-later\nPkgName: @img/sharp-libvips-darwin-arm64\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-libvips-darwin-x64:LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense LGPL-3.0-or-later\nPkgName: @img/sharp-libvips-darwin-x64\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-libvips-linux-arm:LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense LGPL-3.0-or-later\nPkgName: @img/sharp-libvips-linux-arm\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-libvips-linux-arm64:LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense LGPL-3.0-or-later\nPkgName: @img/sharp-libvips-linux-arm64\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-libvips-linux-ppc64:LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense LGPL-3.0-or-later\nPkgName: @img/sharp-libvips-linux-ppc64\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-libvips-linux-riscv64:LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense LGPL-3.0-or-later\nPkgName: @img/sharp-libvips-linux-riscv64\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-libvips-linux-s390x:LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense LGPL-3.0-or-later\nPkgName: @img/sharp-libvips-linux-s390x\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-libvips-linux-x64:LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense LGPL-3.0-or-later\nPkgName: @img/sharp-libvips-linux-x64\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-libvips-linuxmusl-arm64:LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense LGPL-3.0-or-later\nPkgName: @img/sharp-libvips-linuxmusl-arm64\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-libvips-linuxmusl-x64:LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense LGPL-3.0-or-later\nPkgName: @img/sharp-libvips-linuxmusl-x64\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-wasm32:Apache-2.0 AND LGPL-3.0-or-later AND MIT",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense Apache-2.0 AND LGPL-3.0-or-later AND MIT\nPkgName: @img/sharp-wasm32\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-win32-arm64:Apache-2.0 AND LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense Apache-2.0 AND LGPL-3.0-or-later\nPkgName: @img/sharp-win32-arm64\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-win32-ia32:Apache-2.0 AND LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense Apache-2.0 AND LGPL-3.0-or-later\nPkgName: @img/sharp-win32-ia32\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@img/sharp-win32-x64:Apache-2.0 AND LGPL-3.0-or-later",
+          "level": "error",
+          "message": {
+            "text": "Artifact: package-lock.json\nLicense Apache-2.0 AND LGPL-3.0-or-later\nPkgName: @img/sharp-win32-x64\n Classification: restricted\n Path: package-lock.json"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
