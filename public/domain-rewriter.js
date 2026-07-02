@@ -110,7 +110,7 @@
     });
   }
 
-  function installObserver(target) {
+  function installObserver() {
     const obs = new MutationObserver((records) => {
       const t = state.target;
       if (!t) return;

@@ -20,6 +20,10 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "catena docs",
+      // We ship our own src/pages/404.astro (a language-neutral splash
+      // that links into /en/ and /fr/). Disable Starlight's built-in
+      // /404 route so the two don't collide.
+      disable404Route: true,
       editLink: {
         // "Suggest edit" link in every page footer; opens the file
         // on GitHub on the active branch (dev = default; main is the
