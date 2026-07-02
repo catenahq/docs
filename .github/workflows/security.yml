@@ -27,3 +27,4 @@ jobs:
     with:
       profile: full
       runner: ubuntu-latest
+      baseline: .scanctl/baseline.sarif
