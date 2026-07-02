@@ -14,11 +14,11 @@
     "postinstall": "node scripts/sync-brand-assets.mjs"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.40.0",
+    "@astrojs/starlight": "^0.41.0",
     "@catenahq/contracts": "file:../contracts",
-    "astro": "^6.2.1",
+    "astro": "^7.0.0",
     "sharp": "^0.35.0",
-    "starlight-links-validator": "^0.24.0"
+    "starlight-links-validator": "^0.25.0"
   },
   "overrides": {
     "yaml": ">=2.8.3"
