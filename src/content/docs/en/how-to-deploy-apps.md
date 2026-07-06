@@ -1,22 +1,28 @@
 ---
 title: "How to deploy apps (with per-department access control)"
-description: "When you deploy a new app through Dokploy, you can control who can reach"
+description: "When you deploy a new app through Portainer, you can control who can reach"
 ---
 
-When you deploy a new app through Dokploy, you can control who can reach
+When you deploy a new app through Portainer, you can control who can reach
 it by adding labels to the compose file. The suite reads those labels
 and provisions the right Keycloak groups + policies automatically --
 you never touch Keycloak's API directly.
 
+You reach Portainer at `portainer.yourdomain.com` (the same SSO login as
+your other tools; only admins can open it). It is your VPS's container
+control plane -- the place you create, deploy, and manage app stacks.
+
 ## What can I deploy?
 
-Anything that ships a Docker Compose file works. Two good catalogs to
+Anything that ships a Docker Compose file works. A few good sources to
 browse when you're deciding what to self-host:
 
-- **[templates.dokploy.com](https://templates.dokploy.com)** -- Dokploy's
-  own catalog of one-click templates (install directly from Dokploy's
-  UI by pasting the template ID). Curated, tested against Dokploy,
-  actively maintained. Start here for common apps.
+- **Your VPS's App Templates** -- open Portainer at
+  `portainer.yourdomain.com` and look under **App Templates**. We
+  pre-seed a set of fully-wired apps (SSO, storage, networking, labels,
+  SSL already configured). Start here for common apps -- one click to
+  deploy. Full catalog with per-app notes:
+  **[Pre-configured templates](/en/apps/)**.
 - **[openalternative.co](https://openalternative.co)** -- a directory of
   open-source alternatives to popular SaaS (e.g., "Notion alternatives,"
   "Slack alternatives"). Each entry links to the project's repo + its
@@ -31,21 +37,23 @@ Whatever you pick, the suite's labels (`vps.auth.groups`,
 apply on top -- they gate access, wire SSO, tag updates, and populate
 the dashboard regardless of where the compose came from.
 
-Before deploying something new, check the **Templates** project in
-Dokploy -- we pre-seed a few fully-wired apps (see "Pre-configured
-apps you can enable" below) that may already cover your need.
+Before deploying something new, check **App Templates** in Portainer --
+we pre-seed a few fully-wired apps (see "Pre-configured apps you can
+enable" below) that may already cover your need.
 
 ## Quick start
 
 Deploying a new app (say, Paperless for your accounting team):
 
-1. Log in to `admin.yourdomain.com` (Dokploy).
-2. Create a new Application. Paste your compose file.
-3. Add a `labels:` block (for access control) AND a `networks:` alias
-   matching your Dokploy appName in lowercase-with-dashes form
-   (`paperless` -> `paperless`, `MyApp` -> `myapp`, `My-App` -> `my-app`).
-   Traefik uses this alias to reach your container; without it the
-   service returns 502.
+1. Log in to `portainer.yourdomain.com` (Portainer).
+2. Create a new Stack. Paste your compose file.
+3. Add a `labels:` block (for access control and the public URL) AND a
+   `catena-network` alias on the public-facing service, in
+   lowercase-with-dashes form (`paperless` -> `paperless`, `MyApp` ->
+   `myapp`, `My-App` -> `my-app`). Traefik uses this alias to reach your
+   container; without it the service returns 502. The `vps.route.host`
+   label is what publishes the app at a public URL (there is no separate
+   Domains tab).
 
    ```yaml
    services:
@@ -53,17 +61,17 @@ Deploying a new app (say, Paperless for your accounting team):
        image: paperlessngx/paperless-ngx:latest
        labels:
          - "vps.auth.groups=accounting"
+         - "vps.route.host=paperless.yourdomain.com"
        networks:
-         dokploy-network:
+         catena-network:
            aliases:
-             - paperless        # must match your Dokploy appName, lowercased
+             - paperless        # lowercase-with-dashes alias for Traefik
    networks:
-     dokploy-network:
+     catena-network:
        external: true
    ```
 
-4. Set the domain (e.g., `paperless.yourdomain.com`) in the Domains tab.
-5. Deploy.
+4. Deploy the stack.
 
 Within 5 minutes, `dashboard-sync` picks up the new app, creates the
 `accounting` group in Keycloak (if it doesn't exist), wires the
@@ -72,26 +80,26 @@ users in `accounting`.
 
 ## Pre-configured apps you can enable
 
-Dokploy ships with a **Templates** project on your VPS containing
+Portainer ships an **App Templates** catalog on your VPS containing
 ready-to-deploy apps that are wired correctly from the start --
 authentication, SSO, storage, networking, labels, SSL are all
-pre-configured. Click Deploy on the ones you want, Delete on the rest.
+pre-configured. Click Deploy on the ones you want, ignore the rest.
 
 Full catalog with per-app notes: **[Pre-configured templates](/en/apps/)**.
 
 ## Multi-container apps (example: Nextcloud)
 
-A single-image app just needs the `dokploy-network` attachment shown
+A single-image app just needs the `catena-network` attachment shown
 above. Once you have **more than one service** in the compose -- a real
 app like Nextcloud bundles Postgres and Redis alongside the web
 process -- the networking rule is:
 
 - **Only the public-facing service** (the one Traefik should route to)
-  joins `dokploy-network`. Adding it also to the compose's `default`
+  joins `catena-network`. Adding it also to the compose's `default`
   network lets it talk to its siblings.
 - **Internal services** (database, cache, cron worker) stay on the
   `default` network only. They don't need to be reachable by Traefik
-  and putting them on `dokploy-network` would expose them to every
+  and putting them on `catena-network` would expose them to every
   other project on the host.
 
 Worked example -- Nextcloud with its own Postgres, Redis, and cron
@@ -114,9 +122,9 @@ services:
       - "vps.auth.mode=private"
       - "vps.auth.groups=staff"
     networks:
-      dokploy-network:          # Traefik reaches it here
+      catena-network:          # Traefik reaches it here
         aliases:
-          - nextcloud           # must match your Dokploy appName
+          - nextcloud           # lowercase-with-dashes alias for Traefik
       default: {}               # reach db, redis, cron via sibling names
 
   db:
@@ -128,7 +136,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
-      - default                 # NOT on dokploy-network -- internal only
+      - default                 # NOT on catena-network -- internal only
 
   redis:
     image: redis:7.4.9-alpine
@@ -148,17 +156,17 @@ volumes:
   db-data:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
   # `default` is implicit and per-project; no top-level declaration needed.
 ```
 
 **Why two networks on `app`, not just one**: if `app` joined only
-`dokploy-network`, it could reach Traefik but not `db`, `redis`, or
+`catena-network`, it could reach Traefik but not `db`, `redis`, or
 `cron`. If it joined only `default`, Traefik couldn't see it and would
 return 502. It needs both.
 
-**Why `db`, `redis`, `cron` stay off `dokploy-network`**: every project
+**Why `db`, `redis`, `cron` stay off `catena-network`**: every project
 on this host shares that network. Keeping internal services on the
 project's own `default` network means another project's containers
 can't reach your Nextcloud database by guessing the service name --
@@ -252,7 +260,7 @@ Defaults, by service kind:
 
 - **Client apps** (yours): `patch`. Conservative -- bug fixes and
   security releases, no behavior change.
-- **Operator infrastructure** (Keycloak, Dokploy, Traefik, Gatus,
+- **Operator infrastructure** (Keycloak, Portainer, Traefik, Gatus,
   etc.): `patch+minor`. Operator watches these daily.
 
 Unless you have a reason to change it, leaving the label unset on
@@ -353,14 +361,13 @@ labels:
 
 Every 5 minutes (via systemd timer), `dashboard-sync.service`:
 
-1. Queries Dokploy's API for all running apps with domains.
-2. For each app, parses its compose labels.
+1. Reads the labels on every running app container (via `docker ps`).
+2. For each app, parses its `vps.*` compose labels.
 3. Reconciles Keycloak:
    - Ensures the listed groups exist.
-   - Ensures the app has a `forward_single` proxy provider + Application.
-   - Ensures policy bindings match the current `vps.auth.groups` list.
-   - Attaches the provider to the embedded outpost.
-4. Writes the Traefik dynamic route file (`*-auto-keycloak.yml`) LAST,
+   - Ensures the app's oauth2-proxy gate allows exactly the current
+     `vps.auth.groups` list.
+4. Writes the Traefik dynamic route file (`*-auto-gate.yml`) LAST,
    so if any Keycloak step fails, the route is not written and the app
    remains unreachable (fail-closed, not fail-open).
 
@@ -371,7 +378,7 @@ Every 5 minutes (via systemd timer), `dashboard-sync.service`:
   stays 404 until Keycloak recovers.
 - **You typo'd a group name.** A group with that name gets auto-created
   (empty). You'll notice because the app 403s. Fix: rename the group in
-  Keycloak UI, or fix the label in Dokploy and re-deploy.
+  Keycloak UI, or fix the label in Portainer and re-deploy.
 - **You removed the label but kept the app.** On next sync, policy
   bindings collapse to `admin` (catchall). No one except admins
   can reach it. Intentional -- failing closed.
@@ -383,7 +390,7 @@ Every 5 minutes (via systemd timer), `dashboard-sync.service`:
 
 - `https://auth.yourdomain.com` -> Directory -> Groups. Your defined
   groups show here. Add/remove members through the UI.
-- `https://admin.yourdomain.com` -> your app -> Logs. After deploy,
+- `https://portainer.yourdomain.com` -> your stack -> Logs. After deploy,
   logs show Keycloak forward-auth hits (203 -> inject headers -> upstream).
 - `https://monitor.yourdomain.com` (Gatus). Your app gets
   an entry in the `client-apps` group within ~5 min, probed every 60s.
@@ -393,8 +400,8 @@ Every 5 minutes (via systemd timer), `dashboard-sync.service`:
 
 These labels control *authentication* (who can reach the app). They do
 NOT control *authorization* (what users can do within the app). Apps
-that support their own permission model (Paperless users, Dokploy
-roles, etc.) keep using that model; Keycloak just gates the door.
+that support their own permission model (Paperless users, Nextcloud
+groups, etc.) keep using that model; Keycloak just gates the door.
 
 ## Forward-auth vs. OIDC
 
@@ -515,10 +522,10 @@ services:
       GF_AUTH_GENERIC_OAUTH_API_URL: ${OIDC_ISSUER_URL}userinfo/
       GF_AUTH_GENERIC_OAUTH_SCOPES: "openid email profile groups"
     networks:
-      dokploy-network:
+      catena-network:
         aliases: [grafana]
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 
@@ -529,8 +536,8 @@ container's environment at start time.
 
 #### 4. Save + wait for redeploy
 
-Saving the compose in Dokploy triggers a redeploy. On the next
-sync tick, dashboard-sync updates the env block and Dokploy
+Saving the compose in Portainer triggers a redeploy. On the next
+sync tick, dashboard-sync updates the env block and Portainer
 redeploys the app one more time with the populated values. After
 that, sign into the app's front page -- you should see a "Sign in
 with Keycloak" button (label app-specific). Click it, authorize,
@@ -602,7 +609,7 @@ services:
 ```
 
 - **`vps.homepage.name`** -- tile label. Defaults to the app's
-  Dokploy name if unset.
+  stack name if unset.
 - **`vps.homepage.icon`** -- any [Material Design Icon](https://pictogrammers.com/library/mdi/)
   name (prefix `mdi-`) or a full URL to an image.
 - **`vps.homepage.description`** -- one-line tagline under the name.

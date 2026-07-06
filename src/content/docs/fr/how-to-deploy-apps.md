@@ -1,24 +1,31 @@
 ---
 title: "Comment déployer des applications (avec contrôle d'accès par département)"
-description: "Lorsque vous déployez une nouvelle application via Dokploy, vous"
+description: "Lorsque vous déployez une nouvelle application via Portainer, vous"
 ---
 
-Lorsque vous déployez une nouvelle application via Dokploy, vous
+Lorsque vous déployez une nouvelle application via Portainer, vous
 contrôlez qui peut y accéder en ajoutant des étiquettes au fichier
 compose. La suite lit ces étiquettes et provisionne automatiquement les
 bons groupes et politiques Keycloak -- vous ne touchez jamais à l'API
 d'Keycloak directement.
 
+Vous accédez à Portainer à `portainer.yourdomain.com` (la même connexion
+SSO que vos autres outils ; seuls les administrateurs peuvent l'ouvrir).
+C'est le plan de contrôle des conteneurs de votre VPS -- l'endroit où vous
+créez, déployez et gérez les stacks d'applications.
+
 ## Que puis-je déployer ?
 
-Tout ce qui fournit un Docker Compose fonctionne. Deux catalogues
+Tout ce qui fournit un Docker Compose fonctionne. Quelques sources
 utiles pour choisir ce que vous auto-hébergez :
 
-- **[templates.dokploy.com](https://templates.dokploy.com)** -- le
-  catalogue de modèles un-clic de Dokploy (installation directe
-  depuis l'interface Dokploy en collant l'ID du modèle). Soigné,
-  testé contre Dokploy, maintenu activement. Commencez par là pour
-  les applications courantes.
+- **Les App Templates de votre VPS** -- ouvrez Portainer à
+  `portainer.yourdomain.com` et regardez sous **App Templates**. Nous
+  pré-câblons un ensemble d'applications entièrement prêtes (SSO,
+  stockage, réseau, étiquettes, SSL déjà configurés). Commencez par là
+  pour les applications courantes -- un clic pour déployer. Catalogue
+  complet avec notes par application :
+  **[Applications pré-configurées](/fr/apps/)**.
 - **[openalternative.co](https://openalternative.co)** -- un annuaire
   d'alternatives open-source aux SaaS populaires (p. ex.
   "alternatives à Notion", "alternatives à Slack"). Chaque
@@ -37,8 +44,8 @@ Quoi que vous choisissiez, les étiquettes de la suite
 elles filtrent l'accès, câblent le SSO, marquent les mises à jour
 et alimentent le tableau de bord, peu importe d'où vient le compose.
 
-Avant de déployer quelque chose de nouveau, vérifiez le projet
-**Templates** dans Dokploy -- nous pré-câblons quelques applications
+Avant de déployer quelque chose de nouveau, vérifiez les **App
+Templates** dans Portainer -- nous pré-câblons quelques applications
 prêtes à l'emploi (voir "Applications pré-configurées prêtes à
 activer" plus bas) qui couvrent peut-être déjà votre besoin.
 
@@ -47,13 +54,15 @@ activer" plus bas) qui couvrent peut-être déjà votre besoin.
 Déployer une nouvelle application (par exemple, Paperless pour votre
 équipe de comptabilité) :
 
-1. Connectez-vous à `admin.yourdomain.com` (Dokploy).
-2. Créez une nouvelle application. Collez votre fichier compose.
-3. Ajoutez un bloc `labels:` (pour le contrôle d'accès) ET un alias
-   `networks:` correspondant à votre `appName` Dokploy en minuscules
-   avec traits d'union (`paperless` -> `paperless`, `MyApp` -> `myapp`,
-   `My-App` -> `my-app`). Traefik utilise cet alias pour atteindre votre
-   conteneur ; sans lui le service retourne 502.
+1. Connectez-vous à `portainer.yourdomain.com` (Portainer).
+2. Créez un nouveau Stack. Collez votre fichier compose.
+3. Ajoutez un bloc `labels:` (pour le contrôle d'accès et l'URL
+   publique) ET un alias `catena-network` sur le service public, en
+   minuscules avec traits d'union (`paperless` -> `paperless`, `MyApp` ->
+   `myapp`, `My-App` -> `my-app`). Traefik utilise cet alias pour
+   atteindre votre conteneur ; sans lui le service retourne 502.
+   L'étiquette `vps.route.host` est ce qui publie l'application à une URL
+   publique (il n'y a pas d'onglet Domains distinct).
 
    ```yaml
    services:
@@ -61,18 +70,17 @@ Déployer une nouvelle application (par exemple, Paperless pour votre
        image: paperlessngx/paperless-ngx:latest
        labels:
          - "vps.auth.groups=accounting"
+         - "vps.route.host=paperless.yourdomain.com"
        networks:
-         dokploy-network:
+         catena-network:
            aliases:
-             - paperless        # doit correspondre à votre appName Dokploy en minuscules
+             - paperless        # alias en minuscules avec traits d'union pour Traefik
    networks:
-     dokploy-network:
+     catena-network:
        external: true
    ```
 
-4. Définissez le domaine (p. ex. `paperless.yourdomain.com`)
-   dans l'onglet Domains.
-5. Déployez.
+4. Déployez le stack.
 
 En moins de 5 minutes, `dashboard-sync` détecte la nouvelle application,
 crée le groupe `accounting` dans Keycloak (s'il n'existe pas), câble
@@ -81,10 +89,10 @@ uniquement pour les utilisateurs du groupe `accounting`.
 
 ## Applications pré-configurées prêtes à activer
 
-Dokploy est livré avec un projet **Templates** sur votre VPS contenant
+Portainer fournit un catalogue **App Templates** sur votre VPS contenant
 des applications prêtes à déployer, correctement câblées dès le
 départ -- authentification, SSO, stockage, réseau, étiquettes, SSL.
-Cliquez Deploy sur celles que vous voulez, Delete sur les autres.
+Cliquez Deploy sur celles que vous voulez, ignorez les autres.
 
 Catalogue complet avec notes par application :
 **[Applications pré-configurées](/fr/apps/)**.
@@ -92,16 +100,16 @@ Catalogue complet avec notes par application :
 ## Applications multi-conteneurs (exemple : Nextcloud)
 
 Une application mono-image ne nécessite que le rattachement à
-`dokploy-network` illustré plus haut. Dès que votre compose contient
+`catena-network` illustré plus haut. Dès que votre compose contient
 **plusieurs services** -- une vraie application comme Nextcloud embarque
 Postgres et Redis à côté du processus web -- la règle de réseau est :
 
 - **Seul le service public** (celui auquel Traefik doit router le
-  trafic) rejoint `dokploy-network`. L'ajouter aussi au réseau
+  trafic) rejoint `catena-network`. L'ajouter aussi au réseau
   `default` du compose lui permet de parler à ses voisins.
 - **Les services internes** (base de données, cache, worker cron)
   restent uniquement sur `default`. Ils n'ont pas besoin d'être
-  joignables par Traefik, et les mettre sur `dokploy-network` les
+  joignables par Traefik, et les mettre sur `catena-network` les
   exposerait à tous les autres projets hébergés sur le même VPS.
 
 Exemple concret -- Nextcloud avec son propre Postgres, Redis et worker
@@ -124,9 +132,9 @@ services:
       - "vps.auth.mode=private"
       - "vps.auth.groups=staff"
     networks:
-      dokploy-network:          # Traefik y accède
+      catena-network:          # Traefik y accède
         aliases:
-          - nextcloud           # doit correspondre au appName Dokploy
+          - nextcloud           # alias en minuscules avec traits d'union pour Traefik
       default: {}               # atteindre db, redis, cron via les noms voisins
 
   db:
@@ -138,7 +146,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
-      - default                 # PAS sur dokploy-network -- interne uniquement
+      - default                 # PAS sur catena-network -- interne uniquement
 
   redis:
     image: redis:7.4.9-alpine
@@ -158,17 +166,17 @@ volumes:
   db-data:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
   # `default` est implicite et propre au projet ; pas besoin de le déclarer.
 ```
 
 **Pourquoi deux réseaux sur `app`, pas un seul** : si `app` ne
-rejoignait que `dokploy-network`, il pourrait atteindre Traefik mais
+rejoignait que `catena-network`, il pourrait atteindre Traefik mais
 pas `db`, `redis` ou `cron`. S'il ne rejoignait que `default`, Traefik
 ne le verrait pas et renverrait une 502. Il faut les deux.
 
-**Pourquoi `db`, `redis` et `cron` restent hors de `dokploy-network`** :
+**Pourquoi `db`, `redis` et `cron` restent hors de `catena-network`** :
 tous les projets sur cet hôte partagent ce réseau. En gardant les
 services internes sur le `default` propre au projet, les conteneurs
 d'un autre projet ne peuvent pas joindre votre base Nextcloud en
@@ -269,7 +277,7 @@ Valeurs par défaut, par type de service :
 - **Applications clientes** (les vôtres) : `patch`. Conservateur --
   correctifs de bugs et mises à jour de sécurité, aucun changement de
   comportement.
-- **Infrastructure de l'opérateur** (Keycloak, Dokploy, Traefik,
+- **Infrastructure de l'opérateur** (Keycloak, Portainer, Traefik,
   Gatus, etc.) : `patch+minor`. L'opérateur les surveille
   quotidiennement.
 
@@ -380,18 +388,15 @@ labels:
 
 Toutes les 5 minutes (via un timer systemd), `dashboard-sync.service` :
 
-1. Interroge l'API de Dokploy pour toutes les applications en cours
-   d'exécution avec des domaines.
-2. Pour chaque application, analyse les étiquettes du compose.
+1. Lit les étiquettes de chaque conteneur d'application en cours
+   d'exécution (via `docker ps`).
+2. Pour chaque application, analyse ses étiquettes `vps.*` du compose.
 3. Réconcilie Keycloak :
    - S'assure que les groupes listés existent.
-   - S'assure que l'application a un fournisseur `forward_single` + une
-     Application.
-   - S'assure que les liaisons de politique reflètent la liste
-     `vps.auth.groups` actuelle.
-   - Rattache le fournisseur à l'avant-poste intégré.
+   - S'assure que la barrière oauth2-proxy de l'application autorise
+     exactement la liste `vps.auth.groups` actuelle.
 4. Écrit le fichier de route dynamique Traefik
-   (`*-auto-keycloak.yml`) EN DERNIER, de sorte que si une étape
+   (`*-auto-gate.yml`) EN DERNIER, de sorte que si une étape
    Keycloak échoue, la route n'est pas écrite et l'application reste
    inaccessible (échec fermé, non ouvert).
 
@@ -404,7 +409,7 @@ Toutes les 5 minutes (via un timer systemd), `dashboard-sync.service` :
 - **Vous avez mal tapé un nom de groupe.** Un groupe portant ce nom est
   créé automatiquement (vide). Vous le remarquerez car l'application
   retourne 403. Correction : renommez le groupe dans l'interface
-  Keycloak, ou corrigez l'étiquette dans Dokploy et redéployez.
+  Keycloak, ou corrigez l'étiquette dans Portainer et redéployez.
 - **Vous avez retiré l'étiquette mais gardé l'application.** Au
   prochain sync, les liaisons de politique reviennent à
   `admin` (catchall). Personne sauf les admins ne peut y
@@ -418,7 +423,7 @@ Toutes les 5 minutes (via un timer systemd), `dashboard-sync.service` :
 - `https://auth.yourdomain.com` -> Directory -> Groups. Vos groupes
   définis apparaissent ici. Ajoutez / retirez des membres via
   l'interface.
-- `https://admin.yourdomain.com` -> votre application -> Logs.
+- `https://portainer.yourdomain.com` -> votre stack -> Logs.
   Après le déploiement, les logs montrent les appels forward-auth
   Keycloak (203 -> injection d'en-têtes -> upstream).
 - `https://monitor.yourdomain.com` (Gatus). Votre
@@ -431,8 +436,8 @@ Toutes les 5 minutes (via un timer systemd), `dashboard-sync.service` :
 Ces étiquettes contrôlent l'*authentification* (qui peut accéder à
 l'application). Elles ne contrôlent PAS l'*autorisation* (ce que les
 utilisateurs peuvent faire dans l'application). Les applications ayant
-leur propre modèle de permissions (utilisateurs Paperless, rôles
-Dokploy, etc.) conservent ce modèle ; Keycloak garde simplement la
+leur propre modèle de permissions (utilisateurs Paperless, groupes
+Nextcloud, etc.) conservent ce modèle ; Keycloak garde simplement la
 porte.
 
 ## Forward-auth ou OIDC
@@ -563,10 +568,10 @@ services:
       GF_AUTH_GENERIC_OAUTH_API_URL: ${OIDC_ISSUER_URL}userinfo/
       GF_AUTH_GENERIC_OAUTH_SCOPES: "openid email profile groups"
     networks:
-      dokploy-network:
+      catena-network:
         aliases: [grafana]
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 
@@ -577,9 +582,9 @@ du conteneur au démarrage.
 
 #### 4. Sauvegarder + attendre le redéploiement
 
-Sauvegarder le compose dans Dokploy déclenche un redéploiement.
+Sauvegarder le compose dans Portainer déclenche un redéploiement.
 Au tic de synchronisation suivant, dashboard-sync met à jour le
-bloc env et Dokploy redéploie l'application une fois de plus avec
+bloc env et Portainer redéploie l'application une fois de plus avec
 les valeurs remplies. Ensuite, connectez-vous à la page d'accueil
 de l'application -- vous devriez voir un bouton "Se connecter avec
 Keycloak" (le libellé dépend de l'application). Cliquez,
@@ -656,7 +661,7 @@ services:
 ```
 
 - **`vps.homepage.name`** -- étiquette de la tuile. Par défaut : le
-  nom Dokploy de l'application.
+  nom du stack de l'application.
 - **`vps.homepage.icon`** -- n'importe quelle icône [Material Design Icons](https://pictogrammers.com/library/mdi/)
   (préfixe `mdi-`) ou l'URL complète d'une image.
 - **`vps.homepage.description`** -- une ligne de description sous le
