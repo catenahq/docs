@@ -111,7 +111,7 @@ services:
       - "vps.auth.oidc.scopes=openid email profile"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - espocrm
       default: {}
@@ -162,7 +162,7 @@ volumes:
   db-data:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

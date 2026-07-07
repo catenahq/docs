@@ -16,7 +16,7 @@ Open-source marketing automation. Contact segments, email campaigns, drip sequen
    - **Database**: pre-filled (host `db`, name `mautic`, user `mautic`, password from the `DB_PASSWORD` env var).
    - **Admin user**: create your initial admin account.
    - **Email settings**: paste your managed-relay SMTP creds (host, port `587`, username, password, from-address). Skip if you'll do this later under **Settings** -> **Configuration** -> **Email Settings**.
-3. Verify the cron + worker containers are running in Dokploy (Mautic needs `mautic_cron` for scheduled campaigns + `mautic_worker` for the email queue).
+3. Verify the cron + worker containers are running in Portainer (Mautic needs `mautic_cron` for scheduled campaigns + `mautic_worker` for the email queue).
 4. Build your first segment: **Segments** -> **New** -> filter by contact attribute.
 5. Build your first email campaign: **Campaigns** -> **New** -> drag the **Send email** action onto a segment trigger.
 
@@ -142,7 +142,7 @@ services:
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - mautic
       default: {}
@@ -220,7 +220,7 @@ volumes:
   db-data:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

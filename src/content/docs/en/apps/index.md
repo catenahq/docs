@@ -1,19 +1,19 @@
 ---
 title: "Pre-configured apps you can enable"
-description: "Catalog of one-click apps your operator can seed into Dokploy: each is fully wired (auth, networking, SSO, storage, SSL)."
+description: "Catalog of one-click apps available in your server's Portainer panel: each is fully wired (auth, networking, SSO, storage, SSL)."
 ---
 
-Dokploy ships with a **Templates** project on your VPS. Each entry is
-a fully-wired compose app in an un-deployed state -- authentication,
+Your server's **Portainer** panel includes an **App Templates**
+catalog. Each entry is a fully-wired application -- authentication,
 networking, SSO hooks, storage, and SSL are pre-configured.
 
-Click the **Templates** project in Dokploy's sidebar. For each entry:
+Open **App Templates** in Portainer's sidebar. For each entry:
 
 - **Click Deploy** -> the app starts with all integrations active.
-- **Click Delete** -> the entry is removed and stays removed. Re-running
-  setup does NOT recreate deleted entries.
+- To remove an app later, delete it from Portainer's **Stacks** view.
+  It stays removed; nothing reinstalls it without you.
 
-If a template isn't useful for you, one click makes it go away.
+If a template isn't useful for you, it simply stays un-deployed.
 
 ## Available templates
 

@@ -114,7 +114,7 @@ services:
       - "vps.auth.groups=staff"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - kimai
       default: {}
@@ -144,7 +144,7 @@ volumes:
   db-data:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

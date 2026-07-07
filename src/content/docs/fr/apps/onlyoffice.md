@@ -81,7 +81,7 @@ services:
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - onlyoffice
       default: {}
@@ -95,7 +95,7 @@ volumes:
   ds-redis:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

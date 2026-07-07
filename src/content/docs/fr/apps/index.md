@@ -1,21 +1,22 @@
 ---
 title: "Applications pré-configurées à activer"
-description: "Catalogue d'applications à un clic que votre opérateur peut amorcer dans Dokploy : auth, réseau, SSO, stockage et SSL pré-configurés."
+description: "Catalogue d'applications à un clic offertes dans le panneau Portainer de votre serveur : auth, réseau, SSO, stockage et SSL pré-configurés."
 ---
 
-Dokploy est livré avec un projet **Templates** sur votre VPS. Chaque
-entrée est une application compose entièrement câblée, à l'état
-non-déployé -- authentification, réseau, SSO, stockage et SSL sont
+Le panneau **Portainer** de votre serveur comprend un catalogue
+**App Templates**. Chaque entrée est une application entièrement
+câblée -- authentification, réseau, SSO, stockage et SSL sont
 pré-configurés.
 
-Cliquez sur le projet **Templates** dans la barre latérale de Dokploy.
-Pour chaque entrée :
+Ouvrez **App Templates** dans la barre latérale de Portainer. Pour
+chaque entrée :
 
 - **Cliquez Deploy** -> l'application démarre avec toutes les intégrations actives.
-- **Cliquez Delete** -> l'entrée est supprimée et reste supprimée. Une
-  ré-exécution de l'installation ne recrée PAS les entrées supprimées.
+- Pour retirer une application plus tard, supprimez-la dans la vue
+  **Stacks** de Portainer. Elle reste supprimée; rien ne la réinstalle
+  sans vous.
 
-Si un template ne vous est pas utile, un clic le fait disparaître.
+Si un modèle ne vous est pas utile, il reste simplement non déployé.
 
 ## Templates disponibles
 

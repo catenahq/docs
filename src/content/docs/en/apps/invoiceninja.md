@@ -17,7 +17,7 @@ Open-source invoicing with Stripe + PayPal payment gateways, recurring billing, 
    docker exec $(docker ps --filter name=invoiceninja-app --format '{{.Names}}' | head -1) \
      runuser -u www-data -- php artisan key:generate --show --no-interaction
    ```
-   Copy the `base64:...` output. In Dokploy: **Environment** -> set `INVOICENINJA_APP_KEY` to the copied value. Click **Redeploy**.
+   Copy the `base64:...` output. In Portainer: edit the **Environment variables** -> set `INVOICENINJA_APP_KEY` to the copied value, then click **Update the stack** to redeploy.
 3. Visit your Invoice Ninja domain. Sign in as `INVOICENINJA_ADMIN_EMAIL` / `INVOICENINJA_ADMIN_PASSWORD` from the Environment tab.
 4. Configure your **company profile** (Settings -> Company Details): logo, address, tax IDs (GST/QST for Canada), default currency.
 5. Wire **Stripe**: Settings -> Online Payments -> Add Gateway -> Stripe. Paste your Stripe publishable + secret keys. The client portal will accept card payments after this.
@@ -112,11 +112,12 @@ Domains tabs (described above), never in the compose itself.
 #   redis-data  -- /data (Redis AOF/RDB persistence)
 #
 # APP_KEY: Laravel boots with Application Error 500 if APP_KEY is empty
-# or not formatted as base64:<44-char-base64-string>. The Dokploy
-# ${password:N} helper produces alphanumeric chars (not base64), so we
-# cannot pre-generate APP_KEY in env_defaults. Operator generates it
-# once post-deploy via `docker exec` + `php artisan key:generate --show`,
-# pastes the base64:... output into the Environment tab, and redeploys.
+# or not formatted as base64:<44-char-base64-string>. Portainer App
+# Templates have no per-deploy secret generator, and APP_KEY needs a
+# valid base64 form, so we cannot pre-generate it in env_defaults.
+# Operator generates it once post-deploy via `docker exec` +
+# `php artisan key:generate --show`, pastes the base64:... output into
+# the Portainer stack env, and updates the stack.
 # See setup_steps in catalog.yml.
 
 services:
@@ -191,7 +192,7 @@ services:
       - "vps.auth.groups=staff"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - invoiceninja
       default: {}
@@ -242,7 +243,7 @@ configs:
     file: ./invoiceninja-nginx.conf
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

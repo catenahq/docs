@@ -182,7 +182,7 @@ services:
       - "vps.auth.oidc.scopes=openid email profile groups"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - synapse
       default: {}
@@ -200,7 +200,7 @@ services:
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - element-web
       default: {}
@@ -220,7 +220,7 @@ services:
       - "vps.auth.mode=admin"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - synapse-admin
       default: {}
@@ -365,7 +365,7 @@ services:
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - jitsi-web
       default: {}
@@ -620,7 +620,7 @@ volumes:
   element-synapse-data:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

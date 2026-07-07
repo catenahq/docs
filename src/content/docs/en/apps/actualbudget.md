@@ -62,7 +62,7 @@ services:
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - actualbudget
       default: {}
@@ -71,7 +71,7 @@ volumes:
   actual-data:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

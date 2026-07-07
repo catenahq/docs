@@ -146,10 +146,10 @@ services:
     # Running our writer in a before-starting HOOK sidesteps that
     # check entirely.
     #
-    # Why not the compose-v2 `configs:` block? Through Dokploy the
-    # inline content-delivery pipeline produced a script that exited 2
-    # with no script-side stderr on every start. Materializing the
-    # hook ourselves via the wrapper bypasses that delivery path.
+    # Why not the compose-v2 `configs:` block? The inline content-
+    # delivery pipeline produced a script that exited 2 with no
+    # script-side stderr on every start. Materializing the hook
+    # ourselves via the wrapper bypasses that delivery path.
     #
     # `$$X` -> `$X` after compose interpolation. The outer
     # `<<'HOOK'` is single-quoted so the wrapper writes the hook
@@ -167,7 +167,7 @@ services:
         # Catena-managed config overlay. Re-rendered on every container
         # start from the env vars below. Lets the operator change
         # client-policy knobs (log level, version retention) via the
-        # Dokploy Environment tab without dropping into occ.
+        # Portainer stack env without dropping into occ.
         set -e
         : "$${NEXTCLOUD_LOGLEVEL:=1}"
         : "$${NEXTCLOUD_VERSIONS_RETENTION:=auto, 7}"
@@ -264,7 +264,7 @@ services:
 
       # Catena-managed config knobs. The zz-catena.sh hook reads these
       # at container start and writes /var/www/html/config/zz-catena
-      # .config.php. Change the value here (Dokploy Environment tab)
+      # .config.php. Change the value here (Portainer stack env)
       # + redeploy and the next container start picks it up.
       #
       # NEXTCLOUD_LOGLEVEL: 0=debug, 1=info, 2=warn, 3=error, 4=fatal.
@@ -353,7 +353,7 @@ services:
       - "vps.auth.oidc.scopes=openid email profile groups"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - nextcloud
       default: {}
@@ -385,7 +385,7 @@ services:
     # it, both services launch in parallel with the db, the upstream
     # nextcloud entrypoint runs `occ maintenance:install` before
     # postgres has accepted its first connection, install retries 10x
-    # 10s, exhausts the budget, container exits rc=1, Dokploy auto-
+    # 10s, exhausts the budget, container exits rc=1, Docker auto-
     # restarts. The restart finds /var/www/html/version.php already
     # written by the previous populate.sh run -> entrypoint takes the
     # UPGRADE path -> no-op -> NC stuck reporting installed=false.
@@ -482,8 +482,9 @@ services:
   #
   # Public exposure: only the signaling HTTP endpoint (port 8081
   # inside the container) needs to be reachable. The catalog entry
-  # in dokploy_template_catalog.yml declares signaling.<base>:8081
-  # as an extra_domain so Dokploy auto-injects the Traefik labels.
+  # in source/catalog.yml declares signaling.<base>:8081
+  # as an extra_domain so the catena converge writes the matching
+  # Traefik route.
   #
   # Tag: pinned to a dated upstream build. Bump by listing
   # `ghcr.io/nextcloud-releases/aio-talk` tags and picking the
@@ -531,7 +532,7 @@ services:
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           # Wire script's auto-detect probe hits http://signaling:8081
           # from inside the Nextcloud container; keep this alias so
@@ -547,7 +548,7 @@ volumes:
   db-data:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
   # Shared antivirus network (clamd), created + owned by ops. External
   # so the Nextcloud app/cron services and the mail server share one

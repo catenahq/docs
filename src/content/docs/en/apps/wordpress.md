@@ -167,7 +167,7 @@ services:
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - wordpress
       default: {}
@@ -215,7 +215,7 @@ configs:
     file: ./wordpress-nginx.conf
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

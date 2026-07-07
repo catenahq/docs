@@ -11,7 +11,7 @@ Full open-source ERP suite -- accounting, inventory, HR/payroll, CRM, manufactur
 
 ## Setup steps
 
-1. Click **Deploy**. First boot takes 5-10 min -- the site must be created, MariaDB initialized, Python apps installed. Watch the `create-site` container logs in Dokploy if you want to follow along.
+1. Click **Deploy**. First boot takes 5-10 min -- the site must be created, MariaDB initialized, Python apps installed. Watch the `create-site` container logs in Portainer if you want to follow along.
 2. Visit your ERPNext domain. Sign in as `Administrator` / `ERPNEXT_ADMIN_PASSWORD` from the Environment tab.
 3. Complete the setup wizard: company name, fiscal year, base currency, chart of accounts template.
 4. *(Optional)* Enable Keycloak SSO: **Integrations** -> **Social Login Keys** -> **New** -> **Provider: OpenID Connect**. Fill:
@@ -169,7 +169,7 @@ services:
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - erpnext
       default: {}
@@ -297,7 +297,7 @@ volumes:
   redis-queue-data:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

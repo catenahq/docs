@@ -137,7 +137,7 @@ services:
       - "vps.auth.oidc.scopes=openid email profile groups"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - rocketchat
       default: {}
@@ -280,13 +280,13 @@ services:
     labels:
       # Routed via Traefik on meet.<base>; HTTP only on the container
       # side, TLS terminates at cloudflared/Traefik upstream like every
-      # other dokploy app. vps.auth.mode=public so room URLs work for
+      # other catena app. vps.auth.mode=public so room URLs work for
       # anonymous participants (Jitsi rooms are by-link, not
       # Keycloak-gated for v1).
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - jitsi-web
       default: {}
@@ -297,7 +297,7 @@ volumes:
   mongodb-config:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

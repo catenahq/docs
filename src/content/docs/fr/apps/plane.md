@@ -186,7 +186,7 @@ services:
       - "vps.auth.oidc.scopes=openid email profile"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - plane
       default: {}
@@ -240,7 +240,7 @@ volumes:
   minio-data:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
 ```
 

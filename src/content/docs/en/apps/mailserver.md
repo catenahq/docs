@@ -191,7 +191,7 @@ services:
       - "vps.auth.oidc.scopes=openid email profile groups"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - roundcube
       default: {}
@@ -237,7 +237,7 @@ services:
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
-      dokploy-network:
+      catena-network:
         aliases:
           - mta-sts
       default: {}
@@ -251,7 +251,7 @@ volumes:
   roundcube-config:
 
 networks:
-  dokploy-network:
+  catena-network:
     external: true
   # Shared antivirus network (clamd), created + owned by ops. External
   # so dms here and the Nextcloud app service share one clamd.
