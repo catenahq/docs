@@ -4,7 +4,7 @@ Astro + Starlight client wiki for the catena stack. Public-facing
 docs (EN + FR), served at `docs.catena.run`.
 
 Standalone build (`npm run build` -> `dist/`); Dockerfile +
-`dokploy.compose.yml` ship it as its own Dokploy app behind nginx.
+`dokploy.compose.yml` ship it as its own Portainer stack behind nginx.
 No chained-build coupling with the marketing site.
 
 ## Develop
@@ -31,9 +31,9 @@ npm run check     # astro check + starlight-links-validator
 ## Apps catalog
 
 The per-template pages under `src/content/docs/apps/` are
-machine-generated from the catenahq/ops repo's
-`automation/ansible/roles/infrastructure/vars/dokploy_template_catalog.yml`.
-Run the generator from `catenahq/ops`:
+machine-generated from the app template catalog (`source/catalog.yml`
+in the catenahq/dokploy-templates repo), read by the generator in
+catenahq/ops. Run the generator from `catenahq/ops`:
 
 ```bash
 uv run python automation/operator-tools/generate-template-docs.py

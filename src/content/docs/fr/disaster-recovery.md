@@ -99,8 +99,8 @@ votre VPS :
   [login.tailscale.com](https://login.tailscale.com/admin/settings/oauth)
 - **Jeton API Cloudflare** -- régénérez à
   [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
-- **Clé API Dokploy** -- régénérez dans l'interface Dokploy
-  (Paramètres -> Profil -> Clés API)
+- **Clé API Portainer** -- régénérez dans l'interface Portainer
+  (Mon compte -> Jetons d'accès)
 
 Le fichier exporté les liste comme des valeurs à remplacer clairement
 marquées, pour que vous sachiez qu'il faut les régénérer.
@@ -119,7 +119,7 @@ marquées, pour que vous sachiez qu'il faut les régénérer.
 | **Jeton API Cloudflare (régénéré par accident)** | Votre tunnel continue à tourner. Les applis publiques restent en ligne. **Fonctionnalité seulement**, pas la sauvegarde. | Générez un nouveau jeton API à [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens), puis **contactez votre opérateur** avec celui-ci -- il installe le nouveau jeton et confirme que le tunnel continue de prendre en compte les changements DNS après rotation. Les applis restent joignables pendant que vous attendez. |
 | **Jeton de tunnel Cloudflare (régénéré ou fuité)** | Le tunnel existant continue à tourner jusqu'à la prochaine reconnexion de cloudflared, puis tombe. Les applis publiques sont coupées jusqu'à la fin de la rotation. **Fonctionnalité**, pas la sauvegarde. | Plus perturbant que le jeton API : le trafic public s'arrête quand cloudflared ne peut plus s'authentifier. **Contactez votre opérateur immédiatement** pour qu'il génère et installe le remplacement. Trouvez le jeton sous [dash.cloudflare.com](https://dash.cloudflare.com) -> votre zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> cliquez sur votre tunnel -> **Configure** -> afficher/régénérer le jeton. **PAS** dans la page "API Tokens". Comptez 5 à 15 minutes d'arrêt des applis publiques pendant l'installation. |
 | **Client OAuth Tailscale (régénéré par accident)** | L'accès du serveur au tailnet continue à fonctionner. Le SSH distant reste actif. | Générez un nouveau client OAuth, puis **contactez votre opérateur** avec les identifiants pour la mise en place. |
-| **Clé API Dokploy (régénérée par accident)** | Toutes vos applis continuent à tourner | Générez une nouvelle clé dans l'interface Dokploy, puis **contactez votre opérateur** avec celle-ci. |
+| **Clé API Portainer (régénérée par accident)** | Toutes vos applis continuent à tourner | Générez une nouvelle clé dans l'interface Portainer, puis **contactez votre opérateur** avec celle-ci. |
 | **Compte Cloudflare résilié** | Serveur, applis (en interne), données | Créez un nouveau compte Cloudflare, pointez votre domaine dessus, relancez la configuration de l'opérateur ; vos applis subissent un temps d'arrêt uniquement pendant la propagation DNS |
 | **Compte Tailscale résilié** | Serveur, applis, voie publique (Tunnel CF) | Passez à une autre méthode d'accès admin ; Tailscale n'est que la "porte dérobée d'administration", pas une partie du chemin de service public |
 | **Votre fournisseur VPS fait faillite / ferme** | Votre compartiment de sauvegarde S3 (entreprise différente) | [Restaurer sur un nouveau VPS](/fr/self-restore/) chez un autre fournisseur à partir de la sauvegarde |

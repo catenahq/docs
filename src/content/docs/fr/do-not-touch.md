@@ -11,7 +11,7 @@ autre chemin prévu pour cela.
 
 Ne modifiez pas à la main :
 
-- `/etc/dokploy/traefik/dynamic/*.yml` -- géré par `dashboard-sync`
+- `/etc/catena/traefik/dynamic/*.yml` -- géré par `dashboard-sync`
 - `/etc/catena/backup.env` -- géré par l'automatisation de votre
   opérateur
 - `/etc/catena/restic.pass` -- géré par l'automatisation de votre
@@ -28,7 +28,7 @@ lecture seule.
 
 Ce que vous POUVEZ modifier sans permission préalable :
 
-- Les applications déployées via l'interface de Dokploy (elles vous
+- Les applications déployées via l'interface de Portainer (elles vous
   appartiennent).
 - Vos utilisateurs et groupes Keycloak (c'est le propre du libre-service).
 - Tout ce qui se trouve dans `/home/<vos-utilisateurs>/` (l'opérateur

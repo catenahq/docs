@@ -30,8 +30,8 @@ do.
 | **Tailscale** | Your operator's private back door. A mesh network only authorised machines are on -- it's how the operator reaches `your VPS` to run updates and investigate issues. Public SSH is closed, so without Tailscale (or Cloudflare, for staff traffic) nothing reaches the VPS. You stay in control: Tailscale can be disabled or removed by you at any time from your VPS provider's console (or physically, for on-premises hardware). If you don't know how, you shouldn't. |
 | **Traefik** | The switchboard. Reads the URL in each request and routes it to the right application. |
 | **Keycloak** | Your identity server. Handles sign-in, password resets, and team-based access control. The only login page your users ever see. |
-| **Dokploy** | The deployment panel. Where new apps are installed and updated. You can watch logs here. |
-| **Apps (yours)** | Whatever you've deployed through Dokploy -- one container per app, running on a private Docker network. |
+| **Portainer** | The deployment panel. Where new apps are installed and updated. You can watch logs here. |
+| **Apps (yours)** | Whatever you've deployed through Portainer -- one container per app, running on a private Docker network. |
 | **Gatus** | The health monitor. Probes every service every minute from two angles: internally (is the container up?) and externally (is the whole path from Cloudflare to the app still working?). |
 | **Healthchecks** | The notification hub. Every alert from Gatus (services down) and the backup engine (missed nightly snapshot) lands here, and you wire it to the channels you want -- email, Slack, Discord, ntfy, and ~30 others. See [How alerts reach you](#how-alerts-reach-you). |
 | **Homepage** | The dashboard you're probably used to. Collects links and status into one page. |
@@ -163,7 +163,7 @@ tag is pinned in the app's configuration:
 | Floating          | `nginx:latest`       | No. Unsafe to touch unsupervised. |
 
 For apps on a full version pin, each service can optionally tag a
-policy in its Dokploy compose:
+policy in its compose:
 
 - `vps.auto-update=patch` *(default)* -- accept bug-fix releases only
   (e.g., 2.12.3 -> 2.12.4).
@@ -207,7 +207,7 @@ backup engine. Your day-to-day surface is:
 
 - **Keycloak** -- add or remove staff, reset passwords, assign people
   to teams (see [Add / remove users](/en/how-to-add-users/)).
-- **Dokploy** -- deploy new apps with access-control labels (see
+- **Portainer** -- deploy new apps with access-control labels (see
   [Deploy apps](/en/how-to-deploy-apps/)).
 - **Homepage** -- glance at service health and pinned links.
 - **Healthchecks** -- add the notification channels you want alerts on

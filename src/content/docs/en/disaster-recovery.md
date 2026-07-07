@@ -90,8 +90,8 @@ companies' admin consoles, not on your VPS:
   [login.tailscale.com](https://login.tailscale.com/admin/settings/oauth)
 - **Cloudflare API token** -- regenerate at
   [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
-- **Dokploy API key** -- regenerate in the Dokploy UI
-  (Settings -> Profile -> API Keys)
+- **Portainer API key** -- regenerate in the Portainer UI
+  (My account -> Access tokens)
 
 The exported file lists these as clearly-marked placeholders so you
 know to re-mint them.
@@ -110,7 +110,7 @@ know to re-mint them.
 | **Cloudflare API token (accidentally rotated)** | Your tunnel keeps running. Public apps stay up. **Functionality only**, not backup. | Generate a new API token at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens), then **contact your operator** with it -- they install the new token and confirm the tunnel still picks up DNS changes after rotation. Apps stay reachable while you wait. |
 | **Cloudflare tunnel token (rotated or leaked)** | Existing tunnel keeps running until cloudflared next reconnects, then drops. Public apps go dark until rotation completes. **Functionality**, not backup. | This is more disruptive than the API token: public traffic stops when cloudflared can't reauthenticate. **Contact your operator immediately** so they can mint and install the replacement. Find the token under [dash.cloudflare.com](https://dash.cloudflare.com) -> your zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> click your tunnel -> **Configure** -> reveal/rotate token. NOT in the "API Tokens" page. Expect 5-15 minutes of public-app downtime during install. |
 | **Tailscale OAuth client (accidentally rotated)** | Your server's tailnet access keeps working. Remote SSH stays up. | Generate a new OAuth client, update your secret file |
-| **Dokploy API key (accidentally rotated)** | All your apps keep running | Generate a new key in Dokploy UI, update your secret file |
+| **Portainer API key (accidentally rotated)** | All your apps keep running | Generate a new key in the Portainer UI, update your secret file |
 | **Cloudflare account terminated** | Your server, your apps (internally), your data | Create a new Cloudflare account, point your domain to it, re-run operator setup; your apps experience downtime only during DNS propagation |
 | **Tailscale account terminated** | Your server, your apps, your public path (CF Tunnel) | Switch to a different ops-access method; Tailscale's only the "admin back door," not part of the public serving path |
 | **Your VPS provider goes bankrupt / shuts down** | Your S3 backup bucket (different company) | [Restore to a fresh VPS](/en/self-restore/) at a different provider using the backup |

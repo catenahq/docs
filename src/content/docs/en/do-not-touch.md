@@ -10,7 +10,7 @@ a flag or a different path for it.
 
 Don't hand-edit these:
 
-- `/etc/dokploy/traefik/dynamic/*.yml` -- managed by `dashboard-sync`
+- `/etc/catena/traefik/dynamic/*.yml` -- managed by `dashboard-sync`
 - `/etc/catena/backup.env` -- managed by your operator's automation
 - `/etc/catena/restic.pass` -- managed by your operator's automation
 - `/etc/systemd/system/catena-*.{service,timer}` -- managed by your
@@ -24,6 +24,6 @@ machine-rendered, treat it as read-only.
 
 What you CAN touch without asking:
 
-- Apps deployed through Dokploy's UI (those are yours)
+- Apps deployed through Portainer's UI (those are yours)
 - Your Keycloak users/groups (that's the point of self-service SSO)
 - Anything in `/home/<your-users>/` (the operator doesn't touch home dirs)

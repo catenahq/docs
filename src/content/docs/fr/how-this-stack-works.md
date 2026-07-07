@@ -31,8 +31,8 @@ avant vous.
 | **Tailscale** | La porte arrière privée de votre opérateur. Un réseau maillé réservé aux machines autorisées -- c'est par là que l'opérateur rejoint `your VPS` pour les mises à jour et les enquêtes. SSH public est fermé ; sans Tailscale (ou Cloudflare, pour le trafic du personnel), rien n'atteint le VPS. Vous gardez le contrôle : Tailscale peut être désactivé ou retiré par vous à tout moment depuis la console de votre fournisseur VPS (ou physiquement, pour du matériel sur site). Si vous ne savez pas comment faire, vous ne devriez pas. |
 | **Traefik** | Le standard téléphonique. Lit l'URL de chaque requête et l'oriente vers la bonne application. |
 | **Keycloak** | Votre serveur d'identité. Gère la connexion, les réinitialisations de mot de passe et le contrôle d'accès par équipe. La seule page de connexion que vos utilisateurs verront. |
-| **Dokploy** | Le panneau de déploiement. Là où les nouvelles applications sont installées et mises à jour. Vous pouvez consulter les journaux ici. |
-| **Vos applications** | Tout ce que vous avez déployé via Dokploy -- un conteneur par application, tournant sur un réseau Docker privé. |
+| **Portainer** | Le panneau de déploiement. Là où les nouvelles applications sont installées et mises à jour. Vous pouvez consulter les journaux ici. |
+| **Vos applications** | Tout ce que vous avez déployé via Portainer -- un conteneur par application, tournant sur un réseau Docker privé. |
 | **Gatus** | Le moniteur de santé. Teste chaque service toutes les minutes sous deux angles : à l'interne (le conteneur répond-il ?) et à l'externe (le chemin complet de Cloudflare à l'application fonctionne-t-il ?). |
 | **Healthchecks** | Le centre de notifications. Toutes les alertes de Gatus (services en panne) et du moteur de sauvegarde (image nocturne manquée) arrivent ici, et vous les branchez aux canaux que vous voulez -- courriel, Slack, Discord, ntfy, et une trentaine d'autres. Voir [Comment les alertes vous parviennent](#comment-les-alertes-vous-parviennent). |
 | **Homepage** | Le tableau de bord. Rassemble les liens et les statuts sur une seule page. |
@@ -175,7 +175,7 @@ de l'application :
 
 Pour les applications épinglées à une version complète, chaque
 service peut optionnellement étiqueter une politique dans son
-fichier compose Dokploy :
+fichier compose :
 
 - `vps.auto-update=patch` *(défaut)* -- accepte uniquement les
   correctifs (p. ex. 2.12.3 -> 2.12.4).
@@ -222,7 +222,7 @@ de sauvegarde. Votre surface d'interaction quotidienne est :
 - **Keycloak** -- ajouter ou retirer du personnel, réinitialiser des
   mots de passe, assigner les personnes aux équipes (voir
   [Ajouter / retirer des utilisateurs](/fr/how-to-add-users/)).
-- **Dokploy** -- déployer de nouvelles applications avec des étiquettes
+- **Portainer** -- déployer de nouvelles applications avec des étiquettes
   de contrôle d'accès (voir
   [Déployer des applications](/fr/how-to-deploy-apps/)).
 - **Homepage** -- coup d'œil rapide sur la santé des services et les

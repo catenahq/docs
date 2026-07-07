@@ -14,7 +14,7 @@ passe par l'opérateur.
   passe, l'enrôlement MFA, et l'appartenance aux groupes pour l'accès
   par département.
 - **Déployer de nouvelles applications du catalogue éprouvé :**
-  interface Dokploy (`admin.yourdomain.com`). Choisissez un modèle,
+  interface Portainer (`portainer.yourdomain.com`). Choisissez un modèle,
   réglez le label de groupe par département, déployez. Le SSO est
   branché automatiquement.
 - **Vérifier la santé des services :** Gatus
@@ -32,13 +32,13 @@ passe par l'opérateur.
 
 ## Passez par l'opérateur
 
-- Mises à niveau majeures de Keycloak, Dokploy ou Postgres.
+- Mises à niveau majeures de Keycloak, Portainer ou Postgres.
 - Changements à la topologie Cloudflare Tunnel ou DNS.
 - Restauration à partir d'une sauvegarde (destructif ; exige le VPS
   en état suspendu).
 - Migration vers un autre fournisseur de VPS.
 - Ajout d'un modèle personnalisé (hors catalogue éprouvé), ou tout
-  ce qui sort du catalogue Dokploy.
+  ce qui sort du catalogue d'applications.
 - Toute opération qui demande SSH ou sudo.
 
 Si vous n'êtes pas certain de quel côté de la ligne tombe une tâche,

@@ -11,8 +11,8 @@ Anything that requires SSH + sudo goes through the operator.
 - **Add / remove staff accounts:** Keycloak UI
   (`auth.yourdomain.com`). Includes password resets, MFA enrollment,
   and group membership for per-department app access.
-- **Deploy new apps from the vetted catalog:** Dokploy UI
-  (`admin.yourdomain.com`). Pick a template, set the per-department
+- **Deploy new apps from the vetted catalog:** Portainer UI
+  (`portainer.yourdomain.com`). Pick a template, set the per-department
   group label, deploy. SSO is wired automatically.
 - **Check service health:** Gatus (`monitor.yourdomain.com`) for the
   external probe view, Homepage (`dash.yourdomain.com`) for the
@@ -26,13 +26,13 @@ Anything that requires SSH + sudo goes through the operator.
 
 ## Ask the operator
 
-- Upgrading Keycloak / Dokploy / Postgres major versions.
+- Upgrading Keycloak / Portainer / Postgres major versions.
 - Changing the Cloudflare Tunnel or DNS topology.
 - Restoring from backup (destructive; must be done with the VPS in a
   quiesced state).
 - Migrating to a different VPS provider.
 - Adding a custom (non-vetted) template, or anything outside the
-  Dokploy catalog.
+  app catalog.
 - Anything that needs SSH or sudo.
 
 If you are not sure which side of the line a task falls on, ask

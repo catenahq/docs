@@ -298,7 +298,7 @@ contrôlez.
 
 - Vérifiez que le contenu du fichier ressemble à un vrai fichier de
   secrets (vous verrez des entrées comme
-  `vault_dokploy_postgres_password: "..."`).
+  `vault_catena_postgres_password: "..."`).
 - Supprimez `vault-test.yml` quand vous avez terminé.
 
 Si quelque chose ne fonctionne pas -- mauvaise phrase de passe,

@@ -261,7 +261,7 @@ work end-to-end" dry run:
       same command line as macOS / Linux above.
 
 - Verify that the file contents look like a real secret file (you'll
-  see entries like `vault_dokploy_postgres_password: "..."`).
+  see entries like `vault_catena_postgres_password: "..."`).
 - Delete `vault-test.yml` when you're done.
 
 If anything about this doesn't work -- wrong passphrase, corrupted

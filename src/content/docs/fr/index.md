@@ -56,7 +56,7 @@ sous votre zone. Votre portail affiche les valeurs réelles pour
 | Service | Sous-domaine |
 |---|---|
 | Keycloak (identité + SSO) | `auth.yourdomain.com` |
-| Dokploy (déploiement d'applications) | `admin.yourdomain.com` |
+| Portainer (déploiement d'applications) | `portainer.yourdomain.com` |
 | Gatus (santé des services) | `monitor.yourdomain.com` |
 | Homepage (tableau de bord) | `dash.yourdomain.com` |
 | OliveTin (actions à un clic) | `actions.yourdomain.com` |
