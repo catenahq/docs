@@ -7,14 +7,13 @@ import { fileURLToPath } from "node:url";
 //
 // Content lives under src/content/docs/en/ (EN) and
 // src/content/docs/fr/ (FR). Every locale is prefixed (/en/, /fr/); a
-// bare / request is language-detected by nginx (Accept-Language + lang
-// cookie) with src/pages/index.astro as the dev/preview fallback.
-// Starlight handles the sidebar nav + EN/FR routing automatically.
+// bare / request lands on src/pages/index.astro, which redirects by
+// browser language. Starlight handles the sidebar nav + EN/FR routing
+// automatically.
 //
 // Deployment: standalone Astro build (`npm run build` -> `dist/`)
-// served by nginx via Dockerfile + dokploy.compose.yml at the root
-// of its own subdomain. No chained-build coupling with the marketing
-// site.
+// published to GitHub Pages by .github/workflows/deploy-pages.yml on
+// push to main. No chained-build coupling with the marketing site.
 export default defineConfig({
   site: "https://docs.catena.run",
   trailingSlash: "ignore",

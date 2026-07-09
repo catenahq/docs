@@ -3,8 +3,8 @@
 Astro + Starlight client wiki for the catena stack. Public-facing
 docs (EN + FR), served at `docs.catena.run`.
 
-Standalone build (`npm run build` -> `dist/`); Dockerfile +
-`dokploy.compose.yml` ship it as its own Portainer stack behind nginx.
+Standalone build (`npm run build` -> `dist/`); deployed to GitHub
+Pages via `.github/workflows/deploy-pages.yml` on push to `main`.
 No chained-build coupling with the marketing site.
 
 ## Develop
@@ -18,10 +18,9 @@ npm run check     # astro check + starlight-links-validator
 
 ## Adding a page
 
-1. Create the FR file (default locale, no prefix):
-   `src/content/docs/<slug>.md`.
-2. Create the EN mirror under `en/`:
-   `src/content/docs/en/<slug>.md`.
+1. Create the EN file: `src/content/docs/en/<slug>.md`.
+2. Create the FR mirror: `src/content/docs/fr/<slug>.md`. Both
+   locales in the same commit (parity rule).
 3. If the page belongs to a sidebar nav group, add the slug to
    `astro.config.mjs::sidebar` under the matching group. Pages under
    `apps/` are auto-generated from the directory.
@@ -32,7 +31,7 @@ npm run check     # astro check + starlight-links-validator
 
 The per-template pages under `src/content/docs/apps/` are
 machine-generated from the app template catalog (`source/catalog.yml`
-in the catenahq/dokploy-templates repo), read by the generator in
+in the catenahq/catena-templates repo), read by the generator in
 catenahq/ops. Run the generator from `catenahq/ops`:
 
 ```bash
