@@ -59,22 +59,23 @@ Les données du quotidien qui font fonctionner vos applications :
 Chaque nuit, tout ce qui se trouve dans la section précédente (plus
 les fichiers système du VPS comme les clés d'hôte SSH et la
 configuration du pare-feu) est chiffré et téléversé vers **votre**
-compartiment S3 -- pas celui de l'opérateur. Vous possédez le
+compartiment S3 -- pas le nôtre. Vous possédez le
 compartiment, vous payez la facture, vous contrôlez la rétention.
 
 Rétention par défaut : 7 quotidiennes, 4 hebdomadaires, 6 mensuelles.
 Tout ce qui est plus ancien expire automatiquement.
 
-Le compartiment est chiffré de bout en bout avec le **mot de passe
-restic** que votre opérateur vous a remis à la remise (voir
+Le compartiment est chiffré de bout en bout avec votre **mot de passe
+de chiffrement de la sauvegarde** -- l'un des trois éléments de votre
+jeu de clés de récupération (voir
 [Prévention des sinistres](/fr/disaster-prevention/)). Sans ce mot de
 passe, le compartiment est du texte chiffré illisible -- même pour
-l'opérateur. Avec lui, vous pouvez restaurer chez n'importe quel
+nous. Avec lui, votre serveur peut être reconstruit sur n'importe quel
 nuage, n'importe quand.
 
 ## Dans votre compartiment Nextcloud-S3 (si applicable)
 
-Si votre opérateur a déployé Nextcloud avec stockage primaire S3
+Si votre Nextcloud a été déployé avec stockage primaire S3
 (la formule "gros fichiers", normalement utilisée quand vous
 allez stocker plus de ~20 Go), le **contenu réel des fichiers que
 vos utilisateurs téléversent dans Nextcloud ne vit pas dans
@@ -113,10 +114,10 @@ place.
 
 | Ce qui arrive | Ce qui est perdu | Ce qui est déjà en place | Ce que vous pouvez faire |
 |---|---|---|---|
-| Votre compartiment Nextcloud-S3 a une panne fournisseur de plusieurs jours | Lecture/écriture de fichiers (le VPS va bien ; seules les ouvertures/téléversements échouent) | L'opérateur peut vérifier que le problème est au niveau du compartiment via son monitoring | Patientez -- les fichiers reviendront quand le fournisseur se rétablira ; prévenez votre équipe que les téléversements sont en pause |
-| Identifiants du compartiment fuités, un attaquant écrit/supprime des objets | Une partie ou l'ensemble des fichiers du compartiment | Versionnage des objets + règle de rétention de 30 jours sur le compartiment : les objets supprimés sont récupérables pendant 30 jours | Contactez votre opérateur immédiatement ; il fait tourner les identifiants et restaure les objets affectés |
-| Vous supprimez par accident le compartiment depuis la console du fournisseur | Tout ce qui est dans le compartiment une fois la période de grâce du fournisseur écoulée | La plupart des fournisseurs ont une période de grâce au niveau du compte de 7 à 90 jours | Contactez le support du fournisseur immédiatement pour récupérer le compartiment dans la fenêtre de grâce ; contactez votre opérateur |
-| La base Nextcloud (sur le VPS) est restaurée depuis la sauvegarde d'hier mais le compartiment a les écritures d'aujourd'hui | Les nouveaux fichiers ajoutés aujourd'hui apparaissent comme orphelins dans le compartiment | `occ files:scan` de Nextcloud reconstruit la correspondance base->fichier à partir de ce qui est dans le compartiment | Demandez à votre opérateur de lancer un scan des fichiers après la restauration ; il s'occupe de la partie technique |
+| Votre compartiment Nextcloud-S3 a une panne fournisseur de plusieurs jours | Lecture/écriture de fichiers (le serveur va bien ; seules les ouvertures/téléversements échouent) | Nous pouvons vérifier que le problème est au niveau du compartiment via notre monitoring | Patientez -- les fichiers reviendront quand le fournisseur se rétablira ; prévenez votre équipe que les téléversements sont en pause |
+| Identifiants du compartiment fuités, un attaquant écrit/supprime des objets | Une partie ou l'ensemble des fichiers du compartiment | Versionnage des objets + règle de rétention de 30 jours sur le compartiment : les objets supprimés sont récupérables pendant 30 jours | Communiquez avec nous immédiatement ; nous faisons tourner les identifiants et restaurons les objets affectés |
+| Vous supprimez par accident le compartiment depuis la console du fournisseur | Tout ce qui est dans le compartiment une fois la période de grâce du fournisseur écoulée | La plupart des fournisseurs ont une période de grâce au niveau du compte de 7 à 90 jours | Contactez le support du fournisseur immédiatement pour récupérer le compartiment dans la fenêtre de grâce ; communiquez avec nous |
+| La base Nextcloud (sur le serveur) est restaurée depuis la sauvegarde d'hier mais le compartiment a les écritures d'aujourd'hui | Les nouveaux fichiers ajoutés aujourd'hui apparaissent comme orphelins dans le compartiment | `occ files:scan` de Nextcloud reconstruit la correspondance base->fichier à partir de ce qui est dans le compartiment | Demandez-nous de lancer un scan des fichiers après la restauration ; nous nous occupons de la partie technique |
 | Le fournisseur résilie votre compte | Tout ce qui est dans ce compartiment | Seul un second compartiment de sauvegarde chez un autre fournisseur vous protège ici | Si vous avez configuré un [second compartiment de sauvegarde](/fr/disaster-prevention/#5-optionnel--ajoutez-un-second-compartiment-de-sauvegarde-dont-vous-êtes-propriétaire), vous êtes couvert. Sinon -- c'est le pire cas |
 
 À retenir : le compartiment Nextcloud-S3 est indépendant du VPS, ce
@@ -137,9 +138,9 @@ de tiers plutôt que sur votre VPS :
 - **Configuration du tunnel Cloudflare** -- chez Cloudflare, dans
   votre compte CF.
 - **Tenant Tailscale + règles ACL** -- chez Tailscale, dans le
-  compte Tailscale de votre opérateur (l'opérateur le possède pour
-  la porte dérobée d'administration permanente -- voir
-  [Comment fonctionne cette suite logicielle](/fr/how-this-stack-works/)).
+  compte Tailscale que nous gérons pour la porte dérobée
+  d'administration permanente -- voir
+  [Comment fonctionne cette suite logicielle](/fr/how-this-stack-works/).
 - **Compte du fournisseur SMTP** -- chez votre fournisseur d'e-mails
   transactionnels (Resend / Brevo / etc.) -- contrôle qui peut
   envoyer du courrier "depuis" votre domaine.
@@ -183,5 +184,5 @@ Pire scénario : destruction physique du VPS, sans avertissement.
 - **Rien d'autre.** Restic + (facultatif) Nextcloud-S3 +
   Cloudflare + Tailscale portent le reste.
 
-La page [Restaurer sur un nouveau VPS](/fr/self-restore/) couvre à
-quoi "revenir" ressemble en pratique.
+La page [Reconstruire votre serveur à partir de la sauvegarde](/fr/self-restore/)
+couvre à quoi "revenir" ressemble en pratique.

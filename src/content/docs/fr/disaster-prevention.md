@@ -16,65 +16,66 @@ quoi la prévention vous protège.
 
 > Cette page est écrite pour des lectrices et lecteurs non
 > techniques -- propriétaires, gestionnaires, personnel de bureau.
-> Aucune commande terminal n'est requise hors de l'étape facultative
-> "tester une fois". Les pages compagnes
+> Aucune commande terminal n'est requise. Les pages compagnes
 > [Reprise après sinistre](/fr/disaster-recovery/) et
-> [Restaurer sur un nouveau VPS](/fr/self-restore/) supposent un peu
-> plus d'aisance technique et descendent en ligne de commande.
+> [Reconstruire votre serveur à partir de la sauvegarde](/fr/self-restore/)
+> associent chaque incident à sa voie de récupération.
 
 ## Le principe : deux voies indépendantes, deux sauvegardes indépendantes
 
 Votre infrastructure est conçue de telle sorte que la **voie
 publique** (Tunnel Cloudflare -> vos applis) et la **voie
 d'administration** (Tailscale -> SSH) sont indépendantes l'une de
-l'autre. Casser l'une ne casse pas l'autre. De même, votre **VPS** et
-votre **compartiment de sauvegarde** devraient être chez des
+l'autre. Casser l'une ne casse pas l'autre. De même, votre **serveur**
+et votre **compartiment de sauvegarde** devraient être chez des
 entreprises différentes, de sorte qu'une seule panne de fournisseur
 ne peut pas faire tomber les deux. (C'est une étape ponctuelle de la
-prise en main -- vérifiez avec votre opérateur que c'est en place si
-vous n'êtes pas certain.) La prévention consiste surtout à **ne pas
+prise en main -- confirmez avec nous que c'est en place si vous
+n'êtes pas certain.) La prévention consiste surtout à **ne pas
 faire s'effondrer ces indépendances**.
 
 ## Liste de vérification -- à faire à la remise, puis une fois par an
 
-### 1. Sauvegardez les identifiants de récupération que votre opérateur vous a remis
+### 1. Sauvegardez votre jeu de clés de récupération
 
-Lors de la remise, votre opérateur vous a donné un petit kit
-d'identifiants. Le contenu exact dépend de la formule choisie, mais
-chaque kit comprend ces quatre éléments :
+Lors de la remise, nous vous avons donné un petit ensemble
+d'identifiants. Trois d'entre eux composent votre **jeu de clés de
+récupération** -- les seules choses nécessaires pour reconstruire
+votre serveur à partir de la sauvegarde, et les seules qui vivent
+*à l'extérieur* de la sauvegarde chiffrée :
 
-- Le **mot de passe de chiffrement du dépôt restic** -- sans lui,
-  chaque octet du compartiment de sauvegarde est du texte chiffré
-  illisible.
-- La **clé d'accès S3 + clé secrète** qui pointent sur votre
-  compartiment de sauvegarde (une chaîne "access key" + une chaîne
-  "secret", appariées).
-- Une **copie de la clé SSH privée** que l'opérateur utilise pour
-  se connecter à votre VPS -- votre filet de sécurité si l'opérateur
-  devient injoignable.
-- L'**adresse de votre compartiment de sauvegarde** (l'URL ou le
-  "point d'accès" du service S3, plus le nom du compartiment).
+- L'**emplacement du dépôt de sauvegarde** -- l'adresse ("point
+  d'accès") de votre stockage de sauvegarde plus le nom du
+  compartiment (là où vivent vos sauvegardes).
+- Les **clés de stockage** de ce compartiment -- une clé d'accès et
+  une clé secrète, appariées.
+- Le **mot de passe de chiffrement de la sauvegarde** -- sans lui,
+  chaque octet de votre compartiment de sauvegarde est du texte
+  chiffré illisible.
 
-Certains kits incluent aussi un **mot de passe de coffre** (aussi
-appelé "mot de passe maître" dans les anciennes docs). Celui-ci
-n'a d'utilité que si votre opérateur vous a aussi remis le fichier
-de secrets chiffré lui-même -- la plupart des clients n'ont pas ce
-fichier directement, parce que la voie de récupération actuelle
-passe par le bouton [Exporter les clés de récupération](/fr/disaster-recovery/),
-qui vous laisse réexporter à la demande un paquet chiffré protégé
-par une phrase de passe que VOUS choisissez au moment du clic. Si
-votre kit ne contient pas de mot de passe de coffre, vous n'en avez
-pas besoin -- le bouton d'export couvre le scénario.
+Tout le reste -- chaque réglage interne et chaque secret qu'utilisent
+vos applications -- se trouve dans la sauvegarde chiffrée et revient
+automatiquement quand vos données sont restaurées. Il n'y a rien
+d'autre à conserver et rien à ressaisir ; les trois éléments
+ci-dessus suffisent à ramener tout le serveur.
 
-Mettez chaque identifiant dans votre gestionnaire de mots de passe,
-étiqueté clairement ("VPS -- chiffrement sauvegardes", "VPS --
-clé d'accès S3", "VPS -- clé SSH privée", "VPS -- URL du
-compartiment"). **Sauvegardez-les comme entrées séparées** même
-si cela semble redondant -- perdre l'un ou l'autre vous coûte une
-voie de récupération. Le mot de passe restic déchiffre les données,
-les clés S3 vous laissent lire le compartiment, la clé SSH vous
-laisse vous connecter au serveur, et l'URL du compartiment vous dit
-où regarder.
+Un élément de plus vaut la peine d'être conservé aux côtés du jeu de
+clés, même s'il concerne l'*accès* plutôt que la *récupération* :
+
+- Une **copie de la clé SSH privée** utilisée pour se connecter à
+  votre serveur -- votre filet de sécurité si vous avez un jour
+  besoin d'un accès direct et ne pouvez pas nous joindre (voir la
+  section 2).
+
+Mettez chaque élément dans votre gestionnaire de mots de passe,
+étiqueté clairement ("serveur -- chiffrement sauvegarde", "serveur --
+clés de stockage", "serveur -- emplacement sauvegarde", "serveur --
+clé SSH privée"). **Sauvegardez-les comme entrées séparées** même
+si cela semble redondant -- perdre l'un des éléments du jeu de clés
+vous coûte la voie de récupération. Le mot de passe de chiffrement
+déverrouille les données, les clés de stockage permettent à la
+restauration de lire le compartiment, et l'emplacement de la
+sauvegarde indique où regarder.
 
 ### 2. Gardez votre clé SSH privée hors de votre portable
 
@@ -91,81 +92,78 @@ rentre. Quelques façons d'éviter ça :
 
 Choisissez-en une. Faites-le aujourd'hui.
 
-### 3. Vérifiez que votre compartiment de sauvegarde est dans une ville différente de votre VPS
+### 3. Vérifiez que votre compartiment de sauvegarde est dans une ville différente de votre serveur
 
 Un incendie de centre de données (OVH Strasbourg 2021) peut détruire
-chaque machine dans un bâtiment d'un seul coup. Si votre VPS vit à
+chaque machine dans un bâtiment d'un seul coup. Si votre serveur vit à
 Beauharnois, votre compartiment de sauvegarde devrait être à Toronto,
 à Montréal-Ouest, à Francfort ou dans tout autre endroit qui
 survivrait à la même catastrophe locale.
 
 Si vous ne savez pas où se trouve votre compartiment de sauvegarde,
-demandez à votre opérateur. C'est une question ponctuelle avec une
-réponse simple ("eu-west-1" / "us-east-005" / etc.).
+demandez-nous. C'est une question ponctuelle avec une réponse simple
+("eu-west-1" / "us-east-005" / etc.).
 
 ### 4. Confirmez que votre infrastructure a un instantané hebdomadaire dans un compartiment immuable
 
-Si une attaque par rançongiciel atteint votre VPS, l'attaquant a
-accès au même mot de passe restic et aux mêmes clés S3 que la
-sauvegarde nocturne. Avec ça, il pourrait en principe lancer un
-`forget --prune` et supprimer vos sauvegardes historiques avant
+Si une attaque par rançongiciel atteint votre serveur, l'attaquant a
+accès au même mot de passe de chiffrement de la sauvegarde et aux
+mêmes clés de stockage que la sauvegarde nocturne. Avec ça, il
+pourrait en principe supprimer vos sauvegardes historiques avant
 de chiffrer le disque actif -- transformant un incident
 récupérable en perte irréversible.
 
 La défense : votre infrastructure embarque un **miroir
 hebdomadaire** qui copie votre compartiment de sauvegarde actif
 (mutable) vers un compartiment SÉPARÉ avec Object Lock / WORM
-activé. Le compartiment actif reste normal pour que l'élagage
-nocturne de restic fonctionne sans interférence ; le miroir
-hebdomadaire capture l'état du compartiment au moment de la
-synchro et le range là où il ne peut être ni supprimé ni
+activé. Le compartiment actif reste normal pour que l'étape de
+nettoyage de la sauvegarde nocturne fonctionne sans interférence ;
+le miroir hebdomadaire capture l'état du compartiment au moment de
+la synchro et le range là où il ne peut être ni supprimé ni
 écrasé avant l'expiration de la fenêtre de rétention
 (typiquement 30 jours).
 
 Résultat : même si l'attaquant efface tout dans le compartiment
 actif, le miroir de la semaine dernière est toujours dans le
-stockage WORM, récupérable jusqu'à votre dernière bonne
+stockage immuable, récupérable jusqu'à votre dernière bonne
 semaine. La pire fenêtre de perte de données est d'une
 semaine, pas "tout".
 
-Demandez à votre opérateur de confirmer deux choses :
+Demandez-nous de confirmer deux choses :
 
-1. Le miroir WORM hebdomadaire est configuré (le minuteur
-   systemd `catena-restic-mirror.timer` est activé, le
-   compartiment WORM a ses identifiants dans le coffre, et le
-   healthcheck de la dernière semaine a pingé vert).
-2. Le compartiment WORM vit chez un **fournisseur différent**
+1. Le miroir immuable hebdomadaire tourne (la copie de la semaine
+   dernière s'est terminée avec succès).
+2. Le compartiment immuable vit chez un **fournisseur différent**
    de votre compartiment de sauvegarde actif. Si le fournisseur
    du compartiment actif est celui qui est compromis, mettre le
-   WORM au même endroit annule l'effet.
+   miroir au même endroit annule l'effet.
 
 Le miroir tourne une fois par semaine, avant toute fenêtre de
 mise à jour, sur un horaire fixe qui ne dépend pas du fait que
 les mises à jour soient déclenchées cette semaine ou non. Il
-échoue en douceur : un compartiment WORM mal configuré ne peut
+échoue en douceur : un compartiment immuable mal configuré ne peut
 pas bloquer la sauvegarde quotidienne -- le run quotidien ne
 touche que le compartiment actif.
 
 ### 5. Optionnel -- ajoutez un second compartiment de sauvegarde dont vous êtes propriétaire
 
-Le miroir WORM de la section 4 est configuré et exécuté par votre
-opérateur sur un calendrier fixe. Si vous voulez une seconde voie
-de sauvegarde dont **vous** êtes propriétaire -- facturation
-distincte, fournisseur distinct, identifiants entièrement sous
-votre contrôle -- vous pouvez ajouter un second compartiment
-vous-même.
+Le miroir immuable de la section 4 est configuré et exécuté par nous
+sur un calendrier fixe. Si vous voulez une seconde voie de sauvegarde
+dont **vous** êtes propriétaire -- facturation distincte, fournisseur
+distinct, identifiants entièrement sous votre contrôle -- vous pouvez
+ajouter un second compartiment vous-même.
 
-C'est superflu pour la plupart des déploiements (le miroir WORM de
-la section 4 protège déjà contre les rançongiciels et la prise de
-contrôle de compte). À envisager quand :
+C'est superflu pour la plupart des déploiements (le miroir immuable
+géré de la section 4 protège déjà contre les rançongiciels et la
+prise de contrôle de compte). À envisager quand :
 
-- Vous voulez que le mot de passe de chiffrement et les clés S3
-  soient entièrement sous votre contrôle, sans intervention de
-  l'opérateur dans le chemin de récupération.
+- Vous voulez que le mot de passe de chiffrement et les clés de
+  stockage soient entièrement sous votre contrôle, sans intervention
+  de notre part dans le chemin de récupération.
 - Une obligation de conformité ou contractuelle exige une copie
   hors-site explicitement détenue par le client.
 - Vous voulez une redondance géographique au-delà du fournisseur
-  du miroir WORM (par ex. un compartiment au Canada, un dans l'UE,
+  du miroir (par ex. un compartiment au Canada, un dans l'UE,
   un aux États-Unis).
 
 **Choisissez un fournisseur qui prend en charge Object Lock.** Le
@@ -174,7 +172,7 @@ Les snapshots écrits dans un compartiment Object Lock ne peuvent
 pas être supprimés ni écrasés avant la fin de la fenêtre de
 rétention, même par quelqu'un qui détient des identifiants valides
 -- c'est la même ligne de défense sur laquelle s'appuie le miroir
-WORM de la section 4.
+de la section 4.
 
 Quelques options décentes :
 
@@ -194,7 +192,7 @@ Quelques options décentes :
 **Créez le compartiment.** La documentation du fournisseur vous
 guide. État final :
 
-- Un nom de compartiment (par ex. `acme-vps-backup-2`).
+- Un nom de compartiment (par ex. `acme-serveur-backup-2`).
 - Un code de région (par ex. `ca-central-1`).
 - Une URL de point d'accès (par ex. `s3.ca-central-1.amazonaws.com`).
 - Une clé d'accès + secrète limitée à l'écriture dans ce
@@ -213,126 +211,89 @@ peut pas être activé rétroactivement chez la plupart des
 fournisseurs.
 
 Assurez-vous que le compartiment est dans une autre ville -- et
-idéalement un autre pays -- que votre VPS et votre compartiment de
-sauvegarde principal.
+idéalement un autre pays -- que votre serveur et votre compartiment
+de sauvegarde principal.
 
-**Transmettez les identifiants à votre opérateur** via le canal
-chiffré que vous utilisez d'habitude (ne les collez pas dans un
-courriel ou un Slack en clair). Votre opérateur intègre le second
-compartiment au calendrier de sauvegarde et confirme que la
-prochaine exécution y écrit bien.
+**Transmettez-nous les identifiants** via le canal chiffré que vous
+utilisez d'habitude (ne les collez pas dans un courriel ou un Slack
+en clair). Nous intégrons le second compartiment au calendrier de
+sauvegarde et confirmons que la prochaine exécution y écrit bien.
 
 **Sauvegardez les identifiants dans votre gestionnaire de mots de
 passe**, à côté de l'entrée du compartiment principal, étiquetée
-clairement. Utilisez le même mot de passe de chiffrement restic que
-pour le principal -- un seul mot de passe ouvrant les deux
-compartiments suffit.
+clairement. Utilisez le même mot de passe de chiffrement de la
+sauvegarde que pour le principal -- un seul mot de passe ouvrant les
+deux compartiments suffit.
 
 **Une fois par an**, confirmez : le second compartiment reçoit
 toujours les snapshots, vos identifiants stockés correspondent à ce
-qui est installé sur le VPS, et le fournisseur n'a pas modifié le
+qui est installé sur le serveur, et le fournisseur n'a pas modifié le
 comportement d'Object Lock ou la tarification d'une façon qui vous
 concerne.
 
-Si vous devez un jour restaurer depuis le compartiment secondaire,
-la page [Restaurer sur un nouveau VPS](/fr/self-restore/) couvre la
-procédure -- c'est la même que pour le principal, juste avec les
-identifiants du secondaire dans les variables d'environnement.
+Si vous devez un jour reconstruire à partir du compartiment
+secondaire, [Reconstruire votre serveur à partir de la sauvegarde](/fr/self-restore/)
+couvre la procédure -- la même voie, avec le jeu de clés du
+compartiment secondaire.
 
-### 6. Utilisez le bouton "Exporter les clés de récupération" de manière proactive
+### 6. Gardez votre jeu de clés de récupération à jour
 
-Sur [actions.yourdomain.com](https://actions.yourdomain.com/),
-dans la section **Ops / divers**, il y a un bouton intitulé
-**"Exporter les clés de récupération (chiffrées)"** (🔐). La plupart
-du temps, il est utilisé quand quelque chose est déjà mal tourné --
-mais il fonctionne aussi comme prévention.
+Une fois par trimestre, prenez deux minutes pour confirmer que votre
+jeu de clés de récupération est toujours complet et exact dans votre
+gestionnaire de mots de passe :
 
-Chaque trimestre :
+- l'emplacement du dépôt de sauvegarde,
+- les clés de stockage, et
+- le mot de passe de chiffrement de la sauvegarde.
 
-1. Cliquez sur le bouton, tapez une phrase de passe solide (votre
-   gestionnaire de mots de passe peut en générer une).
-2. Ouvrez [recovery.yourdomain.com](https://recovery.yourdomain.com/)
-   dans votre navigateur, connectez-vous comme administrateur, et
-   téléchargez le plus récent fichier `secrets-*.yml.gpg` sur votre
-   portable.
-3. Stockez le fichier `.gpg` + la phrase de passe utilisée pour le
-   chiffrer dans votre gestionnaire de mots de passe (joignez le
-   fichier ; sauvegardez la phrase de passe comme une entrée
-   séparée).
+Si l'un d'eux a été régénéré (par vous, ou par nous avec un avis à
+vous), mettez à jour la copie sauvegardée le jour même. Un jeu de
+clés périmé est aussi bon que perdu le jour où vous en avez besoin.
 
-Cela vous donne un **kit de récupération prêt à l'emploi** utilisable
-si vous perdez un jour votre fichier de mot de passe maître. Il vous
-faut toujours la phrase de passe pour le déchiffrer, mais c'est vous
-qui l'avez choisie et qui l'avez sauvegardée à un endroit que vous
-contrôlez.
+### 7. Confirmez votre chemin de récupération une fois
 
-### 7. Testez votre chemin de récupération une fois
+À un moment calme des six premiers mois, assurez-vous que le chemin
+de récupération fonctionne vraiment de bout en bout -- avant d'en
+avoir besoin, pas pendant un incident :
 
-À un moment calme des six premiers mois, faites un essai "est-ce que
-ça fonctionne vraiment" :
+- Vérifiez que les trois éléments du jeu de clés sont sauvegardés
+  dans votre gestionnaire de mots de passe, chacun comme sa propre
+  entrée, et que vous pouvez réellement les ouvrir.
+- Pour l'assurance la plus forte, demandez-nous de faire un essai de
+  restauration : nous reconstruisons votre serveur à partir de votre
+  sauvegarde sur un serveur jetable et confirmons que vos données
+  reviennent. Cela fait de toute façon partie de l'essai de reprise
+  après sinistre que nous faisons régulièrement.
 
-- Choisissez un répertoire jetable sur votre portable.
-- Déchiffrez un des exports proactifs de l'étape 5 -- choisissez la
-  commande qui correspond à votre système :
-
-    - **Linux** (Ubuntu / Debian / Fedora -- `gpg` est préinstallé, ou
-      `sudo apt install gnupg`) :
-
-        ```
-        gpg --pinentry-mode loopback -o vault-test.yml -d secrets-*.yml.gpg
-        ```
-
-    - **macOS** (Homebrew : `brew install gnupg`, puis) :
-
-        ```
-        gpg --pinentry-mode loopback -o vault-test.yml -d secrets-*.yml.gpg
-        ```
-
-    - **Windows** -- installez [Gpg4win](https://www.gpg4win.org/)
-      (l'interface Kleopatra est la voie la plus simple). Ouvrez
-      Kleopatra, glissez-déposez le fichier `.gpg` dans la fenêtre,
-      tapez la phrase de passe que vous avez choisie, Kleopatra écrit
-      le `vault-test.yml` déchiffré à côté. Les utilisateurs avancés
-      peuvent aussi lancer `gpg.exe` depuis PowerShell avec la même
-      ligne de commande que macOS / Linux ci-dessus.
-
-- Vérifiez que le contenu du fichier ressemble à un vrai fichier de
-  secrets (vous verrez des entrées comme
-  `vault_catena_postgres_password: "..."`).
-- Supprimez `vault-test.yml` quand vous avez terminé.
-
-Si quelque chose ne fonctionne pas -- mauvaise phrase de passe,
-fichier corrompu, etc. -- vous voulez le découvrir maintenant, pas
-pendant un incident. Cela vaut 15 minutes de temps tranquille.
+Si quelque chose manque ou que vous n'êtes pas sûr, réglez-le
+maintenant -- cela vaut 15 minutes de temps tranquille.
 
 ## Récapitulatif -- à quoi ressemble "terminé"
 
 Quand la prévention est en place, le vous d'ici trois mois peut
 répondre "oui" à tout cela :
 
-- [ ] Mon mot de passe du dépôt restic est dans mon gestionnaire de
-      mots de passe, clairement étiqueté.
-- [ ] Ma clé d'accès S3 + clé secrète sont dans mon gestionnaire de
-      mots de passe, comme entrée séparée du mot de passe restic.
-- [ ] L'URL/point d'accès et le nom de mon compartiment de
-      sauvegarde sont dans mon gestionnaire de mots de passe, avec
-      les identifiants.
+- [ ] Mon mot de passe de chiffrement de la sauvegarde est dans mon
+      gestionnaire de mots de passe, clairement étiqueté.
+- [ ] Mes clés de stockage (clé d'accès + secrète) sont dans mon
+      gestionnaire de mots de passe, comme entrée séparée du mot de
+      passe de chiffrement.
+- [ ] L'emplacement de ma sauvegarde (point d'accès + nom du
+      compartiment) est dans mon gestionnaire de mots de passe, avec
+      les clés.
 - [ ] J'ai une copie de ma clé SSH privée ailleurs que sur mon
       portable actuel.
-- [ ] (Si mon opérateur m'a remis un mot de passe de coffre, il est
-      dans mon gestionnaire de mots de passe -- entrée séparée. Sinon,
-      je m'appuie sur le bouton **Exporter les clés de
-      récupération**, ce qui est correct.)
 - [ ] Je sais dans quelle ville vit mon compartiment de sauvegarde
-      (et ce n'est pas la même ville que mon VPS).
-- [ ] Mon infrastructure a un miroir WORM hebdomadaire configuré
-      (fournisseur différent du compartiment de sauvegarde actif,
-      dernier run hebdomadaire a pingé vert) -- confirmé avec mon
-      opérateur.
+      (et ce n'est pas la même ville que mon serveur).
+- [ ] Mon infrastructure a un miroir hebdomadaire en compartiment
+      immuable configuré (fournisseur différent du compartiment de
+      sauvegarde actif, dernier run hebdomadaire terminé) -- confirmé
+      avec nous.
 - [ ] J'ai décidé si j'ai besoin d'un second emplacement de
-      sauvegarde -- si oui, mon opérateur l'a configuré.
-- [ ] J'ai cliqué sur le bouton "Exporter les clés de récupération"
-      au moins une fois et la sortie déchiffrée a l'air cohérente.
+      sauvegarde -- si oui, nous l'avons configuré.
+- [ ] J'ai confirmé que mon jeu de clés de récupération est complet
+      dans mon gestionnaire de mots de passe (et, si je voulais
+      l'assurance la plus forte, demandé un essai de restauration).
 
 Si l'un de ces points est "non", travaillez-y cette semaine. La
 page [Reprise après sinistre](/fr/disaster-recovery/) explique ce qu'il

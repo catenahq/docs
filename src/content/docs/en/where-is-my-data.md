@@ -49,21 +49,21 @@ The day-to-day data that makes your apps work:
 
 Every night, everything in the previous section (plus VPS system
 files like SSH host keys and firewall config) is encrypted and
-uploaded to **your** S3 bucket -- not the operator's. You own the
+uploaded to **your** S3 bucket -- not ours. You own the
 bucket, you pay the bill, you control retention.
 
 Default retention: 7 daily, 4 weekly, 6 monthly snapshots. Anything
 older expires automatically.
 
-The bucket is encrypted end-to-end with the **restic password**
-your operator handed you at hand-off (see
+The bucket is encrypted end-to-end with your **backup encryption
+password** -- one of the three items in your recovery keyset (see
 [Disaster prevention](/en/disaster-prevention/)). Without that
-password, the bucket is unreadable ciphertext -- even to the
-operator. With it, you can restore to any cloud, any time.
+password, the bucket is unreadable ciphertext -- even to us. With it,
+your server can be rebuilt on any cloud, any time.
 
 ## In your Nextcloud-S3 bucket (if applicable)
 
-If your operator deployed Nextcloud with S3 primary storage (the
+If your Nextcloud was deployed with S3 primary storage (the
 "big files" pattern, normally used when you'll store more than
 ~20 GB), the **actual file contents your users upload to Nextcloud
 do not live in restic**. They live in a separate S3 bucket that is
@@ -98,10 +98,10 @@ separate "what if" plus the mitigation already in place.
 
 | What happens | What's lost | What's already in place | What you can do |
 |---|---|---|---|
-| Your Nextcloud-S3 bucket has a multi-day provider outage | Read/write of files (the VPS is fine; only file open/upload fails) | Operator can verify the issue is at the bucket level via monitoring | Wait it out -- the files come back when the provider recovers; tell your team uploads are paused |
-| Bucket credentials leaked, attacker writes/deletes objects | Some or all files in the bucket | Object versioning + 30-day retention rule on the bucket means deleted objects are recoverable for 30 days | Contact your operator immediately; they rotate credentials and roll back the affected objects |
-| You accidentally delete the bucket from the provider console | Everything in the bucket once the provider's grace period ends | Most providers have a 7-90 day account-level grace period | Contact provider support immediately to recover the bucket within the grace window; contact your operator |
-| Nextcloud database (on the VPS) is restored from yesterday's backup but bucket has today's writes | New files added today appear as orphans in the bucket | Nextcloud's `occ files:scan` rebuilds the database-to-file mapping from what's in the bucket | Tell your operator to run a file scan after the restore; they handle the technical part |
+| Your Nextcloud-S3 bucket has a multi-day provider outage | Read/write of files (the server is fine; only file open/upload fails) | We can verify the issue is at the bucket level via monitoring | Wait it out -- the files come back when the provider recovers; tell your team uploads are paused |
+| Bucket credentials leaked, attacker writes/deletes objects | Some or all files in the bucket | Object versioning + 30-day retention rule on the bucket means deleted objects are recoverable for 30 days | Get in touch immediately; we rotate credentials and roll back the affected objects |
+| You accidentally delete the bucket from the provider console | Everything in the bucket once the provider's grace period ends | Most providers have a 7-90 day account-level grace period | Contact provider support immediately to recover the bucket within the grace window; get in touch |
+| Nextcloud database (on the server) is restored from yesterday's backup but bucket has today's writes | New files added today appear as orphans in the bucket | Nextcloud's `occ files:scan` rebuilds the database-to-file mapping from what's in the bucket | Ask us to run a file scan after the restore; we handle the technical part |
 | Provider terminates your account | Everything in that bucket | Only a second backup bucket at a different provider protects you here | If you've set up a [second backup bucket](/en/disaster-prevention/#5-optional--add-a-client-owned-second-backup-bucket), you're covered. If not -- this is the worst case |
 
 The takeaway: the Nextcloud-S3 bucket is independent of the VPS,
@@ -119,9 +119,9 @@ on your VPS:
 - **DNS records** -- at Cloudflare, in your DNS account.
 - **Cloudflare tunnel configuration** -- at Cloudflare, in your CF
   account.
-- **Tailscale tenant + ACL rules** -- at Tailscale, in your operator's
-  Tailscale account (the operator owns this for the persistent ops
-  back-door -- see [How this software suite works](/en/how-this-stack-works/)).
+- **Tailscale tenant + ACL rules** -- at Tailscale, in the Tailscale
+  account we manage for the persistent administration back-door
+  -- see [How this software suite works](/en/how-this-stack-works/).
 - **SMTP provider account** -- at your transactional email provider
   (Resend / Brevo / etc.) -- controls who can send mail "from" your
   domain.
@@ -160,5 +160,5 @@ Worst-case scenario: physical destruction of the VPS, no warning.
 - **Nothing else.** Restic + (optional) Nextcloud-S3 + Cloudflare
   + Tailscale carry the rest.
 
-The [Restore to a fresh VPS](/en/self-restore/) page covers what
-"come back" looks like in practice.
+The [Rebuilding your server from backup](/en/self-restore/) page
+covers what "come back" looks like in practice.

@@ -1,320 +1,111 @@
 ---
-title: "Restaurer sur un nouveau VPS (sans l'opérateur)"
-description: "Si votre opérateur n'est pas disponible et que vous devez déplacer votre"
+title: "Reconstruire votre serveur à partir de la sauvegarde"
+description: "Si votre serveur est perdu, il peut être reconstruit à partir de votre sauvegarde avec votre seul jeu de clés de récupération."
 ---
 
-Si votre opérateur n'est pas disponible et que vous devez déplacer votre
-suite logicielle vers un autre VPS, cette page détaille la procédure manuelle, avec
-les mêmes outils qu'utilise votre opérateur. Comptez quelques heures.
-Vos données vous appartiennent -- ceci est la voie de secours.
+Si votre serveur est un jour perdu -- panne matérielle, incident de
+centre de données, effacement accidentel, rançongiciel -- il peut
+être reconstruit à partir de votre sauvegarde nocturne. Vous n'avez
+rien à reconstituer à la main, et vous n'avez à mémoriser aucun des
+réglages internes ni des mots de passe qu'utilisent vos applications.
 
-## Voie rapide -- archive de récupération préchargée (recommandée)
+## La seule chose à conserver : votre jeu de clés de récupération
 
-La récupération la plus rapide est celle où vous n'avez aucun
-identifiant à taper. Votre opérateur peut générer un fichier zip
-unique protégé par mot de passe contenant tout ce qu'il faut pour
-remettre ce VPS en marche : un script prêt à exécuter, tous les
-identifiants de bucket de *ce* VPS, et une copie candidate du
-coffre-fort de secrets. Le zip est chiffré en AES-256, ouvrable par
-n'importe quel système moderne (macOS Finder, Windows Explorer,
-Linux unzip) lorsque vous fournissez le mot de passe.
+Tout ce qu'il faut pour ramener votre serveur tient en trois
+éléments. Conservez-les dans votre gestionnaire de mots de passe,
+chacun comme une entrée distincte et clairement étiquetée :
 
-**Ce que votre opérateur vous remet, hors ligne :**
+- L'**emplacement du dépôt de sauvegarde** -- l'adresse de votre
+  stockage de sauvegarde plus le nom du compartiment (là où vivent
+  vos sauvegardes).
+- Les **clés de stockage** de ce compartiment -- une clé d'accès et
+  une clé secrète, appariées.
+- Votre **mot de passe de chiffrement de la sauvegarde** -- la clé
+  qui déverrouille la sauvegarde chiffrée.
 
-1. L'archive de récupération (téléchargée depuis `recovery.<zone>`
-   après avoir cliqué sur l'action "Générer l'archive de
-   récupération (chiffrée)" -- voir la page
-   [Prévention des sinistres](/fr/disaster-prevention/) pour ce
-   qu'il faut configurer au préalable). Le fichier ressemble à
-   `recovery-<horodatage>.zip`.
-2. Le mot de passe à usage unique de cette archive.
+Voilà tout le jeu de clés. Tant que ces trois éléments survivent
+ailleurs que sur le serveur lui-même, vos données sont récupérables.
 
-**Sur votre poste :**
+## Tout le reste revient de lui-même
 
-Double-cliquez sur le zip. Votre OS demande le mot de passe ;
-tapez-le. Six fichiers apparaissent dans le dossier extrait :
+Votre sauvegarde est chiffrée de bout en bout et contient bien plus
+que vos fichiers. Chaque réglage interne et chaque secret dont
+dépendent vos applications -- mots de passe de base de données,
+configuration de connexion, réglages de messagerie -- se trouve à
+l'intérieur de cette sauvegarde chiffrée. Lorsque vos données sont
+restaurées, tout cela revient automatiquement. Il n'y a rien à
+ressaisir et aucune liste d'identifiants à retaper.
 
-- `README.txt` (anglais) et `LISEZ-MOI.txt` (français) -- ces
-  instructions.
-- `recover.sh` -- le wrapper à lancer sur le nouveau VPS.
-- `restore.sh` -- le script de récupération (aucun accès Internet
-  requis au moment de la reprise ; l'archive est entièrement
-  autonome).
-- `envelope.env` -- les identifiants pour les buckets de *ce* VPS.
-- `vault.recovered.yml` -- copie de référence des secrets
-  récupérables depuis l'hôte vivant, pour votre opérateur si votre
-  coffre principal est aussi perdu. À traiter comme un fichier de
-  mots de passe.
+C'est pourquoi le jeu de clés est court : les trois éléments
+ci-dessus sont les seules choses qui vivent *à l'extérieur* de la
+sauvegarde, donc les seules que vous devez conserver vous-même.
 
-**Sur le nouveau VPS, en root :**
+## Comment se déroule une reconstruction
 
-```
-# scp le dossier extrait sur le nouveau VPS, puis :
-cd catena-recovery   # ou là où vous l'avez extrait
-chmod +x recover.sh restore.sh
-sudo ./recover.sh
-```
+La reconstruction, nous la faisons avec vous, et elle est rapide :
 
-`recover.sh` source `envelope.env` (pour que les identifiants
-soient en portée) puis exécute `restore.sh` de bout en bout :
-préparer l'hôte, vérifier le dépôt restic, restaurer le dernier
-snapshot, installer Dokploy, rejouer les dumps Postgres par
-application, réparer le bucket S3 Nextcloud si nécessaire,
-installer cloudflared, résumé.
+1. Un serveur neuf est préparé.
+2. Votre dernière sauvegarde y est restaurée à l'aide de votre jeu
+   de clés de récupération.
+3. Vos applications reviennent avec leurs données et leurs réglages
+   intacts.
 
-Idempotent en cas d'échec partiel -- relancez-le après avoir
-corrigé le problème, il reprend où il s'est arrêté.
+Votre rôle se résume à avoir gardé votre jeu de clés de récupération
+en sécurité et à joindre votre contact Catena au besoin. Dès que vous
+constatez que le serveur est perdu, communiquez avec nous -- une
+reconstruction à partir de votre sauvegarde est une opération de
+routine, pas un projet spécial.
 
-Si le bucket de sauvegarde "chaud" est injoignable (rare, p. ex.
-le bucket lui-même a été supprimé) et que l'enveloppe contient
-aussi les identifiants du bucket "froid", le script bascule
-automatiquement sur le miroir froid. Si vous utilisez Nextcloud
-avec stockage S3 et que le bucket Nextcloud chaud est vide ou
-manquant, le script recopie le miroir froid vers le bucket chaud
-avant que les utilisateurs Nextcloud ne se reconnectent.
+## Pourquoi chaque partie du jeu de clés compte
 
-Une fois la récupération terminée, supprimez le dossier extrait et
-le zip d'origine de votre poste et du VPS. Les identifiants qu'ils
-contiennent sont sensibles et n'ont besoin d'exister que le temps
-de la reprise.
+La sauvegarde est protégée pour que vous seul (et les personnes à qui
+vous confiez le jeu de clés) puissiez la lire :
 
-## Voie rapide brute -- invites interactives pour les identifiants
+- Le **mot de passe de chiffrement** déverrouille les données.
+- Les **clés de stockage** permettent à la restauration de lire
+  votre compartiment.
+- L'**emplacement du dépôt** indique où chercher.
 
-Si vous avez les identifiants listés à la section suivante mais pas
-de script préchargé, vous pouvez exécuter la version non chiffrée
-qui demande chaque identifiant interactivement. Depuis le nouveau
-VPS, en root :
+Les trois sont requis ensemble. Sans le mot de passe de chiffrement,
+la sauvegarde est du texte chiffré illisible, même pour nous -- c'est
+précisément pour cela que vous le détenez, et pourquoi le perdre est
+le seul cas qui ne peut pas être récupéré.
+[Prévention des sinistres](/fr/disaster-prevention/) détaille comment
+conserver le jeu de clés pour que cela n'arrive jamais.
 
-```
-curl -fsSLo restore.sh https://docs.yourdomain.com/restore.sh
-chmod +x restore.sh
-sudo ./restore.sh
-```
+## Ce qui revient, et ce que vous pourriez perdre
 
-Il déroule les mêmes huit étapes. La bascule sur le bucket froid
-et la réparation du bucket Nextcloud S3 ne tournent que lorsque
-les variables d'environnement correspondantes sont exportées
-avant l'appel (`RESTIC_REPOSITORY_COLD`,
-`AWS_ACCESS_KEY_ID_COLD`, `AWS_SECRET_ACCESS_KEY_COLD`,
-`NEXTCLOUD_S3_HOT_*`, `NEXTCLOUD_S3_COLD_*`).
+Restauré automatiquement depuis la sauvegarde : vos bases de données,
+les réglages de vos applications, les fichiers que la plupart des
+applications stockent localement, et la configuration système
+sous-jacente.
 
-Si vous préférez dérouler les étapes à la main (ou si le script
-trébuche sur quelque chose qu'il ne gère pas proprement), la
-procédure manuelle suit.
+La seule chose à risque est ce qui a changé entre la dernière
+sauvegarde et le moment de la perte du serveur -- de quelques minutes
+à une journée, selon votre calendrier de sauvegarde.
+[Où sont mes données](/fr/where-is-my-data/) explique exactement où
+vit chaque chose, et la page
+[Reprise après sinistre](/fr/disaster-recovery/) associe chaque
+situation "ce qui a cassé" à sa voie de récupération.
 
-## Ce qu'il vous faut avant de commencer
+## Si vous utilisez Nextcloud avec stockage de fichiers S3
 
-- Un nouveau VPS (n'importe quel fournisseur -- OVH, Hetzner,
-  DigitalOcean, AWS). 2 vCPU / 6 Go de RAM / 40 Go de disque
-  correspond au palier de départ et fait tourner la suite de base.
-  Avec plus de services déployés ou sous charge soutenue, passez à
-  4 vCPU / 8 Go de RAM / 80 Go de disque. Les apps lourdes comme
-  ERPNext méritent le palier supérieur à elles seules.
-- Un accès SSH `root` sur ce VPS.
-- Depuis votre gestionnaire de mots de passe ou votre opérateur :
-  - le **mot de passe de chiffrement du dépôt restic**
-  - la **clé d'accès S3** et la **clé secrète S3** du bucket de
-    sauvegarde
-  - l'URL du dépôt restic (format :
-    `s3:s3.<région>.fournisseur.example/<bucket>`)
-- Une aisance avec SSH et le terminal. Ansible n'est pas requis.
-
-## Étape 1 -- Préparer le nouveau VPS
-
-```bash
-ssh root@IP-DU-NOUVEAU-VPS
-apt update && apt upgrade -y
-apt install -y restic curl ca-certificates
-mkdir -p /mnt/data
-```
-
-N'installez pas Docker ici -- l'étape 4 ci-dessous lance l'installeur
-officiel de Dokploy (`curl -sSL https://dokploy.com/install.sh | sh`)
-qui installe la bonne version de Docker, initialise Docker Swarm et
-lance Traefik en une seule fois. Installer Docker en amont mène à une
-configuration discordante que Dokploy doit ensuite combattre.
-
-Si votre jeu de sauvegarde s'attend à un `/mnt/data` sur un volume
-séparé, attachez-en un via la console du fournisseur et montez-le là.
-Sinon un simple répertoire sur la racine suffit.
-
-## Étape 2 -- Configurer les identifiants restic
-
-```bash
-export RESTIC_REPOSITORY='s3:s3.<région>.fournisseur.example/<bucket>'
-export RESTIC_PASSWORD='<mot-de-passe-chiffrement-dépôt>'
-export AWS_ACCESS_KEY_ID='<clé-accès-s3>'
-export AWS_SECRET_ACCESS_KEY='<clé-secrète-s3>'
-```
-
-Vérifiez que le dépôt est joignable :
-
-```bash
-restic snapshots --latest 5
-```
-
-Vous devriez voir la liste des snapshots (un par nuit). Sinon, vérifiez
-que l'URL et le mot de passe correspondent à ceux transmis par
-l'opérateur.
-
-## Étape 3 -- Restaurer le dernier snapshot
-
-```bash
-restic restore latest --target /
-```
-
-restic remet chaque fichier du snapshot à son emplacement d'origine sur
-le nouvel hôte. Comptez 5 à 30 minutes selon la taille et la bande
-passante.
-
-À la fin, votre VPS contient :
-
-- `/etc/dokploy/` -- configuration de Dokploy
-- `/mnt/data/docker/volumes/` -- données persistantes de chaque
-  application (bases Postgres, Redis, téléversements)
-- `/mnt/data/apps/` -- fichiers compose de chaque projet
-- `/mnt/data/backup-staging/pg/` -- dumps SQL nocturnes, un par
-  conteneur Postgres
-- `/etc/ssh`, `/etc/ufw`, `/etc/fstab` -- configuration système
-- `/etc`, `/var/lib/dpkg`, `/usr/local/bin` -- état des paquets et
-  scripts auxiliaires
-
-## Étape 4 -- Installer Dokploy
-
-Suivez les instructions d'installation officielles :
-<https://dokploy.com/docs/core/installation>. En résumé :
-
-```bash
-curl -sSL https://dokploy.com/install.sh | sh
-```
-
-Cela initialise Docker Swarm, déploie Traefik et lance le plan de
-contrôle Dokploy. Le port 3000 expose l'interface admin.
-
-`/etc/dokploy/` et `/mnt/data/docker/volumes/` étant déjà restaurés,
-Dokploy se reconnecte au volume Postgres existant au démarrage.
-
-!!! warning "Mot de passe Postgres"
-    Le script d'installation Dokploy génère un nouveau mot de passe
-    aléatoire pour son Postgres interne. La base restaurée contient
-    l'ancien mot de passe haché. Si la connexion échoue, alignez-les :
-
-    ```bash
-    PG_CTR=$(docker ps --format '{{.Names}}' | grep dokploy-postgres | head -1)
-    NEW_PW=$(docker exec "$PG_CTR" cat /run/secrets/postgres_password)
-    docker exec -u postgres "$PG_CTR" psql -U dokploy -d postgres \
-        -c "ALTER USER dokploy WITH PASSWORD '$NEW_PW';"
-    ```
-
-    (L'automatisation de votre opérateur évite cette étape en
-    pré-positionnant le secret depuis leur coffre.)
-
-## Étape 5 -- Rejouer les dumps Postgres par application
-
-Chaque base applicative est aussi dumpée en SQL chaque nuit et
-restaurée à l'étape 3. Une fois les conteneurs relancés par Dokploy :
-
-```bash
-for dump in /mnt/data/backup-staging/pg/*.sql.gz; do
-    ctr=$(basename "$dump" | sed -E 's/-[0-9]+T[0-9]+Z\.sql\.gz$//')
-    if docker ps --format '{{.Names}}' | grep -Fxq "$ctr"; then
-        echo "Rejoue $dump dans $ctr"
-        zcat "$dump" | docker exec -i "$ctr" psql -U postgres -v ON_ERROR_STOP=0
-    fi
-done
-```
-
-Le volume brut sous `/mnt/data/docker/volumes/` suffit généralement ;
-les dumps SQL sont la solution de repli si le volume est corrompu ou si
-vous migrez entre versions Postgres incompatibles.
-
-## Étape 6 -- Reprovisionner la passerelle publique
-
-L'**identifiant + les identifiants** du tunnel Cloudflare ne sont pas
-inclus dans la sauvegarde restic (ils sont liés à un serveur
-spécifique). À refaire :
-
-1. Dans le tableau de bord Cloudflare, supprimer l'ancien tunnel.
-2. Créer un nouveau tunnel, copier le jeton.
-3. Faire pointer les CNAME DNS (`auth.<zone>`, `apps.<zone>`,
-   `monitor.<zone>`, etc.) vers le nouveau nom public du tunnel.
-4. Installer `cloudflared` sur le nouveau VPS avec le jeton :
-
-    ```bash
-    cloudflared service install <jeton>
-    ```
-
-Si vous préférez le déploiement Swarm utilisé par votre opérateur,
-consultez `/root/README.md` sur le VPS restauré -- la commande exacte y
-figure. À noter : la variante Swarm tourne comme service Docker
-attaché au réseau `dokploy-network` pour atteindre les noms d'hôte
-internes de vos applis ; la commande standalone
-`cloudflared service install <jeton>` ci-dessus tourne comme service
-système et passe par le réseau de l'hôte. Les deux fonctionnent ; la
-version Swarm est celle que l'automatisation de votre opérateur
-reconstruit, à privilégier si vous comptez lui rendre le serveur plus
-tard.
-
-## Étape 7 -- Vérifications
-
-Ouvrez :
-
-- `https://auth.<zone>` -> page de connexion Keycloak ; vos
-  utilisateurs existants doivent fonctionner
-- `https://apps.<zone>` -> tableau Dokploy ; tous les projets compose
-  sont visibles (possiblement "arrêtés" -- cliquez Deploy une fois par
-  projet pour les relancer)
-- `https://<votre-app>.<zone>` -> l'application elle-même
-
-Si les trois chargent, vos données sont bien de retour.
-
-## Si vous utilisez Nextcloud avec stockage S3
-
-Certaines applications qui gèrent beaucoup de fichiers -- Nextcloud en
-est le cas courant -- rangent leurs fichiers dans un bucket S3 séparé,
-pas dans le dépôt restic. Si votre opérateur a déployé Nextcloud de
-cette façon :
-
-- L'archive restic **ne contient pas vos fichiers Nextcloud**. Elle
-  contient le code de l'application, sa configuration et sa base de
-  données, mais les fichiers vivent dans le bucket S3 que
-  l'opérateur a provisionné dans votre compte nuagique.
-- Au démarrage, le conteneur Nextcloud restauré se reconnecte
-  automatiquement au même bucket avec les identifiants enregistrés
-  dans sa configuration -- aucune restauration séparée nécessaire.
-- Si vous avez volontairement fait tourner les clés S3 depuis la
-  sauvegarde, mettez à jour les variables d'environnement Nextcloud
-  dans l'interface Dokploy avant de redéployer, sinon l'application
-  démarrera mais tous les fichiers paraîtront corrompus.
-- Le bucket survit indépendamment du VPS. Si vous souhaitez un jour
-  télécharger tous vos fichiers manuellement, le bucket se lit avec
-  n'importe quel outil compatible S3 (`aws s3 sync`, `rclone`) avec
-  les mêmes identifiants.
-- Si le bucket Nextcloud chaud lui-même n'est plus là (supprimé, ou
-  ses identifiants ont été révoqués), l'archive de récupération
-  chiffrée gère cela automatiquement : lorsque les identifiants
-  côté froid sont présents dans l'enveloppe, le script recopie
-  chaque objet du miroir froid vers un nouveau bucket chaud avant
-  que les utilisateurs ne se reconnectent. La page
-  [Prévention des sinistres](/fr/disaster-prevention/) liste ce que
-  votre opérateur doit activer pour que le miroir froid existe.
-
-## En cas de doute -- rappelez votre opérateur
-
-Cette page existe pour qu'aucune situation ne vous bloque. Mais le
-flux scripté (`./catena restore && ./catena site`) de votre opérateur
-remplace chaque étape ci-dessus par deux commandes, aligne le mot de
-passe Postgres automatiquement, redéploie les composes et
-reprovisionne le tunnel Cloudflare seul. S'il est joignable, son
-automatisation est plus rapide et plus fiable que la procédure manuelle.
+Certaines configurations à forte volumétrie gardent les fichiers
+téléversés dans Nextcloud dans leur propre compartiment de stockage,
+séparé de la sauvegarde. Ce compartiment survit indépendamment du
+serveur : si le serveur est perdu, les fichiers sont toujours dans le
+compartiment, et quand le Nextcloud reconstruit se reconnecte au même
+compartiment, chaque fichier est là.
+[Où sont mes données](/fr/where-is-my-data/) couvre ceci en détail.
 
 ## Garder une copie hors ligne
 
-Si votre VPS est tombé et que vous avez besoin de cette page pour
-le relever, le site de documentation ne vous aidera pas. Enregistrez
-les pages que vous utiliseriez lors d'un sinistre (celle-ci +
-[Reprise après sinistre](/fr/disaster-recovery/) +
-[Où vivent vos données](/fr/where-is-my-data/)) sur votre poste
-avec "Enregistrer sous..." de votre navigateur (ou imprimez-les en
-PDF) à la prise en charge, et rafraîchissez la copie une fois par
+Si votre serveur est tombé et que vous avez besoin de ces
+instructions pour le relever, le site de documentation ne vous aidera
+pas s'il se trouve sur le même chemin. Enregistrez les pages que vous
+utiliseriez lors d'un incident -- celle-ci plus
+[Reprise après sinistre](/fr/disaster-recovery/) et
+[Où sont mes données](/fr/where-is-my-data/) -- sur votre poste avec
+la fonction "Enregistrer sous..." de votre navigateur (ou imprimez-les
+en PDF) à la prise en charge, et rafraîchissez la copie une fois par
 an.

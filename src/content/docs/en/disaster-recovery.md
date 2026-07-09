@@ -7,8 +7,8 @@ Something is already broken and you need to fix it. This page is the
 map of "what can go wrong" + "what still works when it does" + "how to
 get back from each situation." If you're reading this **before** an
 incident, the companion page is [Disaster prevention](/en/disaster-prevention/)
--- that's where the off-laptop backups, off-site bucket, and proactive
-secret exports live.
+-- that's where the off-laptop backups, off-site bucket, and your
+recovery keyset live.
 
 The short version: your software suite is designed so that **no single
 accidental click can lock you out**. It takes a combination of events
@@ -23,111 +23,76 @@ section that walks the recovery in detail.
 
 | Situation | First move | Where to read more |
 |---|---|---|
-| **I deleted a file by accident** (one user, one file/folder) | Try the app's own trash. If empty, contact your operator. | Trash first; if empty, contact your operator. |
-| **I lost my password or my 2FA** (just me) | Self-service password reset; for 2FA, contact your operator. | Self-service reset via the portal; 2FA goes through your operator. |
-| **All admins are locked out at once** (lost email, lost dashboard) | Contact your operator -- they have a separate recovery path that doesn't depend on email or the dashboard. | Out-of-band operator path (not client-side). |
-| **The whole VPS is encrypted by ransomware** | Contact your operator immediately. Recovery is from your last clean backup, before the ransomware reached the disk. | Recovery map below ("Entire VPS disk") |
-| **The VPS itself is compromised by malware / unauthorized access** | Contact your operator. The path is wipe + restore from a pre-compromise snapshot + rotate every secret. Your operator owns this; you receive a status update at each phase. | Recovery map below ("Entire VPS disk") |
-| **VPS provider's datacenter burns down** (or hardware failure) | Contact your operator. They restore your software suite to a fresh VPS at the same or different provider, using the off-site backup bucket. | Recovery map below ("Entire VPS disk") + [Restore to a fresh VPS](/en/self-restore/) |
-| **VPS provider gives 48h notice / suspends the account** | Contact your operator. They migrate you to a new provider on a tight timeline; expect ~30-60 minutes of public-URL downtime during cutover. | Recovery map below ("VPS provider goes bankrupt") |
-| **Backup provider gives 48h notice** | Contact your operator. They re-target backups at a new bucket; existing data on the VPS is unaffected. | Recovery map below ("S3 backup provider goes bankrupt") |
-| **I think someone else has my password / API token** | Don't wait -- contact your operator and rotate the credential. | Recovery map below (per-credential rows) |
+| **I deleted a file by accident** (one user, one file/folder) | Try the app's own trash. If empty, get in touch. | Trash first; if empty, reach your Catena contact. |
+| **I lost my password or my 2FA** (just me) | Self-service password reset; for 2FA, reach your Catena contact. | Self-service reset via the portal; 2FA goes through your Catena contact. |
+| **All admins are locked out at once** (lost email, lost dashboard) | Get in touch -- there is a separate recovery path that doesn't depend on email or the dashboard. | Out-of-band path (not client-side). |
+| **The whole server is encrypted by ransomware** | Get in touch immediately. Recovery is from your last clean backup, before the ransomware reached the disk. | Recovery map below ("Entire server disk") |
+| **The server itself is compromised by malware / unauthorized access** | Get in touch. The path is wipe + rebuild from a pre-compromise backup + rotate every secret. We own this; you receive a status update at each phase. | Recovery map below ("Entire server disk") |
+| **Your provider's datacentre burns down** (or hardware failure) | Get in touch. We rebuild your software suite on a fresh server at the same or a different provider, using the off-site backup. | Recovery map below ("Entire server disk") + [Rebuilding your server from backup](/en/self-restore/) |
+| **Your provider gives 48h notice / suspends the account** | Get in touch. We migrate you to a new provider on a tight timeline; expect ~30-60 minutes of public-URL downtime during cutover. | Recovery map below ("Your provider goes bankrupt") |
+| **Backup provider gives 48h notice** | Get in touch. We re-target backups at a new bucket; existing data on the server is unaffected. | Recovery map below ("Backup provider goes bankrupt") |
+| **I think someone else has my password / API token** | Don't wait -- get in touch and rotate the credential. | Recovery map below (per-credential rows) |
 
 The recovery map below has the full table including infrastructure
 edges (Cloudflare token rotation, Tailscale account, etc.) -- keep
 reading.
 
-## The one button you may need: "Export recovery secrets"
+## If your whole server is lost
 
-On [actions.yourdomain.com](https://actions.yourdomain.com/),
-under the **Ops** section, there's a button labelled **"Export
-recovery secrets (encrypted)"** (🔐). Click it when:
+When the server itself is gone -- destroyed, wiped, or encrypted by
+ransomware -- it is rebuilt from your nightly backup. The only thing
+you need to have kept is your **recovery keyset**:
 
-- You have lost the master password that decrypts your secret file.
-- You can still log into this dashboard.
+- the **backup repository location** (where your backups live),
+- the **storage keys** for that bucket, and
+- your **backup encryption password**.
 
-It will prompt you for a passphrase (type a strong one -- your password
-manager can generate one), reconstruct an encrypted copy of every
-recoverable secret from the live VPS, and drop a file on the server
-that you can download with your browser.
+[Disaster prevention](/en/disaster-prevention/) covers how to store
+those three safely. Everything else -- every internal setting and
+secret your applications use -- is inside the encrypted backup and
+returns automatically with your data; there is nothing to re-enter.
+The [Rebuilding your server from backup](/en/self-restore/) page
+walks through what a rebuild looks like.
 
-**To download the file** -- no SSH or command line needed:
+We run the rebuild with you. Your part is to have kept the keyset
+safe and to get in touch when you need it.
 
-1. Open [recovery.yourdomain.com](https://recovery.yourdomain.com/) in your
-   browser.
-2. Sign in as an administrator (same account you used to click the
-   button above). Non-admin team members see a deny page here, which
-   is intentional -- recovery bundles should only reach people who can
-   already trigger a restore.
-3. Click the newest `secrets-*.yml.gpg` file to save it to your
-   laptop. Decrypt it locally with your passphrase:
-
-    ```
-    gpg --pinentry-mode loopback -o vault-recovered.yml -d secrets-*.yml.gpg
-    ```
-
-The file is useless without the passphrase -- it's safe to leave
-sitting on the VPS for a few days while you handle the rest of your
-recovery.
-
-If your access to the dashboard is also broken, your operator can do
-the same thing remotely using the same tool over SSH.
-
-*The same button can be used before any incident, as a prevention
-step -- see [Disaster prevention](/en/disaster-prevention/).*
-
-## What the button can and cannot recover
-
-Everything that lives in a container's environment or a file on disk
-is recoverable from a running server: database passwords, SSO keys,
-SMTP credentials, backup encryption passwords. Those make up the bulk
-of what you'd need to reassemble your secret file.
-
-Three credentials **cannot** come from the server -- they live in other
-companies' admin consoles, not on your VPS:
-
-- **Tailscale OAuth client** -- regenerate at
-  [login.tailscale.com](https://login.tailscale.com/admin/settings/oauth)
-- **Cloudflare API token** -- regenerate at
-  [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
-- **Portainer API key** -- regenerate in the Portainer UI
-  (My account -> Access tokens)
-
-The exported file lists these as clearly-marked placeholders so you
-know to re-mint them.
+A few credentials do not live on your server at all -- they sit in
+other companies' admin consoles: Cloudflare (DNS + tunnel), Tailscale
+(remote access), and Portainer (container management). If one of
+those is ever lost, you regenerate it in that provider's console and
+we install it. The recovery map below lists each.
 
 ## Recovery map -- what breaks and what to do
 
 | What you lose | What still works | How to recover |
 |---|---|---|
-| **Master password (your laptop is fine)** | Everything -- your server, your apps, your SSH | Click the **Export recovery secrets** button above, save the file, restart your operator's setup with the new file |
-| **Master password AND you locked yourself out of the dashboard** | Your server, your apps, SSH | Your operator runs the same export tool over SSH and sends you the file |
-| **Laptop (with master password on it)** | Your server, your apps, your backups | Your operator has a copy of the master password (if they saved it on hand-off) OR click the recovery button from any browser |
-| **SSH private key** | Your server, your apps, the dashboard | Your operator re-adds a new public key via their own admin path; if they're unavailable, see "Provider rescue mode" below |
-| **Dashboard access (SSO broken, Keycloak down)** | Your apps (their own logins still work), your data | Operator SSHes in to fix; worst case, restart the Keycloak container |
-| **One app's data (you deleted something)** | Everything else | Try the app's own trash first; if empty, contact your operator. |
-| **Entire VPS disk (corruption, accidental wipe)** | Backups (in your S3 bucket) | Follow [Restore to a fresh VPS](/en/self-restore/) with the same cloud provider |
-| **Cloudflare API token (accidentally rotated)** | Your tunnel keeps running. Public apps stay up. **Functionality only**, not backup. | Generate a new API token at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens), then **contact your operator** with it -- they install the new token and confirm the tunnel still picks up DNS changes after rotation. Apps stay reachable while you wait. |
-| **Cloudflare tunnel token (rotated or leaked)** | Existing tunnel keeps running until cloudflared next reconnects, then drops. Public apps go dark until rotation completes. **Functionality**, not backup. | This is more disruptive than the API token: public traffic stops when cloudflared can't reauthenticate. **Contact your operator immediately** so they can mint and install the replacement. Find the token under [dash.cloudflare.com](https://dash.cloudflare.com) -> your zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> click your tunnel -> **Configure** -> reveal/rotate token. NOT in the "API Tokens" page. Expect 5-15 minutes of public-app downtime during install. |
-| **Tailscale OAuth client (accidentally rotated)** | Your server's tailnet access keeps working. Remote SSH stays up. | Generate a new OAuth client, update your secret file |
-| **Portainer API key (accidentally rotated)** | All your apps keep running | Generate a new key in the Portainer UI, update your secret file |
-| **Cloudflare account terminated** | Your server, your apps (internally), your data | Create a new Cloudflare account, point your domain to it, re-run operator setup; your apps experience downtime only during DNS propagation |
-| **Tailscale account terminated** | Your server, your apps, your public path (CF Tunnel) | Switch to a different ops-access method; Tailscale's only the "admin back door," not part of the public serving path |
-| **Your VPS provider goes bankrupt / shuts down** | Your S3 backup bucket (different company) | [Restore to a fresh VPS](/en/self-restore/) at a different provider using the backup |
-| **Your VPS provider's datacenter burns down (OVH Strasbourg 2021)** | Your S3 backup bucket (different region, different city) | Same as above -- restore to a fresh VPS at the same or different provider, different region |
-| **Your S3 backup provider goes bankrupt / shuts down** | Your VPS and its data | You still have the data -- copy your production VPS to a new S3 bucket *before* the deadline the provider gives you. If you set up a secondary backup (see [Prevention](/en/disaster-prevention/)), it's already safe |
-| **S3 bucket accidentally deleted** | Your VPS and its data | Same -- recreate the bucket and repoint backups. Some providers keep deleted objects for a retention window, which might buy you time |
-| **VPS provider AND S3 provider outage at the same time** | Last weekly off-site copy (if you set one up -- see [Prevention](/en/disaster-prevention/)) | Restore from the off-site copy to any fresh cloud |
-| **Master password AND SSH AND server dead** | S3 backup bucket | You can still decrypt the restic repo if you saved the **restic repo password** AND the **S3 access key + secret** separately (see [Prevention](/en/disaster-prevention/)) -- restic needs all three to read the bucket -- follow [Restore to a fresh VPS](/en/self-restore/) |
-| **Master password AND restic password AND server dead** | Your S3 bucket exists but every byte in it is ciphertext you can't open | **Data loss.** This is why [Disaster prevention](/en/disaster-prevention/) says to save the restic password separately, even from your master password |
+| **Your laptop** (the device you work from) | Your server, your apps, your backups | Nothing is lost as long as your recovery keyset is saved in your password manager, not only on the laptop. Set up a new device, restore the keyset, and carry on |
+| **SSH private key** | Your server, your apps, the dashboard | We re-add a new public key via our own admin path; if we're unreachable, see "Provider rescue mode" below |
+| **Dashboard access (sign-in broken, sign-in service down)** | Your apps (their own logins still work), your data | We sign in to fix; worst case, restart the sign-in service |
+| **One app's data (you deleted something)** | Everything else | Try the app's own trash first; if empty, get in touch |
+| **Entire server disk (corruption, accidental wipe)** | Backups (in your storage bucket) | Rebuild from your backup -- see [Rebuilding your server from backup](/en/self-restore/) |
+| **Cloudflare API token (accidentally rotated)** | Your tunnel keeps running. Public apps stay up. **Functionality only**, not backup. | Generate a new API token at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens), then **get in touch** with it -- we install the new token and confirm the tunnel still picks up DNS changes after rotation. Apps stay reachable while you wait |
+| **Cloudflare tunnel token (rotated or leaked)** | Existing tunnel keeps running until it next reconnects, then drops. Public apps go dark until rotation completes. **Functionality**, not backup. | This is more disruptive than the API token: public traffic stops when the tunnel can't reauthenticate. **Get in touch immediately** so we can mint and install the replacement. Find the token under [dash.cloudflare.com](https://dash.cloudflare.com) -> your zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> click your tunnel -> **Configure** -> reveal/rotate token. NOT in the "API Tokens" page. Expect 5-15 minutes of public-app downtime during install |
+| **Tailscale OAuth client (accidentally rotated)** | Your server's remote access keeps working. Remote administration stays up | Generate a new OAuth client, then **get in touch** with the credentials so we install it |
+| **Portainer API key (accidentally rotated)** | All your apps keep running | Generate a new key in the Portainer UI, then **get in touch** with it |
+| **Cloudflare account terminated** | Your server, your apps (internally), your data | Create a new Cloudflare account, point your domain to it, we re-run setup; your apps experience downtime only during DNS propagation |
+| **Tailscale account terminated** | Your server, your apps, your public path (the tunnel) | We switch to a different administration method; Tailscale is only the "admin back door," not part of the public serving path |
+| **Your provider goes bankrupt / shuts down** | Your backup bucket (different company) | [Rebuild from your backup](/en/self-restore/) at a different provider |
+| **Your provider's datacentre burns down (OVH Strasbourg 2021)** | Your backup bucket (different region, different city) | Same as above -- rebuild on a fresh server at the same or a different provider, different region |
+| **Your backup provider goes bankrupt / shuts down** | Your server and its data | You still have the data -- copy your live server to a new backup bucket *before* the deadline the provider gives you. If you set up a secondary backup (see [Prevention](/en/disaster-prevention/)), it's already safe |
+| **Backup bucket accidentally deleted** | Your server and its data | Same -- recreate the bucket and repoint backups. Some providers keep deleted objects for a retention window, which might buy you time |
+| **Provider AND backup provider outage at the same time** | Last weekly off-site copy (if you set one up -- see [Prevention](/en/disaster-prevention/)) | Rebuild from the off-site copy on any fresh cloud |
+| **Your server is dead AND your saved logins are gone** | Your backup bucket | As long as your recovery keyset (repository location + storage keys + encryption password) is in your password manager, the backup can still be read and your server rebuilt -- follow [Rebuilding your server from backup](/en/self-restore/) |
+| **Your server is dead AND your backup encryption password is lost** | Your bucket exists but every byte in it is ciphertext you can't open | **Data loss.** This is the one unrecoverable case, and exactly why [Disaster prevention](/en/disaster-prevention/) says to store your encryption password separately and safely |
 
 ## Provider rescue mode -- when you've lost SSH
 
-Every serious VPS provider offers a "rescue mode" that lets you boot a
+Every serious hosting provider offers a "rescue mode" that lets you boot a
 temporary rescue image with your existing disk mounted, so you can add
 a new SSH key or recover files without re-installing. A few examples:
 
-- **OVH**: Control Panel -> your VPS -> **Rescue / rescue-customer**.
+- **OVH**: Control Panel -> your server -> **Rescue / rescue-customer**.
   Reboot into rescue, mount your disk, add your new public key to
   `/home/ops/.ssh/authorized_keys`, reboot normally.
 - **Hetzner**: Robot -> Rescue system -> enable and reboot.
@@ -135,12 +100,12 @@ a new SSH key or recover files without re-installing. A few examples:
   (sometimes a VNC web terminal) -- look for "Recovery" / "Console" in
   the provider's sidebar.
 
-Your operator can walk you through this over a video call if needed;
-the steps are the same across providers, just different UI labels.
+We can walk you through this over a video call if needed; the steps
+are the same across providers, just different UI labels.
 
-**Operator SSH and provider rescue console are equivalent for your
-purposes.** If your operator is reachable, they SSH in and fix things.
-If they're not -- or if SSH itself is broken -- the provider's rescue
+**Our remote access and the provider's rescue console are equivalent
+for your purposes.** If we're reachable, we sign in and fix things.
+If we're not -- or if SSH itself is broken -- the provider's rescue
 console gives you the same root-level access to the disk. Either path
 gets you back to a working server; the rescue console is just the
 fallback when the normal one is unavailable. Don't burn time waiting
@@ -154,7 +119,7 @@ fine. You have 24-72 hours to handle the recovery without pressure --
 everything but total disaster is survivable on a weekday morning with
 a coffee.
 
-If something in the map above doesn't match your situation, call your
-operator. The whole point of the hand-off kit + this page is to give
+If something in the map above doesn't match your situation, get in
+touch. The whole point of the hand-off kit + this page is to give
 you every path we can, but nothing replaces a second pair of eyes in a
 real incident.
