@@ -19,12 +19,14 @@ Boîte de réception omnicanale orientée conversation. Email, widget de chat, W
 
 ## Variables d'environnement
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+Ces valeurs sont les champs à remplir au déploiement du template
+depuis le panneau **App Templates** de votre serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semi du
+template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
+| `DOMAIN_HOST` | `support.yourdomain.com` |
 | `CHATWOOT_HOSTNAME` | `support.yourdomain.com` |
 | `SECRET_KEY_BASE` | _valeur aléatoire auto-générée_ |
 | `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
@@ -34,16 +36,17 @@ premier semi du template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `rails:3000`
 - **Nom d'hôte :** `support.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template ;
+parlez-en à votre contact avant de déployer si vous souhaitez autre
+chose.
 
 ## Fichier compose
 
 Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+nulle part.** Le compose est semé dans Portainer automatiquement ; les
+ajustements côté client se font dans les champs d'environnement du
+formulaire de déploiement (décrits plus haut), jamais dans le compose
+lui-même.
 
 ```yaml
 # Chatwoot -- customer support / omnichannel inbox (email, live chat,
@@ -79,6 +82,9 @@ services:
     volumes:
       - storage-data:/app/storage
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=3000"
+      - "vps.route.service=rails"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:

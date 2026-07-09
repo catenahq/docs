@@ -60,12 +60,14 @@ right control is inside Nextcloud (Settings -> Sharing ->
 
 ## Environment variables
 
-These values live in the Dokploy compose's **Environment** tab. Random
+These values are the fields you fill in when deploying the template
+from your server's **App Templates** panel (Portainer). Random
 secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
 |---|---|
+| `DOMAIN_HOST` | `nextcloud.yourdomain.com` |
 | `NEXTCLOUD_HOSTNAME` | `nextcloud.yourdomain.com` |
 | `NEXTCLOUD_ADMIN_USER` | `admin` |
 | `NEXTCLOUD_ADMIN_PASSWORD` | _auto-generated random value_ |
@@ -76,6 +78,8 @@ you don't need to generate them yourself.
 | `S3_BUCKET` | _(set before deploy)_ |
 | `S3_REGION` | `bhs` |
 | `S3_HOST` | `s3.bhs.io.cloud.ovh.net` |
+| `S3_PORT` | `443` |
+| `S3_SSL` | `true` |
 | `S3_ACCESS_KEY` | _(set before deploy)_ |
 | `S3_SECRET_KEY` | _(set before deploy)_ |
 | `OIDC_CLIENT_ID` | `nextcloud` |
@@ -94,16 +98,15 @@ you don't need to generate them yourself.
 - **Service and port:** `app:80`
 - **Hostname:** `nextcloud.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+The hostname is attached automatically when the template is deployed;
+talk to your contact before deploying if you want something else.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+anywhere.** The compose is seeded into Portainer automatically; the
+client-facing adjustments you make happen in the deploy form's
+environment fields (described above), never in the compose itself.
 
 ```yaml
 # Nextcloud -- S3 primary storage + Keycloak SSO.
@@ -301,8 +304,14 @@ services:
       OBJECTSTORE_S3_BUCKET: ${S3_BUCKET}
       OBJECTSTORE_S3_REGION: ${S3_REGION}
       OBJECTSTORE_S3_HOST: ${S3_HOST}
-      OBJECTSTORE_S3_PORT: "443"
-      OBJECTSTORE_S3_SSL: "true"
+      # Endpoint transport. Prod S3 (OVH/eazybackup/AWS) is TLS on 443,
+      # the defaults here. A self-hosted S3 (MinIO) on a client's own
+      # network -- and the test bench's MinIO VM -- may serve plain HTTP
+      # on a non-443 port, so both are overridable from the env. The
+      # bench injects S3_SSL=false + S3_PORT=9000; a real deploy leaves
+      # them unset and gets TLS/443.
+      OBJECTSTORE_S3_PORT: ${S3_PORT:-443}
+      OBJECTSTORE_S3_SSL: ${S3_SSL:-true}
       OBJECTSTORE_S3_USEPATH_STYLE: "true"
       OBJECTSTORE_S3_AUTOCREATE: "false"
       OBJECTSTORE_S3_KEY: ${S3_ACCESS_KEY}
@@ -338,6 +347,9 @@ services:
       # -- still backed up but with an opaque sha256 name.
       - nc-data:/var/www/html/data
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=80"
+      - "vps.route.service=app"
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
       - "vps.auth.groups=staff"
@@ -413,8 +425,14 @@ services:
       OBJECTSTORE_S3_BUCKET: ${S3_BUCKET}
       OBJECTSTORE_S3_REGION: ${S3_REGION}
       OBJECTSTORE_S3_HOST: ${S3_HOST}
-      OBJECTSTORE_S3_PORT: "443"
-      OBJECTSTORE_S3_SSL: "true"
+      # Endpoint transport. Prod S3 (OVH/eazybackup/AWS) is TLS on 443,
+      # the defaults here. A self-hosted S3 (MinIO) on a client's own
+      # network -- and the test bench's MinIO VM -- may serve plain HTTP
+      # on a non-443 port, so both are overridable from the env. The
+      # bench injects S3_SSL=false + S3_PORT=9000; a real deploy leaves
+      # them unset and gets TLS/443.
+      OBJECTSTORE_S3_PORT: ${S3_PORT:-443}
+      OBJECTSTORE_S3_SSL: ${S3_SSL:-true}
       OBJECTSTORE_S3_USEPATH_STYLE: "true"
       OBJECTSTORE_S3_KEY: ${S3_ACCESS_KEY}
       OBJECTSTORE_S3_SECRET: ${S3_SECRET_KEY}

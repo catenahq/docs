@@ -68,12 +68,14 @@ public"), pas au niveau réseau.
 
 ## Variables d'environnement
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+Ces valeurs sont les champs à remplir au déploiement du template
+depuis le panneau **App Templates** de votre serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semi du
+template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
+| `DOMAIN_HOST` | `nextcloud.yourdomain.com` |
 | `NEXTCLOUD_HOSTNAME` | `nextcloud.yourdomain.com` |
 | `NEXTCLOUD_ADMIN_USER` | `admin` |
 | `NEXTCLOUD_ADMIN_PASSWORD` | _valeur aléatoire auto-générée_ |
@@ -84,6 +86,8 @@ premier semi du template -- vous n'avez pas à les générer vous-même.
 | `S3_BUCKET` | _(à définir avant déploiement)_ |
 | `S3_REGION` | `bhs` |
 | `S3_HOST` | `s3.bhs.io.cloud.ovh.net` |
+| `S3_PORT` | `443` |
+| `S3_SSL` | `true` |
 | `S3_ACCESS_KEY` | _(à définir avant déploiement)_ |
 | `S3_SECRET_KEY` | _(à définir avant déploiement)_ |
 | `OIDC_CLIENT_ID` | `nextcloud` |
@@ -102,16 +106,17 @@ premier semi du template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `app:80`
 - **Nom d'hôte :** `nextcloud.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template ;
+parlez-en à votre contact avant de déployer si vous souhaitez autre
+chose.
 
 ## Fichier compose
 
 Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+nulle part.** Le compose est semé dans Portainer automatiquement ; les
+ajustements côté client se font dans les champs d'environnement du
+formulaire de déploiement (décrits plus haut), jamais dans le compose
+lui-même.
 
 ```yaml
 # Nextcloud -- S3 primary storage + Keycloak SSO.
@@ -309,8 +314,14 @@ services:
       OBJECTSTORE_S3_BUCKET: ${S3_BUCKET}
       OBJECTSTORE_S3_REGION: ${S3_REGION}
       OBJECTSTORE_S3_HOST: ${S3_HOST}
-      OBJECTSTORE_S3_PORT: "443"
-      OBJECTSTORE_S3_SSL: "true"
+      # Endpoint transport. Prod S3 (OVH/eazybackup/AWS) is TLS on 443,
+      # the defaults here. A self-hosted S3 (MinIO) on a client's own
+      # network -- and the test bench's MinIO VM -- may serve plain HTTP
+      # on a non-443 port, so both are overridable from the env. The
+      # bench injects S3_SSL=false + S3_PORT=9000; a real deploy leaves
+      # them unset and gets TLS/443.
+      OBJECTSTORE_S3_PORT: ${S3_PORT:-443}
+      OBJECTSTORE_S3_SSL: ${S3_SSL:-true}
       OBJECTSTORE_S3_USEPATH_STYLE: "true"
       OBJECTSTORE_S3_AUTOCREATE: "false"
       OBJECTSTORE_S3_KEY: ${S3_ACCESS_KEY}
@@ -346,6 +357,9 @@ services:
       # -- still backed up but with an opaque sha256 name.
       - nc-data:/var/www/html/data
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=80"
+      - "vps.route.service=app"
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
       - "vps.auth.groups=staff"
@@ -421,8 +435,14 @@ services:
       OBJECTSTORE_S3_BUCKET: ${S3_BUCKET}
       OBJECTSTORE_S3_REGION: ${S3_REGION}
       OBJECTSTORE_S3_HOST: ${S3_HOST}
-      OBJECTSTORE_S3_PORT: "443"
-      OBJECTSTORE_S3_SSL: "true"
+      # Endpoint transport. Prod S3 (OVH/eazybackup/AWS) is TLS on 443,
+      # the defaults here. A self-hosted S3 (MinIO) on a client's own
+      # network -- and the test bench's MinIO VM -- may serve plain HTTP
+      # on a non-443 port, so both are overridable from the env. The
+      # bench injects S3_SSL=false + S3_PORT=9000; a real deploy leaves
+      # them unset and gets TLS/443.
+      OBJECTSTORE_S3_PORT: ${S3_PORT:-443}
+      OBJECTSTORE_S3_SSL: ${S3_SSL:-true}
       OBJECTSTORE_S3_USEPATH_STYLE: "true"
       OBJECTSTORE_S3_KEY: ${S3_ACCESS_KEY}
       OBJECTSTORE_S3_SECRET: ${S3_SECRET_KEY}

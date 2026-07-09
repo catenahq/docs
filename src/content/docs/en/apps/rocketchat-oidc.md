@@ -22,12 +22,14 @@ Rocket.Chat's iOS and Android apps connect straight to your server. Users paste 
 
 ## Environment variables
 
-These values live in the Dokploy compose's **Environment** tab. Random
+These values are the fields you fill in when deploying the template
+from your server's **App Templates** panel (Portainer). Random
 secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
 |---|---|
+| `DOMAIN_HOST` | `chat.yourdomain.com` |
 | `ROCKETCHAT_HOSTNAME` | `chat.yourdomain.com` |
 | `ROCKETCHAT_HOSTNAME_BASE` | `yourdomain.com` |
 | `OIDC_BASE_URL` | `https://auth.yourdomain.com` |
@@ -45,16 +47,15 @@ you don't need to generate them yourself.
 - **Service and port:** `rocketchat:3000`
 - **Hostname:** `chat.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+The hostname is attached automatically when the template is deployed;
+talk to your contact before deploying if you want something else.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+anywhere.** The compose is seeded into Portainer automatically; the
+client-facing adjustments you make happen in the deploy form's
+environment fields (described above), never in the compose itself.
 
 ```yaml
 # Rocket.Chat -- team chat + Keycloak SSO.
@@ -130,6 +131,9 @@ services:
       mongodb:
         condition: service_healthy
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=3000"
+      - "vps.route.service=rocketchat"
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
       - "vps.auth.groups=staff"

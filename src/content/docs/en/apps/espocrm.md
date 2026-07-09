@@ -32,12 +32,14 @@ EspoCRM runs as PHP-Apache + MariaDB + a cron sidecar. Plan for ~1 GB RAM at idl
 
 ## Environment variables
 
-These values live in the Dokploy compose's **Environment** tab. Random
+These values are the fields you fill in when deploying the template
+from your server's **App Templates** panel (Portainer). Random
 secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
 |---|---|
+| `DOMAIN_HOST` | `crm.yourdomain.com` |
 | `ESPOCRM_HOSTNAME` | `crm.yourdomain.com` |
 | `ESPOCRM_ADMIN_USERNAME` | `admin` |
 | `ESPOCRM_ADMIN_PASSWORD` | _auto-generated random value_ |
@@ -52,16 +54,15 @@ you don't need to generate them yourself.
 - **Service and port:** `espocrm:80`
 - **Hostname:** `crm.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+The hostname is attached automatically when the template is deployed;
+talk to your contact before deploying if you want something else.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+anywhere.** The compose is seeded into Portainer automatically; the
+client-facing adjustments you make happen in the deploy form's
+environment fields (described above), never in the compose itself.
 
 ```yaml
 # EspoCRM -- open-source CRM. Default CRM in this stack as of 2026-04-29
@@ -104,6 +105,9 @@ services:
       db:
         condition: service_healthy
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=80"
+      - "vps.route.service=espocrm"
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
       - "vps.auth.groups=staff"

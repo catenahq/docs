@@ -33,12 +33,14 @@ L'URL publique par défaut est `https://book.<votre-domaine>/`. Partagez-la dire
 
 ## Variables d'environnement
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+Ces valeurs sont les champs à remplir au déploiement du template
+depuis le panneau **App Templates** de votre serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semi du
+template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
+| `DOMAIN_HOST` | `book.yourdomain.com` |
 | `EASYAPPOINTMENTS_HOSTNAME` | `book.yourdomain.com` |
 | `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
 | `DB_ROOT_PASSWORD` | _valeur aléatoire auto-générée_ |
@@ -48,16 +50,17 @@ premier semi du template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `easyappointments:80`
 - **Nom d'hôte :** `book.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template ;
+parlez-en à votre contact avant de déployer si vous souhaitez autre
+chose.
 
 ## Fichier compose
 
 Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+nulle part.** Le compose est semé dans Portainer automatiquement ; les
+ajustements côté client se font dans les champs d'environnement du
+formulaire de déploiement (décrits plus haut), jamais dans le compose
+lui-même.
 
 ```yaml
 # Easy!Appointments -- open-source customer-facing booking app. Sole
@@ -98,6 +101,9 @@ services:
       retries: 10
       start_period: 30s
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=80"
+      - "vps.route.service=easyappointments"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:

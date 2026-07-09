@@ -23,27 +23,29 @@ Don't visit the Collabora domain directly in a browser -- it has no UI of its ow
 
 ## Environment variables
 
-These values live in the Dokploy compose's **Environment** tab. Random
+These values are the fields you fill in when deploying the template
+from your server's **App Templates** panel (Portainer). Random
 secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
-_(no environment variables to configure)_
+| Variable | Default |
+|---|---|
+| `DOMAIN_HOST` | `office.yourdomain.com` |
 
 ## Domain
 
 - **Service and port:** `collabora:9980`
 - **Hostname:** `office.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+The hostname is attached automatically when the template is deployed;
+talk to your contact before deploying if you want something else.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+anywhere.** The compose is seeded into Portainer automatically; the
+client-facing adjustments you make happen in the deploy form's
+environment fields (described above), never in the compose itself.
 
 ```yaml
 # Collabora CODE -- collaborative editing for ODT/DOCX/XLSX/PPTX,
@@ -77,6 +79,9 @@ services:
       # its discovery XML even though it itself is listening on http.
       extra_params: --o:ssl.enable=false --o:ssl.termination=true
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=9980"
+      - "vps.route.service=collabora"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:
