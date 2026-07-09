@@ -19,12 +19,14 @@ Team wiki / knowledge base. Notion-style pages, collections, nested docs. Keyclo
 
 ## Environment variables
 
-These values live in the Dokploy compose's **Environment** tab. Random
+These values are the fields you fill in when deploying the template
+from your server's **App Templates** panel (Portainer). Random
 secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
 |---|---|
+| `DOMAIN_HOST` | `wiki.yourdomain.com` |
 | `OUTLINE_HOSTNAME` | `wiki.yourdomain.com` |
 | `OUTLINE_SECRET_KEY` | _auto-generated random value_ |
 | `OUTLINE_UTILS_SECRET` | _auto-generated random value_ |
@@ -35,16 +37,15 @@ you don't need to generate them yourself.
 - **Service and port:** `outline:3000`
 - **Hostname:** `wiki.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+The hostname is attached automatically when the template is deployed;
+talk to your contact before deploying if you want something else.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+anywhere.** The compose is seeded into Portainer automatically; the
+client-facing adjustments you make happen in the deploy form's
+environment fields (described above), never in the compose itself.
 
 ```yaml
 # Outline -- team wiki / knowledge base, Keycloak SSO pre-wired via
@@ -89,6 +90,9 @@ services:
       redis:
         condition: service_started
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=3000"
+      - "vps.route.service=outline"
       - "vps.auth.mode=public"
       - "vps.auth.oidc=true"
       - "vps.auth.groups=staff"

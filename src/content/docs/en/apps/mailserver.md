@@ -34,12 +34,14 @@ Incoming mail is checked for spam (sender reputation, content scoring) and every
 
 ## Environment variables
 
-These values live in the Dokploy compose's **Environment** tab. Random
+These values are the fields you fill in when deploying the template
+from your server's **App Templates** panel (Portainer). Random
 secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
 |---|---|
+| `DOMAIN_HOST` | `webmail.yourdomain.com` |
 | `MAIL_HOSTNAME` | `mail.yourdomain.com` |
 | `MAIL_DOMAIN` | `yourdomain.com` |
 | `WEBMAIL_HOSTNAME` | `webmail.yourdomain.com` |
@@ -54,16 +56,15 @@ you don't need to generate them yourself.
 - **Service and port:** `roundcube:80`
 - **Hostname:** `webmail.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+The hostname is attached automatically when the template is deployed;
+talk to your contact before deploying if you want something else.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+anywhere.** The compose is seeded into Portainer automatically; the
+client-facing adjustments you make happen in the deploy form's
+environment fields (described above), never in the compose itself.
 
 ```yaml
 # Self-hosted mailserver -- docker-mailserver (Postfix + Dovecot + Rspamd)
@@ -183,6 +184,9 @@ services:
       retries: 5
       start_period: 30s
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=80"
+      - "vps.route.service=roundcube"
       # Roundcube does its OWN Keycloak login (not behind oauth2-proxy);
       # public at the proxy layer, OIDC enforced by the app.
       - "vps.auth.mode=public"
@@ -228,7 +232,11 @@ services:
         EOF
         exec nginx -g 'daemon off;'
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost/.well-known/mta-sts.txt >/dev/null || exit 1"]
+      # Probe 127.0.0.1, NOT localhost: nginx `listen 80;` binds IPv4
+      # 0.0.0.0:80 only, but the container /etc/hosts maps localhost to
+      # BOTH 127.0.0.1 and ::1, and busybox wget resolves ::1 first ->
+      # "connection refused" -> the container flaps unhealthy forever.
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/.well-known/mta-sts.txt >/dev/null || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5

@@ -33,12 +33,14 @@ Element's iOS and Android apps connect straight to your homeserver. Users tap **
 
 ## Environment variables
 
-These values live in the Dokploy compose's **Environment** tab. Random
+These values are the fields you fill in when deploying the template
+from your server's **App Templates** panel (Portainer). Random
 secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
 |---|---|
+| `DOMAIN_HOST` | `element.yourdomain.com` |
 | `ELEMENT_HOSTNAME` | `element.yourdomain.com` |
 | `MATRIX_HOSTNAME` | `matrix.yourdomain.com` |
 | `ELEMENT_JITSI_HOSTNAME` | `elementmeet.yourdomain.com` |
@@ -67,16 +69,15 @@ you don't need to generate them yourself.
 - **Service and port:** `element-web:80`
 - **Hostname:** `element.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+The hostname is attached automatically when the template is deployed;
+talk to your contact before deploying if you want something else.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+anywhere.** The compose is seeded into Portainer automatically; the
+client-facing adjustments you make happen in the deploy form's
+environment fields (described above), never in the compose itself.
 
 ```yaml
 # Element / Matrix (Synapse) -- chat, voice, video, SIP, E2EE.
@@ -197,6 +198,9 @@ services:
         target: /app/config.json
         mode: 0644
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=80"
+      - "vps.route.service=element-web"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:

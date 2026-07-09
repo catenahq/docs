@@ -20,27 +20,29 @@ Self-hosted personal finance. Envelope budgeting, bank account syncing via Simpl
 
 ## Environment variables
 
-These values live in the Dokploy compose's **Environment** tab. Random
+These values are the fields you fill in when deploying the template
+from your server's **App Templates** panel (Portainer). Random
 secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
-_(no environment variables to configure)_
+| Variable | Default |
+|---|---|
+| `DOMAIN_HOST` | `budget.yourdomain.com` |
 
 ## Domain
 
 - **Service and port:** `actual:5006`
 - **Hostname:** `budget.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+The hostname is attached automatically when the template is deployed;
+talk to your contact before deploying if you want something else.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+anywhere.** The compose is seeded into Portainer automatically; the
+client-facing adjustments you make happen in the deploy form's
+environment fields (described above), never in the compose itself.
 
 ```yaml
 # Actual Budget -- self-hosted personal finance (YNAB / Mint alternative).
@@ -59,6 +61,9 @@ services:
     volumes:
       - actual-data:/data
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=5006"
+      - "vps.route.service=actual"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:

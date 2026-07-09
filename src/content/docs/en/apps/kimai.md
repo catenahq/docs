@@ -39,12 +39,14 @@ Kimai runs as PHP-Apache + MariaDB. Plan for ~250 MB RAM at idle, ~500 MB under 
 
 ## Environment variables
 
-These values live in the Dokploy compose's **Environment** tab. Random
+These values are the fields you fill in when deploying the template
+from your server's **App Templates** panel (Portainer). Random
 secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
 |---|---|
+| `DOMAIN_HOST` | `time.yourdomain.com` |
 | `KIMAI_HOSTNAME` | `time.yourdomain.com` |
 | `KIMAI_ADMIN_EMAIL` | `admin@yourdomain.com` |
 | `KIMAI_ADMIN_PASSWORD` | _auto-generated random value_ |
@@ -59,16 +61,15 @@ you don't need to generate them yourself.
 - **Service and port:** `kimai:8001`
 - **Hostname:** `time.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+The hostname is attached automatically when the template is deployed;
+talk to your contact before deploying if you want something else.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+anywhere.** The compose is seeded into Portainer automatically; the
+client-facing adjustments you make happen in the deploy form's
+environment fields (described above), never in the compose itself.
 
 ```yaml
 # Kimai -- open-source time tracker. Picked 2026-05-21 as the time-
@@ -110,6 +111,9 @@ services:
       db:
         condition: service_healthy
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=8001"
+      - "vps.route.service=kimai"
       - "vps.auth.mode=public"
       - "vps.auth.groups=staff"
       - "vps.auto-update=patch"

@@ -19,12 +19,14 @@ Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, In
 
 ## Environment variables
 
-These values live in the Dokploy compose's **Environment** tab. Random
+These values are the fields you fill in when deploying the template
+from your server's **App Templates** panel (Portainer). Random
 secrets are minted automatically when the template is first seeded --
 you don't need to generate them yourself.
 
 | Variable | Default |
 |---|---|
+| `DOMAIN_HOST` | `social.yourdomain.com` |
 | `POSTIZ_HOSTNAME` | `social.yourdomain.com` |
 | `JWT_SECRET` | _auto-generated random value_ |
 | `DB_PASSWORD` | _auto-generated random value_ |
@@ -34,16 +36,15 @@ you don't need to generate them yourself.
 - **Service and port:** `postiz:5000`
 - **Hostname:** `social.yourdomain.com`
 
-The hostname is attached automatically when the template is seeded;
-change it in the **Domains** tab before clicking Deploy if you want
-something else.
+The hostname is attached automatically when the template is deployed;
+talk to your contact before deploying if you want something else.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
-anywhere.** The compose is seeded into Dokploy automatically; the
-client-facing adjustments you make happen in the Environment and
-Domains tabs (described above), never in the compose itself.
+anywhere.** The compose is seeded into Portainer automatically; the
+client-facing adjustments you make happen in the deploy form's
+environment fields (described above), never in the compose itself.
 
 ```yaml
 # Postiz -- social media scheduling / posting across networks (Twitter/X,
@@ -78,6 +79,9 @@ services:
       - postiz-uploads:/uploads
       - postiz-config:/config
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=5000"
+      - "vps.route.service=postiz"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:

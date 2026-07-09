@@ -19,12 +19,14 @@ Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instag
 
 ## Variables d'environnement
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+Ces valeurs sont les champs à remplir au déploiement du template
+depuis le panneau **App Templates** de votre serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semi du
+template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
+| `DOMAIN_HOST` | `social.yourdomain.com` |
 | `POSTIZ_HOSTNAME` | `social.yourdomain.com` |
 | `JWT_SECRET` | _valeur aléatoire auto-générée_ |
 | `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
@@ -34,16 +36,17 @@ premier semi du template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `postiz:5000`
 - **Nom d'hôte :** `social.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template ;
+parlez-en à votre contact avant de déployer si vous souhaitez autre
+chose.
 
 ## Fichier compose
 
 Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+nulle part.** Le compose est semé dans Portainer automatiquement ; les
+ajustements côté client se font dans les champs d'environnement du
+formulaire de déploiement (décrits plus haut), jamais dans le compose
+lui-même.
 
 ```yaml
 # Postiz -- social media scheduling / posting across networks (Twitter/X,
@@ -78,6 +81,9 @@ services:
       - postiz-uploads:/uploads
       - postiz-config:/config
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=5000"
+      - "vps.route.service=postiz"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
     networks:

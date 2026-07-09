@@ -34,12 +34,14 @@ Le courriel entrant est vérifié contre le pourriel (réputation de l'expédite
 
 ## Variables d'environnement
 
-Ces valeurs se trouvent dans l'onglet **Environment** du compose
-Dokploy. Les secrets aléatoires sont générés automatiquement au
-premier semi du template -- vous n'avez pas à les générer vous-même.
+Ces valeurs sont les champs à remplir au déploiement du template
+depuis le panneau **App Templates** de votre serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semi du
+template -- vous n'avez pas à les générer vous-même.
 
 | Variable | Valeur par défaut |
 |---|---|
+| `DOMAIN_HOST` | `webmail.yourdomain.com` |
 | `MAIL_HOSTNAME` | `mail.yourdomain.com` |
 | `MAIL_DOMAIN` | `yourdomain.com` |
 | `WEBMAIL_HOSTNAME` | `webmail.yourdomain.com` |
@@ -54,16 +56,17 @@ premier semi du template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `roundcube:80`
 - **Nom d'hôte :** `webmail.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au semi du template ;
-modifiez-le dans l'onglet **Domains** avant de cliquer Deploy si
-vous souhaitez autre chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template ;
+parlez-en à votre contact avant de déployer si vous souhaitez autre
+chose.
 
 ## Fichier compose
 
 Pour référence -- c'est ce que le template déploie. **Ne collez ceci
-nulle part.** Le compose est semé dans Dokploy automatiquement ; les
-ajustements côté client se font dans les onglets Environment et
-Domains (décrits plus haut), jamais dans le compose lui-même.
+nulle part.** Le compose est semé dans Portainer automatiquement ; les
+ajustements côté client se font dans les champs d'environnement du
+formulaire de déploiement (décrits plus haut), jamais dans le compose
+lui-même.
 
 ```yaml
 # Self-hosted mailserver -- docker-mailserver (Postfix + Dovecot + Rspamd)
@@ -183,6 +186,9 @@ services:
       retries: 5
       start_period: 30s
     labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=80"
+      - "vps.route.service=roundcube"
       # Roundcube does its OWN Keycloak login (not behind oauth2-proxy);
       # public at the proxy layer, OIDC enforced by the app.
       - "vps.auth.mode=public"
@@ -228,7 +234,11 @@ services:
         EOF
         exec nginx -g 'daemon off;'
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost/.well-known/mta-sts.txt >/dev/null || exit 1"]
+      # Probe 127.0.0.1, NOT localhost: nginx `listen 80;` binds IPv4
+      # 0.0.0.0:80 only, but the container /etc/hosts maps localhost to
+      # BOTH 127.0.0.1 and ::1, and busybox wget resolves ::1 first ->
+      # "connection refused" -> the container flaps unhealthy forever.
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/.well-known/mta-sts.txt >/dev/null || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
