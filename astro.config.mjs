@@ -104,6 +104,7 @@ export default defineConfig({
           translations: { fr: "Confiance" },
           items: [
             { slug: "trust" },
+            { slug: "trust/security-model" },
             { slug: "trust/how-we-validate" },
             { slug: "trust/what-we-test" },
           ],
