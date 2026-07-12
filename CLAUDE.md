@@ -52,3 +52,14 @@ need no token (the former CONTRACTS_READ_TOKEN secret is retired).
 
 Use the Astro MCP (`mcp__Astro_docs__search_astro_docs`) for any
 Astro / Starlight feature question rather than guessing.
+
+## Security invariants (machine-enforced -- do not weaken silently)
+
+- Client docs never reference operator paths, internal tooling or
+  scenario names; trust/what-we-test.md is GENERATED (do not
+  hand-edit; the ops-side drift gate fails on divergence).
+- Public trust claims live on generated or gate-backed pages only; a
+  new claim needs a pointer to the gate that enforces it (see
+  trust/how-we-validate).
+- No secrets in tree or history (gitleaks; history re-rooted clean at
+  publication 2026-07-12 -- never push the backup-pre-reroot-* branches).
