@@ -1,0 +1,12 @@
+**/.git
+**/.github
+**/.venv
+**/node_modules
+**/dist
+**/.astro
+**/.DS_Store
+automation
+internal_docs
+docs
+test_bench
+**/*.md.bak

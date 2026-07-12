@@ -1,0 +1,47 @@
+---
+// Language-neutral 404. In production nginx returns a bare 404 (no
+// error_page directive), so this page is the dev/preview fallback and
+// the file most static hosts serve for unknown paths. Links into both
+// locales rather than guessing one.
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>404 -- catena docs</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        display: flex;
+        min-height: 100vh;
+        margin: 0;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #1c1c1c;
+        background: #fff;
+      }
+      main { max-width: 32rem; padding: 2rem; }
+      h1 { font-size: 3rem; margin: 0 0 0.5rem; }
+      p { color: #555; line-height: 1.6; }
+      a { color: #2563eb; }
+      @media (prefers-color-scheme: dark) {
+        body { color: #e8e8e8; background: #0d0d0d; }
+        p { color: #aaa; }
+        a { color: #7aa2ff; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>404</h1>
+      <p>Page not found -- page introuvable.</p>
+      <p>
+        <a href="/en/">English documentation</a> &middot;
+        <a href="/fr/">Documentation en français</a>
+      </p>
+    </main>
+  </body>
+</html>

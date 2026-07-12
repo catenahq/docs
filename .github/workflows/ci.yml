@@ -1,0 +1,59 @@
+# catenahq/docs -- CI.
+#
+# catenahq/contracts is consumed via sibling read: package.json
+# declares `"@catenahq/contracts": "file:../contracts"`, so the
+# checkout step puts contracts at $GITHUB_WORKSPACE/contracts and the
+# docs job at $GITHUB_WORKSPACE/docs. Local dev mirrors this layout.
+# catenahq/contracts is public (2026-07-11), so the checkout needs no
+# token.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    name: docs (typecheck + build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out docs
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          path: docs
+          persist-credentials: false
+      - name: Check out sibling contracts
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          repository: catenahq/contracts
+          path: contracts
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "24"
+      - name: Install
+        working-directory: ./docs
+        run: npm ci
+      - name: Check required runner tools
+        run: |
+          missing=''
+          for t in git; do command -v "$t" >/dev/null 2>&1 || missing="$missing $t"; done
+          if [ -n "$missing" ]; then
+            echo "::error::Required tool(s) missing on the runner:$missing"
+            echo "::error::Install on the self-hosted runner: sudo apt-get install -y git -- see catenahq/ops internal_docs/operator/ci-runner-provisioning.md"
+            exit 1
+          fi
+      - name: Unicode hygiene (no em dashes / smart quotes / decorative symbols)
+        working-directory: ./docs
+        run: npm run check:unicode
+      - name: Typecheck
+        working-directory: ./docs
+        run: npm run check
+      - name: Build
+        working-directory: ./docs
+        run: npm run build

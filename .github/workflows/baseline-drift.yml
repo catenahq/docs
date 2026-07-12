@@ -1,0 +1,53 @@
+name: baseline-drift
+
+# Guards the committed scanctl baseline (.scanctl/baseline.sarif) against rot.
+# security.yml suppresses the baselined findings so per-PR code scanning stays
+# clean; this job re-scans WITHOUT the baseline and fails if the live findings
+# no longer match what the baseline claims -- either a stale entry (a suppressed
+# finding disappeared) or a new finding the baseline does not cover. Runs on
+# dependency/config changes, weekly (upstream rule packs shift on their own),
+# and on demand.
+
+on:
+  pull_request:
+    paths:
+      - 'package-lock.json'
+      - 'package.json'
+      - 'renovate.json'
+      - '.scanctl/**'
+      - '.github/workflows/baseline-drift.yml'
+  schedule:
+    - cron: '37 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0 # full history so gitleaks scans past commits (parity with security.yml)
+          persist-credentials: false
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version: stable
+      - name: Install uv
+        # uv backs the Python scanners (semgrep, guarddog), lazy-fetched at scan time.
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+      - name: Install scanctl
+        run: go install github.com/catenahq/scanctl/cmd/scanctl@main
+      - name: Scan (no baseline)
+        env:
+          # zizmor's API-backed audits use this when present; absent = --offline.
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          "$(go env GOPATH)/bin/scanctl" run --profile full \
+            --out current.sarif --sbom sbom.cdx.json \
+            --summary "$GITHUB_STEP_SUMMARY" .
+      - name: Check baseline drift
+        run: python3 .scanctl/drift-check.py .scanctl/baseline.sarif current.sarif

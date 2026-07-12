@@ -1,0 +1,73 @@
+# catenahq/docs -- docs.catena.run
+
+Astro + Starlight client wiki for the catena stack. Public-facing
+docs (EN + FR), served at `docs.catena.run`.
+
+Standalone build (`npm run build` -> `dist/`); deployed to GitHub
+Pages via `.github/workflows/deploy-pages.yml` on push to `main`.
+No chained-build coupling with the marketing site.
+
+## Develop
+
+```bash
+npm install
+npm run dev       # -> http://localhost:4321/
+npm run build     # -> dist/
+npm run check     # astro check + starlight-links-validator
+```
+
+## Adding a page
+
+1. Create the EN file: `src/content/docs/en/<slug>.md`.
+2. Create the FR mirror: `src/content/docs/fr/<slug>.md`. Both
+   locales in the same commit (parity rule).
+3. If the page belongs to a sidebar nav group, add the slug to
+   `astro.config.mjs::sidebar` under the matching group. Pages under
+   `apps/` are auto-generated from the directory.
+4. `npm run build` validates frontmatter, internal links
+   (starlight-links-validator), and missing locales.
+
+## Apps catalog
+
+The per-template pages under `src/content/docs/apps/` are
+machine-generated from the app template catalog (`source/catalog.yml`
+in the catenahq/catena-templates repo), read by the generator in
+catenahq/ops. Run the generator from `catenahq/ops`:
+
+```bash
+uv run python automation/operator-tools/generate-template-docs.py
+```
+
+The generator writes into this repo's tree via the
+`CATENAHQ_DOCS_ROOT` env var (default = sibling `docs/`). Do NOT
+hand-edit the generated pages -- changes belong in the catalog file
+upstream.
+
+## Interactive yourdomain.com placeholder
+
+Every page references the client's domain as the literal string
+`yourdomain.com`. The `public/domain-rewriter.js` script, loaded
+via Starlight's `head` config, ships an input pill in the header
+that swaps the placeholder for the user's actual domain at read
+time (localStorage + `?domain=` URL override). Source markdown
+stays plain and grep-able.
+
+## Adding a language
+
+Mirror the default-locale tree under `src/content/docs/<lang>/`,
+register the locale in this repo's `astro.config.mjs::locales`,
+then add a third locale to each sidebar group's `translations`
+block.
+
+## Brand assets
+
+Brand tokens come from `@catenahq/contracts/brand`, consumed via
+sibling-directory read (`file:../contracts` in `package.json`). Edit
+`catena/contracts/` and the change shows up on the next build. CI
+checks out catenahq/contracts as a sibling before running npm install.
+
+## CI gates
+
+- unicode hygiene (`npm run check:unicode` -- no em dashes, smart
+  quotes, decorative Unicode per workspace CLAUDE.md)
+- Astro typecheck + Starlight build (catches broken internal links)
