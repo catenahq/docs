@@ -25,7 +25,7 @@ Le RPRP révise et signe chacune. Elles deviennent exécutoires dans votre organ
 ## Jours 1 à 30 -- inventorier
 
 - [ ] **Inventorier vos renseignements personnels** -- le RPRP liste chaque catégorie de renseignements personnels que votre organisation recueille, où elle est stockée (quelle application de la Suite Catena, plus tout système externe), pourquoi, et combien de temps elle est conservée. Catena préremplit l'inventaire pour la couche Suite Catena; vous ajoutez tout ce qui est à l'extérieur (dossiers papier, SaaS externes, dossiers RH).
-- [ ] **Coter la sensibilité de chaque catégorie** -- santé, biométrie, judiciaire, financier sensible = « élevée ». Les catégories de sensibilité élevée déclenchent une EFVP et peuvent justifier des contrôles additionnels.
+- [ ] **Coter la sensibilité de chaque catégorie** -- santé, biométrie, judiciaire, financier sensible = "élevée". Les catégories de sensibilité élevée déclenchent une EFVP et peuvent justifier des contrôles additionnels.
 - [ ] **Confirmer ou ajuster les périodes de conservation par défaut** dans l'EFVP -- la base Catena convient à la plupart des PME, mais votre secteur peut exiger plus long (obligations d'audit, ordres professionnels).
 
 ## Jours 1 à 60 -- former
