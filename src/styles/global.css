@@ -191,3 +191,14 @@
   word-break: normal;
   overflow-wrap: anywhere;
 }
+/* First column holds short labels (service names, modes, keys). The
+   `overflow-wrap: anywhere` above breaks those mid-word when the auto
+   layout starves the column. Keep first-column labels whole -- wrap
+   only at spaces -- and give the column a floor width so it isn't
+   squeezed to one character. */
+.sl-markdown-content table th:first-child,
+.sl-markdown-content table td:first-child {
+  overflow-wrap: normal;
+  word-break: keep-all;
+  min-width: 8rem;
+}
