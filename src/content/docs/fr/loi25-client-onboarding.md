@@ -1,11 +1,11 @@
 ---
 title: "Loi 25 -- la liste de contrôle de votre organisation"
-description: "Ce que votre organisation doit faire à l'interne pour être conforme à la Loi 25, une fois l'infrastructure livrée par Catena. Catena couvre la couche technique; votre responsable de la protection des renseignements personnels (RPRP) couvre la couche organisationnelle."
+description: "Ce que votre organisation doit faire à l'interne pour être conforme à la Loi 25. La Suite Catena fournit les contrôles techniques ; vous les opérez, et votre responsable de la protection des renseignements personnels (RPRP) est responsable de la couche organisationnelle."
 ---
 
 Votre Suite Catena est livrée avec les contrôles Loi 25 au niveau de l'infrastructure -- résidence canadienne, sous-traitants documentés, sauvegardes immuables, MFA, chiffrement, journalisation. C'est nécessaire, mais pas suffisant. **La Loi 25 exige aussi des mesures organisationnelles à l'interne que Catena ne peut pas prendre à votre place.** Cette page est votre liste de contrôle.
 
-> La Loi 25 (la *Loi modernisant des dispositions législatives en matière de protection des renseignements personnels*) exige que le responsable de la protection des renseignements personnels (RPRP) soit une personne à l'interne de votre organisation. Votre opérateur ne peut pas légalement être votre RPRP -- mais il peut livrer tout le reste.
+> La Loi 25 (la *Loi modernisant des dispositions législatives en matière de protection des renseignements personnels*) exige que le responsable de la protection des renseignements personnels (RPRP) soit une personne à l'interne de votre organisation. Aucun fournisseur ni logiciel ne peut légalement être votre RPRP -- mais la Suite Catena vous donne chaque contrôle technique sur lequel le reste de cette page s'appuie.
 
 ---
 
@@ -31,8 +31,8 @@ Le RPRP révise et signe chacune. Elles deviennent exécutoires dans votre organ
 ## Jours 1 à 60 -- former
 
 - [ ] **Former tout le personnel** qui manipule des renseignements personnels. Le RPRP organise; Catena ne donne pas la formation aux employés. Sujets : qu'est-ce qu'un renseignement personnel, quelle est la politique, quand signaler un incident, à qui le rapporter.
-- [ ] **Confirmer que tout le monde a le MFA activé** dans Keycloak. Le RPRP peut demander le rapport `users-without-mfa` à l'opérateur.
-- [ ] **Définir les accès internes par rôle** -- qui a besoin de Nextcloud, qui a besoin d'EspoCRM, etc. Principe du moindre privilège. L'opérateur implante les règles d'accès dans Keycloak selon votre liste.
+- [ ] **Confirmer que tout le monde a le MFA activé** dans Keycloak. Le RPRP peut demander le rapport `users-without-mfa` à Catena.
+- [ ] **Définir les accès internes par rôle** -- qui a besoin de Nextcloud, qui a besoin d'EspoCRM, etc. Principe du moindre privilège. Catena implante les règles d'accès dans Keycloak selon votre liste.
 
 ## Jours 1 à 90 -- communiquer
 
@@ -42,35 +42,36 @@ Le RPRP révise et signe chacune. Elles deviennent exécutoires dans votre organ
 
 ## En continu -- opérer
 
-- [ ] **Tenir le registre des incidents.** Vide, c'est correct; absent, c'est non conforme. Le RPRP le tient (gabarit dans votre trousse documentaire livrée par l'opérateur).
-- [ ] **Répondre aux demandes des personnes concernées** dans les 30 jours. Le RPRP reçoit les demandes à l'adresse publiée et coordonne l'exécution technique avec l'opérateur (exports, suppressions). Documenter chaque demande dans le registre des demandes.
-- [ ] **Révision annuelle** de l'EFVP et des quatre politiques. Coordonnée avec le maintien Loi 25 annuel de Catena si vous y êtes abonné (sinon faites-la vous-même -- Catena peut la coter à la pièce).
-- [ ] **Révision trimestrielle des accès** -- le RPRP, avec Catena, révise qui a accès à quoi et révoque les accès périmés.
+- [ ] **Tenir le registre des incidents.** Vide, c'est correct; absent, c'est non conforme. Le RPRP le tient (gabarit dans votre trousse documentaire livrée par Catena).
+- [ ] **Répondre aux demandes des personnes concernées** dans les 30 jours. Le RPRP reçoit les demandes à l'adresse publiée et exécute la partie technique (exports, suppressions) depuis les outils d'administration des applications. Documenter chaque demande dans le registre des demandes.
+- [ ] **Révision annuelle** de l'EFVP et des quatre politiques. Faites-la vous-même ; une révision payante optionnelle est disponible si vous préférez une seconde paire d'yeux.
+- [ ] **Révision trimestrielle des accès** -- le RPRP révise qui a accès à quoi dans Keycloak (voir [Gérer les utilisateurs et les rôles](/fr/manage-users-and-roles/)) et révoque les accès périmés.
 
 ## Quand un incident survient
 
-1. Aviser le RPRP immédiatement (et l'opérateur : `hello@catena.run` ou votre ligne directe).
-2. L'opérateur fait le triage en 4 h et vous fait rapport.
-3. L'opérateur livre un rapport technique en 72 h.
-4. **Le RPRP décide** s'il faut aviser la CAI et les personnes concernées (l'opérateur rédige le texte d'avis; le RPRP signe et transmet).
+1. Aviser le RPRP immédiatement.
+2. Contenez et triez la partie technique vous-même -- [Se remettre d'une panne](/fr/disaster-recovery/) associe chaque incident à sa réponse (isolez la machine via Tailscale, faites tourner les identifiants, restaurez depuis un instantané sain).
+3. Évaluez la portée : ce qui s'est passé, quand, et de qui les renseignements personnels sont touchés.
+4. **Le RPRP décide** s'il faut aviser la CAI et les personnes concernées, rédige l'avis, signe et transmet.
 5. Inscrire au registre des incidents.
 
-Le détail est dans votre politique de gestion des incidents.
+Vous préférez un coup de main pour trier un incident en direct ? Un soutien optionnel est disponible via votre contact Catena -- ce n'est pas requis pour la conformité. Le détail est dans votre politique de gestion des incidents.
 
-## Ce que l'opérateur ne fait PAS
+## Ce que le logiciel ne fait PAS pour vous
 
 Pour éviter les surprises :
 
-- L'opérateur n'est PAS votre RPRP. Le RPRP est à l'interne de votre organisation. La Loi 25 l'exige.
-- L'opérateur ne forme PAS votre personnel. La formation vous revient (Catena peut référer des formateurs).
-- L'opérateur ne gère PAS vos postes de travail, imprimantes, Microsoft 365 ni votre réseau de bureau. C'est hors périmètre. Un technicien local s'en occupe.
-- L'opérateur ne communique PAS avec la CAI en votre nom. La CAI voit vous, le responsable du traitement.
+- La Suite Catena n'est PAS votre RPRP. Le RPRP est une personne à l'interne de votre organisation. La Loi 25 l'exige.
+- Elle ne forme PAS votre personnel. La formation vous revient (demandez une référence de formateur à votre contact Catena).
+- Elle ne gère PAS vos postes de travail, imprimantes, Microsoft 365 ni votre réseau de bureau. C'est hors périmètre. Un technicien local s'en occupe.
+- Elle ne communique PAS avec la CAI en votre nom. La CAI voit vous, le responsable du traitement.
 
-Ce que l'opérateur FAIT : chaque contrôle technique de cette page, chaque artefact que le RPRP doit signer, chaque triage d'incident et chaque ébauche d'avis.
+Ce que la Suite vous DONNE : chaque contrôle technique de cette page, et les outils pour produire chaque artefact que le RPRP signe et pour mener chaque réponse à incident vous-même.
 
 ## Besoin d'aide
 
-- [Contactez votre opérateur](mailto:hello@catena.run) pour toute question technique.
+- Commencez par la documentation -- [Se remettre d'une panne](/fr/disaster-recovery/) pour les incidents, [Gérer les utilisateurs et les rôles](/fr/manage-users-and-roles/) pour les accès.
+- Vous préférez une aide humaine sur une question technique ? [Joignez votre contact Catena](mailto:hello@catena.run) -- optionnel, pas obligatoire.
 - [Commission d'accès à l'information du Québec](https://www.cai.gouv.qc.ca) pour toute question réglementaire.
 
 ---

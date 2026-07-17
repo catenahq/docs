@@ -6,8 +6,8 @@ description: "Plain-language answer to \"if the VPS burns down, what's lost and"
 Plain-language answer to "if the VPS burns down, what's lost and
 what's recoverable?" Read this once at hand-off so you have a
 mental map before anything goes wrong; the
-[Disaster prevention](/en/disaster-prevention/) and
-[Disaster recovery](/en/disaster-recovery/) pages assume you know
+[Recurring tasks](/en/disaster-prevention/) and
+[Recovering from a failure](/en/disaster-recovery/) pages assume you know
 where things live.
 
 ## The short version
@@ -16,9 +16,9 @@ Your data lives in **at least two places**, and possibly three:
 
 1. **On the VPS itself** -- running databases, app config, file
    uploads for most apps.
-2. **In your restic backup bucket** -- encrypted nightly snapshot of
-   the VPS, in a different city (and ideally a different country)
-   from the VPS.
+2. **In your restic backup bucket** -- an encrypted off-site snapshot
+   of the VPS, written with each backup, in a different city (and
+   ideally a different country) from the VPS.
 3. **In your Nextcloud-S3 bucket** *(only if you use Nextcloud with
    S3 storage)* -- the actual files Nextcloud users upload, in their
    own bucket separate from restic.
@@ -27,7 +27,7 @@ Anything stored only on the VPS is at risk; the VPS can fail or
 be destroyed. Anything in restic + on the VPS is safe against any
 single thing breaking. Anything in restic *or* Nextcloud-S3
 specifically can also fail -- but those are independent failures
-covered by [Disaster prevention](/en/disaster-prevention/).
+covered by [Recurring tasks](/en/disaster-prevention/).
 
 ## On the VPS
 
@@ -41,13 +41,13 @@ The day-to-day data that makes your apps work:
 - **File uploads** -- for apps that store files locally (Outline
   attachments, Rocket.Chat uploads, n8n workflow data). Lives in
   Docker volumes.
-- **Nightly Postgres dumps** -- a plain-SQL copy of every database,
-  staged on the VPS just before each backup runs. A safety net if
-  the raw database volume is corrupted between backups.
+- **Postgres dumps** -- a plain-SQL copy of every database, staged on
+  the VPS just before each backup runs. A safety net if the raw
+  database volume is corrupted between backups.
 
 ## In your restic backup bucket
 
-Every night, everything in the previous section (plus VPS system
+With each backup, everything in the previous section (plus VPS system
 files like SSH host keys and firewall config) is encrypted and
 uploaded to **your** S3 bucket -- not ours. You own the
 bucket, you pay the bill, you control retention.
@@ -57,7 +57,7 @@ older expires automatically.
 
 The bucket is encrypted end-to-end with your **backup encryption
 password** -- one of the three items in your recovery keyset (see
-[Disaster prevention](/en/disaster-prevention/)). Without that
+[Recurring tasks](/en/disaster-prevention/)). Without that
 password, the bucket is unreadable ciphertext -- even to us. With it,
 your server can be rebuilt on any cloud, any time.
 
@@ -98,10 +98,10 @@ separate "what if" plus the mitigation already in place.
 
 | What happens | What's lost | What's already in place | What you can do |
 |---|---|---|---|
-| Your Nextcloud-S3 bucket has a multi-day provider outage | Read/write of files (the server is fine; only file open/upload fails) | We can verify the issue is at the bucket level via monitoring | Wait it out -- the files come back when the provider recovers; tell your team uploads are paused |
-| Bucket credentials leaked, attacker writes/deletes objects | Some or all files in the bucket | Object versioning + 30-day retention rule on the bucket means deleted objects are recoverable for 30 days | Get in touch immediately; we rotate credentials and roll back the affected objects |
-| You accidentally delete the bucket from the provider console | Everything in the bucket once the provider's grace period ends | Most providers have a 7-90 day account-level grace period | Contact provider support immediately to recover the bucket within the grace window; get in touch |
-| Nextcloud database (on the server) is restored from yesterday's backup but bucket has today's writes | New files added today appear as orphans in the bucket | Nextcloud's `occ files:scan` rebuilds the database-to-file mapping from what's in the bucket | Ask us to run a file scan after the restore; we handle the technical part |
+| Your Nextcloud-S3 bucket has a multi-day provider outage | Read/write of files (the server is fine; only file open/upload fails) | Gatus probes flag the failure as bucket-level, not server-level | Wait it out -- the files come back when the provider recovers; tell your team uploads are paused |
+| Bucket credentials leaked, attacker writes/deletes objects | Some or all files in the bucket | Object versioning + 30-day retention rule on the bucket means deleted objects are recoverable for 30 days | Rotate the bucket keys in the provider console and update them in catena-admin Settings, then roll the affected objects back to a pre-attack version |
+| You accidentally delete the bucket from the provider console | Everything in the bucket once the provider's grace period ends | Most providers have a 7-90 day account-level grace period | Contact provider support immediately to recover the bucket within the grace window |
+| Nextcloud database (on the server) is restored from yesterday's backup but bucket has today's writes | New files added today appear as orphans in the bucket | Nextcloud's `occ files:scan` rebuilds the database-to-file mapping from what's in the bucket | Run `occ files:scan` from a shell on the box (SSH in over Tailscale) to re-link the orphans |
 | Provider terminates your account | Everything in that bucket | Only a second backup bucket at a different provider protects you here | If you've set up a [second backup bucket](/en/disaster-prevention/#5-optional--add-a-client-owned-second-backup-bucket), you're covered. If not -- this is the worst case |
 
 The takeaway: the Nextcloud-S3 bucket is independent of the VPS,
@@ -109,7 +109,7 @@ which is good (the VPS dying doesn't take it with) and risky (the
 bucket can fail without the VPS noticing). The mitigations above
 cover the common cases; the catastrophic cases (bucket deletion,
 account termination) are exactly what the **second backup bucket**
-pattern in [Disaster prevention](/en/disaster-prevention/) is for.
+pattern in [Recurring tasks](/en/disaster-prevention/) is for.
 
 ## Externally hosted (not on your VPS, not in your buckets)
 
@@ -120,15 +120,15 @@ on your VPS:
 - **Cloudflare tunnel configuration** -- at Cloudflare, in your CF
   account.
 - **Tailscale tenant + ACL rules** -- at Tailscale, in the Tailscale
-  account we manage for the persistent administration back-door
-  -- see [How this software suite works](/en/how-this-stack-works/).
+  account you own -- your persistent administration path onto the box,
+  see [How this software suite works](/en/how-this-stack-works/).
 - **SMTP provider account** -- at your transactional email provider
   (Resend / Brevo / etc.) -- controls who can send mail "from" your
   domain.
 
 These are recreated easily if any one of them fails -- you log in to
 the third-party console and click. The
-[Disaster recovery](/en/disaster-recovery/) page lists the recovery
+[Recovering from a failure](/en/disaster-recovery/) page lists the recovery
 path for each.
 
 ## Not backed up (by design)

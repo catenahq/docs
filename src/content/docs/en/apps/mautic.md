@@ -26,7 +26,7 @@ Mautic community edition does not ship native OIDC. Local username/password is t
 
 ### SMTP and sending reputation
 
-Mautic does NOT send email directly. It hands every outbound to your managed SMTP relay (see the [email providers guide](/en/guides/email-providers/) for recommended choices). Sending reputation, SPF/DKIM/DMARC, and bounce handling all live at the relay layer. Configure SMTP under **Settings** -> **Configuration** -> **Email Settings** with your relay's credentials before the first campaign goes out.
+Mautic does NOT send email directly. It hands every outbound to your managed SMTP relay (see the [provider accounts guide](/en/guides/provider-accounts/) for recommended senders). Sending reputation, SPF/DKIM/DMARC, and bounce handling all live at the relay layer. Configure SMTP under **Settings** -> **Configuration** -> **Email Settings** with your relay's credentials before the first campaign goes out.
 
 ### Lead-magnet content and drip-campaign copy
 

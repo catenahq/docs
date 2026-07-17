@@ -1,20 +1,29 @@
 ---
-title: "Disaster prevention: what to set up so recovery is possible"
-description: "This page is a checklist of things to do **before** anything goes"
+title: "Recurring tasks"
+description: "The short checklist of what to do at onboarding, once a month, and once a year so recovery is always possible."
 ---
 
-This page is a checklist of things to do **before** anything goes
-wrong, so that if something does, you're on the "annoying Tuesday"
-side of the line instead of the "data loss" side. The companion page
-is [Disaster recovery](/en/disaster-recovery/), which covers what to do
-once something has broken.
+These are the tasks that keep your setup recoverable. Do them
+**before** anything goes wrong, so that if something does, you're on
+the "annoying Tuesday" side of the line instead of the "data loss"
+side. The companion page, [Recovering from a failure](/en/disaster-recovery/),
+covers what to do once something has broken.
 
-The two pages are written to be read in order -- prevention first, then
-recovery so you know what the prevention is protecting you against.
+**When to do each:**
+
+- **At onboarding (once):** save your recovery keyset (1), get your SSH
+  key off your laptop (2), confirm bucket location (3) and the
+  immutable mirror (4), decide on a second backup bucket (5), and
+  confirm the recovery path end to end (7).
+- **Once a month:** a quick glance that backups are still landing and
+  nothing in your keyset has drifted.
+- **Once a year:** re-confirm the immutable mirror, the second bucket
+  (if you have one), and that your saved keyset still matches what is
+  installed (6).
 
 > This page is written for non-technical readers -- owners, managers,
 > office staff. No terminal commands required. The companion
-> [Disaster recovery](/en/disaster-recovery/) and
+> [Recovering from a failure](/en/disaster-recovery/) and
 > [Rebuilding your server from backup](/en/self-restore/) pages map
 > each incident to its recovery path.
 
@@ -24,17 +33,18 @@ Your software suite is designed so that the **public path** (Cloudflare Tunnel
 -> your apps) and the **admin path** (Tailscale -> SSH) are independent
 of each other. Breaking one doesn't break the other. Similarly, your
 **server** and your **backup bucket** should be at different companies,
-so a single provider outage can't take both down. (Setting that up is
-a one-time hand-off step -- confirm with us that it's in place if
-you're not sure.) Prevention is mostly
+so a single provider outage can't take both down. (You set that up at
+install; if you're not sure it's in place, the backup repo endpoint is
+shown in the catena-admin Settings panel.) Prevention is mostly
 about **not collapsing those independences**.
 
 ## Checklist -- do these at hand-off, then once a year
 
 ### 1. Save your recovery keyset
 
-At hand-off we gave you a small set of credentials. Three of them
-make up your **recovery keyset** -- the only things needed to rebuild
+The install surfaces a small set of credentials once (and they are
+re-viewable any time from the catena-admin recovery-keyset panel).
+Three of them make up your **recovery keyset** -- the only things needed to rebuild
 your server from backup, and the only things that live *outside* the
 encrypted backup:
 
@@ -88,23 +98,23 @@ one building at once. If your server lives in Beauharnois, your backup
 bucket should be in Toronto, Montreal-West, Frankfurt, or any other
 location that would survive the same local disaster.
 
-If you're not sure where your backup bucket is, ask us. This is a
-one-time question with a simple answer ("eu-west-1" /
-"us-east-005" / etc.).
+If you're not sure where your backup bucket is, check catena-admin
+Settings -- the backup repo endpoint and region are shown there
+("eu-west-1" / "us-east-005" / etc.).
 
 ### 4. Confirm your software suite has a weekly immutable-bucket snapshot
 
 If a ransomware attack reaches your server, the attacker has access
-to the same backup encryption password and storage keys the nightly
-backup uses. With those, they could in principle delete your
+to the same backup encryption password and storage keys each backup
+uses. With those, they could in principle delete your
 historical snapshots before encrypting the live disk -- turning a
 recoverable incident into an unrecoverable one.
 
 The defence: your software suite ships a **weekly mirror** that copies
 your live (mutable) backup bucket to a SEPARATE bucket with
-Object Lock / WORM enabled. The live bucket stays normal so the
-nightly backup's clean-up step works without interference; the
-weekly mirror takes a snapshot of the bucket at sync time and
+Object Lock / WORM enabled. The live bucket stays normal so each
+backup's clean-up step works without interference; the
+weekly mirror takes a snapshot of the live bucket at sync time and
 stores it where it cannot be deleted or overwritten until the
 retention window (typically 30 days) expires.
 
@@ -113,24 +123,25 @@ in the live bucket, last week's mirror is still in immutable
 storage, recoverable to your last good week. Worst-case data-loss
 window is one week, not "everything."
 
-Ask us to confirm two things:
+Confirm two things yourself:
 
-1. The weekly immutable mirror is running (last week's copy
-   completed successfully).
+1. The weekly immutable mirror is running -- catena-admin
+   **Actions -> Check backup coverage** shows whether last week's copy
+   completed.
 2. The immutable bucket lives at a **different provider** from the
-   live backup bucket. If the live bucket's provider is the one
-   compromised, putting the mirror at the same place defeats the
-   point.
+   live backup bucket. You set both, so this is a check against your
+   own records. If the live bucket's provider is the one compromised,
+   putting the mirror at the same place defeats the point.
 
 The mirror runs once a week, before any update window, on a
 fixed schedule that does not depend on whether updates fire that
 week. It is fail-soft: a misconfigured immutable bucket cannot block
-the daily backup -- the daily run only touches the live bucket.
+your backups -- the backup run only touches the live bucket.
 
 ### 5. Optional -- add a client-owned second backup bucket
 
-The immutable mirror in section 4 is configured and run by us on a
-fixed schedule. If you want a second backup line that **you** own
+The immutable mirror in section 4 runs on a fixed schedule set at
+install. If you want a second backup line that **you** own
 outright -- separate billing, separate provider, credentials in your
 own custody -- you can add a second backup bucket yourself.
 
@@ -139,7 +150,7 @@ in section 4 already protects against ransomware and
 account-takeover). Worth doing when:
 
 - You want the encryption password and storage keys entirely in
-  your custody, with no involvement from us in the recovery path.
+  your custody, on a backup line nobody else has ever touched.
 - Compliance or contractual obligations require an explicitly
   client-owned off-site copy.
 - You want geographic redundancy beyond the mirror's provider
@@ -187,10 +198,9 @@ providers.
 Make sure the bucket lives in a different city -- and ideally a
 different country -- from your server and your primary backup bucket.
 
-**Hand the credentials to us** through whatever encrypted channel
-you've used before (do not paste them in plain email or Slack). We
-wire the second bucket into the backup schedule and confirm the next
-run is writing to it.
+**Add the second bucket in catena-admin Settings** (backup vendor
+credentials + repo), then confirm the next run writes to it with
+**Actions -> Check backup coverage**.
 
 **Save the credentials in your password manager**, alongside the
 primary bucket entry, labelled clearly. Use the same backup
@@ -215,9 +225,9 @@ still complete and correct in your password manager:
 - the storage keys, and
 - the backup encryption password.
 
-If any of them was rotated (by you, or by us with a heads-up to
-you), update the saved copy the same day. A keyset that is out of
-date is as good as lost the day you need it.
+If any of them was rotated (for example with catena-admin's
+rotate-backup-password action), update the saved copy the same day. A
+keyset that is out of date is as good as lost the day you need it.
 
 ### 7. Confirm your recovery path once
 
@@ -228,10 +238,11 @@ an incident:
 - Check that all three keyset items are saved in your password
   manager, each as its own entry, and that you can actually open
   them.
-- For the strongest assurance, ask us to run a restore drill: we
-  rebuild your server from your backup onto a throwaway server and
-  confirm your data comes back. This is part of the disaster-recovery
-  drill we run regularly anyway.
+- For the strongest assurance, run a restore drill yourself:
+  `catena recover` onto a throwaway VPS and confirm your data comes
+  back. See [Rebuilding your server from backup](/en/self-restore/).
+  Do this once a year and a real recovery is muscle memory, not a
+  first attempt.
 
 If anything is missing or you're unsure, sort it out now -- it's
 worth 15 minutes of calm time.
@@ -253,11 +264,11 @@ When prevention is in place, a three-month-from-now you can answer
       same city as my server).
 - [ ] My software suite has a weekly immutable-bucket mirror configured
       (separate provider from the live backup bucket, last weekly run
-      completed) -- confirmed with us.
+      completed) -- confirmed in catena-admin.
 - [ ] I have decided whether I need a second backup location -- if yes,
-      we have set it up.
+      I've added it.
 - [ ] I've confirmed my recovery keyset is complete in my password
-      manager (and, if I wanted the strongest assurance, asked for a
+      manager (and, if I wanted the strongest assurance, ran a
       restore drill).
 
 If any of those are "no," work on them this week. The

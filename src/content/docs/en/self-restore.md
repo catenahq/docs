@@ -5,7 +5,7 @@ description: "If your server is lost, it can be rebuilt from your backup using o
 
 If your server is ever lost -- hardware failure, a datacentre
 incident, an accidental wipe, ransomware -- it can be rebuilt from
-your nightly backup. You do not have to reassemble anything by hand,
+your latest backup. You do not have to reassemble anything by hand,
 and you do not have to remember any of the internal settings or
 passwords your applications use.
 
@@ -40,16 +40,18 @@ you have to keep yourself.
 
 ## How a rebuild happens
 
-The rebuild is something we do with you, and it is quick:
+You run the rebuild yourself with a single command, and it is quick:
 
-1. A fresh server is prepared.
-2. Your latest backup is restored onto it using your recovery keyset.
+1. Rent a fresh VPS (any provider).
+2. From your Catena checkout, run `catena recover`. It prompts for your
+   recovery keyset, then prepares the box, restores your latest
+   snapshot, brings the apps back, and validates.
 3. Your applications come back with their data and settings intact.
 
-Your part is simply to have kept your recovery keyset safe and to
-reach your Catena contact when you need it. The moment you realize
-the server is gone, get in touch -- rebuilding from your backup is a
-routine operation, not a special project.
+Your only job ahead of time is keeping your recovery keyset safe. The
+moment you realize the server is gone, you can start the rebuild -- it
+is a routine command, not a special project. Prefer a hand the first
+time you run it? Reach your Catena contact -- optional, not required.
 
 ## Why each part of the keyset matters
 
@@ -61,9 +63,9 @@ with the keyset) can read it:
 - The **repository location** says where to look.
 
 All three are required together. Without the encryption password,
-the backup is unreadable ciphertext even to us -- which is exactly
+the backup is unreadable ciphertext to anyone -- which is exactly
 why you hold it, and why losing it is the one case that cannot be
-recovered. [Disaster prevention](/en/disaster-prevention/) walks
+recovered. [Recurring tasks](/en/disaster-prevention/) walks
 through how to store the keyset so this never happens.
 
 ## What comes back, and what you might lose
@@ -76,7 +78,7 @@ The only thing at risk is whatever changed between the last backup
 and the moment the server was lost -- minutes to a day, depending on
 your backup schedule. [Where is my data](/en/where-is-my-data/)
 explains exactly what lives where, and the
-[Disaster recovery](/en/disaster-recovery/) page maps each "what
+[Recovering from a failure](/en/disaster-recovery/) page maps each "what
 broke" situation to its recovery path.
 
 ## If you use Nextcloud with S3 file storage
@@ -93,7 +95,7 @@ the same bucket, every file is there.
 If your server is down and you need these instructions to bring it
 back, the documentation site will not help you if it is on the same
 path. Save the pages you would want during an incident -- this one
-plus [Disaster recovery](/en/disaster-recovery/) and
+plus [Recovering from a failure](/en/disaster-recovery/) and
 [Where is my data](/en/where-is-my-data/) -- to your laptop with your
 browser's "Save Page As..." (or print them to PDF) at hand-off, and
 refresh the copy once a year.

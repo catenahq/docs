@@ -1,70 +1,138 @@
 ---
 title: Create your provider accounts
-description: Step-by-step -- create the external provider accounts (email, Cloudflare, Tailscale, OVH, eazybackup, Resend) that a typical catena deployment needs.
+description: Create the external accounts a catena deployment relies on -- a VPS, Cloudflare, Tailscale, S3 backup storage, and an SMTP relay -- all kept in your name.
 ---
 
-A typical catena deployment leans on a handful of external accounts that stay in your name. Walk through what you can; we will cover the rest together at the install meeting.
+A catena deployment leans on a handful of external accounts that stay
+in **your** name and billing. You own them, and the installer wires
+them into the server for you -- you just create the accounts first and
+feed their credentials to the install.
 
-## 1. Email provider: choose one
+As you go, record each credential in your password manager. The exact
+values the install needs are listed under each step and gathered in
+[Credentials to record](#credentials-to-record) at the end.
 
-Catena does not host email; it integrates with the provider you pick. Open the [email provider comparison](/en/guides/email-providers/) and choose one of the five we recommend (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence), then create the account in your business name. Pick the mailbox plan that matches your team size; we wire the DNS records and the transactional sender for you at install.
+## 1. Rent a VPS
 
-*Time: 15-30 minutes (account creation + initial domain verification).*
+The server that runs everything. Order one in your business name from a
+provider you are comfortable with:
 
-[![Email provider selection walkthrough screenshot](/img/guides/provider-accounts/email.en.png)](/img/guides/provider-accounts/email.en.png)
+- **[Hetzner](https://www.hetzner.com/cloud)** -- low cost, EU + US
+  regions.
+- **[OVHcloud](https://www.ovhcloud.com/en-ca/vps/)** -- flat pricing,
+  Beauharnois (Quebec) keeps data in Canada.
+- **[Servarica](https://servarica.com/)** -- Canadian-owned, generous
+  disk.
+- **[DigitalOcean](https://www.digitalocean.com/products/droplets)** --
+  simple console, wide region choice.
 
-[Compare the six providers ->](/en/guides/email-providers/)
+Pick a region in the jurisdiction your data should stay in. Size it for
+your headcount and the apps you plan to run -- most providers let you
+resize the VPS later if you outgrow it.
 
-## 2. Cloudflare: create an API key
+*Record: the provider login, the server's public IP, and the SSH
+access details (or the root password if that is all the provider
+gives you at first).*
 
-[Sign up](https://dash.cloudflare.com/sign-up) with the email address you want on the invoice and add your business domain to Cloudflare DNS (free tier is enough). Then create an API token scoped to your zone so the install can publish DNS records and the public tunnel on your behalf.
+## 2. Cloudflare: account + API token
 
-*Time: 10-15 minutes (DNS propagation).*
+Cloudflare is your public front door and issues the private tunnel that
+keeps the server's real address hidden.
 
-[![Cloudflare API token walkthrough screenshot](/img/guides/provider-accounts/cloudflare.en.png)](/img/guides/provider-accounts/cloudflare.en.png)
+1. [Sign up](https://dash.cloudflare.com/sign-up) with the email you
+   want on the invoice.
+2. Add your business domain to Cloudflare DNS (the free tier is
+   enough).
+3. Create an API token scoped to your zone so the install can publish
+   DNS records and the tunnel on your behalf.
 
-[Full Cloudflare docs ->](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
+Cloudflare's own guide walks through token creation:
+[Create an API token](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/).
 
-## 3. Tailscale: create an OAuth client ID
+*Record: the API token.*
 
-[Start a tailnet](https://login.tailscale.com/start) using SSO from your existing email provider (Google, Microsoft, GitHub). Then create an OAuth client so the install can add the new server to your private network without you sharing a personal login.
+## 3. Tailscale: OAuth client
 
-*Time: 5-10 minutes.*
+Tailscale is the private network we use to reach the server for updates
+and maintenance. Public SSH stays closed.
 
-[![Tailscale OAuth client walkthrough screenshot](/img/guides/provider-accounts/tailscale.en.png)](/img/guides/provider-accounts/tailscale.en.png)
+1. [Start a tailnet](https://login.tailscale.com/start) using SSO from
+   an identity you already have (Google, Microsoft, GitHub).
+2. Create an OAuth client so the install can join the new server to
+   your network without you sharing a personal login.
 
-[Full Tailscale docs ->](https://tailscale.com/kb/1215/oauth-clients)
+Tailscale's own guide:
+[OAuth clients](https://tailscale.com/kb/1215/oauth-clients/).
 
-## 4. OVH (or another VPS provider): rent a VPS
+*Record: the OAuth client ID and secret.*
 
-[Create an OVH account](https://www.ovhcloud.com/en-ca/vps/) and order a VPS in your name. Not sure which size fits your team? See the [sizing guide](/en/sizing/) for a quick recommendation by headcount and workload. Beauharnois (Quebec) is the default region so your data stays in Canada.
+## 4. S3 backup storage
 
-*Time: 30 minutes (account verification can stretch on first sign-up).*
+Your off-site, encrypted backups land in an object-storage bucket you
+own -- separate provider from the VPS, so one outage can't take out
+both. **The bucket must support S3 Object Lock and versioning** so a
+snapshot cannot be silently deleted or overwritten, even by someone
+with valid keys.
 
-[![OVH VPS order walkthrough screenshot](/img/guides/provider-accounts/ovh.en.png)](/img/guides/provider-accounts/ovh.en.png)
+Providers that support Object Lock + versioning:
 
-[Full OVH docs ->](https://help.ovhcloud.com/csm/en-ca-vps-getting-started?id=kb_article_view&sysparm_article=KB0047708)
+- **[eazybackup](https://eazybackup.ca/)** -- Canadian-owned, keeps
+  offsite backups in Canada. Default recommendation when the VPS is
+  also Canadian.
+- **[Backblaze B2](https://www.backblaze.com/cloud-storage)** -- low
+  cost, S3-compatible, US-based.
+- **[IDrive e2](https://www.idrive.com/e2/)** -- S3-compatible,
+  competitive pricing, multiple regions.
+- **[Cloudflare R2](https://www.cloudflare.com/developer-platform/products/r2/)**
+  -- no egress fees, US-based.
 
-## 5. eazybackup: create immutable S3 backup storage
+Create the bucket with **Object Lock and versioning enabled at
+creation** (most providers gate this behind a checkbox you cannot tick
+later). Keep it in a different city -- ideally a different country --
+from your server.
 
-[Open an eazybackup account](https://eazybackup.ca/) and create an S3-compatible bucket with Object Lock and versioning turned on. eazybackup is Canadian-owned and runs in Ottawa, so your offsite backups stay in Canada and cannot be silently overwritten or deleted.
+*Record: the endpoint URL, the bucket name, the access key, and the
+secret key.*
 
-*Time: 15 minutes.*
+## 5. SMTP relay for automated email
 
-[![eazybackup signup walkthrough screenshot](/img/guides/provider-accounts/eazybackup.en.png)](/img/guides/provider-accounts/eazybackup.en.png)
+Two different things get called "email", and they need different setup:
 
-[Full eazybackup docs ->](https://eazybackup.ca/)
+- **Mailboxes** (the inbox your team reads and replies from). You can
+  run a mail server as one of the apps, or integrate the provider you
+  already use. Either way is fine.
+- **Automated sending** (password-reset links, calendar invites,
+  ticket notifications, campaign email). This is where an **external,
+  independent SMTP sending service is required.** A VPS sending its own
+  transactional mail lands in spam -- deliverability depends on a
+  dedicated sender's reputation, so catena always relays automated
+  email through one.
 
-## 6. SMTP relay: configure a sender for automated email
+Pick a transactional sender and add your domain to it:
 
-Catena does not run a mail server; it relays automated email (password resets, calendar invites, ticket notifications) through a sender of your choice. Default: [Resend](https://resend.com/) (one-click setup -- add your domain, drop the DNS records into Cloudflare, generate an API key). Alternatives: [Brevo](https://www.brevo.com/) (generous free tier), or your existing transactional-email provider.
+- **[Resend](https://resend.com/)** -- default. Add your domain, drop
+  the DNS records it gives you into Cloudflare, generate an API key.
+  Guide: [Resend domains](https://resend.com/docs/dashboard/domains/introduction).
+- **[Brevo](https://www.brevo.com/)** -- generous free tier.
+- Or your existing transactional-email provider, if you already have
+  one.
 
-*Time: 10-20 minutes with Resend (DNS verification round-trip).*
+*Record: the SMTP host, port (usually 587), username, password or API
+key, and the from-address you verified.*
 
-[![Resend domain + API key walkthrough screenshot](/img/guides/provider-accounts/resend.en.png)](/img/guides/provider-accounts/resend.en.png)
+## Credentials to record
 
-[Full Resend docs ->](https://resend.com/docs/dashboard/domains/introduction)
+Before you run the install, have these in your password manager, each
+as its own entry -- the install prompts for them:
 
----
+| Account | What to record |
+|---|---|
+| VPS | provider login, server IP, SSH access |
+| Cloudflare | API token |
+| Tailscale | OAuth client ID + secret |
+| S3 backup | endpoint, bucket, access key, secret key |
+| SMTP relay | host, port, username, password/API key, from-address |
 
-The further you get through this list, the faster the install meeting goes. If you only have time to create the accounts before we meet, that is fine too: we will walk through every step together on the call.
+With all of these in hand the install runs start to finish on its own.
+Prefer a hand walking through it? Reach your Catena contact -- it is an
+option, not a requirement.

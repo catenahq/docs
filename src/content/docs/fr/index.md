@@ -23,29 +23,34 @@ du quotidien.
 - **[Où vivent vos données](/fr/where-is-my-data/)** -- ce qui est
   sur le VPS, ce qui est dans votre seau S3, ce qui est perdu si le
   VPS prend feu.
-- **[Fichiers à ne pas toucher](/fr/do-not-touch/)** -- les
-  modifications manuelles sont écrasées au prochain push de votre
-  opérateur. Voici ce qu'il faut laisser tranquille.
+- **[Fichiers à ne pas toucher](/fr/do-not-touch/)** -- le VPS opère
+  la machine entière et gère ses propres fichiers. Voici la seule
+  règle à suivre.
 
-## Tâches quotidiennes
+## Au quotidien
 
-- **[Ajouter / retirer des utilisateurs](/fr/how-to-add-users/)** --
-  marche-à-suivre Keycloak pour l'arrivée du personnel +
-  réinitialisations.
-- **[Déployer des applications (accès par département)](/fr/how-to-deploy-apps/)**
-  -- restreindre les nouvelles applications à des équipes
-  spécifiques avec des labels compose.
+- **[Gérer les utilisateurs et les rôles](/fr/manage-users-and-roles/)**
+  -- créez les comptes dans Keycloak et attribuez le rôle qui décide
+  des applications accessibles à chaque personne.
+- **[Gérer les applications](/fr/manage-apps/)** -- déployez de
+  nouvelles applications et posez les étiquettes qui filtrent l'accès
+  et publient l'URL.
 - **[Ce que vous pouvez faire vous-même](/fr/self-service/)** --
-  tâches quotidiennes qui n'ont jamais besoin de votre opérateur.
+  tâches quotidiennes qui n'ont jamais besoin de nous joindre.
 
-## Gestion des sinistres
+## Tâches
 
-- **[Prévention](/fr/disaster-prevention/)** -- comment la suite
-  réduit l'impact des défaillances courantes.
-- **[Reprise](/fr/disaster-recovery/)** -- ce qui se passe quand le
-  VPS est perdu.
-- **[Auto-restauration](/fr/self-restore/)** -- le flux à un script
-  que vous pouvez lancer vous-même pour démarrer un remplacement.
+- **[Tâches récurrentes](/fr/disaster-prevention/)** -- la courte
+  liste à faire à l'intégration, une fois par mois et une fois par
+  an pour que la reprise reste toujours possible.
+- **[Se remettre d'une panne](/fr/disaster-recovery/)** -- ce qui se
+  passe, et ce que vous faites, quand le VPS est perdu.
+- **[Reconstruire votre serveur vous-même](/fr/self-restore/)** -- le
+  flux à un script que vous pouvez lancer pour démarrer un
+  remplacement.
+- **[Archive courriel](/fr/email-archive/)** -- comment l'historique
+  de vos courriels est capté dans vos sauvegardes, et comment
+  l'activer.
 
 ## Vos sous-domaines
 

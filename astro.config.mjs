@@ -74,24 +74,21 @@ export default defineConfig({
           label: "Setup guides",
           translations: { fr: "Guides de configuration" },
           items: [
-            { slug: "guides/communications-platforms" },
-            { slug: "guides/email-providers" },
             { slug: "guides/provider-accounts" },
-            { slug: "guides/dns-hardening" },
           ],
         },
         {
           label: "Day-to-day",
           translations: { fr: "Au quotidien" },
           items: [
-            { slug: "how-to-add-users" },
-            { slug: "how-to-deploy-apps" },
+            { slug: "manage-users-and-roles" },
+            { slug: "manage-apps" },
             { slug: "self-service" },
           ],
         },
         {
-          label: "Disaster handling",
-          translations: { fr: "Sinistres" },
+          label: "Tasks",
+          translations: { fr: "Tâches" },
           items: [
             { slug: "disaster-prevention" },
             { slug: "disaster-recovery" },
@@ -114,9 +111,6 @@ export default defineConfig({
           translations: { fr: "Référence" },
           items: [
             { slug: "do-not-touch" },
-            { slug: "sizing" },
-            { slug: "how-to-pick-a-scheduler" },
-            { slug: "nextcloud-apps-vs-suite" },
           ],
         },
         {

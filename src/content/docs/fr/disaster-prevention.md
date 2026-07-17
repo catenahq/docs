@@ -1,23 +1,32 @@
 ---
-title: "Prévention des sinistres : ce qu'il faut mettre en place pour que la récupération soit possible"
-description: "Cette page est une liste de vérification de ce qu'il faut faire"
+title: "Tâches récurrentes"
+description: "La courte liste de ce qu'il faut faire à l'intégration, une fois par mois et une fois par an pour que la reprise reste toujours possible."
 ---
 
-Cette page est une liste de vérification de ce qu'il faut faire
-**avant** que quelque chose tourne mal, pour que si cela arrive, vous
-soyez du côté "mardi pénible" et non du côté "perte de données".
-La page compagne est [Reprise après sinistre](/fr/disaster-recovery/),
-qui couvre ce qu'il faut faire une fois que quelque chose est déjà
-cassé.
+Voici les tâches qui gardent votre installation récupérable.
+Faites-les **avant** que quelque chose tourne mal, pour que si cela
+arrive, vous soyez du côté "mardi pénible" et non du côté "perte de
+données". La page compagne, [Se remettre d'une panne](/fr/disaster-recovery/),
+couvre ce qu'il faut faire une fois que quelque chose est déjà cassé.
 
-Les deux pages sont écrites pour être lues dans l'ordre : la
-prévention d'abord, puis la récupération pour que vous sachiez contre
-quoi la prévention vous protège.
+**Quand faire chacune :**
+
+- **À l'intégration (une fois) :** sauvegardez votre jeu de clés de
+  récupération (1), sortez votre clé SSH de votre portable (2),
+  confirmez l'emplacement du compartiment (3) et le miroir immuable
+  (4), décidez d'un second compartiment (5), et confirmez le chemin de
+  récupération de bout en bout (7).
+- **Une fois par mois :** un coup d'œil rapide pour vérifier que les
+  sauvegardes arrivent toujours et que rien dans votre jeu de clés n'a
+  bougé.
+- **Une fois par an :** reconfirmez le miroir immuable, le second
+  compartiment (si vous en avez un), et que votre jeu de clés
+  sauvegardé correspond toujours à ce qui est installé (6).
 
 > Cette page est écrite pour des lectrices et lecteurs non
 > techniques -- propriétaires, gestionnaires, personnel de bureau.
 > Aucune commande terminal n'est requise. Les pages compagnes
-> [Reprise après sinistre](/fr/disaster-recovery/) et
+> [Se remettre d'une panne](/fr/disaster-recovery/) et
 > [Reconstruire votre serveur à partir de la sauvegarde](/fr/self-restore/)
 > associent chaque incident à sa voie de récupération.
 
@@ -29,18 +38,21 @@ d'administration** (Tailscale -> SSH) sont indépendantes l'une de
 l'autre. Casser l'une ne casse pas l'autre. De même, votre **serveur**
 et votre **compartiment de sauvegarde** devraient être chez des
 entreprises différentes, de sorte qu'une seule panne de fournisseur
-ne peut pas faire tomber les deux. (C'est une étape ponctuelle de la
-prise en main -- confirmez avec nous que c'est en place si vous
-n'êtes pas certain.) La prévention consiste surtout à **ne pas
+ne peut pas faire tomber les deux. (Vous configurez cela à
+l'installation ; si vous n'êtes pas certain que c'est en place,
+l'endpoint du dépôt de sauvegarde est affiché dans le panneau
+catena-admin Settings.) La prévention consiste surtout à **ne pas
 faire s'effondrer ces indépendances**.
 
 ## Liste de vérification -- à faire à la remise, puis une fois par an
 
 ### 1. Sauvegardez votre jeu de clés de récupération
 
-Lors de la remise, nous vous avons donné un petit ensemble
-d'identifiants. Trois d'entre eux composent votre **jeu de clés de
-récupération** -- les seules choses nécessaires pour reconstruire
+L'installation présente une fois un petit ensemble d'identifiants (et
+ils sont reconsultables à tout moment depuis le panneau de jeu de clés
+de récupération de catena-admin). Trois d'entre eux composent votre
+**jeu de clés de récupération** -- les seules choses nécessaires pour
+reconstruire
 votre serveur à partir de la sauvegarde, et les seules qui vivent
 *à l'extérieur* de la sauvegarde chiffrée :
 
@@ -101,14 +113,14 @@ Beauharnois, votre compartiment de sauvegarde devrait être à Toronto,
 survivrait à la même catastrophe locale.
 
 Si vous ne savez pas où se trouve votre compartiment de sauvegarde,
-demandez-nous. C'est une question ponctuelle avec une réponse simple
-("eu-west-1" / "us-east-005" / etc.).
+consultez catena-admin Settings -- l'endpoint du dépôt et la région y
+sont affichés ("eu-west-1" / "us-east-005" / etc.).
 
 ### 4. Confirmez que votre infrastructure a un instantané hebdomadaire dans un compartiment immuable
 
 Si une attaque par rançongiciel atteint votre serveur, l'attaquant a
 accès au même mot de passe de chiffrement de la sauvegarde et aux
-mêmes clés de stockage que la sauvegarde nocturne. Avec ça, il
+mêmes clés de stockage que chaque sauvegarde. Avec ça, il
 pourrait en principe supprimer vos sauvegardes historiques avant
 de chiffrer le disque actif -- transformant un incident
 récupérable en perte irréversible.
@@ -117,7 +129,7 @@ La défense : votre infrastructure embarque un **miroir
 hebdomadaire** qui copie votre compartiment de sauvegarde actif
 (mutable) vers un compartiment SÉPARÉ avec Object Lock / WORM
 activé. Le compartiment actif reste normal pour que l'étape de
-nettoyage de la sauvegarde nocturne fonctionne sans interférence ;
+nettoyage de chaque sauvegarde fonctionne sans interférence ;
 le miroir hebdomadaire capture l'état du compartiment au moment de
 la synchro et le range là où il ne peut être ni supprimé ni
 écrasé avant l'expiration de la fenêtre de rétention
@@ -129,26 +141,28 @@ stockage immuable, récupérable jusqu'à votre dernière bonne
 semaine. La pire fenêtre de perte de données est d'une
 semaine, pas "tout".
 
-Demandez-nous de confirmer deux choses :
+Confirmez deux choses vous-même :
 
-1. Le miroir immuable hebdomadaire tourne (la copie de la semaine
-   dernière s'est terminée avec succès).
+1. Le miroir immuable hebdomadaire tourne -- catena-admin
+   **Actions -> Check backup coverage** montre si la copie de la
+   semaine dernière s'est terminée.
 2. Le compartiment immuable vit chez un **fournisseur différent**
-   de votre compartiment de sauvegarde actif. Si le fournisseur
-   du compartiment actif est celui qui est compromis, mettre le
-   miroir au même endroit annule l'effet.
+   de votre compartiment de sauvegarde actif. Vous configurez les
+   deux, c'est donc une vérification contre vos propres notes. Si le
+   fournisseur du compartiment actif est celui qui est compromis,
+   mettre le miroir au même endroit annule l'effet.
 
 Le miroir tourne une fois par semaine, avant toute fenêtre de
 mise à jour, sur un horaire fixe qui ne dépend pas du fait que
 les mises à jour soient déclenchées cette semaine ou non. Il
 échoue en douceur : un compartiment immuable mal configuré ne peut
-pas bloquer la sauvegarde quotidienne -- le run quotidien ne
-touche que le compartiment actif.
+pas bloquer vos sauvegardes -- le run de sauvegarde ne touche que le
+compartiment actif.
 
 ### 5. Optionnel -- ajoutez un second compartiment de sauvegarde dont vous êtes propriétaire
 
-Le miroir immuable de la section 4 est configuré et exécuté par nous
-sur un calendrier fixe. Si vous voulez une seconde voie de sauvegarde
+Le miroir immuable de la section 4 tourne sur un calendrier fixe
+défini à l'installation. Si vous voulez une seconde voie de sauvegarde
 dont **vous** êtes propriétaire -- facturation distincte, fournisseur
 distinct, identifiants entièrement sous votre contrôle -- vous pouvez
 ajouter un second compartiment vous-même.
@@ -158,8 +172,8 @@ géré de la section 4 protège déjà contre les rançongiciels et la
 prise de contrôle de compte). À envisager quand :
 
 - Vous voulez que le mot de passe de chiffrement et les clés de
-  stockage soient entièrement sous votre contrôle, sans intervention
-  de notre part dans le chemin de récupération.
+  stockage soient entièrement sous votre contrôle, sur une voie de
+  sauvegarde que personne d'autre n'a jamais touchée.
 - Une obligation de conformité ou contractuelle exige une copie
   hors-site explicitement détenue par le client.
 - Vous voulez une redondance géographique au-delà du fournisseur
@@ -214,10 +228,10 @@ Assurez-vous que le compartiment est dans une autre ville -- et
 idéalement un autre pays -- que votre serveur et votre compartiment
 de sauvegarde principal.
 
-**Transmettez-nous les identifiants** via le canal chiffré que vous
-utilisez d'habitude (ne les collez pas dans un courriel ou un Slack
-en clair). Nous intégrons le second compartiment au calendrier de
-sauvegarde et confirmons que la prochaine exécution y écrit bien.
+**Ajoutez le second compartiment dans catena-admin Settings**
+(identifiants du fournisseur de sauvegarde + dépôt), puis confirmez
+que la prochaine exécution y écrit avec **Actions -> Check backup
+coverage**.
 
 **Sauvegardez les identifiants dans votre gestionnaire de mots de
 passe**, à côté de l'entrée du compartiment principal, étiquetée
@@ -246,9 +260,10 @@ gestionnaire de mots de passe :
 - les clés de stockage, et
 - le mot de passe de chiffrement de la sauvegarde.
 
-Si l'un d'eux a été régénéré (par vous, ou par nous avec un avis à
-vous), mettez à jour la copie sauvegardée le jour même. Un jeu de
-clés périmé est aussi bon que perdu le jour où vous en avez besoin.
+Si l'un d'eux a été régénéré (par exemple avec l'action
+rotate-backup-password de catena-admin), mettez à jour la copie
+sauvegardée le jour même. Un jeu de clés périmé est aussi bon que
+perdu le jour où vous en avez besoin.
 
 ### 7. Confirmez votre chemin de récupération une fois
 
@@ -259,11 +274,11 @@ avoir besoin, pas pendant un incident :
 - Vérifiez que les trois éléments du jeu de clés sont sauvegardés
   dans votre gestionnaire de mots de passe, chacun comme sa propre
   entrée, et que vous pouvez réellement les ouvrir.
-- Pour l'assurance la plus forte, demandez-nous de faire un essai de
-  restauration : nous reconstruisons votre serveur à partir de votre
-  sauvegarde sur un serveur jetable et confirmons que vos données
-  reviennent. Cela fait de toute façon partie de l'essai de reprise
-  après sinistre que nous faisons régulièrement.
+- Pour l'assurance la plus forte, faites un essai de restauration
+  vous-même : `catena recover` sur un VPS jetable et confirmez que vos
+  données reviennent. Voir [Reconstruire votre serveur à partir de la
+  sauvegarde](/fr/self-restore/). Faites-le une fois par an et une
+  vraie reprise devient un réflexe, pas une première tentative.
 
 Si quelque chose manque ou que vous n'êtes pas sûr, réglez-le
 maintenant -- cela vaut 15 minutes de temps tranquille.
@@ -288,13 +303,13 @@ répondre "oui" à tout cela :
 - [ ] Mon infrastructure a un miroir hebdomadaire en compartiment
       immuable configuré (fournisseur différent du compartiment de
       sauvegarde actif, dernier run hebdomadaire terminé) -- confirmé
-      avec nous.
+      dans catena-admin.
 - [ ] J'ai décidé si j'ai besoin d'un second emplacement de
-      sauvegarde -- si oui, nous l'avons configuré.
+      sauvegarde -- si oui, je l'ai ajouté.
 - [ ] J'ai confirmé que mon jeu de clés de récupération est complet
       dans mon gestionnaire de mots de passe (et, si je voulais
-      l'assurance la plus forte, demandé un essai de restauration).
+      l'assurance la plus forte, fait un essai de restauration).
 
 Si l'un de ces points est "non", travaillez-y cette semaine. La
-page [Reprise après sinistre](/fr/disaster-recovery/) explique ce qu'il
+page [Se remettre d'une panne](/fr/disaster-recovery/) explique ce qu'il
 faut faire une fois que la prévention a porté ses fruits.

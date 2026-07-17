@@ -1,6 +1,6 @@
 ---
-title: "Comment déployer des applications (avec contrôle d'accès par département)"
-description: "Lorsque vous déployez une nouvelle application via Portainer, vous"
+title: "Gérer les applications"
+description: "Déployez de nouvelles applications via Portainer et posez les étiquettes qui décident qui peut atteindre chacune et où elle est publiée."
 ---
 
 Lorsque vous déployez une nouvelle application via Portainer, vous
@@ -86,6 +86,30 @@ En moins de 5 minutes, `dashboard-sync` détecte la nouvelle application,
 crée le groupe `accounting` dans Keycloak (s'il n'existe pas), câble
 le middleware forward-auth et rend l'application accessible -- mais
 uniquement pour les utilisateurs du groupe `accounting`.
+
+## Aide-mémoire des étiquettes
+
+Chaque étiquette, son défaut (entre parenthèses), ses valeurs
+acceptées et ce qu'elle fait. Suivez une étiquette vers sa section plus
+bas pour l'explication complète. Toutes sont optionnelles ; une
+application sans étiquette `vps.auth.*` n'est accessible que par
+`admin` (refus par défaut).
+
+| Étiquette (défaut) | Valeurs | Ce qu'elle fait |
+|---|---|---|
+| [`vps.route.host`](#démarrage-rapide)<br>(aucun) | un FQDN public, p. ex. `app.yourdomain.com` | Publie l'application à cette URL |
+| [`vps.auth.groups`](#vpsauthgroupscsv)<br>(`admin` seulement) | csv de `staff`, `client`, noms de départements, `visitor`, `admin` | Qui peut atteindre l'application |
+| [`vps.auth.mode`](#vpsauthmodemode)<br>(`admin-only`) | `public` \| `private` \| `admin-only` | Raccourci pour un ensemble de groupes courant (ceci OU `vps.auth.groups`) |
+| [`vps.auth.protected`](#vpsauthprotectedtrue)<br>(`false`) | `true` \| `false` | Marque une application qui ne doit jamais devenir publique |
+| [`vps.auth.oidc`](#forward-auth-ou-oidc)<br>(`false`) | `true` \| `false` (plus `vps.auth.oidc.redirect_uris`, `vps.auth.oidc.scopes` optionnel) | Ajoute une connexion OIDC native par-dessus la barrière |
+| [`vps.auto-update`](#choisir-lagressivité-des-mises-à-jour)<br>(`patch`) | `patch` \| `minor` \| `major` \| `off` | Jusqu'où l'updater peut monter l'image |
+| [`vps.homepage.*`](#personnaliser-lapparence-de-votre-application-sur-le-tableau-de-bord)<br>(tuile affichée) | `name`, `icon`, `description`, `hidden` | Présentation de la tuile du tableau de bord |
+| [`vps.display-name`](#remplacer-laffichage-de-votre-application-sur-la-page-détat-gatus)<br>(nom court de l'image) | toute chaîne | Nom affiché sur la carte d'état Gatus |
+
+Pas une étiquette, mais requis pour le routage : donnez au service
+public un alias `catena-network` en minuscules avec traits d'union,
+sinon Traefik ne peut pas l'atteindre (502). Voir
+[Démarrage rapide](#démarrage-rapide).
 
 ## Applications pré-configurées prêtes à activer
 
@@ -196,15 +220,16 @@ précisément pour héberger de gros volumes de données utilisateur. Une
 postes de travail peut facilement accumuler des centaines de Go, voire
 plus.
 
-Ça devient un problème pour les sauvegardes. La sauvegarde nocturne
+Ça devient un problème pour les sauvegardes. Chaque sauvegarde
 copie chaque octet des données applicatives dans le dépôt hors-site. À
 l'échelle du To, ça prend des heures, coûte de l'argent en stockage et
 en transfert, et rend une restauration complète pénible.
 
-Pour cette famille d'applications, demandez à l'opérateur de déployer
-la **variante avec stockage S3** : les fichiers vivent directement
-dans un bucket d'objets qui vous appartient, pas dans un volume local
-du VPS. La sauvegarde nocturne ne copie alors que le code et la
+Pour cette famille d'applications, déployez la **variante avec
+stockage S3** (le modèle Nextcloud à stockage S3 dans App Templates) :
+les fichiers vivent directement dans un bucket d'objets qui vous
+appartient, pas dans un volume local du VPS. Chaque sauvegarde ne copie
+alors que le code et la
 configuration de l'application (quelques centaines de Mo), et le
 bucket gère l'historique des fichiers de son côté.
 
@@ -214,24 +239,26 @@ Ce que ça change pour vous :
   l'air exactement pareille. Même connexion, même explorateur de
   fichiers, tout pareil.
 - **Votre sauvegarde est en deux morceaux, pas un.** Le code, la
-  config et la base de données restent dans la sauvegarde nocturne de
-  l'opérateur ; les fichiers vivent dans le bucket S3 (avec 30 jours
-  d'historique de suppression intégrés). Les deux vous appartiennent.
+  config et la base de données restent dans chaque sauvegarde ; les
+  fichiers vivent dans le bucket S3 (avec 30 jours d'historique de
+  suppression intégrés). Les deux vous appartiennent.
 - **La restauration est plus rapide.** Si le VPS brûle, vos fichiers
   survivent indépendamment -- le nouveau VPS se reconnecte simplement
   au même bucket, et chaque fichier y est déjà.
 
-Vous ne provisionnez rien de tout ça vous-même ; parlez-en à
-l'opérateur quand vous planifiez un déploiement avec beaucoup de
-fichiers et il suivra un schéma interne documenté.
+Vous ne câblez pas la plomberie du bucket à la main : pour un
+déploiement avec beaucoup de fichiers, choisissez le modèle à stockage
+S3 plutôt que le modèle ordinaire et il configure le stockage d'objets
+pour vous.
 
 ## Garder vos applications à jour
 
-Une fois par semaine, votre VPS vérifie si de nouvelles versions
+Sur une base hebdomadaire, votre VPS vérifie si de nouvelles versions
 existent pour chaque image déployée, récupère celles qui respectent
 votre politique, redéploie, fait un contrôle de santé et annule
 (rollback) si le contrôle échoue. Vous n'avez rien à faire -- ça tourne
-à 3 h du matin, l'opérateur n'est alerté qu'en cas de problème.
+dans la fenêtre de mise à jour, en dehors des heures ouvrables, et
+vous n'êtes alerté qu'en cas de problème.
 
 **Mais seules les applications épinglées à une version complète sont
 gérées.** La suite refuse de toucher à toute image dont le tag
@@ -277,9 +304,9 @@ Valeurs par défaut, par type de service :
 - **Applications clientes** (les vôtres) : `patch`. Conservateur --
   correctifs de bugs et mises à jour de sécurité, aucun changement de
   comportement.
-- **Infrastructure de l'opérateur** (Keycloak, Portainer, Traefik,
-  Gatus, etc.) : `patch+minor`. L'opérateur les surveille
-  quotidiennement.
+- **Infrastructure de base** (Keycloak, Portainer, Traefik,
+  Gatus, etc.) : `patch+minor`, pour que les correctifs de sécurité
+  arrivent d'eux-mêmes.
 
 Sauf raison contraire, laisser l'étiquette non définie sur vos apps
 est le bon choix. Vous recevrez les correctifs de sécurité
@@ -288,12 +315,12 @@ automatiquement.
 ### Ce que fait concrètement le "rollback automatique"
 
 Après chaque service mis à jour, l'updater exécute une vérification
-de santé de base (même contrôle que le drill de nuit) : le conteneur
+de santé de base (même contrôle que le drill de reprise) : le conteneur
 répond-il, la page renvoie-t-elle 2xx/3xx, le temps de réponse
 reste-t-il raisonnable. Si un élément échoue, le tag est remis à la
-dernière bonne version, redéployé, et l'opérateur reçoit une alerte
-ntfy avec le nom du service et la mauvaise version. Le passage de la
-semaine suivante se souvient de la mauvaise version et la saute --
+dernière bonne version, redéployé, et vous recevez une alerte
+ntfy avec le nom du service et la mauvaise version. Le passage
+suivant se souvient de la mauvaise version et la saute --
 vous ne retomberez pas sur le même mauvais release en boucle.
 
 Pour voir l'état en cours (en attente / rollback récents /
@@ -320,13 +347,19 @@ service, ce qui rend toute dérive facile à repérer.
 Liste séparée par virgules de noms de groupes Keycloak autorisés. Un
 utilisateur appartenant à AU MOINS UN des groupes listés passe
 (sémantique OU). Le groupe `admin` est TOUJOURS autorisé implicitement
--- l'opérateur est super-utilisateur et n'est jamais verrouillé hors
-d'une application par une étiquette.
+-- un administrateur n'est jamais verrouillé hors d'une application par
+une étiquette.
 
-Les groupes suivent le modèle à quatre niveaux : `visitor` (anonyme,
-voir ci-dessous), `client` (vos utilisateurs externes), `staff` (vos
-employés ; les départements comme `accounting` / `engineering` sont des
-sous-groupes de staff) et `admin` (opérateur).
+Les valeurs que vous pouvez lister :
+
+- **`visitor`** -- un mot-clé spécial signifiant **public, sans aucune
+  connexion**. Ce n'est pas un vrai groupe ; voir la note plus bas.
+- **`client`** -- vos utilisateurs externes (clients, partenaires).
+- **`staff`** -- vos employés. La base pour votre équipe.
+- **tout sous-groupe de `staff`** -- par nom (`accounting`,
+  `engineering`, ...), pour un accès plus fin.
+- **`admin`** -- les personnes qui opèrent le serveur. Toujours autorisé
+  implicitement, vous n'avez donc jamais à le lister.
 
 **Exemples :**
 
@@ -539,7 +572,7 @@ Dans les ~5 minutes qui suivent, `dashboard-sync` va :
   - `OIDC_ISSUER_URL`
   - `OIDC_REDIRECT_URL`
 
-Ce sont des **noms volontairement choisis par l'opérateur** -- pas
+Ce sont des **noms volontairement fixés** -- pas
 un standard que votre application lira directement. Vous devez
 ajouter des lignes au bloc `environment:` de votre service pour
 mapper ces variables vers celles qu'attend votre application, avec
@@ -638,16 +671,15 @@ Les applications dont la configuration OIDC passe par des **fichiers
 de config** plutôt que par des variables d'environnement -- OliveTin
 (YAML), Nextcloud (`config.php`), Jellyfin (XML de plugin),
 Vaultwarden (fichier haché) -- ne sont pas couvertes par ce flux
-d'étiquettes. Pour celles-ci, demandez à votre opérateur de les
-câbler manuellement.
+d'étiquettes. Pour celles-ci, câblez OIDC à la main dans le fichier de
+configuration de l'application.
 
 ## Personnaliser l'apparence de votre application sur le tableau de bord
 
 Le tableau de bord Homepage à
 [`dash.yourdomain.com`](https://dash.yourdomain.com)
 affiche une tuile pour chaque application déployée. Quatre étiquettes
-optionnelles permettent d'ajuster la présentation sans intervention
-de l'opérateur :
+optionnelles permettent d'ajuster la présentation vous-même :
 
 ```yaml
 services:
@@ -677,8 +709,8 @@ dans OliveTin pour forcer un rafraîchissement immédiat.
 
 C'est là toute la surface de personnalisation, par design. Si vous
 avez besoin de plus -- un autre groupe, une URL personnalisée, de la
-visibilité par utilisateur -- demandez à votre opérateur ; ces
-options nécessitent une configuration côté opérateur.
+visibilité par utilisateur -- faites la modification directement sur
+le serveur (connexion SSH via Tailscale).
 
 ## Remplacer l'affichage de votre application sur la page d'état Gatus
 

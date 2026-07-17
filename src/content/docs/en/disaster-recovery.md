@@ -1,12 +1,12 @@
 ---
-title: "Disaster recovery: what to do when things go wrong"
+title: "Recovering from a failure"
 description: "Something is already broken and you need to fix it. This page is the"
 ---
 
 Something is already broken and you need to fix it. This page is the
 map of "what can go wrong" + "what still works when it does" + "how to
 get back from each situation." If you're reading this **before** an
-incident, the companion page is [Disaster prevention](/en/disaster-prevention/)
+incident, the companion page is [Recurring tasks](/en/disaster-prevention/)
 -- that's where the off-laptop backups, off-site bucket, and your
 recovery keyset live.
 
@@ -23,15 +23,15 @@ section that walks the recovery in detail.
 
 | Situation | First move | Where to read more |
 |---|---|---|
-| **I deleted a file by accident** (one user, one file/folder) | Try the app's own trash. If empty, get in touch. | Trash first; if empty, reach your Catena contact. |
-| **I lost my password or my 2FA** (just me) | Self-service password reset; for 2FA, reach your Catena contact. | Self-service reset via the portal; 2FA goes through your Catena contact. |
-| **All admins are locked out at once** (lost email, lost dashboard) | Get in touch -- there is a separate recovery path that doesn't depend on email or the dashboard. | Out-of-band path (not client-side). |
-| **The whole server is encrypted by ransomware** | Get in touch immediately. Recovery is from your last clean backup, before the ransomware reached the disk. | Recovery map below ("Entire server disk") |
-| **The server itself is compromised by malware / unauthorized access** | Get in touch. The path is wipe + rebuild from a pre-compromise backup + rotate every secret. We own this; you receive a status update at each phase. | Recovery map below ("Entire server disk") |
-| **Your provider's datacentre burns down** (or hardware failure) | Get in touch. We rebuild your software suite on a fresh server at the same or a different provider, using the off-site backup. | Recovery map below ("Entire server disk") + [Rebuilding your server from backup](/en/self-restore/) |
-| **Your provider gives 48h notice / suspends the account** | Get in touch. We migrate you to a new provider on a tight timeline; expect ~30-60 minutes of public-URL downtime during cutover. | Recovery map below ("Your provider goes bankrupt") |
-| **Backup provider gives 48h notice** | Get in touch. We re-target backups at a new bucket; existing data on the server is unaffected. | Recovery map below ("Backup provider goes bankrupt") |
-| **I think someone else has my password / API token** | Don't wait -- get in touch and rotate the credential. | Recovery map below (per-credential rows) |
+| **I deleted a file by accident** (one user, one file/folder) | Try the app's own trash. If empty, browse a backup snapshot in catena-admin (**Actions -> Browse past snapshots**) and pull the file out. | Recovery map ("one app's data") |
+| **I lost my password or my 2FA** (just me) | Self-service password reset from the sign-in page. For 2FA, another admin clears it in Keycloak. | [Manage users and roles](/en/manage-users-and-roles/) |
+| **All admins are locked out at once** (sign-in broken, nobody can open the dashboard) | Use your Tailscale access -- SSH into the box, where you can restart or re-provision the sign-in service. | [Regaining admin access](#regaining-admin-access) below |
+| **The whole server is encrypted by ransomware** | Rebuild from your last clean snapshot (before the ransomware), with `catena recover` onto a fresh box. | Recovery map ("entire server disk") |
+| **The server itself is compromised** | Wipe and rebuild from a pre-compromise snapshot (`catena recover --snapshot <id>`), then rotate every external credential. | Recovery map ("entire server disk") |
+| **Your provider's datacentre burns down** (or hardware failure) | Rebuild on a fresh server at any provider from the off-site backup (`catena recover`). | [Rebuilding your server from backup](/en/self-restore/) |
+| **Your provider gives 48h notice / suspends the account** | Rent a VPS elsewhere and `catena recover` onto it; expect ~30-60 min of public-URL downtime during cutover. | Recovery map ("provider goes bankrupt") |
+| **Backup provider gives 48h notice** | Point backups at a new bucket in catena-admin **Settings**; server data is unaffected. | Recovery map ("backup provider goes bankrupt") |
+| **I think someone else has my password / API token** | Don't wait -- rotate the credential in its console now (and `catena rotate-tunnel` / `catena rotate-tailscale` for those two). | Recovery map (per-credential rows) |
 
 The recovery map below has the full table including infrastructure
 edges (Cloudflare token rotation, Tailscale account, etc.) -- keep
@@ -40,51 +40,74 @@ reading.
 ## If your whole server is lost
 
 When the server itself is gone -- destroyed, wiped, or encrypted by
-ransomware -- it is rebuilt from your nightly backup. The only thing
+ransomware -- it is rebuilt from your latest backup. The only thing
 you need to have kept is your **recovery keyset**:
 
 - the **backup repository location** (where your backups live),
 - the **storage keys** for that bucket, and
 - your **backup encryption password**.
 
-[Disaster prevention](/en/disaster-prevention/) covers how to store
+[Recurring tasks](/en/disaster-prevention/) covers how to store
 those three safely. Everything else -- every internal setting and
 secret your applications use -- is inside the encrypted backup and
 returns automatically with your data; there is nothing to re-enter.
 The [Rebuilding your server from backup](/en/self-restore/) page
 walks through what a rebuild looks like.
 
-We run the rebuild with you. Your part is to have kept the keyset
-safe and to get in touch when you need it.
+You run the rebuild yourself with `catena recover`: it prompts for the
+keyset, restores your latest snapshot onto the new box, and brings
+every app back with its data and settings. Your only job ahead of time
+is keeping the keyset safe.
 
 A few credentials do not live on your server at all -- they sit in
 other companies' admin consoles: Cloudflare (DNS + tunnel), Tailscale
-(remote access), and Portainer (container management). If one of
-those is ever lost, you regenerate it in that provider's console and
-we install it. The recovery map below lists each.
+(remote access), and Portainer (container management). If one of those
+is ever lost, you regenerate it in that provider's console and
+re-install it (`catena rotate-tunnel` / `catena rotate-tailscale`, or
+by re-running the install). The recovery map below lists each.
 
 ## Recovery map -- what breaks and what to do
 
 | What you lose | What still works | How to recover |
 |---|---|---|
 | **Your laptop** (the device you work from) | Your server, your apps, your backups | Nothing is lost as long as your recovery keyset is saved in your password manager, not only on the laptop. Set up a new device, restore the keyset, and carry on |
-| **SSH private key** | Your server, your apps, the dashboard | We re-add a new public key via our own admin path; if we're unreachable, see "Provider rescue mode" below |
-| **Dashboard access (sign-in broken, sign-in service down)** | Your apps (their own logins still work), your data | We sign in to fix; worst case, restart the sign-in service |
-| **One app's data (you deleted something)** | Everything else | Try the app's own trash first; if empty, get in touch |
-| **Entire server disk (corruption, accidental wipe)** | Backups (in your storage bucket) | Rebuild from your backup -- see [Rebuilding your server from backup](/en/self-restore/) |
-| **Cloudflare API token (accidentally rotated)** | Your tunnel keeps running. Public apps stay up. **Functionality only**, not backup. | Generate a new API token at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens), then **get in touch** with it -- we install the new token and confirm the tunnel still picks up DNS changes after rotation. Apps stay reachable while you wait |
-| **Cloudflare tunnel token (rotated or leaked)** | Existing tunnel keeps running until it next reconnects, then drops. Public apps go dark until rotation completes. **Functionality**, not backup. | This is more disruptive than the API token: public traffic stops when the tunnel can't reauthenticate. **Get in touch immediately** so we can mint and install the replacement. Find the token under [dash.cloudflare.com](https://dash.cloudflare.com) -> your zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> click your tunnel -> **Configure** -> reveal/rotate token. NOT in the "API Tokens" page. Expect 5-15 minutes of public-app downtime during install |
-| **Tailscale OAuth client (accidentally rotated)** | Your server's remote access keeps working. Remote administration stays up | Generate a new OAuth client, then **get in touch** with the credentials so we install it |
-| **Portainer API key (accidentally rotated)** | All your apps keep running | Generate a new key in the Portainer UI, then **get in touch** with it |
-| **Cloudflare account terminated** | Your server, your apps (internally), your data | Create a new Cloudflare account, point your domain to it, we re-run setup; your apps experience downtime only during DNS propagation |
-| **Tailscale account terminated** | Your server, your apps, your public path (the tunnel) | We switch to a different administration method; Tailscale is only the "admin back door," not part of the public serving path |
-| **Your provider goes bankrupt / shuts down** | Your backup bucket (different company) | [Rebuild from your backup](/en/self-restore/) at a different provider |
-| **Your provider's datacentre burns down (OVH Strasbourg 2021)** | Your backup bucket (different region, different city) | Same as above -- rebuild on a fresh server at the same or a different provider, different region |
-| **Your backup provider goes bankrupt / shuts down** | Your server and its data | You still have the data -- copy your live server to a new backup bucket *before* the deadline the provider gives you. If you set up a secondary backup (see [Prevention](/en/disaster-prevention/)), it's already safe |
-| **Backup bucket accidentally deleted** | Your server and its data | Same -- recreate the bucket and repoint backups. Some providers keep deleted objects for a retention window, which might buy you time |
-| **Provider AND backup provider outage at the same time** | Last weekly off-site copy (if you set one up -- see [Prevention](/en/disaster-prevention/)) | Rebuild from the off-site copy on any fresh cloud |
-| **Your server is dead AND your saved logins are gone** | Your backup bucket | As long as your recovery keyset (repository location + storage keys + encryption password) is in your password manager, the backup can still be read and your server rebuilt -- follow [Rebuilding your server from backup](/en/self-restore/) |
-| **Your server is dead AND your backup encryption password is lost** | Your bucket exists but every byte in it is ciphertext you can't open | **Data loss.** This is the one unrecoverable case, and exactly why [Disaster prevention](/en/disaster-prevention/) says to store your encryption password separately and safely |
+| **SSH private key** | Your server, your apps, the dashboard | Boot **Provider rescue mode** (below), mount the disk, and add a fresh public key to the `ops` account; then re-run the install so it sticks |
+| **Dashboard access (sign-in broken, sign-in service down)** | Your apps (their own logins still work), your data | SSH in over Tailscale and restart the sign-in service, or re-provision it with `catena converge`. See [Regaining admin access](#regaining-admin-access) |
+| **One app's data (you deleted something)** | Everything else | Try the app's own trash first; if empty, open catena-admin **Actions -> Browse past snapshots**, pick a point in time, and copy the file out of the read-only mount |
+| **Entire server disk (corruption, accidental wipe)** | Backups (in your storage bucket) | Rebuild from your backup with `catena recover` -- see [Rebuilding your server from backup](/en/self-restore/) |
+| **Cloudflare API token (accidentally rotated)** | Your tunnel keeps running. Public apps stay up. **Functionality only**, not backup. | Generate a new API token at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens) and set it in catena-admin **Settings**. Apps stay reachable throughout |
+| **Cloudflare tunnel token (rotated or leaked)** | Existing tunnel keeps running until it next reconnects, then drops. Public apps go dark until rotation completes. **Functionality**, not backup. | Run `catena rotate-tunnel` -- it mints a fresh tunnel and installs it. (The token itself lives under [dash.cloudflare.com](https://dash.cloudflare.com) -> your zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> your tunnel -> **Configure**, NOT the "API Tokens" page.) Expect 5-15 minutes of public-app downtime during the swap |
+| **Tailscale OAuth client (accidentally rotated)** | Your server's remote access keeps working. Remote administration stays up | Generate a new OAuth client in the Tailscale console, then `catena rotate-tailscale` to re-auth the node |
+| **Portainer API key (accidentally rotated)** | All your apps keep running | Generate a new key in the Portainer UI and set it in catena-admin **Settings** (or re-run the install so the services pick it up) |
+| **Cloudflare account terminated** | Your server, your apps (internally), your data | Create a new Cloudflare account, point your domain to it, and re-run the install against it; your apps are down only during DNS propagation |
+| **Tailscale account terminated** | Your server, your apps, your public path (the tunnel) | Tailscale is only the admin path, not the public serving path. Re-join the node from a new tailnet (`catena rotate-tailscale`), or reach the box via **Provider rescue mode** |
+| **Your provider goes bankrupt / shuts down** | Your backup bucket (different company) | [Rebuild from your backup](/en/self-restore/) (`catena recover`) at a different provider |
+| **Your provider's datacentre burns down (OVH Strasbourg 2021)** | Your backup bucket (different region, different city) | Same as above -- `catena recover` on a fresh server at another provider or region |
+| **Your backup provider goes bankrupt / shuts down** | Your server and its data | You still have the data -- point backups at a new bucket in catena-admin **Settings** *before* the provider's deadline. If you set up a secondary backup (see [Recurring tasks](/en/disaster-prevention/)), it's already safe |
+| **Backup bucket accidentally deleted** | Your server and its data | Same -- recreate the bucket and repoint backups in catena-admin **Settings**. Some providers keep deleted objects for a retention window, which might buy you time |
+| **Provider AND backup provider outage at the same time** | Last weekly off-site copy (if you set one up -- see [Recurring tasks](/en/disaster-prevention/)) | `catena recover` from the off-site copy on any fresh cloud |
+| **Your server is dead AND your saved logins are gone** | Your backup bucket | As long as your recovery keyset (repository location + storage keys + encryption password) is in your password manager, the backup can still be read and your server rebuilt -- `catena recover`, see [Rebuilding your server from backup](/en/self-restore/) |
+| **Your server is dead AND your backup encryption password is lost** | Your bucket exists but every byte in it is ciphertext you can't open | **Data loss.** This is the one unrecoverable case, and exactly why [Recurring tasks](/en/disaster-prevention/) says to store your encryption password separately and safely |
+
+## Regaining admin access
+
+If sign-in breaks for everyone -- Keycloak is down, or every admin
+account is locked out -- the web dashboards are unreachable, but your
+**Tailscale access is not**. That is the way back in:
+
+1. From a machine on your tailnet, SSH into the box
+   (`ssh ops@<your-tailnet-ip>`).
+2. From that shell you can restart the sign-in service (Keycloak),
+   reset the admin credential, or re-provision the whole realm with
+   `catena converge` -- which re-imports users, clients, and groups.
+3. If Keycloak's database is damaged rather than just misbehaving,
+   `catena restore` brings it back from your last snapshot.
+
+Public SSH is closed, so Tailscale is the only remote way onto the box.
+That is exactly why [Recurring tasks](/en/disaster-prevention/) tells
+you to keep your Tailscale access -- and a copy of your SSH key --
+somewhere other than one laptop. If Tailscale itself is unreachable,
+fall back to **Provider rescue mode** below.
 
 ## Provider rescue mode -- when you've lost SSH
 
@@ -100,16 +123,14 @@ a new SSH key or recover files without re-installing. A few examples:
   (sometimes a VNC web terminal) -- look for "Recovery" / "Console" in
   the provider's sidebar.
 
-We can walk you through this over a video call if needed; the steps
-are the same across providers, just different UI labels.
+The steps are the same across providers, just different UI labels.
 
-**Our remote access and the provider's rescue console are equivalent
-for your purposes.** If we're reachable, we sign in and fix things.
-If we're not -- or if SSH itself is broken -- the provider's rescue
-console gives you the same root-level access to the disk. Either path
-gets you back to a working server; the rescue console is just the
-fallback when the normal one is unavailable. Don't burn time waiting
-on one if the other is in front of you.
+**Your Tailscale SSH and the provider's rescue console are two ways
+onto the box.** Use Tailscale normally. If SSH itself is broken, or
+Tailscale is down, the rescue console gives you the same root-level
+access to the disk -- either path gets you back to a working server.
+Reach for whichever is in front of you; don't wait on one when the
+other is available.
 
 ## How this plays out in practice
 
@@ -119,7 +140,7 @@ fine. You have 24-72 hours to handle the recovery without pressure --
 everything but total disaster is survivable on a weekday morning with
 a coffee.
 
-If something in the map above doesn't match your situation, get in
-touch. The whole point of the hand-off kit + this page is to give
-you every path we can, but nothing replaces a second pair of eyes in a
-real incident.
+Between your Tailscale access, the recovery keyset, and `catena
+recover`, every path on this page is one you can run yourself. Prefer
+a second pair of eyes in a live incident? Reach your Catena contact --
+it is an option, not a requirement.

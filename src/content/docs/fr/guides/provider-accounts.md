@@ -1,70 +1,150 @@
 ---
-title: Créer vos comptes fournisseurs
-description: Pas-à-pas -- créer les comptes fournisseurs externes (courriel, Cloudflare, Tailscale, OVH, eazybackup, Resend) qu'un déploiement catena typique requiert.
+title: Créez vos comptes fournisseurs
+description: Créez les comptes externes sur lesquels repose un déploiement catena -- un VPS, Cloudflare, Tailscale, un stockage de sauvegarde S3 et un relais SMTP -- tous à votre nom.
 ---
 
-Un déploiement catena typique repose sur quelques comptes externes qui restent à votre nom. Passez à travers ce que vous pouvez ; on couvrira le reste ensemble à la rencontre d'installation.
+Un déploiement catena repose sur quelques comptes externes qui restent
+à **votre** nom et à votre facturation. Ils vous appartiennent, et
+l'installateur les câble dans le serveur pour vous -- vous créez
+simplement les comptes d'abord et fournissez leurs identifiants à
+l'installation.
 
-## 1. Fournisseur de courriel : en choisir un
+Au fur et à mesure, notez chaque identifiant dans votre gestionnaire de
+mots de passe. Les valeurs exactes dont l'installation a besoin sont
+listées sous chaque étape et regroupées dans
+[Identifiants à noter](#identifiants-à-noter) à la fin.
 
-Catena n'opère pas de serveur de messagerie ; il s'intègre au fournisseur que vous choisissez. Ouvrez le [comparatif des fournisseurs de courriel](/fr/guides/email-providers/) et choisissez l'un des cinq que nous recommandons (Migadu, Mailbox.org, Infomaniak, OVH Pro Mail, Mailfence), puis créez le compte au nom de votre entreprise. Choisissez le plan qui correspond à la taille de votre équipe ; on s'occupe des enregistrements DNS et de l'expéditeur transactionnel à l'installation.
+## 1. Louez un VPS
 
-*Durée : 15-30 minutes (création de compte + vérification initiale du domaine).*
+Le serveur qui fait tout tourner. Commandez-en un au nom de votre
+entreprise chez un fournisseur qui vous convient :
 
-[![Capture d'écran du parcours de choix d'un fournisseur de courriel](/img/guides/provider-accounts/email.fr.png)](/img/guides/provider-accounts/email.fr.png)
+- **[Hetzner](https://www.hetzner.com/cloud)** -- faible coût, régions
+  UE + États-Unis.
+- **[OVHcloud](https://www.ovhcloud.com/fr-ca/vps/)** -- tarif fixe,
+  Beauharnois (Québec) garde les données au Canada.
+- **[Servarica](https://servarica.com/)** -- entreprise canadienne,
+  disque généreux.
+- **[DigitalOcean](https://www.digitalocean.com/products/droplets)** --
+  console simple, large choix de régions.
 
-[Comparer les six fournisseurs ->](/fr/guides/email-providers/)
+Choisissez une région dans la juridiction où vos données doivent
+rester. Dimensionnez-le pour votre effectif et les applications
+prévues -- la plupart des fournisseurs permettent de redimensionner le
+VPS plus tard si vous le dépassez.
 
-## 2. Cloudflare : créer une clé API
+*À noter : l'identifiant du fournisseur, l'IP publique du serveur et
+les accès SSH (ou le mot de passe root si c'est tout ce que le
+fournisseur donne au départ).*
 
-[Inscrivez-vous](https://dash.cloudflare.com/sign-up) avec l'adresse courriel que vous voulez voir sur la facture et ajoutez votre nom de domaine au DNS de Cloudflare (le palier gratuit suffit). Créez ensuite un jeton API limité à votre zone afin que l'installation puisse publier les enregistrements DNS et le tunnel public en votre nom.
+## 2. Cloudflare : compte + jeton API
 
-*Durée : 10-15 minutes (propagation DNS).*
+Cloudflare est votre porte d'entrée publique et fournit le tunnel privé
+qui masque l'adresse réelle du serveur.
 
-[![Capture d'écran du parcours de création d'un jeton API Cloudflare](/img/guides/provider-accounts/cloudflare.fr.png)](/img/guides/provider-accounts/cloudflare.fr.png)
+1. [Inscrivez-vous](https://dash.cloudflare.com/sign-up) avec le
+   courriel que vous voulez sur la facture.
+2. Ajoutez votre domaine d'entreprise au DNS Cloudflare (le forfait
+   gratuit suffit).
+3. Créez un jeton API limité à votre zone pour que l'installation
+   puisse publier les enregistrements DNS et le tunnel en votre nom.
 
-[Documentation Cloudflare complète ->](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
+Le guide de Cloudflare détaille la création du jeton :
+[Créer un jeton API](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/).
 
-## 3. Tailscale : créer un client OAuth
+*À noter : le jeton API.*
 
-[Démarrez un tailnet](https://login.tailscale.com/start) via le SSO de votre fournisseur courriel actuel (Google, Microsoft, GitHub). Créez ensuite un client OAuth afin que l'installation puisse ajouter le nouveau serveur à votre réseau privé sans que vous ayez à partager un identifiant personnel.
+## 3. Tailscale : client OAuth
 
-*Durée : 5-10 minutes.*
+Tailscale est le réseau privé que nous utilisons pour atteindre le
+serveur lors des mises à jour et de la maintenance. Le SSH public reste
+fermé.
 
-[![Capture d'écran du parcours de création d'un client OAuth Tailscale](/img/guides/provider-accounts/tailscale.fr.png)](/img/guides/provider-accounts/tailscale.fr.png)
+1. [Démarrez un tailnet](https://login.tailscale.com/start) via le SSO
+   d'une identité que vous avez déjà (Google, Microsoft, GitHub).
+2. Créez un client OAuth pour que l'installation joigne le nouveau
+   serveur à votre réseau sans que vous partagiez une connexion
+   personnelle.
 
-[Documentation Tailscale complète ->](https://tailscale.com/kb/1215/oauth-clients)
+Le guide de Tailscale :
+[Clients OAuth](https://tailscale.com/kb/1215/oauth-clients/).
 
-## 4. OVH (ou un autre fournisseur de VPS) : louer un VPS
+*À noter : l'identifiant et le secret du client OAuth.*
 
-[Créez un compte OVH](https://www.ovhcloud.com/fr-ca/vps/) et commandez un VPS à votre nom. Pas certain de la taille qu'il vous faut ? Consultez le [guide de dimensionnement](/fr/sizing/) pour une recommandation rapide selon le nombre d'employés et la charge. Beauharnois (Québec) est la région par défaut pour garder vos données au Canada.
+## 4. Stockage de sauvegarde S3
 
-*Durée : 30 minutes (la vérification de compte peut s'étirer à la première inscription).*
+Vos sauvegardes hors-site chiffrées atterrissent dans un bucket de
+stockage d'objets qui vous appartient -- fournisseur distinct du VPS,
+pour qu'une seule panne ne puisse pas emporter les deux. **Le bucket
+doit prendre en charge S3 Object Lock et le versionnage** afin qu'un
+instantané ne puisse pas être silencieusement supprimé ou écrasé, même
+par quelqu'un ayant des clés valides.
 
-[![Capture d'écran du parcours de commande VPS OVH](/img/guides/provider-accounts/ovh.fr.png)](/img/guides/provider-accounts/ovh.fr.png)
+Fournisseurs qui prennent en charge Object Lock + versionnage :
 
-[Documentation OVH complète ->](https://help.ovhcloud.com/csm/fr-ca-vps-getting-started?id=kb_article_view&sysparm_article=KB0047708)
+- **[eazybackup](https://eazybackup.ca/)** -- entreprise canadienne,
+  garde les sauvegardes hors-site au Canada. Recommandation par défaut
+  quand le VPS est aussi canadien.
+- **[Backblaze B2](https://www.backblaze.com/cloud-storage)** -- faible
+  coût, compatible S3, basé aux États-Unis.
+- **[IDrive e2](https://www.idrive.com/e2/)** -- compatible S3, prix
+  compétitif, plusieurs régions.
+- **[Cloudflare R2](https://www.cloudflare.com/developer-platform/products/r2/)**
+  -- pas de frais de sortie, basé aux États-Unis.
 
-## 5. eazybackup : créer un stockage S3 de sauvegarde immuable
+Créez le bucket avec **Object Lock et versionnage activés à la
+création** (la plupart des fournisseurs cachent cette option derrière
+une case qu'on ne peut plus cocher ensuite). Gardez-le dans une autre
+ville -- idéalement un autre pays -- que votre serveur.
 
-[Ouvrez un compte eazybackup](https://eazybackup.ca/) et créez un bucket S3-compatible avec Object Lock et le versioning activés. eazybackup est canadien et opère depuis Ottawa, donc vos sauvegardes hors-site restent au Canada et ne peuvent pas être écrasées ou supprimées silencieusement.
+*À noter : l'URL de l'endpoint, le nom du bucket, la clé d'accès et la
+clé secrète.*
 
-*Durée : 15 minutes.*
+## 5. Relais SMTP pour le courriel automatisé
 
-[![Capture d'écran du parcours d'inscription eazybackup](/img/guides/provider-accounts/eazybackup.fr.png)](/img/guides/provider-accounts/eazybackup.fr.png)
+Deux choses différentes s'appellent "courriel", et elles demandent
+une configuration différente :
 
-[Documentation eazybackup complète ->](https://eazybackup.ca/)
+- **Les boîtes aux lettres** (la boîte que votre équipe lit et d'où
+  elle répond). Vous pouvez faire tourner un serveur de messagerie
+  comme l'une des applications, ou intégrer le fournisseur que vous
+  utilisez déjà. Les deux conviennent.
+- **L'envoi automatisé** (liens de réinitialisation, invitations de
+  calendrier, notifications de tickets, courriels de campagne). C'est
+  ici qu'**un service SMTP d'envoi externe et indépendant est
+  requis.** Un VPS qui envoie lui-même son courriel transactionnel
+  finit en pourriel -- la délivrabilité dépend de la réputation d'un
+  expéditeur dédié, alors catena relaie toujours le courriel
+  automatisé par l'un d'eux.
 
-## 6. Relais SMTP : configurer un expéditeur pour les courriels automatiques
+Choisissez un expéditeur transactionnel et ajoutez-y votre domaine :
 
-Catena n'opère pas de serveur de messagerie ; il relaie les courriels automatiques (réinitialisations de mot de passe, invitations calendrier, notifications de tickets) via un expéditeur de votre choix. Par défaut : [Resend](https://resend.com/) (configuration en un clic -- ajoutez votre domaine, copiez les enregistrements DNS dans Cloudflare, générez une clé API). Alternatives : [Brevo](https://www.brevo.com/) (palier gratuit généreux), ou votre fournisseur courriel transactionnel actuel.
+- **[Resend](https://resend.com/)** -- par défaut. Ajoutez votre
+  domaine, déposez dans Cloudflare les enregistrements DNS qu'il
+  fournit, générez une clé API. Guide :
+  [Domaines Resend](https://resend.com/docs/dashboard/domains/introduction).
+- **[Brevo](https://www.brevo.com/)** -- forfait gratuit généreux.
+- Ou votre fournisseur de courriel transactionnel actuel, si vous en
+  avez déjà un.
 
-*Durée : 10-20 minutes avec Resend (aller-retour DNS).*
+*À noter : l'hôte SMTP, le port (habituellement 587), le nom
+d'utilisateur, le mot de passe ou la clé API, et l'adresse
+expéditeur que vous avez vérifiée.*
 
-[![Capture d'écran de la configuration domaine + clé API Resend](/img/guides/provider-accounts/resend.fr.png)](/img/guides/provider-accounts/resend.fr.png)
+## Identifiants à noter
 
-[Documentation Resend complète ->](https://resend.com/docs/dashboard/domains/introduction)
+Avant de lancer l'installation, ayez ceci dans votre gestionnaire de
+mots de passe, chacun comme sa propre entrée -- l'installation les
+demande :
 
----
+| Compte | À noter |
+|---|---|
+| VPS | identifiant du fournisseur, IP du serveur, accès SSH |
+| Cloudflare | jeton API |
+| Tailscale | identifiant + secret du client OAuth |
+| Sauvegarde S3 | endpoint, bucket, clé d'accès, clé secrète |
+| Relais SMTP | hôte, port, nom d'utilisateur, mot de passe/clé API, adresse expéditeur |
 
-Plus vous avancez dans cette liste, plus la rencontre d'installation sera rapide. Si vous n'avez le temps que de créer les comptes avant la rencontre, pas de souci : on passera chaque étape ensemble lors de l'appel.
+Avec tout ceci en main, l'installation se déroule de bout en bout
+toute seule. Vous préférez un coup de main pour la parcourir ? Joignez
+votre contact Catena -- c'est une option, pas une obligation.

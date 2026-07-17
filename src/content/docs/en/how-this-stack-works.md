@@ -17,7 +17,7 @@ hits a router (**Traefik**) that figures out which app it's for,
 then gets stopped at **Keycloak** -- your identity layer -- to prove
 the person is logged in and in the right team. Only then does the
 request reach the actual application. Meanwhile, another process
-quietly backs everything up to your S3 bucket every day, and a
+quietly backs everything up to your S3 bucket with each backup, and a
 monitor pings each service every minute to catch outages before you
 do.
 
@@ -27,16 +27,16 @@ do.
 |---|---|
 | **Cloudflare** | Your public front door. Hides the VPS's IP, issues HTTPS certificates, and absorbs bad traffic. |
 | **Cloudflare Tunnel** | A private link between Cloudflare and your VPS. Nothing on `your VPS` is exposed directly to the internet. |
-| **Tailscale** | Your operator's private back door. A mesh network only authorised machines are on -- it's how the operator reaches `your VPS` to run updates and investigate issues. Public SSH is closed, so without Tailscale (or Cloudflare, for staff traffic) nothing reaches the VPS. You stay in control: Tailscale can be disabled or removed by you at any time from your VPS provider's console (or physically, for on-premises hardware). If you don't know how, you shouldn't. |
+| **Tailscale** | Your private way onto the box. A mesh network only authorised machines are on -- it is how you (and anyone you invite to help) SSH into `your VPS` to run maintenance or investigate, and your way back in if the web dashboards ever fail. Public SSH is closed, so without Tailscale (or Cloudflare, for staff traffic) nothing reaches the VPS. You stay in control: Tailscale can be disabled or removed by you at any time from your VPS provider's console (or physically, for on-premises hardware). |
 | **Traefik** | The switchboard. Reads the URL in each request and routes it to the right application. |
 | **Keycloak** | Your identity server. Handles sign-in, password resets, and team-based access control. The only login page your users ever see. |
 | **Portainer** | The deployment panel. Where new apps are installed and updated. You can watch logs here. |
 | **Apps (yours)** | Whatever you've deployed through Portainer -- one container per app, running on a private Docker network. |
 | **Gatus** | The health monitor. Probes every service every minute from two angles: internally (is the container up?) and externally (is the whole path from Cloudflare to the app still working?). |
-| **Healthchecks** | The notification hub. Every alert from Gatus (services down) and the backup engine (missed nightly snapshot) lands here, and you wire it to the channels you want -- email, Slack, Discord, ntfy, and ~30 others. See [How alerts reach you](#how-alerts-reach-you). |
+| **Healthchecks** | The notification hub. Every alert from Gatus (services down) and the backup engine (missed backup) lands here, and you wire it to the channels you want -- email, Slack, Discord, ntfy, and ~30 others. See [How alerts reach you](#how-alerts-reach-you). |
 | **Homepage** | The dashboard you're probably used to. Collects links and status into one page. |
-| **OliveTin** | One-click shell actions, gated to the `administrators` group (operators + administrator-tier staff). The "sync now" button, for example. |
-| **Restic -> S3** | The backup engine. Takes an encrypted, deduplicated snapshot of your data nightly, pushes it to a storage bucket you own. |
+| **OliveTin** | One-click shell actions, gated to the `administrators` group (administrator-tier staff). The "sync now" button, for example. |
+| **Restic -> S3** | The backup engine. Takes an encrypted, deduplicated snapshot of your data with each backup, pushes it to a storage bucket you own. |
 
 ## How a page request flows
 
@@ -81,21 +81,21 @@ flowchart LR
     APPS --> VOL
     PG --> RESTIC
     VOL --> RESTIC
-    RESTIC -->|nightly snapshot| S3
+    RESTIC -->|each backup| S3
     RESTIC -->|ping after success| HC
     HC -.->|no ping on schedule| YOU
 ```
 
 Two things worth knowing:
 
-- The S3 bucket is **yours**. Your operator configures the credentials
-  in the VPS, but the account and the billing relationship with the
-  storage provider belong to you. If you ever fire your operator, the
-  backups stay with you.
+- The S3 bucket is **yours**. You set the credentials on the VPS at
+  install, and the account and billing relationship with the storage
+  provider stay in your name -- nothing about the backups depends on
+  anyone else.
 - The backup is **encrypted on the VPS before it leaves**, using a key
-  your operator holds separately from the VPS itself. Even someone
-  with full access to the S3 bucket cannot read the backup without
-  that key.
+  you hold separately from the VPS itself (part of your
+  [recovery keyset](/en/disaster-prevention/)). Even someone with full
+  access to the S3 bucket cannot read the backup without that key.
 
 ## How monitoring catches problems
 
@@ -120,10 +120,9 @@ Each service has its own check, named `gatus-<service>` (e.g.
 names the failing service directly. Recoveries notify too, so you know
 when a problem has cleared without having to refresh Gatus.
 
-Your operator is notified by default -- they get alerts on their phone
-through **ntfy** (a free push-notification service, auto-configured at
-setup, no account required on the client side). **You add your own
-channels** -- one-time setup, no operator involvement:
+By default, alerts push through **ntfy** (a free push-notification
+service, auto-configured at setup, no account required). Point it at
+your phone and **add any other channels you want** -- one-time setup:
 
 1. Sign in to [`checks.yourdomain.com`](https://checks.yourdomain.com)
    (same Keycloak login as every other service).
@@ -141,17 +140,17 @@ channels** -- one-time setup, no operator involvement:
 4. Do the same for **Daily backup ping** if you want to hear about
    missed backups too.
 
-Removing a channel is the same flow in reverse. The operator's default
-channel isn't exposed in this UI -- it stays attached regardless of what
-you add or remove. New services that start being monitored (e.g. an app
+Removing a channel is the same flow in reverse. The built-in default
+channel isn't exposed in this UI -- it stays attached regardless of
+what you add or remove. New services that start being monitored (e.g. an app
 you just deployed) get their own check on the first failure, with your
 channels automatically attached.
 
 ## Updates and rollback
 
 Your apps + the infrastructure they run on get refreshed on a weekly
-schedule -- Sunday morning before business hours, with an automatic
-rollback if anything starts failing.
+schedule -- outside business hours, with an automatic rollback if
+anything starts failing.
 
 Not every app gets the same treatment. It depends on how the image
 tag is pinned in the app's configuration:
@@ -159,7 +158,7 @@ tag is pinned in the app's configuration:
 | Tag looks like...   | Example              | Gets auto-updated? |
 |---|---|---|
 | Full version      | `paperless:2.12.3`   | **Yes** -- with auto-rollback on failure. |
-| Major-only pin    | `postgres:16-alpine` | No. Operator-managed; ignored by the weekly updater. |
+| Major-only pin    | `postgres:16-alpine` | No. System-pinned; ignored by the weekly updater. |
 | Floating          | `nginx:latest`       | No. Unsafe to touch unsupervised. |
 
 For apps on a full version pin, each service can optionally tag a
@@ -174,11 +173,11 @@ policy in its compose:
 - `vps.auto-update=off` -- skip this service entirely.
 
 If you set the label on an app with a floating or major-only tag, it
-is silently ignored -- the operator-managed rule wins. This is
+is silently ignored -- the system's pinning rule wins. This is
 deliberate: auto-rollback needs a known-good prior version to revert
-to, and a floating tag doesn't give us one.
+to, and a floating tag doesn't provide one.
 
-**What happens at 3 a.m. when an update breaks:**
+**What happens when an update breaks:**
 
 1. Gatus health probes catch the regression within ~3 minutes
    (internal + public probes both).
@@ -186,19 +185,20 @@ to, and a floating tag doesn't give us one.
    version and redeploys it.
 3. The bad version is remembered -- next week's run picks the *next*
    version up, not the one that just broke.
-4. Your operator is paged through **Healthchecks** with the service
+4. You are paged through **Healthchecks** with the service
    name + the version that failed. The running version of every
    service is visible on the **Gatus monitoring surface** at
    `monitor.<your-zone>` -- a quarantined service shows the prior
    pinned tag with the bad version annotated next to it.
 
-You don't have to do anything. The app comes back on its own. The
-operator investigates at business-hour pace, not 3 a.m.
+You don't have to do anything. The app comes back on its own, so you
+look into the root cause at your own pace -- it is not a 3 a.m.
+emergency.
 
 If you'd rather skip a week of updates entirely (e.g., you're
-demoing something and don't want anything to change), the
-operator can **pause** the updater from the OliveTin action panel
--- status stays visible on the Gatus surface until they resume.
+demoing something and don't want anything to change), you can
+**pause** the updater from the OliveTin action panel -- status stays
+visible on the Gatus surface until you resume.
 
 ## Where you fit in
 
@@ -206,14 +206,14 @@ You don't have to touch Cloudflare, Traefik, the tunnel, or the
 backup engine. Your day-to-day surface is:
 
 - **Keycloak** -- add or remove staff, reset passwords, assign people
-  to teams (see [Add / remove users](/en/how-to-add-users/)).
+  to teams (see [Manage users and roles](/en/manage-users-and-roles/)).
 - **Portainer** -- deploy new apps with access-control labels (see
-  [Deploy apps](/en/how-to-deploy-apps/)).
+  [Manage apps](/en/manage-apps/)).
 - **Homepage** -- glance at service health and pinned links.
 - **Healthchecks** -- add the notification channels you want alerts on
   (see [How alerts reach you](#how-alerts-reach-you)).
 - **OliveTin** (administrators only) -- click a named button to
-  trigger an action your operator has pre-approved (like "resync
+  trigger a pre-defined action (like "resync
   the dashboard now"). Visible to staff in the `administrators`
   Keycloak group; non-admin staff see the dashboard tile but
   hitting it bounces them through login.

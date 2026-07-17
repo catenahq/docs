@@ -1,35 +1,32 @@
 ---
-title: "Fichiers et répertoires appartenant à la suite logicielle"
-description: "En bref : si un fichier sous les chemins ci-dessous est modifié à la"
+title: "Fichiers à ne pas toucher"
+description: "Le VPS opère la machine entière et se maintient configuré. La seule règle : ne modifiez pas le serveur à la main."
 ---
 
-En bref : si un fichier sous les chemins ci-dessous est modifié à la
-main, la prochaine exécution de maintenance de votre opérateur
-écrasera vos modifications. Dites plutôt à votre opérateur ce que
-vous vouliez faire -- il a presque certainement un drapeau ou un
-autre chemin prévu pour cela.
+Le VPS est géré de bout en bout. Il opère la machine entière et garde
+sa propre configuration synchronisée, alors il n'y a vraiment qu'une
+règle :
 
-Ne modifiez pas à la main :
+**Ne modifiez rien à la main sur le serveur lui-même.** Toute
+modification faite directement sur la machine est écrasée au prochain
+passage de réconciliation du système (la mise à jour hebdomadaire, ou
+le prochain `catena converge`), et peut casser la reprise automatique.
+Il existe presque certainement une façon prise en charge de rendre le
+changement durable -- une étiquette compose, un réglage dans le panneau
+catena-admin, ou une entrée dans votre configuration -- alors utilisez
+celle-là.
 
-- `/etc/catena/traefik/dynamic/*.yml` -- géré par `dashboard-sync`
-- `/etc/catena/backup.env` -- géré par l'automatisation de votre
-  opérateur
-- `/etc/catena/restic.pass` -- géré par l'automatisation de votre
-  opérateur
-- `/etc/systemd/system/catena-*.{service,timer}` -- géré par
-  l'automatisation de votre opérateur
-- `/usr/local/bin/run-backup.sh`, `/usr/local/bin/dashboard-sync`,
-  `/usr/local/bin/gatus-sync`, `/usr/local/bin/auto-update.sh` --
-  gérés par l'automatisation de votre opérateur
+Tout ce dont vous avez réellement besoin est exposé par les interfaces
+web, et celles-ci sont à vous de modifier librement :
 
-Si un fichier à l'un de ces chemins porte un en-tête indiquant
-qu'il a été généré automatiquement, traitez-le comme étant en
-lecture seule.
+- Les applications que vous déployez via
+  [Portainer](/fr/manage-apps/).
+- Les utilisateurs, rôles et groupes dans
+  [Keycloak](/fr/manage-users-and-roles/).
+- Les canaux de notification dans Healthchecks, les tuiles du tableau
+  de bord et les autres réglages dans les applications.
 
-Ce que vous POUVEZ modifier sans permission préalable :
-
-- Les applications déployées via l'interface de Portainer (elles vous
-  appartiennent).
-- Vos utilisateurs et groupes Keycloak (c'est le propre du libre-service).
-- Tout ce qui se trouve dans `/home/<vos-utilisateurs>/` (l'opérateur
-  ne touche pas aux répertoires personnels).
+Si vous vous surprenez à ouvrir une session SSH pour éditer un fichier
+à la main sur le serveur, arrêtez : obtenez le même résultat via une
+étiquette compose ou le panneau catena-admin pour que le changement
+survive à la prochaine réconciliation.

@@ -1,11 +1,13 @@
 ---
-title: "Libre-service -- ce que vous pouvez faire sans l'opérateur"
-description: "Règle empirique : tout ce que les interfaces web exposent, vous pouvez le faire vous-même. Tout ce qui requiert SSH + sudo passe par l'opérateur."
+title: "Libre-service -- interface web ou ligne de commande"
+description: "Règle empirique : tout ce que les interfaces web exposent, vous le faites dans un navigateur. Le reste, via votre accès SSH Tailscale ou la CLI catena."
 ---
 
-Règle empirique : tout ce que les interfaces web exposent, vous
-pouvez le faire vous-même. Tout ce qui requiert un accès SSH et sudo
-passe par l'opérateur.
+Règle empirique : tout ce que les interfaces web exposent, vous le
+faites dans un navigateur. Tout le reste, vous le faites via votre
+accès SSH Tailscale à la machine, ou avec la CLI `catena` depuis votre
+dépôt Catena. Dans les deux cas, c'est à vous de l'exécuter -- rien ici
+n'exige quelqu'un d'autre.
 
 ## Oui, faites-le vous-même
 
@@ -30,17 +32,26 @@ passe par l'opérateur.
   Nextcloud, Rocket.Chat, EspoCRM, etc. -- les interfaces admin des
   applications elles-mêmes sont à vous.
 
-## Passez par l'opérateur
+## Via la ligne de commande ou la CLI `catena`
 
-- Mises à niveau majeures de Keycloak, Portainer ou Postgres.
-- Changements à la topologie Cloudflare Tunnel ou DNS.
-- Restauration à partir d'une sauvegarde (destructif ; exige le VPS
-  en état suspendu).
-- Migration vers un autre fournisseur de VPS.
-- Ajout d'un modèle personnalisé (hors catalogue éprouvé), ou tout
-  ce qui sort du catalogue d'applications.
-- Toute opération qui demande SSH ou sudo.
+Ceci nécessite un shell sur la machine (connexion SSH via Tailscale)
+ou la CLI `catena` lancée depuis votre dépôt Catena :
 
-Si vous n'êtes pas certain de quel côté de la ligne tombe une tâche,
-demandez d'abord. La plupart penchent vers le libre-service ; les
-rares exceptions sont clairement destructives ou transverses.
+- **Restaurer depuis une sauvegarde** -- `catena restore` en place, ou
+  `catena recover` sur un serveur neuf. Voir
+  [Reconstruire votre serveur à partir de la sauvegarde](/fr/self-restore/).
+- **Migrer vers un autre fournisseur de VPS** -- `catena recover` chez
+  le nouveau fournisseur, avec votre jeu de clés de récupération.
+- **Régénérer le tunnel Cloudflare ou l'accès Tailscale** -- régénérez
+  l'identifiant dans la console du fournisseur, puis
+  `catena rotate-tunnel` / `catena rotate-tailscale`.
+- **Ré-appliquer la configuration** après un changement de réglage --
+  `catena converge`.
+- Mises à niveau majeures des services de base, modèles personnalisés
+  (hors catalogue), ou toute modification directe d'un fichier sur
+  l'hôte.
+
+Si vous n'êtes pas certain de quel côté tombe une tâche, commencez par
+l'interface web ; la ligne de commande est le repli pour les rares
+choses qu'elle ne couvre pas. Vous préférez un coup de main ? Joignez
+votre contact Catena -- c'est une option, pas une obligation.

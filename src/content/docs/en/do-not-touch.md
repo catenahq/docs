@@ -1,29 +1,28 @@
 ---
-title: "Files and directories the software suite owns"
-description: "Short answer: if a file under the paths below is hand-edited, your"
+title: "Files you should not touch"
+description: "The VPS owns the whole machine and keeps itself configured. The one rule: don't hand-edit the server directly."
 ---
 
-Short answer: if a file under the paths below is hand-edited, your
-operator's next maintenance run will overwrite the change. Tell your
-operator what you wanted to do instead -- they almost certainly have
-a flag or a different path for it.
+The VPS is managed end to end. It owns the whole machine and keeps its
+own configuration in sync, so there is really just one rule:
 
-Don't hand-edit these:
+**Don't hand-edit anything on the server itself.** Any change you make
+directly on the machine gets overwritten the next time the system
+reconciles itself (the weekly update run, or the next `catena
+converge`), and it can break automatic recovery. There is almost
+certainly a supported way to make the change stick -- a compose label,
+a setting in the catena-admin panel, or an entry in your
+configuration -- so use that instead.
 
-- `/etc/catena/traefik/dynamic/*.yml` -- managed by `dashboard-sync`
-- `/etc/catena/backup.env` -- managed by your operator's automation
-- `/etc/catena/restic.pass` -- managed by your operator's automation
-- `/etc/systemd/system/catena-*.{service,timer}` -- managed by your
-  operator's automation
-- `/usr/local/bin/run-backup.sh`, `/usr/local/bin/dashboard-sync`,
-  `/usr/local/bin/gatus-sync`, `/usr/local/bin/auto-update.sh` --
-  managed by your operator's automation
+Everything you actually need is exposed through the web UIs, and those
+are yours to change freely:
 
-If a file at one of these paths carries a header that says it was
-machine-rendered, treat it as read-only.
+- Apps you deploy through [Portainer](/en/manage-apps/).
+- Users, roles, and groups in
+  [Keycloak](/en/manage-users-and-roles/).
+- Notification channels in Healthchecks, dashboard tiles, and the
+  other in-app settings.
 
-What you CAN touch without asking:
-
-- Apps deployed through Portainer's UI (those are yours)
-- Your Keycloak users/groups (that's the point of self-service SSO)
-- Anything in `/home/<your-users>/` (the operator doesn't touch home dirs)
+If you find yourself opening an SSH session to hand-edit a file on the
+server, stop: reach the same outcome through a compose label or the
+catena-admin panel so the change survives the next reconcile.

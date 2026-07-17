@@ -26,7 +26,7 @@ Mautic édition communautaire ne fournit pas d'OIDC natif. Connexion locale par 
 
 ### SMTP et réputation d'envoi
 
-Mautic n'envoie PAS directement les courriels. Il remet chaque envoi à votre relais SMTP géré (voir le [guide des fournisseurs courriel](/fr/guides/email-providers/) pour les choix recommandés). Réputation d'envoi, SPF/DKIM/DMARC, et gestion des rebonds vivent au niveau du relais. Configurez SMTP sous **Settings** -> **Configuration** -> **Email Settings** avec les identifiants de votre relais avant la première campagne.
+Mautic n'envoie PAS directement les courriels. Il remet chaque envoi à votre relais SMTP géré (voir le [guide des comptes fournisseurs](/fr/guides/provider-accounts/) pour les expéditeurs recommandés). Réputation d'envoi, SPF/DKIM/DMARC, et gestion des rebonds vivent au niveau du relais. Configurez SMTP sous **Settings** -> **Configuration** -> **Email Settings** avec les identifiants de votre relais avant la première campagne.
 
 ### Contenu d'aimant à prospects et copie des séquences drip
 

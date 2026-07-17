@@ -1,11 +1,11 @@
 ---
 title: "Loi 25 -- your organization's checklist"
-description: "What your organization must do internally to be Law-25-compliant, after Catena delivers the infrastructure. Catena handles the technical layer; your designated Privacy Officer (RPP) handles the organizational layer."
+description: "What your organization must do internally to be Law-25-compliant. The Catena Suite provides the technical controls; you operate them, and your designated Privacy Officer (RPP) owns the organizational layer."
 ---
 
 Your Catena Suite ships configured with infrastructure-level Loi 25 controls -- Canadian residency, documented subprocessors, immutable backups, MFA, encryption, logging. That's necessary but not sufficient. **Loi 25 also requires organizational measures inside your organization that Catena cannot provide on your behalf.** This page is your checklist.
 
-> Loi 25 (the *Loi modernisant des dispositions législatives en matière de protection des renseignements personnels*) requires the "responsable de la protection des renseignements personnels" (RPP) to be a person inside your organization. Your operator cannot legally be your RPP -- but your operator can deliver everything else.
+> Loi 25 (the *Loi modernisant des dispositions législatives en matière de protection des renseignements personnels*) requires the "responsable de la protection des renseignements personnels" (RPP) to be a person inside your organization. No vendor or software can legally be your RPP -- but the Catena Suite gives you every technical control the rest of this page relies on.
 
 ---
 
@@ -31,8 +31,8 @@ The RPP reviews + signs each. They become enforceable in your organization at si
 ## Day 1-60 -- train
 
 - [ ] **Train all staff** who handle personal information. The RPP organizes; Catena does not deliver employee training. Topics: what is a personal info, what's the policy, when to flag an incident, who to report to.
-- [ ] **Confirm everyone has MFA enabled** in Keycloak. The RPP has the operator's `users-without-mfa` report on request.
-- [ ] **Define internal access by role** -- who needs Nextcloud access, who needs EspoCRM, etc. Principle of least privilege. The operator implements the access rules in Keycloak per your roster.
+- [ ] **Confirm everyone has MFA enabled** in Keycloak. The RPP can request the `users-without-mfa` report from Catena.
+- [ ] **Define internal access by role** -- who needs Nextcloud access, who needs EspoCRM, etc. Principle of least privilege. Catena implements the access rules in Keycloak per your roster.
 
 ## Day 1-90 -- communicate
 
@@ -42,35 +42,36 @@ The RPP reviews + signs each. They become enforceable in your organization at si
 
 ## Ongoing -- operate
 
-- [ ] **Maintain the incident register**. Empty is fine; absent is non-compliant. The RPP keeps it (template in your operator-driven documentation pack).
-- [ ] **Respond to data subject requests** within 30 days. The RPP receives requests at the published email and coordinates with the operator for technical execution (exports, deletions). Document each in the requests register.
-- [ ] **Annual review** of the EFVP and the four policies. Coordinated with Catena's annual maintien Loi 25 if you've subscribed (otherwise do it yourself -- Catena can quote it ad-hoc).
-- [ ] **Quarterly access review** -- the RPP, with Catena, reviews who has access to what and revokes stale access.
+- [ ] **Maintain the incident register**. Empty is fine; absent is non-compliant. The RPP keeps it (template in your Catena documentation pack).
+- [ ] **Respond to data subject requests** within 30 days. The RPP receives requests at the published email and runs the technical execution (exports, deletions) from the apps' own admin tools. Document each in the requests register.
+- [ ] **Annual review** of the EFVP and the four policies. Do it yourself; optional paid review is available if you'd rather have a second set of eyes.
+- [ ] **Quarterly access review** -- the RPP reviews who has access to what in Keycloak (see [Manage users and roles](/en/manage-users-and-roles/)) and revokes stale access.
 
 ## When an incident happens
 
-1. Notify the RPP immediately (and the operator: `hello@catena.run` or your direct line).
-2. The operator triages within 4h and reports to you.
-3. The operator delivers a technical report within 72h.
-4. **The RPP decides** whether to notify the CAI and the affected individuals (the operator drafts the notification text; the RPP signs and submits).
+1. Notify the RPP immediately.
+2. Contain and triage the technical side yourself -- [Recovering from a failure](/en/disaster-recovery/) maps each incident to its response (isolate the box over Tailscale, rotate credentials, restore from a clean snapshot).
+3. Assess the scope: what happened, when, and whose personal information was affected.
+4. **The RPP decides** whether to notify the CAI and the affected individuals, drafts the notice, signs, and submits.
 5. Inscribe in the incident register.
 
-Detail in your incident-management policy.
+Prefer a hand triaging a live incident? Optional support is available via your Catena contact -- it is not required for compliance. Detail in your incident-management policy.
 
-## What the operator does NOT do
+## What the software does NOT do for you
 
 So you're not surprised:
 
-- The operator is NOT your RPP. The RPP is internal to your organization. Loi 25 requires that.
-- The operator does NOT train your staff. Training is your responsibility (Catena can refer trainers).
-- The operator does NOT manage your endpoints, printers, Microsoft 365, or office network. Those are out of scope. A local technician handles them.
-- The operator does NOT communicate with the CAI on your behalf. The CAI sees you, the data controller.
+- The Catena Suite is NOT your RPP. The RPP is a person inside your organization. Loi 25 requires that.
+- It does NOT train your staff. Training is your responsibility (ask your Catena contact for a trainer referral).
+- It does NOT manage your endpoints, printers, Microsoft 365, or office network. Those are out of scope. A local technician handles them.
+- It does NOT communicate with the CAI on your behalf. The CAI sees you, the data controller.
 
-What the operator DOES do: every technical control on this page, every artifact the RPP needs to sign, every incident triage and notification draft.
+What the Suite DOES give you: every technical control on this page, and the tools to produce every artifact the RPP signs and to run every incident response yourself.
 
 ## Need help
 
-- [Contact your operator](mailto:hello@catena.run) for any technical question.
+- Start with the docs -- [Recovering from a failure](/en/disaster-recovery/) for incidents, [Manage users and roles](/en/manage-users-and-roles/) for access.
+- Prefer human help on a technical question? [Reach your Catena contact](mailto:hello@catena.run) -- optional, not required.
 - [Commission d'accès à l'information du Québec](https://www.cai.gouv.qc.ca) for any regulatory question.
 
 ---

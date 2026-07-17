@@ -1,6 +1,6 @@
 ---
-title: "How to deploy apps (with per-department access control)"
-description: "When you deploy a new app through Portainer, you can control who can reach"
+title: "Manage apps"
+description: "Deploy new apps through Portainer and set the labels that decide who can reach each one and where it is published."
 ---
 
 When you deploy a new app through Portainer, you can control who can reach
@@ -77,6 +77,28 @@ Within 5 minutes, `dashboard-sync` picks up the new app, creates the
 `accounting` group in Keycloak (if it doesn't exist), wires the
 forward-auth middleware, and makes the app reachable -- but only for
 users in `accounting`.
+
+## Label cheat sheet
+
+Every label, its default (in parentheses), accepted values, and what it
+does. Follow a label to its section below for the full explanation. All
+are optional; an app with no `vps.auth.*` label is reachable by `admin`
+only (deny-by-default).
+
+| Label (default) | Values | What it does |
+|---|---|---|
+| [`vps.route.host`](#quick-start)<br>(none) | a public FQDN, e.g. `app.yourdomain.com` | Publishes the app at that URL |
+| [`vps.auth.groups`](#vpsauthgroupscsv)<br>(`admin` only) | csv of `staff`, `client`, department names, `visitor`, `admin` | Who can reach the app |
+| [`vps.auth.mode`](#vpsauthmodemode)<br>(`admin-only`) | `public` \| `private` \| `admin-only` | Shorthand for a common group set (use this OR `vps.auth.groups`) |
+| [`vps.auth.protected`](#vpsauthprotectedtrue)<br>(`false`) | `true` \| `false` | Flags an app that must never resolve to public |
+| [`vps.auth.oidc`](#forward-auth-vs-oidc)<br>(`false`) | `true` \| `false` (plus `vps.auth.oidc.redirect_uris`, optional `vps.auth.oidc.scopes`) | Adds native OIDC login on top of the gate |
+| [`vps.auto-update`](#choosing-how-aggressive-updates-are)<br>(`patch`) | `patch` \| `minor` \| `major` \| `off` | How far the auto-updater may bump the image |
+| [`vps.homepage.*`](#customize-how-your-app-appears-on-the-dashboard)<br>(tile shown) | `name`, `icon`, `description`, `hidden` | Dashboard tile presentation |
+| [`vps.display-name`](#override-how-your-app-appears-on-the-gatus-status-page)<br>(image short name) | any string | Name shown on the Gatus status card |
+
+Not a label, but required for routing: give the public-facing service a
+`catena-network` alias in lowercase-with-dashes form, or Traefik cannot
+reach it (502). See [Quick start](#quick-start).
 
 ## Pre-configured apps you can enable
 
@@ -184,14 +206,15 @@ hold large amounts of user data. A team using Nextcloud as a
 workstation-sync replacement can easily accumulate hundreds of GB or
 more.
 
-That becomes a problem for backups. The nightly backup copies every
+That becomes a problem for backups. Each backup copies every
 byte of app data into the off-site repository. At TB scale this takes
 hours, costs real money in storage + egress, and makes a full restore
 painfully slow.
 
-For this class of app, ask the operator to deploy the **S3-backed
-variant**: files live directly in an object-storage bucket you own,
-not in a local volume on the VPS. The nightly backup only copies the
+For this class of app, deploy the **S3-backed variant** (the
+S3-storage Nextcloud template in App Templates): files live directly
+in an object-storage bucket you own, not in a local volume on the VPS.
+Each backup only copies the
 app's code and config (a few hundred MB), and the bucket handles file
 history on its own.
 
@@ -201,24 +224,24 @@ What that changes for you:
   looks exactly the same. Same login, same file browser, same
   everything.
 - **Your backup is two things, not one.** The code + config + database
-  still live in the operator's nightly backup; the files live in the
+  still live in each backup; the files live in the
   S3 bucket (with 30-day undelete history built in). Both are things
   you own.
 - **Restore is faster.** If the VPS burns down, your files survive
   independently -- the new VPS just reconnects to the same bucket and
   every file is already there.
 
-You don't provision any of this yourself; ask the operator when you're
-planning a file-heavy deployment and they'll set it up following a
-documented internal pattern.
+You don't wire the bucket plumbing by hand: for a file-heavy
+deployment, pick the S3-storage template instead of the plain one and
+it sets the object-storage backend up for you.
 
 ## Keeping your apps up to date
 
-Once a week, your VPS checks for newer versions of every image you've
-deployed, pulls the ones that meet your policy, redeploys them, runs a
-health check, and rolls back if the health check fails. You don't do
-anything -- it runs at 3 a.m., alerts the operator only if something
-broke.
+On a weekly schedule, your VPS checks for newer versions of every image
+you've deployed, pulls the ones that meet your policy, redeploys them,
+runs a health check, and rolls back if the health check fails. You
+don't do anything -- it runs in the update window, outside business
+hours, and alerts you only if something broke.
 
 **But only apps pinned to a full version are managed.** The suite
 refuses to touch anything where the image tag doesn't fully specify a
@@ -260,8 +283,8 @@ Defaults, by service kind:
 
 - **Client apps** (yours): `patch`. Conservative -- bug fixes and
   security releases, no behavior change.
-- **Operator infrastructure** (Keycloak, Portainer, Traefik, Gatus,
-  etc.): `patch+minor`. Operator watches these daily.
+- **Core infrastructure** (Keycloak, Portainer, Traefik, Gatus,
+  etc.): `patch+minor`, so security fixes land on their own.
 
 Unless you have a reason to change it, leaving the label unset on
 your apps is the right call. You'll get security patches
@@ -270,11 +293,11 @@ automatically.
 ### What "auto-rollback" does in practice
 
 After each bumped service, the updater runs a health baseline (same
-check the nightly drill uses): is the container responding, is the
+check the recovery drill uses): is the container responding, is the
 page returning 2xx/3xx, did the request time stay reasonable. If
 anything fails, the tag is reverted to the prior good version,
-redeployed, and the operator gets a ntfy alert with the service name
-and the bad version. Next week's run remembers the bad version and
+redeployed, and you get a ntfy alert with the service name
+and the bad version. The next run remembers the bad version and
 skips it -- you won't rattle into the same broken release repeatedly.
 
 If you want to see what's pending / what rolled back / what's
@@ -298,13 +321,19 @@ concrete running version per service so drift is easy to spot.
 
 Comma-separated list of Keycloak group names that can access the app.
 A user in ANY listed group passes (OR semantics). The `admin` group is
-ALWAYS allowed implicitly -- the operator is a superuser and is never
-locked out of an app by a label.
+ALWAYS allowed implicitly -- an administrator is never locked out of an
+app by a label.
 
-Groups follow the four-tier model: `visitor` (anonymous, see below),
-`client` (your external users), `staff` (your employees; departments
-like `accounting` / `engineering` are subgroups of staff), and `admin`
-(operator).
+The values you can list:
+
+- **`visitor`** -- a special keyword meaning **public, no login at
+  all**. It is not a real group; see the note below.
+- **`client`** -- your external users (customers, partners).
+- **`staff`** -- your employees. The baseline for anyone on your team.
+- **any department subgroup of `staff`** -- by name (`accounting`,
+  `engineering`, ...), for finer-grained access.
+- **`admin`** -- the people who run the server. Always allowed
+  implicitly, so you never need to list it.
 
 **Examples:**
 
@@ -494,7 +523,7 @@ Within the next ~5 minutes, `dashboard-sync` will:
   - `OIDC_ISSUER_URL`
   - `OIDC_REDIRECT_URL`
 
-These are **deliberate, operator-controlled variable names** -- not
+These are **deliberate, fixed variable names** -- not
 a standard your app will read directly. You need to add lines to
 your service's `environment:` block that map these to whatever
 your app expects, using Docker Compose's `${...}` substitution.
@@ -587,15 +616,15 @@ reverts to forward-auth-only. You can then remove the
 Apps that configure OIDC through **config-file edits** rather
 than env vars -- OliveTin (YAML), Nextcloud (`config.php`),
 Jellyfin (XML plugin config), Vaultwarden (hashed-file) -- aren't
-covered by this label flow. For those, ask your operator to wire
-them manually.
+covered by this label flow. For those, wire OIDC by hand in the app's
+own config file.
 
 ## Customize how your app appears on the dashboard
 
 The Homepage dashboard at
 [`dash.yourdomain.com`](https://dash.yourdomain.com)
 gets a tile for every deployed app. Four optional labels let you
-tweak presentation without operator involvement:
+tweak presentation yourself:
 
 ```yaml
 services:
@@ -623,7 +652,7 @@ click "Sync all" in OliveTin to force a refresh immediately.
 
 That's the whole customization surface by design. If you need more
 than this -- a different group, a custom URL, per-user visibility --
-ask your operator; those need operator-side configuration.
+make the change on the server directly (SSH in over Tailscale).
 
 ## Override how your app appears on the Gatus status page
 

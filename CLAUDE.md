@@ -31,13 +31,20 @@ need no token (the former CONTRACTS_READ_TOKEN secret is retired).
 
 ## Content rules
 
-- Client-facing. Never reference the operator documentation,
-  operator paths, Ansible roles, or filesystem paths.
-- Standing rule (2026-04-22): for maintenance / recovery / internal
-  tasks, write "contact your operator" instead of citing the
-  operator doc path or task name. Intentional exception:
-  `self-restore.md`, which describes the client taking on the
-  operator role.
+- Client-facing. Never reference the internal operator documentation,
+  operator-side paths, Ansible roles, or filesystem paths.
+- Standing rule (updated 2026-07-17): Catena is fully self-hosted. The
+  READER is the admin who owns and runs the VPS; address them as "you"
+  and tell them how to do the task themselves, pointing at the concrete
+  tool or another doc (Tailscale SSH, the recovery keyset + self-restore,
+  provider rescue mode, credential regeneration in the provider console,
+  the catena-admin panel). Do NOT write "we" / "us" / "contact us" /
+  "get in touch" / "ask us" as the primary path, and do not imply a
+  managed service performs recovery. Human help is OPTIONAL and a last
+  resort only: at most a single light fallback like "prefer a hand?
+  reach your Catena contact" AFTER the self-service steps -- never the
+  first instruction. "operator" stays banned. Use "Catena" for the
+  product/system, not as an entity that acts on the reader's behalf.
 - Never write "playbook" in client-facing copy. Use "automation flow"
   or "managed operation".
 - Bilingual parity is required: every page exists in EN and FR.

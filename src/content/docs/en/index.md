@@ -23,27 +23,31 @@ up day-to-day.
 - **[Where your data lives](/en/where-is-my-data/)** -- what's on
   the VPS, what's in your S3 backup bucket, what's lost if the VPS
   burns down.
-- **[Files you should not touch](/en/do-not-touch/)** -- hand-edits
-  get overwritten the next time your operator pushes an update.
-  Here's what to leave alone.
+- **[Files you should not touch](/en/do-not-touch/)** -- the VPS runs
+  the whole machine and manages its own files. Here's the one rule to
+  follow.
 
-## Day-to-day tasks
+## Day-to-day
 
-- **[Add / remove users](/en/how-to-add-users/)** -- Keycloak
-  walkthrough for staff onboarding + password resets.
-- **[Deploy apps (per-department access)](/en/how-to-deploy-apps/)**
-  -- gate new apps to specific teams using compose labels.
+- **[Manage users and roles](/en/manage-users-and-roles/)** -- create
+  accounts in Keycloak and assign the role that decides which apps
+  each person reaches.
+- **[Manage apps](/en/manage-apps/)** -- deploy new apps and set the
+  labels that gate access and publish the URL.
 - **[What you can do yourself](/en/self-service/)** -- day-to-day
-  tasks that never need your operator.
+  tasks that never need to reach us.
 
-## Disaster handling
+## Tasks
 
-- **[Disaster prevention](/en/disaster-prevention/)** -- how the
-  suite reduces the blast radius of common failures.
-- **[Disaster recovery](/en/disaster-recovery/)** -- what happens
-  when the VPS is lost.
-- **[Self-restore](/en/self-restore/)** -- the one-script flow you
-  can run yourself to spin up a replacement.
+- **[Recurring tasks](/en/disaster-prevention/)** -- the short
+  checklist to run at onboarding, once a month, and once a year so
+  recovery is always possible.
+- **[Recovering from a failure](/en/disaster-recovery/)** -- what
+  happens, and what you do, when the VPS is lost.
+- **[Rebuild your server yourself](/en/self-restore/)** -- the
+  one-script flow you can run to spin up a replacement.
+- **[Email archive](/en/email-archive/)** -- how your email history is
+  captured into your backups, and how to switch it on.
 
 ## Your subdomains
 

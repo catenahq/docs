@@ -1,10 +1,12 @@
 ---
-title: "Self-service -- what you can do without the operator"
-description: "Rule of thumb: anything the web UIs expose, you can do yourself. Anything that requires SSH + sudo goes through the operator."
+title: "Self-service -- web UI vs the shell"
+description: "Rule of thumb: anything the web UIs expose, you do in a browser. The rest you do over your Tailscale SSH access or with the catena CLI."
 ---
 
-Rule of thumb: anything the web UIs expose, you can do yourself.
-Anything that requires SSH + sudo goes through the operator.
+Rule of thumb: anything the web UIs expose, you do in a browser.
+Everything else you do over your Tailscale SSH access to the box, or
+with the `catena` CLI from your Catena checkout. Either way it is
+yours to run -- nothing here requires anyone else.
 
 ## Yes, do this yourself
 
@@ -24,17 +26,25 @@ Anything that requires SSH + sudo goes through the operator.
 - **Manage app-level settings:** anything inside Nextcloud,
   Rocket.Chat, EspoCRM, etc. -- the apps' own admin UIs are yours.
 
-## Ask the operator
+## Over the shell or the `catena` CLI
 
-- Upgrading Keycloak / Portainer / Postgres major versions.
-- Changing the Cloudflare Tunnel or DNS topology.
-- Restoring from backup (destructive; must be done with the VPS in a
-  quiesced state).
-- Migrating to a different VPS provider.
-- Adding a custom (non-vetted) template, or anything outside the
-  app catalog.
-- Anything that needs SSH or sudo.
+These need a shell on the box (SSH in over Tailscale) or the `catena`
+CLI run from your Catena checkout:
 
-If you are not sure which side of the line a task falls on, ask
-first. Most things lean self-service; the few that don't are
-clearly destructive or cross-cutting.
+- **Restore from backup** -- `catena restore` in place, or
+  `catena recover` onto a fresh server. See
+  [Rebuilding your server from backup](/en/self-restore/).
+- **Migrate to a different VPS provider** -- `catena recover` at the
+  new provider, using your recovery keyset.
+- **Rotate the Cloudflare tunnel or Tailscale access** -- regenerate
+  the credential in the provider console, then `catena rotate-tunnel`
+  / `catena rotate-tailscale`.
+- **Re-apply configuration** after a settings change -- `catena
+  converge`.
+- Major-version upgrades of core services, custom (non-catalog)
+  templates, or anything that edits a file on the host directly.
+
+If you are not sure which side a task falls on, start with the web
+UI; the shell is the fallback for the few things it doesn't cover.
+Prefer a hand with any of it? Reach your Catena contact -- it is an
+option, not a requirement.

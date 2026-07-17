@@ -18,9 +18,9 @@ est destinée, puis est arrêtée par **Keycloak** -- votre couche
 d'identité -- pour vérifier que la personne est bien connectée et dans
 la bonne équipe. Ce n'est qu'ensuite que la requête atteint
 l'application elle-même. Pendant ce temps, un autre processus
-sauvegarde discrètement tout vers votre seau S3 chaque jour, et un
-moniteur teste chaque service chaque minute pour attraper les pannes
-avant vous.
+sauvegarde discrètement tout vers votre seau S3 à chaque sauvegarde,
+et un moniteur teste chaque service chaque minute pour attraper les
+pannes avant vous.
 
 ## Les services en bref
 
@@ -28,16 +28,16 @@ avant vous.
 |---|---|
 | **Cloudflare** | Votre porte d'entrée publique. Cache l'IP du VPS, émet les certificats HTTPS, absorbe le trafic malveillant. |
 | **Tunnel Cloudflare** | Un lien privé entre Cloudflare et votre VPS. Rien sur `your VPS` n'est exposé directement à Internet. |
-| **Tailscale** | La porte arrière privée de votre opérateur. Un réseau maillé réservé aux machines autorisées -- c'est par là que l'opérateur rejoint `your VPS` pour les mises à jour et les enquêtes. SSH public est fermé ; sans Tailscale (ou Cloudflare, pour le trafic du personnel), rien n'atteint le VPS. Vous gardez le contrôle : Tailscale peut être désactivé ou retiré par vous à tout moment depuis la console de votre fournisseur VPS (ou physiquement, pour du matériel sur site). Si vous ne savez pas comment faire, vous ne devriez pas. |
+| **Tailscale** | Votre accès privé à la machine. Un réseau maillé réservé aux machines autorisées -- c'est par là que vous (et toute personne que vous invitez pour vous aider) vous connectez en SSH à `your VPS` pour la maintenance ou les enquêtes, et votre voie de retour si les tableaux de bord web tombent un jour. SSH public est fermé ; sans Tailscale (ou Cloudflare, pour le trafic du personnel), rien n'atteint le VPS. Vous gardez le contrôle : Tailscale peut être désactivé ou retiré par vous à tout moment depuis la console de votre fournisseur VPS (ou physiquement, pour du matériel sur site). |
 | **Traefik** | Le standard téléphonique. Lit l'URL de chaque requête et l'oriente vers la bonne application. |
 | **Keycloak** | Votre serveur d'identité. Gère la connexion, les réinitialisations de mot de passe et le contrôle d'accès par équipe. La seule page de connexion que vos utilisateurs verront. |
 | **Portainer** | Le panneau de déploiement. Là où les nouvelles applications sont installées et mises à jour. Vous pouvez consulter les journaux ici. |
 | **Vos applications** | Tout ce que vous avez déployé via Portainer -- un conteneur par application, tournant sur un réseau Docker privé. |
 | **Gatus** | Le moniteur de santé. Teste chaque service toutes les minutes sous deux angles : à l'interne (le conteneur répond-il ?) et à l'externe (le chemin complet de Cloudflare à l'application fonctionne-t-il ?). |
-| **Healthchecks** | Le centre de notifications. Toutes les alertes de Gatus (services en panne) et du moteur de sauvegarde (image nocturne manquée) arrivent ici, et vous les branchez aux canaux que vous voulez -- courriel, Slack, Discord, ntfy, et une trentaine d'autres. Voir [Comment les alertes vous parviennent](#comment-les-alertes-vous-parviennent). |
+| **Healthchecks** | Le centre de notifications. Toutes les alertes de Gatus (services en panne) et du moteur de sauvegarde (sauvegarde manquée) arrivent ici, et vous les branchez aux canaux que vous voulez -- courriel, Slack, Discord, ntfy, et une trentaine d'autres. Voir [Comment les alertes vous parviennent](#comment-les-alertes-vous-parviennent). |
 | **Homepage** | Le tableau de bord. Rassemble les liens et les statuts sur une seule page. |
-| **OliveTin** | Actions en un clic, restreintes au groupe `administrators` (opérateur + équipe administratrice). Le bouton "synchroniser maintenant", par exemple. |
-| **Restic -> S3** | Le moteur de sauvegarde. Prend une image chiffrée et dédupliquée de vos données chaque nuit, l'envoie vers un seau de stockage que vous possédez. |
+| **OliveTin** | Actions en un clic, restreintes au groupe `administrators` (équipe administratrice). Le bouton "synchroniser maintenant", par exemple. |
+| **Restic -> S3** | Le moteur de sauvegarde. Prend une image chiffrée et dédupliquée de vos données à chaque sauvegarde, l'envoie vers un seau de stockage que vous possédez. |
 
 ## Le parcours d'une requête
 
@@ -83,22 +83,22 @@ flowchart LR
     APPS --> VOL
     PG --> RESTIC
     VOL --> RESTIC
-    RESTIC -->|image nocturne| S3
+    RESTIC -->|chaque sauvegarde| S3
     RESTIC -->|ping après succès| HC
     HC -.->|aucun ping à l'heure| YOU
 ```
 
 Deux points à retenir :
 
-- Le seau S3 est **le vôtre**. Votre opérateur configure les
-  identifiants sur le VPS, mais le compte et la relation de
-  facturation avec le fournisseur de stockage vous appartiennent.
-  Si vous changez d'opérateur un jour, les sauvegardes restent avec
-  vous.
+- Le seau S3 est **le vôtre**. Vous configurez les identifiants sur le
+  VPS à l'installation, et le compte et la facturation avec le
+  fournisseur de stockage restent à votre nom -- rien dans les
+  sauvegardes ne dépend de quelqu'un d'autre.
 - La sauvegarde est **chiffrée sur le VPS avant d'en sortir**, avec
-  une clé que votre opérateur conserve séparément. Même quelqu'un
-  avec un accès complet au seau S3 ne peut pas lire la sauvegarde
-  sans cette clé.
+  une clé que vous conservez séparément du VPS (elle fait partie de
+  votre [jeu de clés de récupération](/fr/disaster-prevention/)). Même
+  quelqu'un avec un accès complet au seau S3 ne peut pas lire la
+  sauvegarde sans cette clé.
 
 ## Comment la surveillance attrape les problèmes
 
@@ -126,11 +126,10 @@ notification reçue nomme directement le service en panne. Les
 rétablissements déclenchent aussi une notification, donc vous savez
 quand le problème est réglé sans avoir à rafraîchir Gatus.
 
-Votre opérateur est notifié par défaut -- il reçoit les alertes sur son
-téléphone via **ntfy** (un service de notifications push gratuit,
-configuré automatiquement à l'installation, aucun compte requis côté
-client). **Vous ajoutez vos propres canaux** -- configuration unique,
-sans intervention de l'opérateur :
+Par défaut, les alertes sont poussées via **ntfy** (un service de
+notifications push gratuit, configuré automatiquement à l'installation,
+aucun compte requis). Pointez-le vers votre téléphone et **ajoutez les
+autres canaux que vous voulez** -- configuration unique :
 
 1. Connectez-vous à [`checks.yourdomain.com`](https://checks.yourdomain.com)
    (même identifiant Keycloak que pour les autres services).
@@ -150,8 +149,8 @@ sans intervention de l'opérateur :
    notifié des sauvegardes manquées.
 
 Le retrait d'un canal se fait de la même façon. Le canal par défaut
-de l'opérateur n'est pas exposé dans cette interface -- il reste en
-place peu importe ce que vous ajoutez ou retirez. Les nouveaux services
+intégré n'est pas exposé dans cette interface -- il reste en place peu
+importe ce que vous ajoutez ou retirez. Les nouveaux services
 surveillés (p. ex. une application que vous venez de déployer) reçoivent
 leur propre vérification à la première panne, avec vos canaux
 automatiquement rattachés.
@@ -159,9 +158,9 @@ automatiquement rattachés.
 ## Mises à jour et retour en arrière
 
 Vos applications et l'infrastructure qui les fait tourner sont
-rafraîchies selon un horaire hebdomadaire -- dimanche matin avant
-les heures de bureau, avec un retour en arrière automatique si
-quelque chose se met à échouer.
+rafraîchies selon un horaire hebdomadaire -- en dehors des heures de
+bureau, avec un retour en arrière automatique si quelque chose se met
+à échouer.
 
 Toutes les applications ne sont pas traitées de la même façon. Ça
 dépend de comment le tag d'image est épinglé dans la configuration
@@ -170,7 +169,7 @@ de l'application :
 | Le tag ressemble à...   | Exemple              | Mise à jour auto ? |
 |---|---|---|
 | Version complète      | `paperless:2.12.3`   | **Oui** -- avec retour en arrière auto en cas d'échec. |
-| Épingle majeure seule | `postgres:16-alpine` | Non. Géré par l'opérateur ; ignoré par la mise à jour hebdomadaire. |
+| Épingle majeure seule | `postgres:16-alpine` | Non. Épinglé par le système ; ignoré par la mise à jour hebdomadaire. |
 | Flottant              | `nginx:latest`       | Non. Dangereux à toucher sans surveillance. |
 
 Pour les applications épinglées à une version complète, chaque
@@ -186,12 +185,12 @@ fichier compose :
 - `vps.auto-update=off` -- saute complètement ce service.
 
 Si vous mettez l'étiquette sur une app avec un tag flottant ou
-majeur-seul, elle est **silencieusement ignorée** -- la règle gérée
-par l'opérateur l'emporte. C'est délibéré : un retour en arrière
-automatique a besoin d'une version précédente connue-bonne, et un
-tag flottant ne nous en donne pas.
+majeur-seul, elle est **silencieusement ignorée** -- la règle
+d'épinglage du système l'emporte. C'est délibéré : un retour en arrière
+automatique a besoin d'une version précédente connue-bonne, et un tag
+flottant n'en fournit pas.
 
-**Ce qui se passe à 3 h du matin quand une mise à jour casse :**
+**Ce qui se passe quand une mise à jour casse :**
 
 1. Les sondes de santé Gatus détectent la régression en ~3 minutes
    (sondes interne ET publique).
@@ -199,20 +198,22 @@ tag flottant ne nous en donne pas.
    précédente et le redéploie.
 3. La mauvaise version est mémorisée -- la prochaine exécution essaie
    la version *suivante*, pas celle qui vient de casser.
-4. Votre opérateur est alerté via **Healthchecks** avec le nom du
+4. Vous êtes alerté via **Healthchecks** avec le nom du
    service et la version qui a échoué. La version exécutée par
    chaque service est visible sur la **surface de monitoring
    Gatus** à `monitor.<votre-zone>` -- un service en quarantaine
    affiche le tag épinglé précédent avec la mauvaise version
    annotée à côté.
 
-Vous n'avez rien à faire. L'application revient d'elle-même.
-L'opérateur enquête à un rythme d'heures de bureau, pas à 3 h.
+Vous n'avez rien à faire. L'application revient d'elle-même, alors
+vous examinez la cause à votre rythme -- ce n'est pas une urgence de
+3 h du matin.
 
 Si vous préférez sauter une semaine de mises à jour (p. ex. vous
-êtes en démo et rien ne doit changer), l'opérateur peut **mettre
-en pause** la mise à jour depuis le panneau d'actions OliveTin -- le
-statut reste visible sur la surface Gatus jusqu'à la reprise.
+êtes en démo et rien ne doit changer), vous pouvez **mettre en
+pause** la mise à jour depuis le panneau d'actions OliveTin -- le
+statut reste visible sur la surface Gatus jusqu'à ce que vous
+repreniez.
 
 ## Votre rôle
 
@@ -221,18 +222,18 @@ de sauvegarde. Votre surface d'interaction quotidienne est :
 
 - **Keycloak** -- ajouter ou retirer du personnel, réinitialiser des
   mots de passe, assigner les personnes aux équipes (voir
-  [Ajouter / retirer des utilisateurs](/fr/how-to-add-users/)).
+  [Gérer les utilisateurs et les rôles](/fr/manage-users-and-roles/)).
 - **Portainer** -- déployer de nouvelles applications avec des étiquettes
   de contrôle d'accès (voir
-  [Déployer des applications](/fr/how-to-deploy-apps/)).
+  [Gérer les applications](/fr/manage-apps/)).
 - **Homepage** -- coup d'œil rapide sur la santé des services et les
   liens épinglés.
 - **Healthchecks** -- ajouter les canaux de notification que vous
   souhaitez recevoir (voir
   [Comment les alertes vous parviennent](#comment-les-alertes-vous-parviennent)).
 - **OliveTin** (administrateurs uniquement) -- cliquer sur un bouton
-  nommé pour déclencher une action que votre opérateur a
-  pré-approuvée (comme "resynchroniser le tableau de bord
+  nommé pour déclencher une action prédéfinie (comme
+  "resynchroniser le tableau de bord
   maintenant"). Visible aux membres du personnel dans le groupe
   Keycloak `administrators` ; le personnel non-administrateur voit
   la tuile sur le tableau de bord mais y accéder le redirige vers

@@ -5,7 +5,7 @@ description: "Si votre serveur est perdu, il peut être reconstruit à partir de
 
 Si votre serveur est un jour perdu -- panne matérielle, incident de
 centre de données, effacement accidentel, rançongiciel -- il peut
-être reconstruit à partir de votre sauvegarde nocturne. Vous n'avez
+être reconstruit à partir de votre dernière sauvegarde. Vous n'avez
 rien à reconstituer à la main, et vous n'avez à mémoriser aucun des
 réglages internes ni des mots de passe qu'utilisent vos applications.
 
@@ -42,19 +42,22 @@ sauvegarde, donc les seules que vous devez conserver vous-même.
 
 ## Comment se déroule une reconstruction
 
-La reconstruction, nous la faisons avec vous, et elle est rapide :
+Vous faites la reconstruction vous-même avec une seule commande, et
+elle est rapide :
 
-1. Un serveur neuf est préparé.
-2. Votre dernière sauvegarde y est restaurée à l'aide de votre jeu
-   de clés de récupération.
+1. Louez un VPS neuf (n'importe quel fournisseur).
+2. Depuis votre dépôt Catena, lancez `catena recover`. Il demande votre
+   jeu de clés de récupération, puis prépare la machine, restaure votre
+   dernier instantané, ramène les applications et valide.
 3. Vos applications reviennent avec leurs données et leurs réglages
    intacts.
 
-Votre rôle se résume à avoir gardé votre jeu de clés de récupération
-en sécurité et à joindre votre contact Catena au besoin. Dès que vous
-constatez que le serveur est perdu, communiquez avec nous -- une
-reconstruction à partir de votre sauvegarde est une opération de
-routine, pas un projet spécial.
+Votre seul rôle en amont est de garder votre jeu de clés de
+récupération en sécurité. Dès que vous constatez que le serveur est
+perdu, vous pouvez lancer la reconstruction -- c'est une commande de
+routine, pas un projet spécial. Vous préférez un coup de main la
+première fois ? Joignez votre contact Catena -- optionnel, pas
+obligatoire.
 
 ## Pourquoi chaque partie du jeu de clés compte
 
@@ -67,10 +70,10 @@ vous confiez le jeu de clés) puissiez la lire :
 - L'**emplacement du dépôt** indique où chercher.
 
 Les trois sont requis ensemble. Sans le mot de passe de chiffrement,
-la sauvegarde est du texte chiffré illisible, même pour nous -- c'est
+la sauvegarde est du texte chiffré illisible pour quiconque -- c'est
 précisément pour cela que vous le détenez, et pourquoi le perdre est
 le seul cas qui ne peut pas être récupéré.
-[Prévention des sinistres](/fr/disaster-prevention/) détaille comment
+[Tâches récurrentes](/fr/disaster-prevention/) détaille comment
 conserver le jeu de clés pour que cela n'arrive jamais.
 
 ## Ce qui revient, et ce que vous pourriez perdre
@@ -85,7 +88,7 @@ sauvegarde et le moment de la perte du serveur -- de quelques minutes
 à une journée, selon votre calendrier de sauvegarde.
 [Où sont mes données](/fr/where-is-my-data/) explique exactement où
 vit chaque chose, et la page
-[Reprise après sinistre](/fr/disaster-recovery/) associe chaque
+[Se remettre d'une panne](/fr/disaster-recovery/) associe chaque
 situation "ce qui a cassé" à sa voie de récupération.
 
 ## Si vous utilisez Nextcloud avec stockage de fichiers S3
@@ -104,7 +107,7 @@ Si votre serveur est tombé et que vous avez besoin de ces
 instructions pour le relever, le site de documentation ne vous aidera
 pas s'il se trouve sur le même chemin. Enregistrez les pages que vous
 utiliseriez lors d'un incident -- celle-ci plus
-[Reprise après sinistre](/fr/disaster-recovery/) et
+[Se remettre d'une panne](/fr/disaster-recovery/) et
 [Où sont mes données](/fr/where-is-my-data/) -- sur votre poste avec
 la fonction "Enregistrer sous..." de votre navigateur (ou imprimez-les
 en PDF) à la prise en charge, et rafraîchissez la copie une fois par
