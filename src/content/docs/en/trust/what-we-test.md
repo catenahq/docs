@@ -36,7 +36,7 @@ Per-application deployment plus the wiring that makes the suite feel like one pr
 
 On-server status pages, resource monitoring, a disk-space watchdog and an always-fresh report of which installed applications have updates available -- all hosted on the client's own server.
 
-### Private networking and hardened public access (13 rehearsals)
+### Private networking and hardened public access (15 rehearsals)
 
 All web traffic reaches the server through an encrypted tunnel, so no web port is ever open on the machine itself; remote administration rides a private peer-to-peer network, and audio/video calls get their own dedicated relay.
 
