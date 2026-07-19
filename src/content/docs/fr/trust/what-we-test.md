@@ -36,7 +36,7 @@ Déploiement par application plus le câblage qui fait de la suite un seul produ
 
 Pages d'état sur le serveur, suivi des ressources, chien de garde d'espace disque et rapport toujours à jour des mises à jour disponibles pour les applications installées -- le tout hébergé sur le serveur du client.
 
-### Réseau privé et accès public durci (15 répétitions)
+### Réseau privé et accès public durci (16 répétitions)
 
 Tout le trafic web atteint le serveur par un tunnel chiffré : aucun port web n'est ouvert sur la machine elle-même. L'administration à distance passe par un réseau privé pair à pair, et les appels audio/vidéo ont leur relais dédié.
 
@@ -91,6 +91,10 @@ Les applications et composants système se mettent à jour selon un calendrier g
 ### Supervision externe de la disponibilité (1 répétition)
 
 Supervision indépendante depuis l'extérieur du serveur, avec interrupteur homme-mort : le silence lui-même déclenche une alerte, un serveur qui s'éteint ne passe pas inaperçu.
+
+### Domaines multiples, chacun avec sa propre connexion privée (1 répétition)
+
+Sur les forfaits payants, un même serveur peut héberger plusieurs domaines distincts et non liés, chacun avec sa propre connexion privée, de sorte que les personnes utilisant un domaine ne voient jamais la connexion d'un autre domaine. Les tableaux de bord partagés restent sur le premier domaine (principal).
 
 ### Archivage courriel et fichiers par utilisateur (3 répétitions)
 

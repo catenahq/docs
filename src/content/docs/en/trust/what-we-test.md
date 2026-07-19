@@ -36,7 +36,7 @@ Per-application deployment plus the wiring that makes the suite feel like one pr
 
 On-server status pages, resource monitoring, a disk-space watchdog and an always-fresh report of which installed applications have updates available -- all hosted on the client's own server.
 
-### Private networking and hardened public access (15 rehearsals)
+### Private networking and hardened public access (16 rehearsals)
 
 All web traffic reaches the server through an encrypted tunnel, so no web port is ever open on the machine itself; remote administration rides a private peer-to-peer network, and audio/video calls get their own dedicated relay.
 
@@ -91,6 +91,10 @@ Applications and system components update on a managed schedule; a failed update
 ### External availability monitoring (1 rehearsal)
 
 Independent monitoring from outside the server, including a dead-man switch: silence itself raises an alert, so a server that goes dark cannot go unnoticed.
+
+### Multiple domains, each with its own private sign-on (1 rehearsal)
+
+On paid plans a single server can host several separate, unlinked domains, each with its own private sign-on so people using one domain never see another domain's login. Shared dashboards stay on the first (primary) domain.
 
 ### Per-user mail and file archiving (3 rehearsals)
 
