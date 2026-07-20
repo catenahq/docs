@@ -112,3 +112,7 @@ utiliseriez lors d'un incident -- celle-ci plus
 la fonction "Enregistrer sous..." de votre navigateur (ou imprimez-les
 en PDF) à la prise en charge, et rafraîchissez la copie une fois par
 an.
+
+Pour des restaurations de fichiers et des commandes de sauvegarde qui
+fonctionnent sans le panneau d'administration, voir
+[Quitter Catena](/fr/leaving/).

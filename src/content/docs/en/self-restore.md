@@ -99,3 +99,6 @@ plus [Recovering from a failure](/en/disaster-recovery/) and
 [Where is my data](/en/where-is-my-data/) -- to your laptop with your
 browser's "Save Page As..." (or print them to PDF) at hand-off, and
 refresh the copy once a year.
+
+For file-level restores and backup commands that work without the admin
+panel at all, see [Leaving Catena](/en/leaving/).

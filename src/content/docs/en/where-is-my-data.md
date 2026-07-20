@@ -162,3 +162,7 @@ Worst-case scenario: physical destruction of the VPS, no warning.
 
 The [Rebuilding your server from backup](/en/self-restore/) page
 covers what "come back" looks like in practice.
+
+If you ever want to run all of this without Catena - or move away
+entirely - [Leaving Catena](/en/leaving/) shows that every piece above
+stays usable with standard tools alone.

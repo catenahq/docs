@@ -185,3 +185,7 @@ Pire scénario : destruction physique du VPS, sans avertissement.
 
 La page [Reconstruire votre serveur à partir de la sauvegarde](/fr/self-restore/)
 couvre à quoi "revenir" ressemble en pratique.
+
+Si vous voulez un jour faire fonctionner tout cela sans Catena - ou
+partir complètement - [Quitter Catena](/fr/leaving/) montre que chaque
+élément ci-dessus reste utilisable avec les outils standards seuls.
