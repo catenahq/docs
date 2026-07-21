@@ -44,6 +44,10 @@ Tout le trafic web atteint le serveur par un tunnel chiffré : aucun port web n'
 
 Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde et de sa clé, et un serveur en marche se restaure sur place. Les deux chemins sont répétés en continu, y compris à travers les versions majeures du système et de la base de données.
 
+### Aucune dépendance forcée, jamais (1 répétition)
+
+Supprimez le panneau d'administration et tout ce qui vous appartient continue de fonctionner : les sauvegardes tournent, les restaurations réussissent et chaque application reste en ligne, avec seulement des outils standards et les réglages conservés sur votre propre serveur. Partir coûte du confort, jamais vos données.
+
 ### Vérifications automatisées de santé et d'exposition (3 répétitions)
 
 Une passe de validation prouve les deux sens : chaque service répond là où il le doit (sur le serveur et via le réseau privé), et un balayage externe confirme que rien d'interdit n'est joignable.

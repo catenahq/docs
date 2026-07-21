@@ -44,6 +44,10 @@ All web traffic reaches the server through an encrypted tunnel, so no web port i
 
 A whole server can be rebuilt from nothing but the backup endpoint and its key, and a live server can be restored in place. Both paths are rehearsed continuously, including across operating-system and database major versions.
 
+### No lock-in, ever (1 rehearsal)
+
+Delete the admin panel and everything you own keeps working: backups run, restores work, and every application stays online, using only standard tools and the settings stored on your own server. Leaving costs you convenience, never your data.
+
 ### Automated health and exposure checks (3 rehearsals)
 
 A validation pass proves both directions: every service answers where it should (on-server and through the private network), and an external scan confirms nothing is reachable that should not be.
