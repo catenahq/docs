@@ -111,7 +111,7 @@ x-synapse-image: &synapse_image
 
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18.4-alpine
     restart: unless-stopped
     environment:
       POSTGRES_DB: synapse
@@ -120,6 +120,7 @@ services:
       # Synapse requires C collation on the DB. See
       # https://element-hq.github.io/synapse/latest/postgres.html
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - element-postgres-data:/var/lib/postgresql/data
     healthcheck:

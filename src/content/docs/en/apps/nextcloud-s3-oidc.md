@@ -376,12 +376,13 @@ services:
         condition: service_started
 
   db:
-    image: postgres:16.13-alpine
+    image: postgres:18.4-alpine
     restart: unless-stopped
     environment:
       POSTGRES_DB: nextcloud
       POSTGRES_USER: nextcloud
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - db-data:/var/lib/postgresql/data
     # pg_isready health-check is what `app` and `cron` gate on via

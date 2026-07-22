@@ -118,12 +118,13 @@ services:
       - default
 
   db:
-    image: postgres:16.13-alpine
+    image: postgres:18.4-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: chatwoot
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: chatwoot
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
