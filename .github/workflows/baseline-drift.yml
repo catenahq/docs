@@ -4,18 +4,14 @@ name: baseline-drift
 # security.yml suppresses the baselined findings so per-PR code scanning stays
 # clean; this job re-scans WITHOUT the baseline and fails if the live findings
 # no longer match what the baseline claims -- either a stale entry (a suppressed
-# finding disappeared) or a new finding the baseline does not cover. Runs on
-# dependency/config changes, weekly (upstream rule packs shift on their own),
-# and on demand.
+# finding disappeared) or a new finding the baseline does not cover. Runs
+# weekly (upstream rule packs and CVE feeds shift on their own) and on demand.
+# NOT on pull_request: rot is time-driven, and a full-gate scan on every
+# lockfile-touching PR re-blocked unrelated updates on freshly published CVEs
+# -- exactly what security.yml's merge-base diff gate exists to prevent. The
+# weekly red is the signal to refresh the baseline or bump the offending dep.
 
 on:
-  pull_request:
-    paths:
-      - 'package-lock.json'
-      - 'package.json'
-      - 'renovate.json'
-      - '.scanctl/**'
-      - '.github/workflows/baseline-drift.yml'
   schedule:
     - cron: '37 7 * * 1'
   workflow_dispatch:
