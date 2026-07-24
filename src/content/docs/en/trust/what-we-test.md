@@ -20,7 +20,7 @@ A scheduled weekly backup plus manual backups any time. Backups are encrypted on
 
 One account signs in to every application, with per-application access control and staff/administrator separation enforced in front of the applications, not inside each one.
 
-### Administration dashboard (9 rehearsals)
+### Administration dashboard (10 rehearsals)
 
 A web dashboard with role-aware access (staff see status, administrators also get maintenance actions). Every action a button triggers is logged in the server's system journal.
 

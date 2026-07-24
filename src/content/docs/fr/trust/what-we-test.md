@@ -20,7 +20,7 @@ Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout te
 
 Un seul compte ouvre toutes les applications, avec contrôle d'accès par application et séparation employé/administrateur appliquée en amont des applications, pas dans chacune.
 
-### Tableau de bord d'administration (9 répétitions)
+### Tableau de bord d'administration (10 répétitions)
 
 Un tableau de bord web à accès selon le rôle (le personnel voit l'état, les administrateurs ont aussi les actions d'entretien). Chaque action déclenchée par un bouton est consignée au journal système du serveur.
 
