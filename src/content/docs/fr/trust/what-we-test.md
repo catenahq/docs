@@ -12,7 +12,7 @@ Catena est exercée de bout en bout par des répétitions automatisées : chacun
 
 ## Inclus dans Community
 
-### Sauvegardes chiffrées vers un stockage qui vous appartient (13 répétitions)
+### Sauvegardes chiffrées vers un stockage qui vous appartient (12 répétitions)
 
 Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout temps. Les sauvegardes sont chiffrées sur le serveur avant d'en sortir et aboutissent dans un stockage objet appartenant au client; les instantanés se listent, se parcourent et s'exportent sans restauration. La cadence quotidienne et infra-quotidienne est une fonction Catena Pro.
 
@@ -40,11 +40,11 @@ Pages d'état sur le serveur, suivi des ressources, chien de garde d'espace disq
 
 Tout le trafic web atteint le serveur par un tunnel chiffré : aucun port web n'est ouvert sur la machine elle-même. L'administration à distance passe par un réseau privé pair à pair, et les appels audio/vidéo ont leur relais dédié.
 
-### Reprise après sinistre et restauration (16 répétitions)
+### Reprise après sinistre et restauration (18 répétitions)
 
-Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde et de sa clé, et un serveur en marche se restaure sur place. Les deux chemins sont répétés en continu, y compris à travers les versions majeures du système et de la base de données.
+Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde et de sa clé, et un serveur en marche se restaure sur place. Bases de données et applications reviennent en une seule opération coordonnée, cohérentes entre elles plutôt que chacune à son propre instant. Les deux chemins sont répétés en continu, y compris à travers les versions majeures du système et de la base de données.
 
-### Aucune dépendance forcée, jamais (1 répétition)
+### Aucune dépendance forcée, jamais (2 répétitions)
 
 Supprimez le panneau d'administration et tout ce qui vous appartient continue de fonctionner : les sauvegardes tournent, les restaurations réussissent et chaque application reste en ligne, avec seulement des outils standards et les réglages conservés sur votre propre serveur. Partir coûte du confort, jamais vos données.
 
@@ -103,9 +103,5 @@ Sur les forfaits payants, un même serveur peut héberger plusieurs domaines dis
 ### Archivage courriel et fichiers par utilisateur (3 répétitions)
 
 Archives planifiées en ajout seul du courriel, des calendriers, des contacts et des fichiers de chaque utilisateur, conservées sur le serveur et couvertes par les sauvegardes régulières.
-
-### Restauration multi-applications coordonnée (1 répétition)
-
-Après une restauration, bases de données et applications sont resynchronisées en une seule opération coordonnée : les applications redémarrent cohérentes entre elles plutôt que chacune à son propre instant.
 
 Le détail technique complet (chemins d'implémentation et noms de scénarios pour l'édition Community) se trouve dans la [fiche de validation publique sur GitHub](https://github.com/catenahq/catena-ce/blob/main/VALIDATION.md).

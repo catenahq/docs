@@ -12,7 +12,7 @@ Catena is exercised end-to-end by automated rehearsals: each one provisions disp
 
 ## Included in Community
 
-### Encrypted backups to storage you own (13 rehearsals)
+### Encrypted backups to storage you own (12 rehearsals)
 
 A scheduled weekly backup plus manual backups any time. Backups are encrypted on the server before leaving it and land in object storage the client owns; snapshots can be listed, browsed and exported without a restore. Daily and sub-daily cadence is a Catena Pro feature.
 
@@ -40,11 +40,11 @@ On-server status pages, resource monitoring, a disk-space watchdog and an always
 
 All web traffic reaches the server through an encrypted tunnel, so no web port is ever open on the machine itself; remote administration rides a private peer-to-peer network, and audio/video calls get their own dedicated relay.
 
-### Disaster recovery and restore (16 rehearsals)
+### Disaster recovery and restore (18 rehearsals)
 
-A whole server can be rebuilt from nothing but the backup endpoint and its key, and a live server can be restored in place. Both paths are rehearsed continuously, including across operating-system and database major versions.
+A whole server can be rebuilt from nothing but the backup endpoint and its key, and a live server can be restored in place. Databases and applications come back as one coordinated operation, consistent with each other rather than each from its own moment in time. Both paths are rehearsed continuously, including across operating-system and database major versions.
 
-### No lock-in, ever (1 rehearsal)
+### No lock-in, ever (2 rehearsals)
 
 Delete the admin panel and everything you own keeps working: backups run, restores work, and every application stays online, using only standard tools and the settings stored on your own server. Leaving costs you convenience, never your data.
 
@@ -103,9 +103,5 @@ On paid plans a single server can host several separate, unlinked domains, each 
 ### Per-user mail and file archiving (3 rehearsals)
 
 Scheduled append-only archives of each user's mail, calendars, contacts and files, kept on the server and covered by the regular backups.
-
-### Coordinated multi-application restore (1 rehearsal)
-
-After a restore, databases and applications are re-synchronized as one coordinated operation, so applications restart consistent with each other rather than each from its own moment in time.
 
 Full technical detail (implementation paths and scenario names for the Community edition) lives in the public [validation sheet on GitHub](https://github.com/catenahq/catena-ce/blob/main/VALIDATION.md).
