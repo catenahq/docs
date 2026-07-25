@@ -20,7 +20,7 @@ A scheduled weekly backup plus manual backups any time. Backups are encrypted on
 
 One account signs in to every application, with per-application access control and staff/administrator separation enforced in front of the applications, not inside each one.
 
-### Administration dashboard (11 rehearsals)
+### Administration dashboard (12 rehearsals)
 
 A web dashboard with role-aware access (staff see status, administrators also get maintenance actions). Every action a button triggers is logged in the server's system journal.
 
@@ -103,5 +103,9 @@ On paid plans a single server can host several separate, unlinked domains, each 
 ### Per-user mail and file archiving (3 rehearsals)
 
 Scheduled append-only archives of each user's mail, calendars, contacts and files, kept on the server and covered by the regular backups.
+
+### A move you can call off (4 rehearsals)
+
+Moving to another server copies almost everything while the old one is still serving, so the time your applications are unavailable is measured in minutes rather than hours. Up to the last check the move can be called off and the old server puts itself back into service on its own. Past that point it keeps answering one request -- put yourself back in service -- even after everything else on it has stopped, and its own backups are left untouched as the way back. That request travels over your own private network and works only while you have opened a window from the server itself and copied a one-time code it shows you once.
 
 Full technical detail (implementation paths and scenario names for the Community edition) lives in the public [validation sheet on GitHub](https://github.com/catenahq/catena-ce/blob/main/VALIDATION.md).

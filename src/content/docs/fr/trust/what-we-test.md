@@ -20,7 +20,7 @@ Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout te
 
 Un seul compte ouvre toutes les applications, avec contrôle d'accès par application et séparation employé/administrateur appliquée en amont des applications, pas dans chacune.
 
-### Tableau de bord d'administration (11 répétitions)
+### Tableau de bord d'administration (12 répétitions)
 
 Un tableau de bord web à accès selon le rôle (le personnel voit l'état, les administrateurs ont aussi les actions d'entretien). Chaque action déclenchée par un bouton est consignée au journal système du serveur.
 
@@ -103,5 +103,9 @@ Sur les forfaits payants, un même serveur peut héberger plusieurs domaines dis
 ### Archivage courriel et fichiers par utilisateur (3 répétitions)
 
 Archives planifiées en ajout seul du courriel, des calendriers, des contacts et des fichiers de chaque utilisateur, conservées sur le serveur et couvertes par les sauvegardes régulières.
+
+### Un déplacement que vous pouvez annuler (4 répétitions)
+
+Déplacer vos données vers un autre serveur copie presque tout pendant que l'ancien continue de servir: le temps pendant lequel vos applications sont indisponibles se compte donc en minutes plutôt qu'en heures. Jusqu'à la dernière vérification, le déplacement peut être annulé et l'ancien serveur se remet en service de lui-même. Passé ce point, il continue de répondre à une seule demande -- remets-toi en service -- même après l'arrêt de tout le reste, et ses propres sauvegardes restent intactes comme voie de retour. Cette demande passe par votre réseau privé et ne fonctionne que pendant une fenêtre ouverte depuis le serveur lui-même, avec un code à usage unique qu'il vous affiche une seule fois.
 
 Le détail technique complet (chemins d'implémentation et noms de scénarios pour l'édition Community) se trouve dans la [fiche de validation publique sur GitHub](https://github.com/catenahq/catena-ce/blob/main/VALIDATION.md).
