@@ -92,6 +92,7 @@ export default defineConfig({
           items: [
             { slug: "disaster-prevention" },
             { slug: "disaster-recovery" },
+            { slug: "restore-data" },
             { slug: "self-restore" },
             { slug: "email-archive" },
           ],

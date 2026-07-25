@@ -100,5 +100,9 @@ plus [Recovering from a failure](/en/disaster-recovery/) and
 browser's "Save Page As..." (or print them to PDF) at hand-off, and
 refresh the copy once a year.
 
+If the server is still running and only its data is wrong, you do not
+need any of this: put the data back from the admin panel instead. See
+[Restoring your data from the admin panel](/en/restore-data/).
+
 For file-level restores and backup commands that work without the admin
 panel at all, see [Leaving Catena](/en/leaving/).

@@ -31,9 +31,12 @@ yours to run -- nothing here requires anyone else.
 These need a shell on the box (SSH in over Tailscale) or the `catena`
 CLI run from your Catena checkout:
 
-- **Restore from backup** -- `catena restore` in place, or
-  `catena recover` onto a fresh server. See
-  [Rebuilding your server from backup](/en/self-restore/).
+- **Rebuild a lost server** -- `catena recover` onto a fresh server,
+  using your recovery keyset. See
+  [Rebuilding your server from backup](/en/self-restore/). Putting the
+  data back on a server that is still running is a browser task now:
+  the admin panel's **Restore** page. See
+  [Restoring your data from the admin panel](/en/restore-data/).
 - **Migrate to a different VPS provider** -- `catena recover` at the
   new provider, using your recovery keyset.
 - **Rotate the Cloudflare tunnel or Tailscale access** -- regenerate

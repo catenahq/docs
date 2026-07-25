@@ -24,6 +24,7 @@ section that walks the recovery in detail.
 | Situation | First move | Where to read more |
 |---|---|---|
 | **I deleted a file by accident** (one user, one file/folder) | Try the app's own trash. If empty, browse a backup snapshot in catena-admin (**Actions -> Browse past snapshots**) and pull the file out. | Recovery map ("one app's data") |
+| **An application's data is wrong** (a bad update, a bulk deletion, a database in a state nobody wants) | The server is fine, so put the data back rather than rebuilding: pick a backup on the admin panel's **Restore** page. | [Restoring your data from the admin panel](/en/restore-data/) |
 | **I lost my password or my 2FA** (just me) | Self-service password reset from the sign-in page. For 2FA, another admin clears it in Keycloak. | [Manage users and roles](/en/manage-users-and-roles/) |
 | **All admins are locked out at once** (sign-in broken, nobody can open the dashboard) | Use your Tailscale access -- SSH into the box, where you can restart or re-provision the sign-in service. | [Regaining admin access](#regaining-admin-access) below |
 | **The whole server is encrypted by ransomware** | Rebuild from your last clean snapshot (before the ransomware), with `catena recover` onto a fresh box. | Recovery map ("entire server disk") |

@@ -37,9 +37,13 @@ n'exige quelqu'un d'autre.
 Ceci nécessite un shell sur la machine (connexion SSH via Tailscale)
 ou la CLI `catena` lancée depuis votre dépôt Catena :
 
-- **Restaurer depuis une sauvegarde** -- `catena restore` en place, ou
-  `catena recover` sur un serveur neuf. Voir
+- **Reconstruire un serveur perdu** -- `catena recover` sur un serveur
+  neuf, avec votre jeu de clés de récupération. Voir
   [Reconstruire votre serveur à partir de la sauvegarde](/fr/self-restore/).
+  Remettre les données en place sur un serveur qui fonctionne encore est
+  désormais une tâche de navigateur : la page **Restauration** du
+  panneau d'administration. Voir
+  [Restaurer vos données depuis le panneau d'administration](/fr/restore-data/).
 - **Migrer vers un autre fournisseur de VPS** -- `catena recover` chez
   le nouveau fournisseur, avec votre jeu de clés de récupération.
 - **Régénérer le tunnel Cloudflare ou l'accès Tailscale** -- régénérez

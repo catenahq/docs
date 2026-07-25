@@ -113,6 +113,11 @@ la fonction "Enregistrer sous..." de votre navigateur (ou imprimez-les
 en PDF) à la prise en charge, et rafraîchissez la copie une fois par
 an.
 
+Si le serveur fonctionne encore et que seules ses données sont
+mauvaises, rien de tout ceci n'est nécessaire : remettez les données en
+place depuis le panneau d'administration. Voir
+[Restaurer vos données depuis le panneau d'administration](/fr/restore-data/).
+
 Pour des restaurations de fichiers et des commandes de sauvegarde qui
 fonctionnent sans le panneau d'administration, voir
 [Quitter Catena](/fr/leaving/).
