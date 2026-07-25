@@ -94,6 +94,8 @@ vous cherchiez à corriger.
 - Le serveur fonctionne, les données sont mauvaises : **cette page.**
 - Le serveur n'existe plus : [Reconstruire votre serveur depuis une
   sauvegarde](/fr/self-restore/).
+- Vous remplacez un serveur qui fonctionne encore : [Déplacer vers un
+  autre serveur](/fr/move-server/).
 - Vous ne savez pas ce qui a brisé : [Se remettre d'une
   panne](/fr/disaster-recovery/) associe chaque situation à son chemin.
 - Vous voulez le faire avec des outils standards, sans panneau du tout :
@@ -111,3 +113,7 @@ de vos données à l'avance, pendant que l'ancien serveur fonctionne
 encore, et ne laisser que les changements récents pour la courte
 fenêtre du basculement. Laissez-la décochée pour une restauration
 ordinaire.
+
+Sur un forfait payant, vous n'avez pas à lancer cette option à la main :
+[Déplacer vers un autre serveur](/fr/move-server/) enchaîne la copie, le
+basculement et la voie de retour en une seule opération.

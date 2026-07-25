@@ -87,6 +87,8 @@ either problem you were trying to fix.
 - The server is running, the data is wrong: **this page.**
 - The server is gone: [Rebuilding your server from
   backup](/en/self-restore/).
+- You are replacing a server that still works: [Moving to another
+  server](/en/move-server/).
 - Not sure what broke: [Recovering from a
   failure](/en/disaster-recovery/) maps each situation to its path.
 - You want to do it with standard tools and no panel at all:
@@ -103,3 +105,7 @@ another server can copy the bulk of your data ahead of time, while the
 old server is still serving, and leave only the recent changes for the
 short window when you switch over. Leave it unchecked for an ordinary
 restore.
+
+On a paid plan you do not run that option by hand: [Moving to another
+server](/en/move-server/) does the copy, the switch-over and the way
+back as one operation.
