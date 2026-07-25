@@ -105,6 +105,7 @@ export default defineConfig({
             { slug: "trust" },
             { slug: "trust/security-model" },
             { slug: "trust/how-we-validate" },
+            { slug: "trust/verify-what-you-run" },
             { slug: "trust/what-we-test" },
             { slug: "leaving" },
           ],

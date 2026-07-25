@@ -52,3 +52,17 @@ est signalée comme non classée. C'est pourquoi les fiches sont fiables
 - Le même patron couvre le
   [catalogue d'applications](https://github.com/catenahq/catena-templates/blob/main/SPEC.md)
   et les [éléments légaux et tarifaires](https://github.com/catenahq/contracts).
+
+## 4. Preuves de chaîne d'approvisionnement
+
+Le seul composant dont le code source n'est pas publié -- le panneau
+d'administration -- est livré comme image de conteneur publique,
+compilée en clair, sans obfuscation et de façon reproductible. Chaque
+version signe cette image, publie l'inventaire complet de ses composants
+et analyse les octets exacts qui ont été poussés avant que l'étiquette
+mouvante soit autorisée à pointer vers eux.
+
+Rien de tout cela ne vous demande de nous croire sur parole :
+[Vérifier ce que vous exécutez](/fr/trust/verify-what-you-run/) donne les
+commandes qui le vérifient, depuis votre propre machine, sans
+identifiants.

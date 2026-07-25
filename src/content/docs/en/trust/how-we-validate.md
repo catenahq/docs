@@ -47,3 +47,15 @@ sheets can be trusted at the exact version that ships:
 - The same pattern covers the
   [application catalog](https://github.com/catenahq/catena-templates/blob/main/SPEC.md)
   and the [legal and pricing facts](https://github.com/catenahq/contracts).
+
+## 4. Supply-chain evidence
+
+The one component whose source is not published -- the administration
+panel -- ships as a public container image with a plain, non-obfuscated,
+reproducible build. Every release signs that image, publishes its full
+component inventory, and scans the exact bytes that were pushed before
+the moving tag is allowed to point at them.
+
+None of that is something you have to take on faith:
+[Verify what you run](/en/trust/verify-what-you-run/) is the set of
+commands that check it, from your own machine, with no credentials.
