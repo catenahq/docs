@@ -20,7 +20,7 @@ A scheduled weekly backup plus manual backups any time. Backups are encrypted on
 
 One account signs in to every application, with per-application access control and staff/administrator separation enforced in front of the applications, not inside each one.
 
-### Administration dashboard (10 rehearsals)
+### Administration dashboard (11 rehearsals)
 
 A web dashboard with role-aware access (staff see status, administrators also get maintenance actions). Every action a button triggers is logged in the server's system journal.
 
@@ -40,7 +40,7 @@ On-server status pages, resource monitoring, a disk-space watchdog and an always
 
 All web traffic reaches the server through an encrypted tunnel, so no web port is ever open on the machine itself; remote administration rides a private peer-to-peer network, and audio/video calls get their own dedicated relay.
 
-### Disaster recovery and restore (20 rehearsals)
+### Disaster recovery and restore (19 rehearsals)
 
 A whole server can be rebuilt from nothing but the backup endpoint and its key, and a live server can be restored in place. Databases and applications come back as one coordinated operation, consistent with each other rather than each from its own moment in time. Both paths are rehearsed continuously, including across operating-system and database major versions.
 

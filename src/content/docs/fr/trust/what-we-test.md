@@ -20,7 +20,7 @@ Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout te
 
 Un seul compte ouvre toutes les applications, avec contrôle d'accès par application et séparation employé/administrateur appliquée en amont des applications, pas dans chacune.
 
-### Tableau de bord d'administration (10 répétitions)
+### Tableau de bord d'administration (11 répétitions)
 
 Un tableau de bord web à accès selon le rôle (le personnel voit l'état, les administrateurs ont aussi les actions d'entretien). Chaque action déclenchée par un bouton est consignée au journal système du serveur.
 
@@ -40,7 +40,7 @@ Pages d'état sur le serveur, suivi des ressources, chien de garde d'espace disq
 
 Tout le trafic web atteint le serveur par un tunnel chiffré : aucun port web n'est ouvert sur la machine elle-même. L'administration à distance passe par un réseau privé pair à pair, et les appels audio/vidéo ont leur relais dédié.
 
-### Reprise après sinistre et restauration (20 répétitions)
+### Reprise après sinistre et restauration (19 répétitions)
 
 Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde et de sa clé, et un serveur en marche se restaure sur place. Bases de données et applications reviennent en une seule opération coordonnée, cohérentes entre elles plutôt que chacune à son propre instant. Les deux chemins sont répétés en continu, y compris à travers les versions majeures du système et de la base de données.
 
