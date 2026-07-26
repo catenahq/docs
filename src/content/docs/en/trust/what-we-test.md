@@ -80,7 +80,7 @@ A supervised daily routine on the server: hourly backups, package and health che
 
 Whole-server migration between providers, orderly decommission with data handback, and fleet-wide pause/stop -- performed for the client as managed operations and rehearsed regularly.
 
-### Licensed feature activation (4 rehearsals)
+### Licensed feature activation (6 rehearsals)
 
 Pro features activate through a cryptographically signed license and deactivate cleanly when it lapses; the Community base keeps working either way.
 

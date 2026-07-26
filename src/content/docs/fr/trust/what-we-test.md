@@ -80,7 +80,7 @@ Une routine quotidienne supervisée sur le serveur : sauvegardes horaires, contr
 
 Migration complète de serveur entre fournisseurs, retrait ordonné avec remise des données, et pause/arrêt de flotte -- exécutés pour le client comme opérations gérées et répétés régulièrement.
 
-### Activation des fonctions sous licence (4 répétitions)
+### Activation des fonctions sous licence (6 répétitions)
 
 Les fonctions Pro s'activent par une licence signée cryptographiquement et se désactivent proprement à son échéance; la base Community continue de fonctionner dans les deux cas.
 
