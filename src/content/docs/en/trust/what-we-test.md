@@ -12,7 +12,7 @@ Catena is exercised end-to-end by automated rehearsals: each one provisions disp
 
 ## Included in Community
 
-### Encrypted backups to storage you own (10 rehearsals)
+### Encrypted backups to storage you own (9 rehearsals)
 
 A scheduled weekly backup plus manual backups any time. Backups are encrypted on the server before leaving it and land in object storage the client owns; snapshots can be listed, browsed and exported without a restore. Daily and sub-daily cadence is a Catena Pro feature.
 
@@ -72,7 +72,7 @@ A second backup copy at a different provider, write-locked so that even a compro
 
 Recurring scans of the installed software and its containers for known vulnerabilities, with findings fed into the maintenance and attestation reporting.
 
-### Automated daily maintenance (14 rehearsals)
+### Automated daily maintenance (13 rehearsals)
 
 A supervised daily routine on the server: hourly backups, package and health checks, and an ordered maintenance chain that resumes safely after interruption.
 

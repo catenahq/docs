@@ -12,7 +12,7 @@ Catena est exercée de bout en bout par des répétitions automatisées : chacun
 
 ## Inclus dans Community
 
-### Sauvegardes chiffrées vers un stockage qui vous appartient (10 répétitions)
+### Sauvegardes chiffrées vers un stockage qui vous appartient (9 répétitions)
 
 Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout temps. Les sauvegardes sont chiffrées sur le serveur avant d'en sortir et aboutissent dans un stockage objet appartenant au client; les instantanés se listent, se parcourent et s'exportent sans restauration. La cadence quotidienne et infra-quotidienne est une fonction Catena Pro.
 
@@ -72,7 +72,7 @@ Une seconde copie de sauvegarde chez un fournisseur différent, verrouillée en 
 
 Analyses récurrentes des logiciels installés et de leurs conteneurs pour vulnérabilités connues, avec résultats versés aux rapports d'entretien et d'attestation.
 
-### Entretien quotidien automatisé (14 répétitions)
+### Entretien quotidien automatisé (13 répétitions)
 
 Une routine quotidienne supervisée sur le serveur : sauvegardes horaires, contrôles de paquets et de santé, et une chaîne d'entretien ordonnée qui reprend sans danger après interruption.
 
