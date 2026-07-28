@@ -100,9 +100,9 @@ Supervision indépendante depuis l'extérieur du serveur, avec interrupteur homm
 
 Sur les forfaits payants, un même serveur peut héberger plusieurs domaines distincts et non liés, chacun avec sa propre connexion privée, de sorte que les personnes utilisant un domaine ne voient jamais la connexion d'un autre domaine. Les tableaux de bord partagés restent sur le premier domaine (principal).
 
-### Archivage courriel et fichiers par utilisateur (2 répétitions)
+### Archivage courriel par utilisateur (1 répétition)
 
-Archives planifiées en ajout seul du courriel, des calendriers, des contacts et des fichiers de chaque utilisateur, conservées sur le serveur et couvertes par les sauvegardes régulières.
+Archives en ajout seul du courriel, des calendriers et des contacts de chaque utilisateur, tirés de leur fournisseur externe, conservées sur le serveur et couvertes par les sauvegardes régulières.
 
 ### Un déplacement que vous pouvez annuler (1 répétition)
 

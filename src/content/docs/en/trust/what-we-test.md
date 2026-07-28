@@ -100,9 +100,9 @@ Independent monitoring from outside the server, including a dead-man switch: sil
 
 On paid plans a single server can host several separate, unlinked domains, each with its own private sign-on so people using one domain never see another domain's login. Shared dashboards stay on the first (primary) domain.
 
-### Per-user mail and file archiving (2 rehearsals)
+### Per-user mail archiving (1 rehearsal)
 
-Scheduled append-only archives of each user's mail, calendars, contacts and files, kept on the server and covered by the regular backups.
+Append-only archives of each user's mail, calendars and contacts pulled from their external provider, kept on the server and covered by the regular backups.
 
 ### A move you can call off (1 rehearsal)
 
