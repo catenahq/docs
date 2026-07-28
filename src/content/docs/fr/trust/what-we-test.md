@@ -100,10 +100,6 @@ Supervision indépendante depuis l'extérieur du serveur, avec interrupteur homm
 
 Sur les forfaits payants, un même serveur peut héberger plusieurs domaines distincts et non liés, chacun avec sa propre connexion privée, de sorte que les personnes utilisant un domaine ne voient jamais la connexion d'un autre domaine. Les tableaux de bord partagés restent sur le premier domaine (principal).
 
-### Archivage courriel par utilisateur (1 répétition)
-
-Archives en ajout seul du courriel, des calendriers et des contacts de chaque utilisateur, tirés de leur fournisseur externe, conservées sur le serveur et couvertes par les sauvegardes régulières.
-
 ### Un déplacement que vous pouvez annuler (1 répétition)
 
 Déplacer vos données vers un autre serveur copie presque tout pendant que l'ancien continue de servir: le temps pendant lequel vos applications sont indisponibles se compte donc en minutes plutôt qu'en heures. Jusqu'à la dernière vérification, le déplacement peut être annulé et l'ancien serveur se remet en service de lui-même. Passé ce point, il continue de répondre à une seule demande -- remets-toi en service -- même après l'arrêt de tout le reste, et ses propres sauvegardes restent intactes comme voie de retour. Cette demande passe par votre réseau privé et ne fonctionne que pendant une fenêtre ouverte depuis le serveur lui-même, avec un code à usage unique qu'il vous affiche une seule fois.

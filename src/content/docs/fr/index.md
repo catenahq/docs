@@ -48,9 +48,6 @@ du quotidien.
 - **[Reconstruire votre serveur vous-même](/fr/self-restore/)** -- le
   flux à un script que vous pouvez lancer pour démarrer un
   remplacement.
-- **[Archive courriel](/fr/email-archive/)** -- comment l'historique
-  de vos courriels est capté dans vos sauvegardes, et comment
-  l'activer.
 
 ## Vos sous-domaines
 

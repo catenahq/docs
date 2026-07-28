@@ -100,10 +100,6 @@ Independent monitoring from outside the server, including a dead-man switch: sil
 
 On paid plans a single server can host several separate, unlinked domains, each with its own private sign-on so people using one domain never see another domain's login. Shared dashboards stay on the first (primary) domain.
 
-### Per-user mail archiving (1 rehearsal)
-
-Append-only archives of each user's mail, calendars and contacts pulled from their external provider, kept on the server and covered by the regular backups.
-
 ### A move you can call off (1 rehearsal)
 
 Moving to another server copies almost everything while the old one is still serving, so the time your applications are unavailable is measured in minutes rather than hours. Up to the last check the move can be called off and the old server puts itself back into service on its own. Past that point it keeps answering one request -- put yourself back in service -- even after everything else on it has stopped, and its own backups are left untouched as the way back. That request travels over your own private network and works only while you have opened a window from the server itself and copied a one-time code it shows you once.

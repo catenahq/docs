@@ -46,8 +46,6 @@ up day-to-day.
   happens, and what you do, when the VPS is lost.
 - **[Rebuild your server yourself](/en/self-restore/)** -- the
   one-script flow you can run to spin up a replacement.
-- **[Email archive](/en/email-archive/)** -- how your email history is
-  captured into your backups, and how to switch it on.
 
 ## Your subdomains
 
