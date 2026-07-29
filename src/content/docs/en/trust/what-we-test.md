@@ -12,7 +12,7 @@ Catena is exercised end-to-end by automated rehearsals: each one provisions disp
 
 ## Included in Community
 
-### Encrypted backups to storage you own (9 rehearsals)
+### Encrypted backups to storage you own (8 rehearsals)
 
 A scheduled weekly backup plus manual backups any time. Backups are encrypted on the server before leaving it and land in object storage the client owns; snapshots can be listed, browsed and exported without a restore. Daily and sub-daily cadence is a Catena Pro feature.
 
@@ -24,7 +24,7 @@ One account signs in to every application, with per-application access control a
 
 A web dashboard with role-aware access (staff see status, administrators also get maintenance actions). Every action a button triggers is logged in the server's system journal.
 
-### Installation and application deployment (14 rehearsals)
+### Installation and application deployment (15 rehearsals)
 
 Prepares a fresh server, installs the platform, and deploys the selected applications. Re-running the same managed operation converges the server back to its declared configuration, so a drifted or half-configured server is repaired, not rebuilt by hand.
 
@@ -48,7 +48,7 @@ A whole server can be rebuilt from nothing but the backup endpoint and its key, 
 
 Delete the admin panel and everything you own keeps working: backups run, restores work, and every application stays online, using only standard tools and the settings stored on your own server. Leaving costs you convenience, never your data.
 
-### Automated health and exposure checks (3 rehearsals)
+### Automated health and exposure checks (2 rehearsals)
 
 A validation pass proves both directions: every service answers where it should (on-server and through the private network), and an external scan confirms nothing is reachable that should not be.
 
@@ -56,7 +56,7 @@ A validation pass proves both directions: every service answers where it should 
 
 Catena Pro features are exercised by the same rehearsal suite; the counts come from the same manifest.
 
-### Signed monthly compliance attestation (rehearsal written, not yet passing)
+### Signed monthly compliance attestation (1 rehearsal)
 
 A monthly, cryptographically signed report (uptime, backups, restore test, patching, identity posture, audit events) suitable for an insurer or auditor, verifiable against tampering.
 
@@ -64,7 +64,7 @@ A monthly, cryptographically signed report (uptime, backups, restore test, patch
 
 Every administrative action on the server is also shipped off the machine to central audit storage, so the trail survives even if the server itself is lost or tampered with.
 
-### Offsite immutable backup copy (2 rehearsals)
+### Offsite immutable backup copy (3 rehearsals)
 
 A second backup copy at a different provider, write-locked so that even a compromised server cannot alter or delete it, with recurring verification that both copies actually restore.
 
@@ -80,7 +80,7 @@ A supervised daily routine on the server: hourly backups, package and health che
 
 Whole-server migration between providers, orderly decommission with data handback, and fleet-wide pause/stop -- performed for the client as managed operations and rehearsed regularly.
 
-### Licensed feature activation (4 rehearsals)
+### Licensed feature activation (5 rehearsals)
 
 Pro features activate through a cryptographically signed license and deactivate cleanly when it lapses; the Community base keeps working either way.
 

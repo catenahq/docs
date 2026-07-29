@@ -12,7 +12,7 @@ Catena est exercée de bout en bout par des répétitions automatisées : chacun
 
 ## Inclus dans Community
 
-### Sauvegardes chiffrées vers un stockage qui vous appartient (9 répétitions)
+### Sauvegardes chiffrées vers un stockage qui vous appartient (8 répétitions)
 
 Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout temps. Les sauvegardes sont chiffrées sur le serveur avant d'en sortir et aboutissent dans un stockage objet appartenant au client; les instantanés se listent, se parcourent et s'exportent sans restauration. La cadence quotidienne et infra-quotidienne est une fonction Catena Pro.
 
@@ -24,7 +24,7 @@ Un seul compte ouvre toutes les applications, avec contrôle d'accès par applic
 
 Un tableau de bord web à accès selon le rôle (le personnel voit l'état, les administrateurs ont aussi les actions d'entretien). Chaque action déclenchée par un bouton est consignée au journal système du serveur.
 
-### Installation et déploiement des applications (14 répétitions)
+### Installation et déploiement des applications (15 répétitions)
 
 Prépare un serveur neuf, installe la plateforme et déploie les applications choisies. Relancer la même opération gérée ramène le serveur à sa configuration déclarée : un serveur ayant dérivé est réparé, pas reconstruit à la main.
 
@@ -48,7 +48,7 @@ Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde 
 
 Supprimez le panneau d'administration et tout ce qui vous appartient continue de fonctionner : les sauvegardes tournent, les restaurations réussissent et chaque application reste en ligne, avec seulement des outils standards et les réglages conservés sur votre propre serveur. Partir coûte du confort, jamais vos données.
 
-### Vérifications automatisées de santé et d'exposition (3 répétitions)
+### Vérifications automatisées de santé et d'exposition (2 répétitions)
 
 Une passe de validation prouve les deux sens : chaque service répond là où il le doit (sur le serveur et via le réseau privé), et un balayage externe confirme que rien d'interdit n'est joignable.
 
@@ -56,7 +56,7 @@ Une passe de validation prouve les deux sens : chaque service répond là où il
 
 Les fonctions Catena Pro sont exercées par la même suite de répétitions; les comptes proviennent du même manifeste.
 
-### Attestation de conformité mensuelle signée (répétition écrite, pas encore réussie)
+### Attestation de conformité mensuelle signée (1 répétition)
 
 Un rapport mensuel signé cryptographiquement (disponibilité, sauvegardes, test de restauration, correctifs, posture d'identité, événements d'audit) présentable à un assureur ou un auditeur, vérifiable contre toute altération.
 
@@ -64,7 +64,7 @@ Un rapport mensuel signé cryptographiquement (disponibilité, sauvegardes, test
 
 Chaque action administrative sur le serveur est aussi expédiée hors de la machine vers un stockage d'audit central : la trace survit même si le serveur est perdu ou altéré.
 
-### Copie de sauvegarde hors site immuable (2 répétitions)
+### Copie de sauvegarde hors site immuable (3 répétitions)
 
 Une seconde copie de sauvegarde chez un fournisseur différent, verrouillée en écriture pour qu'un serveur compromis ne puisse ni la modifier ni l'effacer, avec vérification récurrente que les deux copies se restaurent réellement.
 
@@ -80,7 +80,7 @@ Une routine quotidienne supervisée sur le serveur : sauvegardes horaires, contr
 
 Migration complète de serveur entre fournisseurs, retrait ordonné avec remise des données, et pause/arrêt de flotte -- exécutés pour le client comme opérations gérées et répétés régulièrement.
 
-### Activation des fonctions sous licence (4 répétitions)
+### Activation des fonctions sous licence (5 répétitions)
 
 Les fonctions Pro s'activent par une licence signée cryptographiquement et se désactivent proprement à son échéance; la base Community continue de fonctionner dans les deux cas.
 
