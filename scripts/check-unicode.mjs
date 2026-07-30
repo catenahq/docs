@@ -6,7 +6,7 @@
 //
 // Also scans for BANNED_WORDS: names of removed or never-adopted
 // systems that mark stale copy (reference list + rationale:
-// ops/internal_docs/operator/banned-words.md). Client-facing repos
+// ops/automation/audit/banned-words.yml). Client-facing repos
 // must never mention them.
 //
 // Wired as `npm run check:unicode` and a CI step in ci.yml.
@@ -38,10 +38,15 @@ const BANNED_WORDS = [
   { re: /\bnetbird\b/i, name: "netbird (never adopted; Tailscale)" },
   { re: /\bpomerium\b/i, name: "pomerium (never adopted; Tailscale)" },
   { re: /\bcal\.com\b/i, name: "cal.com (replaced by Easy!Appointments)" },
+  // The operator inventory vault (SOPS+age) went 2026-07-28; secrets live
+  // in the host's own /etc/catena/config.json. Bare "age" is deliberately
+  // not listed: it is a substring of ordinary English.
+  { re: /\bsops\b/i, name: "sops (replaced by the on-box config store)" },
+  { re: /SOPS_AGE_KEY/i, name: "SOPS_AGE_KEY (no decryption key exists)" },
 ];
 
 // Operator-private decision logs may name a retired system to record
-// WHY it was retired (allowed context per banned-words.md). Unicode
+// WHY it was retired (allowed context per banned-words.yml). Unicode
 // hygiene still applies to these files; only the banned-word scan is
 // skipped. Paths are repo-relative, so entries are inert in repos
 // that do not contain them.
@@ -147,7 +152,7 @@ if (findings.length > 0) {
   console.error("");
   console.error(`Total: ${findings.length} occurrence(s).`);
   console.error("Replace with ASCII equivalents / current system names and re-run.");
-  console.error("Banned-word rationale: ops/internal_docs/operator/banned-words.md");
+  console.error("Banned-word rationale: ops/automation/audit/banned-words.yml");
   process.exit(1);
 }
 
