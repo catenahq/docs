@@ -1,19 +1,17 @@
 ---
 title: Your VPS, your docs
-description: Public reference docs for the catena self-hosted software suite. Per-VPS specifics live in the client portal.
+description: Public reference docs for the catena self-hosted software suite.
 ---
 
 These are the public reference docs for the catena software suite as
 deployed on your VPS. Every page applies to **every catena
 installation**; the per-installation specifics (your domain names,
-your inventory hostname, your S3 bucket) are surfaced in the
-[client portal](https://app.catena.run).
+your inventory hostname, your S3 bucket) are the ones your own
+deployment was set up with.
 
 If you are evaluating catena, start with
 [How this software suite works](/en/how-this-stack-works/) for the
-plain-language tour. If you are an existing client, your portal
-links into these docs in context for the operational tasks that come
-up day-to-day.
+plain-language tour.
 
 ## Where to start
 
@@ -50,8 +48,7 @@ up day-to-day.
 ## Your subdomains
 
 Every catena installation publishes the same set of subdomains
-under your zone. Your portal shows the actual values for **your**
-deployment. The shape:
+under your zone. The shape:
 
 | Service | Subdomain |
 |---|---|
