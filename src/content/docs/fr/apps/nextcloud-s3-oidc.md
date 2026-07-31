@@ -80,7 +80,7 @@ template -- vous n'avez pas à les générer vous-même.
 | `NEXTCLOUD_ADMIN_USER` | `admin` |
 | `NEXTCLOUD_ADMIN_PASSWORD` | _valeur aléatoire auto-générée_ |
 | `DB_PASSWORD` | _valeur aléatoire auto-générée_ |
-| `NEXTCLOUD_LOGLEVEL` | `1` |
+| `NEXTCLOUD_LOGLEVEL` | `3` |
 | `NEXTCLOUD_VERSIONS_RETENTION` | `auto, 7` |
 | `NEXTCLOUD_TRASH_RETENTION` | `auto, 30` |
 | `NEXTCLOUD_MAX_CHUNK_SIZE` | `52428800` |
@@ -175,7 +175,7 @@ services:
         # client-policy knobs (log level, version retention) via the
         # Portainer stack env without dropping into occ.
         set -e
-        : "$${NEXTCLOUD_LOGLEVEL:=1}"
+        : "$${NEXTCLOUD_LOGLEVEL:=3}"
         : "$${NEXTCLOUD_VERSIONS_RETENTION:=auto, 7}"
         : "$${NEXTCLOUD_TRASH_RETENTION:=auto, 30}"
         : "$${NEXTCLOUD_MAX_CHUNK_SIZE:=52428800}"
@@ -297,7 +297,10 @@ services:
       # + redeploy and the next container start picks it up.
       #
       # NEXTCLOUD_LOGLEVEL: 0=debug, 1=info, 2=warn, 3=error, 4=fatal.
-      # Default 1 matches the historical zz-loglevel.sh hook.
+      # Default 3 (error): nextcloud.log lives on the VM disk, and at
+      # info level a busy sync client writes enough per-request noise to
+      # matter for both disk and the restic walk. Drop to 1 temporarily
+      # when troubleshooting, then put it back.
       #
       # NEXTCLOUD_VERSIONS_RETENTION: passed verbatim into the
       # `versions_retention_obligation` config key. Format is
@@ -328,7 +331,7 @@ services:
       # cap and 413s at the edge. Raise it only in step with the plan's
       # cap; 0 disables chunking entirely and breaks every upload over
       # 100 MB.
-      NEXTCLOUD_LOGLEVEL: ${NEXTCLOUD_LOGLEVEL:-1}
+      NEXTCLOUD_LOGLEVEL: ${NEXTCLOUD_LOGLEVEL:-3}
       NEXTCLOUD_VERSIONS_RETENTION: ${NEXTCLOUD_VERSIONS_RETENTION:-auto, 7}
       NEXTCLOUD_TRASH_RETENTION: ${NEXTCLOUD_TRASH_RETENTION:-auto, 30}
       NEXTCLOUD_MAX_CHUNK_SIZE: ${NEXTCLOUD_MAX_CHUNK_SIZE:-52428800}
