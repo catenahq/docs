@@ -83,7 +83,7 @@ template -- vous n'avez pas à les générer vous-même.
 | `NEXTCLOUD_LOGLEVEL` | `3` |
 | `NEXTCLOUD_VERSIONS_RETENTION` | `auto, 7` |
 | `NEXTCLOUD_TRASH_RETENTION` | `auto, 30` |
-| `NEXTCLOUD_MAX_CHUNK_SIZE` | `52428800` |
+| `NEXTCLOUD_MAX_CHUNK_SIZE` | `83886080` |
 | `S3_BUCKET` | _(à définir avant déploiement)_ |
 | `S3_REGION` | `bhs` |
 | `S3_HOST` | `s3.bhs.io.cloud.ovh.net` |
