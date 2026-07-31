@@ -326,9 +326,9 @@ vous ne retomberez pas sur le même mauvais release en boucle.
 Pour voir l'état en cours (en attente / rollback récents /
 quarantaine) : le tableau de bord Gatus affiche la version en cours
 d'exécution sur chaque carte de service -- un épinglage bloqué se
-repère d'un coup d'œil. OliveTin a un bouton *Afficher l'état des
-mises à jour gérées* pour le résumé complet (bumps échoués,
-versions en quarantaine, prochaine exécution planifiée).
+repère d'un coup d'œil. L'onglet **Maintenance** de votre tableau de
+bord porte le résumé complet (bumps échoués, versions en
+quarantaine, prochaine exécution planifiée).
 
 ### Quand tout ceci compte
 
@@ -668,15 +668,15 @@ forward-auth seul. Vous pouvez ensuite retirer les lignes
 ### Hors périmètre
 
 Les applications dont la configuration OIDC passe par des **fichiers
-de config** plutôt que par des variables d'environnement -- OliveTin
-(YAML), Nextcloud (`config.php`), Jellyfin (XML de plugin),
+de config** plutôt que par des variables d'environnement --
+Nextcloud (`config.php`), Jellyfin (XML de plugin),
 Vaultwarden (fichier haché) -- ne sont pas couvertes par ce flux
 d'étiquettes. Pour celles-ci, câblez OIDC à la main dans le fichier de
 configuration de l'application.
 
 ## Personnaliser l'apparence de votre application sur le tableau de bord
 
-Le tableau de bord Homepage à
+Votre tableau de bord à
 [`dash.yourdomain.com`](https://dash.yourdomain.com)
 affiche une tuile pour chaque application déployée. Quatre étiquettes
 optionnelles permettent d'ajuster la présentation vous-même :
@@ -693,7 +693,7 @@ services:
 ```
 
 - **`vps.homepage.name`** -- étiquette de la tuile. Par défaut : le
-  nom du stack de l'application.
+  nom de déploiement de l'application.
 - **`vps.homepage.icon`** -- n'importe quelle icône [Material Design Icons](https://pictogrammers.com/library/mdi/)
   (préfixe `mdi-`) ou l'URL complète d'une image.
 - **`vps.homepage.description`** -- une ligne de description sous le
@@ -704,8 +704,9 @@ services:
   voulez pas voir cliqués par le personnel.
 
 Les changements s'appliquent à la prochaine synchronisation
-dashboard-sync (toutes les 5 minutes), ou cliquez sur "Sync all"
-dans OliveTin pour forcer un rafraîchissement immédiat.
+dashboard-sync (toutes les 5 minutes), ou cliquez sur **Sync all
+(apps + monitors)** dans l'onglet **Actions** du tableau de bord pour
+forcer un rafraîchissement immédiat.
 
 C'est là toute la surface de personnalisation, par design. Si vous
 avez besoin de plus -- un autre groupe, une URL personnalisée, de la

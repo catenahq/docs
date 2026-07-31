@@ -55,9 +55,8 @@ under your zone. The shape:
 | Keycloak (identity + SSO) | `auth.yourdomain.com` |
 | Portainer (app deployment) | `portainer.yourdomain.com` |
 | Gatus (service health) | `monitor.yourdomain.com` |
-| Homepage (dashboard) | `dash.yourdomain.com` |
-| OliveTin (one-click actions) | `actions.yourdomain.com` |
-| Healthchecks (cron / dead-man) | `checks.yourdomain.com` |
+| catena-admin (your dashboard + one-click actions) | `dash.yourdomain.com` |
+| Healthchecks (cron / dead-man) | `heartbeat.yourdomain.com` |
 
 > **Note:** Throughout the docs, `yourdomain.com` is the business
 > domain you provided at onboarding -- the input pill at the top of

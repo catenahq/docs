@@ -57,9 +57,8 @@ sous votre zone. La forme :
 | Keycloak (identité + SSO) | `auth.yourdomain.com` |
 | Portainer (déploiement d'applications) | `portainer.yourdomain.com` |
 | Gatus (santé des services) | `monitor.yourdomain.com` |
-| Homepage (tableau de bord) | `dash.yourdomain.com` |
-| OliveTin (actions à un clic) | `actions.yourdomain.com` |
-| Healthchecks (cron / homme mort) | `checks.yourdomain.com` |
+| catena-admin (votre tableau de bord + actions à un clic) | `dash.yourdomain.com` |
+| Healthchecks (cron / homme mort) | `heartbeat.yourdomain.com` |
 
 > **Note :** Dans toute la documentation, `yourdomain.com` représente
 > le domaine d'entreprise que vous avez fourni à l'intégration --

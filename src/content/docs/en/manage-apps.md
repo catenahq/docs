@@ -303,7 +303,7 @@ skips it -- you won't rattle into the same broken release repeatedly.
 If you want to see what's pending / what rolled back / what's
 quarantined: the Gatus status dashboard shows the running version
 on every service card, so a stale pin is visible at a glance.
-OliveTin has `Show managed-update status` for the full rollup
+The **Maintenance** tab of your dashboard carries the full rollup
 (failed bumps, quarantined versions, next scheduled run).
 
 ### When all of this matters
@@ -614,14 +614,14 @@ reverts to forward-auth-only. You can then remove the
 ### Out of scope
 
 Apps that configure OIDC through **config-file edits** rather
-than env vars -- OliveTin (YAML), Nextcloud (`config.php`),
-Jellyfin (XML plugin config), Vaultwarden (hashed-file) -- aren't
+than env vars -- Nextcloud (`config.php`), Jellyfin (XML plugin
+config), Vaultwarden (hashed-file) -- aren't
 covered by this label flow. For those, wire OIDC by hand in the app's
 own config file.
 
 ## Customize how your app appears on the dashboard
 
-The Homepage dashboard at
+Your dashboard at
 [`dash.yourdomain.com`](https://dash.yourdomain.com)
 gets a tile for every deployed app. Four optional labels let you
 tweak presentation yourself:
@@ -648,7 +648,8 @@ services:
   click on.
 
 Changes apply on the next dashboard-sync run (every 5 minutes), or
-click "Sync all" in OliveTin to force a refresh immediately.
+click **Sync all (apps + monitors)** on the dashboard's **Actions**
+tab to force a refresh immediately.
 
 That's the whole customization surface by design. If you need more
 than this -- a different group, a custom URL, per-user visibility --

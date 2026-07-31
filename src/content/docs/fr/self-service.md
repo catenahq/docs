@@ -21,13 +21,14 @@ n'exige quelqu'un d'autre.
   branché automatiquement.
 - **Vérifier la santé des services :** Gatus
   (`monitor.yourdomain.com`) pour la vue par sondes externes,
-  Homepage (`dash.yourdomain.com`) pour les tuiles d'état par
-  application.
+  votre tableau de bord (`dash.yourdomain.com`) pour les tuiles
+  d'état par application.
 - **Lancer des sauvegardes ponctuelles, consulter l'historique des
-  sauvegardes :** OliveTin (`actions.yourdomain.com`).
+  sauvegardes :** l'onglet **Actions** de votre tableau de bord
+  (`dash.yourdomain.com`).
 - **Voir les alertes actives :** Healthchecks
-  (`checks.yourdomain.com`) affiche l'état homme-mort de chaque tâche
-  planifiée.
+  (`heartbeat.yourdomain.com`) affiche l'état homme-mort de chaque
+  tâche planifiée.
 - **Gérer les réglages applicatifs :** tout ce qui se trouve dans
   Nextcloud, Rocket.Chat, EspoCRM, etc. -- les interfaces admin des
   applications elles-mêmes sont à vous.

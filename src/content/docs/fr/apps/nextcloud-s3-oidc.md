@@ -13,14 +13,14 @@ Partage de fichiers et collaboration auto-hébergés -- le hub auquel d'autres t
 
 1. Ouvrez l'onglet **Environment** et remplissez `S3_BUCKET`, `S3_REGION`, `S3_HOST`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` avec les coordonnées de votre seau S3. (Le reste est pré-rempli -- `NEXTCLOUD_HOSTNAME`, identifiants admin/DB, variables d'intégration OIDC.)
 2. Cliquez **Deploy**. Patientez ~2 min pour le premier démarrage.
-3. Câblez le SSO : ouvrez `actions.<votre-domaine>` puis cliquez **Câbler l'OIDC pour Nextcloud**. Le bouton enregistre Keycloak comme fournisseur OIDC à l'intérieur de Nextcloud (idempotent -- peut être recliqué sans risque après un redéploiement ou une rotation de secret).
+3. Câblez le SSO : ouvrez `dash.<votre-domaine>`, allez dans l'onglet **Actions** puis cliquez **Câbler l'OIDC pour Nextcloud**. L'action enregistre Keycloak comme fournisseur OIDC à l'intérieur de Nextcloud (idempotent -- peut être relancée sans risque après un redéploiement ou une rotation de secret).
 4. Connectez-vous sur votre domaine Nextcloud avec **Se connecter avec keycloak** (utilise votre identité gérée par l'opérateur), ou repli sur `NEXTCLOUD_ADMIN_USER` / `NEXTCLOUD_ADMIN_PASSWORD` de l'onglet Environment.
 
-### Connexion avec Keycloak -- câblée par le bouton OliveTin
+### Connexion avec Keycloak -- câblée par une action catena-admin
 
 Après le premier déploiement de Nextcloud, vous cliquez
-**Câbler l'OIDC pour Nextcloud** sur
-`actions.<votre-domaine>`. Le bouton active l'application
+**Câbler l'OIDC pour Nextcloud** dans l'onglet **Actions** sur
+`dash.<votre-domaine>`. L'action active l'application
 `user_oidc` de Nextcloud et enregistre un fournisseur
 `keycloak` avec les valeurs OIDC de l'onglet Environment. La
 page de connexion Nextcloud affiche alors **Se connecter
@@ -28,9 +28,9 @@ avec keycloak** à votre prochaine visite. La connexion admin
 locale (`NEXTCLOUD_ADMIN_USER` / `NEXTCLOUD_ADMIN_PASSWORD`)
 continue de fonctionner en parallèle comme issue de secours.
 
-Recliquez le bouton chaque fois que la configuration OIDC
+Relancez l'action chaque fois que la configuration OIDC
 dérive (après une rotation de secret, un redéploiement
-destructif, etc.). Il est idempotent -- relancer ne fait que
+destructif, etc.). Elle est idempotente -- relancer ne fait que
 rafraîchir l'enregistrement du fournisseur.
 
 ### Le partage de fichiers par lien courriel fonctionne toujours

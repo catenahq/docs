@@ -17,11 +17,11 @@ yours to run -- nothing here requires anyone else.
   (`portainer.yourdomain.com`). Pick a template, set the per-department
   group label, deploy. SSO is wired automatically.
 - **Check service health:** Gatus (`monitor.yourdomain.com`) for the
-  external probe view, Homepage (`dash.yourdomain.com`) for the
+  external probe view, your dashboard (`dash.yourdomain.com`) for the
   per-app status tiles.
-- **Trigger one-off backups, view backup history:** OliveTin
-  (`actions.yourdomain.com`).
-- **See what's alerting:** Healthchecks (`checks.yourdomain.com`)
+- **Trigger one-off backups, view backup history:** the **Actions**
+  tab of your dashboard (`dash.yourdomain.com`).
+- **See what's alerting:** Healthchecks (`heartbeat.yourdomain.com`)
   shows the dead-man state of every scheduled job.
 - **Manage app-level settings:** anything inside Nextcloud,
   Rocket.Chat, EspoCRM, etc. -- the apps' own admin UIs are yours.

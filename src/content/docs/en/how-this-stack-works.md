@@ -34,8 +34,7 @@ do.
 | **Apps (yours)** | Whatever you've deployed through Portainer -- one container per app, running on a private Docker network. |
 | **Gatus** | The health monitor. Probes every service every minute from two angles: internally (is the container up?) and externally (is the whole path from Cloudflare to the app still working?). |
 | **Healthchecks** | The notification hub. Every alert from Gatus (services down) and the backup engine (missed backup) lands here, and you wire it to the channels you want -- email, Slack, Discord, ntfy, and ~30 others. See [How alerts reach you](#how-alerts-reach-you). |
-| **Homepage** | The dashboard you're probably used to. Collects links and status into one page. |
-| **OliveTin** | One-click shell actions, gated to the `administrators` group (administrator-tier staff). The "sync now" button, for example. |
+| **catena-admin** | Your dashboard. Collects links and status into one page, and carries the one-click actions (the "sync now" button, for example) on its **Actions** tab, gated to the `administrators` group. |
 | **Restic -> S3** | The backup engine. Takes an encrypted, deduplicated snapshot of your data with each backup, pushes it to a storage bucket you own. |
 
 ## How a page request flows
@@ -114,9 +113,9 @@ one that fires tells you which half of the suite to look at first.
 ## How alerts reach you
 
 Every Gatus probe that goes red sends a notification through
-**Healthchecks** at [`checks.yourdomain.com`](https://checks.yourdomain.com).
+**Healthchecks** at [`heartbeat.yourdomain.com`](https://heartbeat.yourdomain.com).
 Each service has its own check, named `gatus-<service>` (e.g.
-`gatus-actualbudget`, `gatus-homepage-internal`), so the push you receive
+`gatus-actualbudget`, `gatus-traefik-internal`), so the push you receive
 names the failing service directly. Recoveries notify too, so you know
 when a problem has cleared without having to refresh Gatus.
 
@@ -124,7 +123,7 @@ By default, alerts push through **ntfy** (a free push-notification
 service, auto-configured at setup, no account required). Point it at
 your phone and **add any other channels you want** -- one-time setup:
 
-1. Sign in to [`checks.yourdomain.com`](https://checks.yourdomain.com)
+1. Sign in to [`heartbeat.yourdomain.com`](https://heartbeat.yourdomain.com)
    (same Keycloak login as every other service).
 2. **Settings -> Integrations -> Add Integration**. Pick the channel you
    want: Email, Slack, Discord, Telegram, Microsoft Teams, Pushover,
@@ -197,8 +196,8 @@ emergency.
 
 If you'd rather skip a week of updates entirely (e.g., you're
 demoing something and don't want anything to change), you can
-**pause** the updater from the OliveTin action panel -- status stays
-visible on the Gatus surface until you resume.
+**pause** the updater from the **Actions** tab of your dashboard --
+status stays visible on the Gatus surface until you resume.
 
 ## Where you fit in
 
@@ -209,14 +208,14 @@ backup engine. Your day-to-day surface is:
   to teams (see [Manage users and roles](/en/manage-users-and-roles/)).
 - **Portainer** -- deploy new apps with access-control labels (see
   [Manage apps](/en/manage-apps/)).
-- **Homepage** -- glance at service health and pinned links.
+- **Your dashboard** -- glance at service health and pinned links.
 - **Healthchecks** -- add the notification channels you want alerts on
   (see [How alerts reach you](#how-alerts-reach-you)).
-- **OliveTin** (administrators only) -- click a named button to
-  trigger a pre-defined action (like "resync
-  the dashboard now"). Visible to staff in the `administrators`
-  Keycloak group; non-admin staff see the dashboard tile but
-  hitting it bounces them through login.
+- **The dashboard's Actions tab** (administrators only) -- click a
+  named action to run a pre-defined operation (like "resync the
+  dashboard now"). Visible to staff in the `administrators` Keycloak
+  group; non-admin staff see the tile but hitting it bounces them
+  through login.
 
 Everything else runs on its own. If any of it stops running, Gatus
 pages you before you find out from a staff complaint.

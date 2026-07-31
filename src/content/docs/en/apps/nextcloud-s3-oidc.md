@@ -13,13 +13,13 @@ Self-hosted file sharing and collaboration -- the file hub that other templates 
 
 1. Open the **Environment** tab and fill `S3_BUCKET`, `S3_REGION`, `S3_HOST`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` with your bucket's coordinates. (Everything else is pre-filled -- `NEXTCLOUD_HOSTNAME`, admin/DB credentials, OIDC integration vars.)
 2. Click **Deploy**. Wait ~2 minutes for the first boot.
-3. Wire SSO: open `actions.<your-domain>` and click **Wire Nextcloud OIDC**. The button registers Keycloak as an OIDC provider inside Nextcloud (idempotent -- safe to re-click after redeploys or secret rotations).
+3. Wire SSO: open `dash.<your-domain>`, go to the **Actions** tab and click **Wire Nextcloud OIDC**. The action registers Keycloak as an OIDC provider inside Nextcloud (idempotent -- safe to re-run after redeploys or secret rotations).
 4. Sign in at your Nextcloud domain with **Log in with keycloak** (uses your operator-managed identity), or fall back to `NEXTCLOUD_ADMIN_USER` / `NEXTCLOUD_ADMIN_PASSWORD` from the Environment tab.
 
-### Sign-in with Keycloak -- wired by the OliveTin button
+### Sign-in with Keycloak -- wired by a catena-admin action
 
 After Nextcloud's first deploy you click **Wire Nextcloud
-OIDC** at `actions.<your-domain>`. The button enables
+OIDC** on the **Actions** tab at `dash.<your-domain>`. It enables
 Nextcloud's `user_oidc` app and registers a `keycloak`
 provider with the OIDC fields from the Environment tab. The
 Nextcloud login page then shows **Log in with keycloak** the
@@ -27,7 +27,7 @@ next time you visit. Local admin login (`NEXTCLOUD_ADMIN_USER`
 / `NEXTCLOUD_ADMIN_PASSWORD`) keeps working alongside SSO as
 a break-glass.
 
-Re-click the button any time the OIDC configuration drifts
+Re-run the action any time the OIDC configuration drifts
 (after a secret rotation, a destructive redeploy, etc.). It
 is idempotent -- re-running just refreshes the provider
 record.

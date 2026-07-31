@@ -35,8 +35,7 @@ pannes avant vous.
 | **Vos applications** | Tout ce que vous avez déployé via Portainer -- un conteneur par application, tournant sur un réseau Docker privé. |
 | **Gatus** | Le moniteur de santé. Teste chaque service toutes les minutes sous deux angles : à l'interne (le conteneur répond-il ?) et à l'externe (le chemin complet de Cloudflare à l'application fonctionne-t-il ?). |
 | **Healthchecks** | Le centre de notifications. Toutes les alertes de Gatus (services en panne) et du moteur de sauvegarde (sauvegarde manquée) arrivent ici, et vous les branchez aux canaux que vous voulez -- courriel, Slack, Discord, ntfy, et une trentaine d'autres. Voir [Comment les alertes vous parviennent](#comment-les-alertes-vous-parviennent). |
-| **Homepage** | Le tableau de bord. Rassemble les liens et les statuts sur une seule page. |
-| **OliveTin** | Actions en un clic, restreintes au groupe `administrators` (équipe administratrice). Le bouton "synchroniser maintenant", par exemple. |
+| **catena-admin** | Votre tableau de bord. Rassemble les liens et les statuts sur une seule page, et porte les actions en un clic (le bouton "synchroniser maintenant", par exemple) dans son onglet **Actions**, restreint au groupe `administrators`. |
 | **Restic -> S3** | Le moteur de sauvegarde. Prend une image chiffrée et dédupliquée de vos données à chaque sauvegarde, l'envoie vers un seau de stockage que vous possédez. |
 
 ## Le parcours d'une requête
@@ -119,9 +118,9 @@ regarder en premier.
 ## Comment les alertes vous parviennent
 
 Chaque sonde Gatus qui passe au rouge envoie une notification via
-**Healthchecks** à [`checks.yourdomain.com`](https://checks.yourdomain.com).
+**Healthchecks** à [`heartbeat.yourdomain.com`](https://heartbeat.yourdomain.com).
 Chaque service a sa propre vérification, nommée `gatus-<service>`
-(p. ex. `gatus-actualbudget`, `gatus-homepage-internal`), donc la
+(p. ex. `gatus-actualbudget`, `gatus-traefik-internal`), donc la
 notification reçue nomme directement le service en panne. Les
 rétablissements déclenchent aussi une notification, donc vous savez
 quand le problème est réglé sans avoir à rafraîchir Gatus.
@@ -131,7 +130,7 @@ notifications push gratuit, configuré automatiquement à l'installation,
 aucun compte requis). Pointez-le vers votre téléphone et **ajoutez les
 autres canaux que vous voulez** -- configuration unique :
 
-1. Connectez-vous à [`checks.yourdomain.com`](https://checks.yourdomain.com)
+1. Connectez-vous à [`heartbeat.yourdomain.com`](https://heartbeat.yourdomain.com)
    (même identifiant Keycloak que pour les autres services).
 2. **Settings -> Integrations -> Add Integration**. Choisissez le canal
    voulu : courriel, Slack, Discord, Telegram, Microsoft Teams,
@@ -211,9 +210,9 @@ vous examinez la cause à votre rythme -- ce n'est pas une urgence de
 
 Si vous préférez sauter une semaine de mises à jour (p. ex. vous
 êtes en démo et rien ne doit changer), vous pouvez **mettre en
-pause** la mise à jour depuis le panneau d'actions OliveTin -- le
-statut reste visible sur la surface Gatus jusqu'à ce que vous
-repreniez.
+pause** la mise à jour depuis l'onglet **Actions** de votre tableau
+de bord -- le statut reste visible sur la surface Gatus jusqu'à ce
+que vous repreniez.
 
 ## Votre rôle
 
@@ -226,18 +225,17 @@ de sauvegarde. Votre surface d'interaction quotidienne est :
 - **Portainer** -- déployer de nouvelles applications avec des étiquettes
   de contrôle d'accès (voir
   [Gérer les applications](/fr/manage-apps/)).
-- **Homepage** -- coup d'œil rapide sur la santé des services et les
-  liens épinglés.
+- **Votre tableau de bord** -- coup d'œil rapide sur la santé des
+  services et les liens épinglés.
 - **Healthchecks** -- ajouter les canaux de notification que vous
   souhaitez recevoir (voir
   [Comment les alertes vous parviennent](#comment-les-alertes-vous-parviennent)).
-- **OliveTin** (administrateurs uniquement) -- cliquer sur un bouton
-  nommé pour déclencher une action prédéfinie (comme
-  "resynchroniser le tableau de bord
+- **L'onglet Actions du tableau de bord** (administrateurs
+  uniquement) -- cliquer sur une action nommée pour déclencher une
+  opération prédéfinie (comme "resynchroniser le tableau de bord
   maintenant"). Visible aux membres du personnel dans le groupe
   Keycloak `administrators` ; le personnel non-administrateur voit
-  la tuile sur le tableau de bord mais y accéder le redirige vers
-  l'écran de connexion.
+  la tuile mais y accéder le redirige vers l'écran de connexion.
 
 Tout le reste tourne tout seul. Si quelque chose s'arrête, Gatus vous
 alerte avant qu'un membre du personnel ne vous le signale.
