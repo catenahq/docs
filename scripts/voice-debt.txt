@@ -30,7 +30,6 @@ src/content/docs/en/disaster-prevention.md -- hand-written; not converted yet
 src/content/docs/en/disaster-recovery.md -- hand-written; not converted yet
 src/content/docs/en/guides/provider-accounts.md -- hand-written; not converted yet
 src/content/docs/en/how-this-stack-works.md -- hand-written; not converted yet
-src/content/docs/en/loi25-client-onboarding.md -- hand-written; not converted yet
 src/content/docs/en/manage-apps.md -- hand-written; not converted yet
 src/content/docs/en/move-server.md -- hand-written; not converted yet
 src/content/docs/en/self-restore.md -- hand-written; not converted yet
@@ -68,7 +67,6 @@ src/content/docs/fr/disaster-prevention.md -- hand-written; not converted yet
 src/content/docs/fr/disaster-recovery.md -- hand-written; not converted yet
 src/content/docs/fr/guides/provider-accounts.md -- hand-written; not converted yet
 src/content/docs/fr/how-this-stack-works.md -- hand-written; not converted yet
-src/content/docs/fr/loi25-client-onboarding.md -- hand-written; not converted yet
 src/content/docs/fr/manage-apps.md -- hand-written; not converted yet
 src/content/docs/fr/move-server.md -- hand-written; not converted yet
 src/content/docs/fr/self-restore.md -- hand-written; not converted yet
