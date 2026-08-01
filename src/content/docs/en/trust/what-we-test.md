@@ -12,7 +12,7 @@ Catena is exercised end-to-end by automated rehearsals: each one provisions disp
 
 ## Included in Community
 
-### Encrypted backups to storage you own (8 rehearsals)
+### Encrypted backups to storage you own (10 rehearsals)
 
 A scheduled weekly backup plus manual backups any time. Backups are encrypted on the server before leaving it and land in object storage the client owns; snapshots can be listed, browsed and exported without a restore. Daily and sub-daily cadence is a Catena Pro feature.
 
@@ -40,7 +40,7 @@ On-server status pages, resource monitoring, a disk-space watchdog and an always
 
 All web traffic reaches the server through an encrypted tunnel, so no web port is ever open on the machine itself; remote administration rides a private peer-to-peer network, and audio/video calls get their own dedicated relay.
 
-### Disaster recovery and restore (12 rehearsals)
+### Disaster recovery and restore (15 rehearsals)
 
 A whole server can be rebuilt from nothing but the backup endpoint and its key, and a live server can be restored in place. Databases and applications come back as one coordinated operation, consistent with each other rather than each from its own moment in time. Both paths are rehearsed continuously, including across operating-system and database major versions.
 
@@ -48,7 +48,7 @@ A whole server can be rebuilt from nothing but the backup endpoint and its key, 
 
 Delete the admin panel and everything you own keeps working: backups run, restores work, and every application stays online, using only standard tools and the settings stored on your own server. Leaving costs you convenience, never your data.
 
-### Automated health and exposure checks (2 rehearsals)
+### Automated health and exposure checks (3 rehearsals)
 
 A validation pass proves both directions: every service answers where it should (on-server and through the private network), and an external scan confirms nothing is reachable that should not be.
 
@@ -64,7 +64,7 @@ A monthly, cryptographically signed report (uptime, backups, restore test, patch
 
 Every administrative action on the server is also shipped off the machine to central audit storage, so the trail survives even if the server itself is lost or tampered with.
 
-### Offsite immutable backup copy (3 rehearsals)
+### Offsite immutable backup copy (5 rehearsals)
 
 A second backup copy at a different provider, write-locked so that even a compromised server cannot alter or delete it, with recurring verification that both copies actually restore.
 
@@ -80,7 +80,7 @@ A supervised daily routine on the server: hourly backups, package and health che
 
 Whole-server migration between providers, orderly decommission with data handback, and fleet-wide pause/stop -- performed for the client as managed operations and rehearsed regularly.
 
-### Licensed feature activation (5 rehearsals)
+### Licensed feature activation (6 rehearsals)
 
 Pro features activate through a cryptographically signed license and deactivate cleanly when it lapses; the Community base keeps working either way.
 

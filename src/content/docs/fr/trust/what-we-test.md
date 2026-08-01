@@ -12,7 +12,7 @@ Catena est exercée de bout en bout par des répétitions automatisées : chacun
 
 ## Inclus dans Community
 
-### Sauvegardes chiffrées vers un stockage qui vous appartient (8 répétitions)
+### Sauvegardes chiffrées vers un stockage qui vous appartient (10 répétitions)
 
 Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout temps. Les sauvegardes sont chiffrées sur le serveur avant d'en sortir et aboutissent dans un stockage objet appartenant au client; les instantanés se listent, se parcourent et s'exportent sans restauration. La cadence quotidienne et infra-quotidienne est une fonction Catena Pro.
 
@@ -40,7 +40,7 @@ Pages d'état sur le serveur, suivi des ressources, chien de garde d'espace disq
 
 Tout le trafic web atteint le serveur par un tunnel chiffré : aucun port web n'est ouvert sur la machine elle-même. L'administration à distance passe par un réseau privé pair à pair, et les appels audio/vidéo ont leur relais dédié.
 
-### Reprise après sinistre et restauration (12 répétitions)
+### Reprise après sinistre et restauration (15 répétitions)
 
 Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde et de sa clé, et un serveur en marche se restaure sur place. Bases de données et applications reviennent en une seule opération coordonnée, cohérentes entre elles plutôt que chacune à son propre instant. Les deux chemins sont répétés en continu, y compris à travers les versions majeures du système et de la base de données.
 
@@ -48,7 +48,7 @@ Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde 
 
 Supprimez le panneau d'administration et tout ce qui vous appartient continue de fonctionner : les sauvegardes tournent, les restaurations réussissent et chaque application reste en ligne, avec seulement des outils standards et les réglages conservés sur votre propre serveur. Partir coûte du confort, jamais vos données.
 
-### Vérifications automatisées de santé et d'exposition (2 répétitions)
+### Vérifications automatisées de santé et d'exposition (3 répétitions)
 
 Une passe de validation prouve les deux sens : chaque service répond là où il le doit (sur le serveur et via le réseau privé), et un balayage externe confirme que rien d'interdit n'est joignable.
 
@@ -64,7 +64,7 @@ Un rapport mensuel signé cryptographiquement (disponibilité, sauvegardes, test
 
 Chaque action administrative sur le serveur est aussi expédiée hors de la machine vers un stockage d'audit central : la trace survit même si le serveur est perdu ou altéré.
 
-### Copie de sauvegarde hors site immuable (3 répétitions)
+### Copie de sauvegarde hors site immuable (5 répétitions)
 
 Une seconde copie de sauvegarde chez un fournisseur différent, verrouillée en écriture pour qu'un serveur compromis ne puisse ni la modifier ni l'effacer, avec vérification récurrente que les deux copies se restaurent réellement.
 
@@ -80,7 +80,7 @@ Une routine quotidienne supervisée sur le serveur : sauvegardes horaires, contr
 
 Migration complète de serveur entre fournisseurs, retrait ordonné avec remise des données, et pause/arrêt de flotte -- exécutés pour le client comme opérations gérées et répétés régulièrement.
 
-### Activation des fonctions sous licence (5 répétitions)
+### Activation des fonctions sous licence (6 répétitions)
 
 Les fonctions Pro s'activent par une licence signée cryptographiquement et se désactivent proprement à son échéance; la base Community continue de fonctionner dans les deux cas.
 
