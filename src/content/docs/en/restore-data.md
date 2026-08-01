@@ -1,6 +1,6 @@
 ---
-title: "Restoring your data from the admin panel"
-description: "Your server is running but its data is wrong: choose a backup in the admin panel and put it back, without rebuilding anything."
+title: "Restoring data from the admin panel"
+description: "The server is running but its data is wrong: choose a backup in the admin panel and put it back, without rebuilding anything."
 ---
 
 Sometimes the server is fine and the data is not. Someone deleted a
@@ -9,18 +9,18 @@ in a state nobody wants. The server itself is healthy, so rebuilding
 it would be the wrong tool.
 
 For that case the admin panel has a **Restore** page: choose one of
-your backups, confirm, and watch your data go back.
+the backups, confirm, and watch the data go back.
 
 ## What it does, and what it leaves alone
 
-The restore replaces your data and nothing else. Your applications
-are stopped while their data is put back, then started again with it.
+The restore replaces data and nothing else. The applications are
+stopped while their data is put back, then started again with it.
 
-What stays up the whole time: the admin panel you are watching, your
-sign-in, and the connection carrying the page. That is deliberate --
-you should be able to follow your own restore from start to finish
-without losing the page. If you are reading the panel over your
-Tailscale access or over the web, either one keeps working.
+What stays up the whole time: the admin panel showing the progress,
+the sign-in behind it, and the connection carrying the page. That is
+deliberate -- a restore is meant to be followed from start to finish
+without losing the page. Read over Tailscale access or over the web,
+either one keeps working.
 
 What does not change: the server itself. There is no rebuild, no
 re-installation, and nothing to re-apply afterwards.
@@ -33,36 +33,36 @@ re-installation, and nothing to re-apply afterwards.
    which server took it, and how big it was.
 4. Read the warning, check the confirmation box, and start it.
 5. Watch the progress view. It names the step it is on -- checks,
-   stopping the applications, copying your data, restoring the
+   stopping the applications, copying the data, restoring the
    databases, final checks -- and finishes with a completed message.
 
 How long it takes depends on how much data there is, not on how
-complicated your setup is. A small suite is minutes.
+complicated the setup is. A small suite is minutes.
 
 ## Choosing which backup
 
 The list is newest first, and every entry is a complete restore point:
-there is no such thing as a partial backup in the list. Pick the most
-recent one taken **before** the problem started.
+there is no such thing as a partial backup in the list. The one to
+pick is the most recent taken **before** the problem started.
 
-If your backup storage holds backups from more than one server, the
-page says so and shows a **Server** column. Check it before you
-choose: restoring another server's data over this one is the one
-mistake this page cannot undo for you.
+When the backup storage holds backups from more than one server, the
+page says so and shows a **Server** column. It is worth checking
+before choosing: restoring another server's data over this one is the
+one mistake this page cannot undo.
 
 ## Restoring onto a replacement server
 
-If the original server is gone and you have built a new one in its
-place, the Restore page can read the old server's backups directly.
-Switch the source to **Another server's backups** and enter that
-repository's address, its password, and its storage keys -- the same
-recovery keyset described in
-[Rebuilding your server from backup](/en/self-restore/).
+When the original server is gone and a new one stands in its place,
+the Restore page can read the old server's backups directly. Switch
+the source to **Another server's backups** and enter that repository's
+address, its password, and its storage keys -- the same recovery
+keyset described in
+[Rebuilding a server from backup](/en/self-restore/).
 
 Those values are held in memory only. They are gone when the server
 restarts, which is the right lifetime for something typed in to
-recover one machine once. Nothing is written down anywhere you have to
-clean up afterwards.
+recover one machine once. Nothing is written down anywhere that needs
+cleaning up afterwards.
 
 When the restore finishes, the new server has the old one's data and
 the old one's settings. Nothing to re-enter.
@@ -80,18 +80,18 @@ can be run again, so there are two ways forward:
 The page refuses to start a second restore while one is running, and
 refuses to clear one that is still going. Both refusals exist for the
 same reason: two restores writing the same data at once is worse than
-either problem you were trying to fix.
+either problem being fixed.
 
-## Which page do I want?
+## Which page covers which situation
 
 - The server is running, the data is wrong: **this page.**
-- The server is gone: [Rebuilding your server from
+- The server is gone: [Rebuilding a server from
   backup](/en/self-restore/).
-- You are replacing a server that still works: [Moving to another
+- A server that still works is being replaced: [Moving to another
   server](/en/move-server/).
-- Not sure what broke: [Recovering from a
+- The cause is unclear: [Recovering from a
   failure](/en/disaster-recovery/) maps each situation to its path.
-- You want to do it with standard tools and no panel at all:
+- Standard tools and no panel at all:
   [Leaving Catena](/en/leaving/).
 
 ## Staging a move to another server
@@ -100,12 +100,12 @@ The Restore page has one more option: **copy the data only, without
 starting anything**. It puts the data on the server and stops there,
 leaving every application switched off.
 
-That is not a restore you want by itself. It exists so a move to
-another server can copy the bulk of your data ahead of time, while the
+That is not a restore worth running by itself. It exists so a move to
+another server can copy the bulk of the data ahead of time, while the
 old server is still serving, and leave only the recent changes for the
-short window when you switch over. Leave it unchecked for an ordinary
+short window of the switch-over. It stays unchecked for an ordinary
 restore.
 
-On a paid plan you do not run that option by hand: [Moving to another
+On a paid plan that option is not run by hand: [Moving to another
 server](/en/move-server/) does the copy, the switch-over and the way
 back as one operation.
