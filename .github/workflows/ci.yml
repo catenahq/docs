@@ -51,6 +51,9 @@ jobs:
       - name: Unicode hygiene (no em dashes / smart quotes / decorative symbols)
         working-directory: ./docs
         run: npm run check:unicode
+      - name: Voice (the documentation does not address a reader)
+        working-directory: ./docs
+        run: npm run check:voice
       - name: Typecheck
         working-directory: ./docs
         run: npm run check
