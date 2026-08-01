@@ -3,21 +3,21 @@ title: "Manage apps"
 description: "Deploy new apps through Portainer and set the labels that decide who can reach each one and where it is published."
 ---
 
-When you deploy a new app through Portainer, you can control who can reach
-it by adding labels to the compose file. The suite reads those labels
-and provisions the right Keycloak groups + policies automatically --
-you never touch Keycloak's API directly.
+A new app deployed through Portainer gets its access rules from labels in
+the compose file. The suite reads those labels and provisions the right
+Keycloak groups + policies automatically -- Keycloak's API is never
+touched by hand.
 
-You reach Portainer at `portainer.yourdomain.com` (the same SSO login as
-your other tools; only admins can open it). It is your VPS's container
-control plane -- the place you create, deploy, and manage app stacks.
+Portainer lives at `portainer.yourdomain.com` (the same SSO login as the
+other tools; only admins can open it). It is the VPS's container control
+plane -- where app stacks are created, deployed, and managed.
 
-## What can I deploy?
+## What can be deployed
 
 Anything that ships a Docker Compose file works. A few good sources to
-browse when you're deciding what to self-host:
+browse when deciding what to self-host:
 
-- **Your VPS's App Templates** -- open Portainer at
+- **The VPS's App Templates** -- open Portainer at
   `portainer.yourdomain.com` and look under **App Templates**. We
   pre-seed a set of fully-wired apps (SSO, storage, networking, labels,
   SSL already configured). Start here for common apps -- one click to
@@ -26,31 +26,31 @@ browse when you're deciding what to self-host:
 - **[openalternative.co](https://openalternative.co)** -- a directory of
   open-source alternatives to popular SaaS (e.g., "Notion alternatives,"
   "Slack alternatives"). Each entry links to the project's repo + its
-  self-hosting instructions. Wider selection but you do more vetting.
+  self-hosting instructions. Wider selection, more vetting required.
 - **[awweso.me](https://awweso.me)** -- a browsable, filterable front-end
   for the `awesome-selfhosted` GitHub list (1300+ projects). Shows
-  GitHub-stars + recent-activity per entry, so you can tell at a glance
-  which projects are healthy + popular. Broadest of the three.
+  GitHub-stars + recent-activity per entry, so healthy + popular projects
+  are visible at a glance. Broadest of the three.
 
-Whatever you pick, the suite's labels (`vps.auth.groups`,
+Whatever gets picked, the suite's labels (`vps.auth.groups`,
 `vps.auth.mode`, `vps.auth.oidc`, `vps.auto-update`, `vps.homepage.*`)
 apply on top -- they gate access, wire SSO, tag updates, and populate
 the dashboard regardless of where the compose came from.
 
 Before deploying something new, check **App Templates** in Portainer --
-we pre-seed a few fully-wired apps (see "Pre-configured apps you can
-enable" below) that may already cover your need.
+we pre-seed a few fully-wired apps (see "Pre-configured apps ready to
+enable" below) that may already cover the need.
 
 ## Quick start
 
-Deploying a new app (say, Paperless for your accounting team):
+Deploying a new app (say, Paperless for an accounting team):
 
 1. Log in to `portainer.yourdomain.com` (Portainer).
-2. Create a new Stack. Paste your compose file.
+2. Create a new Stack. Paste the compose file.
 3. Add a `labels:` block (for access control and the public URL) AND a
    `catena-network` alias on the public-facing service, in
    lowercase-with-dashes form (`paperless` -> `paperless`, `MyApp` ->
-   `myapp`, `My-App` -> `my-app`). Traefik uses this alias to reach your
+   `myapp`, `My-App` -> `my-app`). Traefik uses this alias to reach the
    container; without it the service returns 502. The `vps.route.host`
    label is what publishes the app at a public URL (there is no separate
    Domains tab).
@@ -93,26 +93,26 @@ only (deny-by-default).
 | [`vps.auth.protected`](#vpsauthprotectedtrue)<br>(`false`) | `true` \| `false` | Flags an app that must never resolve to public |
 | [`vps.auth.oidc`](#forward-auth-vs-oidc)<br>(`false`) | `true` \| `false` (plus `vps.auth.oidc.redirect_uris`, optional `vps.auth.oidc.scopes`) | Adds native OIDC login on top of the gate |
 | [`vps.auto-update`](#choosing-how-aggressive-updates-are)<br>(`patch`) | `patch` \| `minor` \| `major` \| `off` | How far the auto-updater may bump the image |
-| [`vps.homepage.*`](#customize-how-your-app-appears-on-the-dashboard)<br>(tile shown) | `name`, `icon`, `description`, `hidden` | Dashboard tile presentation |
-| [`vps.display-name`](#override-how-your-app-appears-on-the-gatus-status-page)<br>(image short name) | any string | Name shown on the Gatus status card |
+| [`vps.homepage.*`](#customize-how-an-app-appears-on-the-dashboard)<br>(tile shown) | `name`, `icon`, `description`, `hidden` | Dashboard tile presentation |
+| [`vps.display-name`](#override-how-an-app-appears-on-the-gatus-status-page)<br>(image short name) | any string | Name shown on the Gatus status card |
 
 Not a label, but required for routing: give the public-facing service a
 `catena-network` alias in lowercase-with-dashes form, or Traefik cannot
 reach it (502). See [Quick start](#quick-start).
 
-## Pre-configured apps you can enable
+## Pre-configured apps ready to enable
 
-Portainer ships an **App Templates** catalog on your VPS containing
+Portainer ships an **App Templates** catalog on the VPS containing
 ready-to-deploy apps that are wired correctly from the start --
 authentication, SSO, storage, networking, labels, SSL are all
-pre-configured. Click Deploy on the ones you want, ignore the rest.
+pre-configured. Click Deploy on the useful ones, ignore the rest.
 
 Full catalog with per-app notes: **[Pre-configured templates](/en/apps/)**.
 
 ## Multi-container apps (example: Nextcloud)
 
 A single-image app just needs the `catena-network` attachment shown
-above. Once you have **more than one service** in the compose -- a real
+above. Once there is **more than one service** in the compose -- a real
 app like Nextcloud bundles Postgres and Redis alongside the web
 process -- the networking rule is:
 
@@ -191,7 +191,7 @@ return 502. It needs both.
 **Why `db`, `redis`, `cron` stay off `catena-network`**: every project
 on this host shares that network. Keeping internal services on the
 project's own `default` network means another project's containers
-can't reach your Nextcloud database by guessing the service name --
+can't reach the Nextcloud database by guessing the service name --
 Docker's network isolation does the work.
 
 **Sibling addressing**: inside `app`, Postgres is reachable at
@@ -213,35 +213,35 @@ painfully slow.
 
 For this class of app, deploy the **S3-backed variant** (the
 S3-storage Nextcloud template in App Templates): files live directly
-in an object-storage bucket you own, not in a local volume on the VPS.
-Each backup only copies the
+in an object-storage bucket the business owns, not in a local volume on
+the VPS. Each backup only copies the
 app's code and config (a few hundred MB), and the bucket handles file
 history on its own.
 
-What that changes for you:
+What that changes:
 
-- **Nothing in the app UI.** From your users' perspective the app
+- **Nothing in the app UI.** From the users' perspective the app
   looks exactly the same. Same login, same file browser, same
   everything.
-- **Your backup is two things, not one.** The code + config + database
+- **The backup is two things, not one.** The code + config + database
   still live in each backup; the files live in the
-  S3 bucket (with 30-day undelete history built in). Both are things
-  you own.
-- **Restore is faster.** If the VPS burns down, your files survive
+  S3 bucket (with 30-day undelete history built in). Both stay owned by
+  the business.
+- **Restore is faster.** If the VPS burns down, the files survive
   independently -- the new VPS just reconnects to the same bucket and
   every file is already there.
 
-You don't wire the bucket plumbing by hand: for a file-heavy
+The bucket plumbing is not wired by hand: for a file-heavy
 deployment, pick the S3-storage template instead of the plain one and
-it sets the object-storage backend up for you.
+it sets the object-storage backend up.
 
-## Keeping your apps up to date
+## Keeping apps up to date
 
-On a weekly schedule, your VPS checks for newer versions of every image
-you've deployed, pulls the ones that meet your policy, redeploys them,
-runs a health check, and rolls back if the health check fails. You
-don't do anything -- it runs in the update window, outside business
-hours, and alerts you only if something broke.
+On a weekly schedule, the VPS checks for newer versions of every
+deployed image, pulls the ones that meet the configured policy,
+redeploys them, runs a health check, and rolls back if the health check
+fails. Nothing has to be done by hand -- it runs in the update window,
+outside business hours, and raises an alert only if something broke.
 
 **But only apps pinned to a full version are managed.** The suite
 refuses to touch anything where the image tag doesn't fully specify a
@@ -261,10 +261,10 @@ known-good value is worse than no auto-update.
 | `ubuntu:latest`                              | ✗ no (floating) |
 | `myapp` (no tag)                             | ✗ no (floating, defaults to `latest`) |
 
-If your tag is in the ✗ column, the image you deployed is the image
-you'll keep running until you redeploy by hand. No security patches,
+A tag in the ✗ column keeps running exactly the image that was
+deployed, until someone redeploys by hand. No security patches,
 no bug fixes -- and also no surprise rollback the night a bad release
-ships. You own the upgrade schedule entirely.
+ships. The upgrade schedule stays entirely manual.
 
 ### Choosing how aggressive updates are
 
@@ -281,14 +281,13 @@ labels:
 
 Defaults, by service kind:
 
-- **Client apps** (yours): `patch`. Conservative -- bug fixes and
+- **Client apps**: `patch`. Conservative -- bug fixes and
   security releases, no behavior change.
 - **Core infrastructure** (Keycloak, Portainer, Traefik, Gatus,
   etc.): `patch+minor`, so security fixes land on their own.
 
-Unless you have a reason to change it, leaving the label unset on
-your apps is the right call. You'll get security patches
-automatically.
+Absent a specific reason to change it, leaving the label unset is the
+right call: security patches then land automatically.
 
 ### What "auto-rollback" does in practice
 
@@ -296,23 +295,23 @@ After each bumped service, the updater runs a health baseline (same
 check the recovery drill uses): is the container responding, is the
 page returning 2xx/3xx, did the request time stay reasonable. If
 anything fails, the tag is reverted to the prior good version,
-redeployed, and you get a ntfy alert with the service name
+redeployed, and a ntfy alert goes out with the service name
 and the bad version. The next run remembers the bad version and
-skips it -- you won't rattle into the same broken release repeatedly.
+skips it -- no rattling into the same broken release repeatedly.
 
-If you want to see what's pending / what rolled back / what's
+To see what is pending / what rolled back / what is
 quarantined: the Gatus status dashboard shows the running version
 on every service card, so a stale pin is visible at a glance.
-The **Maintenance** tab of your dashboard carries the full rollup
+The **Maintenance** tab of the dashboard carries the full rollup
 (failed bumps, quarantined versions, next scheduled run).
 
 ### When all of this matters
 
-Ship a real `X.Y.Z` tag on every public-facing service. If your
+Ship a real `X.Y.Z` tag on every public-facing service. When an
 upstream only publishes `:latest` or `:stable`, either pin to a
-digest + bump manually, or accept that you're opting out of the
-safety net. The suite's `compose-lint` catches non-semver tags at
-deploy time and reminds you; the Gatus status page shows the
+digest + bump manually, or accept that the safety net does not
+apply. The suite's `compose-lint` catches non-semver tags at
+deploy time and says so; the Gatus status page shows the
 concrete running version per service so drift is easy to spot.
 
 ## The `vps.auth.*` label reference
@@ -324,16 +323,16 @@ A user in ANY listed group passes (OR semantics). The `admin` group is
 ALWAYS allowed implicitly -- an administrator is never locked out of an
 app by a label.
 
-The values you can list:
+The values that can be listed:
 
 - **`visitor`** -- a special keyword meaning **public, no login at
   all**. It is not a real group; see the note below.
-- **`client`** -- your external users (customers, partners).
-- **`staff`** -- your employees. The baseline for anyone on your team.
+- **`client`** -- external users (customers, partners).
+- **`staff`** -- employees. The baseline for anyone on the team.
 - **any department subgroup of `staff`** -- by name (`accounting`,
   `engineering`, ...), for finer-grained access.
 - **`admin`** -- the people who run the server. Always allowed
-  implicitly, so you never need to list it.
+  implicitly, so listing it is never necessary.
 
 **Examples:**
 
@@ -353,7 +352,7 @@ wins and the app is public.
 
 **Groups are NOT auto-created.** A group named here must exist in
 Keycloak and have members, otherwise no one (except `admin`) can reach
-the app. See who-can-reach-what at a glance on the Access tab of your
+the app. See who-can-reach-what at a glance on the Access tab of the
 dashboard, and add members in Keycloak (link from the Access tab).
 
 ### `vps.auth.mode=<mode>`
@@ -368,10 +367,10 @@ A shorthand for common group sets. Use this OR `vps.auth.groups`.
 
 **Default posture (no labels) is DENY.** An app deployed without any
 `vps.auth.*` label is reachable by `admin` only -- unreachable to every
-other tier. This is secure-by-default: you explicitly opt in to wider
-access by adding `vps.auth.groups` (or `vps.auth.mode`). A label-less
-app that should be reachable by your team will 403 for them until you
-add `vps.auth.groups=staff` (or the right department).
+other tier. This is secure-by-default: wider access is an explicit
+opt-in through `vps.auth.groups` (or `vps.auth.mode`). A label-less
+app that should be reachable by the team will 403 for them until
+`vps.auth.groups=staff` (or the right department) is added.
 
 ### `vps.auth.protected=true`
 
@@ -386,7 +385,7 @@ labels:
   - "vps.auth.protected=true"
 ```
 
-## What dashboard-sync does for you
+## What dashboard-sync does
 
 Every 5 minutes (via systemd timer), `dashboard-sync.service`:
 
@@ -405,10 +404,11 @@ Every 5 minutes (via systemd timer), `dashboard-sync.service`:
 - **Keycloak API unreachable during sync.** Dashboard-sync logs the
   error, does not write the Traefik route, tries again next tick. App
   stays 404 until Keycloak recovers.
-- **You typo'd a group name.** A group with that name gets auto-created
-  (empty). You'll notice because the app 403s. Fix: rename the group in
-  Keycloak UI, or fix the label in Portainer and re-deploy.
-- **You removed the label but kept the app.** On next sync, policy
+- **A group name was mistyped.** A group with that name gets
+  auto-created (empty). The symptom is a 403 on the app. Fix: rename
+  the group in the Keycloak UI, or fix the label in Portainer and
+  re-deploy.
+- **The label was removed but the app kept.** On next sync, policy
   bindings collapse to `admin` (catchall). No one except admins
   can reach it. Intentional -- failing closed.
 - **Two apps with the same hostname but different groups.** The last-
@@ -417,11 +417,11 @@ Every 5 minutes (via systemd timer), `dashboard-sync.service`:
 
 ## Self-service sanity checks
 
-- `https://auth.yourdomain.com` -> Directory -> Groups. Your defined
+- `https://auth.yourdomain.com` -> Directory -> Groups. The defined
   groups show here. Add/remove members through the UI.
-- `https://portainer.yourdomain.com` -> your stack -> Logs. After deploy,
+- `https://portainer.yourdomain.com` -> the stack -> Logs. After deploy,
   logs show Keycloak forward-auth hits (203 -> inject headers -> upstream).
-- `https://monitor.yourdomain.com` (Gatus). Your app gets
+- `https://monitor.yourdomain.com` (Gatus). The app gets
   an entry in the `client-apps` group within ~5 min, probed every 60s.
   If it's red, either the app is down OR the sync hasn't run yet.
 
@@ -435,7 +435,7 @@ groups, etc.) keep using that model; Keycloak just gates the door.
 ## Forward-auth vs. OIDC
 
 The labels above (`vps.auth.groups`, `vps.auth.mode`) wire
-**forward-auth**: Keycloak sits in front of your app at the
+**forward-auth**: Keycloak sits in front of the app at the
 Traefik layer and only passes signed-in users through. The app
 itself doesn't need to know about Keycloak -- it just receives
 authenticated traffic. This is the **default, always-on** path
@@ -448,26 +448,26 @@ Keycloak. This unlocks per-user permissions *inside* the app -- who
 can edit vs. view a dashboard, who can approve a PR, etc. -- and
 proper sign-out.
 
-**OIDC is additive, not a replacement.** When you enable it:
+**OIDC is additive, not a replacement.** Once enabled:
 - Forward-auth stays in front of the app (the security gate doesn't
   change).
 - An OIDC client is additionally provisioned so the app can ask
   Keycloak "who is this signed-in user?" once the user is through
   the gate.
-- If you get OIDC wiring wrong, the gate still holds -- at worst the
-  app's "Sign in with Keycloak" button doesn't appear or fails,
+- Wrong OIDC wiring does not weaken the gate -- at worst the app's
+  "Sign in with Keycloak" button doesn't appear or fails,
   but the app stays reachable and protected.
 
 The rest of this section walks through the full process.
 
 ### Enabling OIDC: step-by-step
 
-#### 1. Look up your app's OIDC requirements
+#### 1. Look up the app's OIDC requirements
 
-Two pieces of information, pulled from **your app's own
+Two pieces of information, pulled from **the app's own
 documentation**:
 
-- **Redirect URI (callback path):** the URL your app redirects
+- **Redirect URI (callback path):** the URL the app redirects
   users to after Keycloak signs them in. App-specific.
 
   | App | Typical callback path |
@@ -479,7 +479,7 @@ documentation**:
   | Vault | `/ui/vault/auth/oidc/oidc/callback` |
   | Keycloak (federating Keycloak) | `/auth/realms/<realm>/broker/<alias>/endpoint` |
 
-- **OIDC environment variable names your app reads.** Every app
+- **OIDC environment variable names the app reads.** Every app
   names its OIDC env vars differently. Some prefix examples:
 
   | App | OIDC env var prefix |
@@ -489,11 +489,11 @@ documentation**:
   | Harbor | `HARBOR_OIDC_*` (plus server config) |
   | Gitea | CLI-based, no env vars |
 
-  If your app doesn't appear above, search its documentation for
+  For an app not listed above, search its documentation for
   "OIDC" or "OpenID Connect" -- the env var names are usually listed
   on its auth-configuration page.
 
-#### 2. Add three labels to your compose service
+#### 2. Add three labels to the compose service
 
 ```yaml
 labels:
@@ -506,29 +506,28 @@ labels:
   service.
 - `vps.auth.groups=<csv>` -- same label as forward-auth. Defines
   who can sign in via OIDC (reuses the existing group semantics).
-- `vps.auth.oidc.redirect_uris=<url>` -- the callback URL you
-  looked up in step 1. Required; without it, OIDC isn't
-  provisioned. Multiple comma-separated URLs are allowed if your
-  app needs more than one.
+- `vps.auth.oidc.redirect_uris=<url>` -- the callback URL from
+  step 1. Required; without it, OIDC isn't provisioned. Multiple
+  comma-separated URLs are allowed when an app needs more than one.
 
-#### 3. Map injected variables to your app's env var names
+#### 3. Map injected variables to the app's env var names
 
 Within the next ~5 minutes, `dashboard-sync` will:
 
 - Create an OAuth2 client application in Keycloak.
 - Mint a client ID + client secret.
-- Inject these four variables into your compose's environment:
+- Inject these four variables into the compose's environment:
   - `OIDC_CLIENT_ID`
   - `OIDC_CLIENT_SECRET`
   - `OIDC_ISSUER_URL`
   - `OIDC_REDIRECT_URL`
 
 These are **deliberate, fixed variable names** -- not
-a standard your app will read directly. You need to add lines to
-your service's `environment:` block that map these to whatever
-your app expects, using Docker Compose's `${...}` substitution.
+a standard any app reads directly. The service's `environment:`
+block needs lines mapping them to whatever the app expects, using
+Docker Compose's `${...}` substitution.
 
-Here's the complete Grafana compose as a reference:
+The complete Grafana compose as a reference:
 
 ```yaml
 services:
@@ -568,39 +567,37 @@ container's environment at start time.
 Saving the compose in Portainer triggers a redeploy. On the next
 sync tick, dashboard-sync updates the env block and Portainer
 redeploys the app one more time with the populated values. After
-that, sign into the app's front page -- you should see a "Sign in
-with Keycloak" button (label app-specific). Click it, authorize,
-you're in.
+that, the app's front page carries a "Sign in with Keycloak"
+button (label app-specific). Click it, authorize, done.
 
 ### Verifying it works
 
-- **App UI:** the app shows an SSO button and clicking it signs you
-  in without a second prompt (assuming you already signed in to
-  another app this session -- Keycloak keeps you signed in across
-  apps).
+- **App UI:** the app shows an SSO button and clicking it signs the
+  user in without a second prompt (given an earlier sign-in to
+  another app in the same session -- Keycloak keeps one session
+  across apps).
 - **Keycloak admin UI** (`auth.yourdomain.com`) -> Directory ->
-  Applications: you'll see two entries per OIDC-enabled app -- one
+  Applications: two entries appear per OIDC-enabled app -- one
   for the forward-auth gate, and `<name> (OIDC)` for the OIDC
   client.
 
 ### Common mistakes
 
 - **Forgot the `${...}` substitution.** The sync injects the vars,
-  but your app doesn't see them because your service environment
+  but the app doesn't see them because the service environment
   doesn't reference them. Symptom: no SSO button appears in the
   app. `compose-lint` warns about this at deploy time.
 - **Wrong `redirect_uris` value.** Keycloak shows "Invalid
-  redirect_uri" mid-flow. Fix: re-check your app's docs for the
+  redirect_uri" mid-flow. Fix: re-check the app's docs for the
   exact callback path, update the label, save.
 - **User not in `vps.auth.groups`.** Keycloak shows "Permission
   denied" during the consent screen. Fix: add the user to the
   group in Keycloak's Directory -> Groups, or widen the label's
   groups list.
-- **Hardcoding values instead of using `${...}`.** If you paste
-  the actual client_id/secret directly into your service
-  environment instead of referencing them, your app will work
-  once but break on secret rotation. Always use the `${...}`
-  form.
+- **Hardcoding values instead of using `${...}`.** Pasting the
+  actual client_id/secret directly into the service environment
+  instead of referencing them works once and then breaks on
+  secret rotation. Always use the `${...}` form.
 
 ### Disabling OIDC
 
@@ -608,8 +605,8 @@ Remove the `vps.auth.oidc=true` label (the other two OIDC labels
 can stay -- they're harmless without the switch). On the next
 sync tick, dashboard-sync tears down the Keycloak OIDC
 application + provider, stops injecting the env vars, and the app
-reverts to forward-auth-only. You can then remove the
-`${OIDC_*}` lines from your service environment.
+reverts to forward-auth-only. The `${OIDC_*}` lines can then come
+out of the service environment.
 
 ### Out of scope
 
@@ -619,12 +616,12 @@ config), Vaultwarden (hashed-file) -- aren't
 covered by this label flow. For those, wire OIDC by hand in the app's
 own config file.
 
-## Customize how your app appears on the dashboard
+## Customize how an app appears on the dashboard
 
-Your dashboard at
+The dashboard at
 [`dash.yourdomain.com`](https://dash.yourdomain.com)
-gets a tile for every deployed app. Four optional labels let you
-tweak presentation yourself:
+gets a tile for every deployed app. Four optional labels tweak the
+presentation:
 
 ```yaml
 services:
@@ -644,22 +641,22 @@ services:
 - **`vps.homepage.description`** -- one-line tagline under the name.
 - **`vps.homepage.hidden=true`** -- hide the app from the dashboard
   entirely (still deployed, still works at its URL -- just not
-  listed). Useful for background services you don't want staff to
+  listed). Useful for background services that staff should not
   click on.
 
 Changes apply on the next dashboard-sync run (every 5 minutes), or
 click **Sync all (apps + monitors)** on the dashboard's **Actions**
 tab to force a refresh immediately.
 
-That's the whole customization surface by design. If you need more
-than this -- a different group, a custom URL, per-user visibility --
-make the change on the server directly (SSH in over Tailscale).
+That is the whole customization surface by design. Anything beyond
+it -- a different group, a custom URL, per-user visibility --
+is a change made on the server directly (SSH in over Tailscale).
 
-## Override how your app appears on the Gatus status page
+## Override how an app appears on the Gatus status page
 
-By default, the Gatus card for your app shows the container image's
+By default, the Gatus card for an app shows the container image's
 short name plus its version -- e.g., `paperless-ngx 2.12.3`. When the
-image's short name doesn't reflect what your app *is*
+image's short name doesn't reflect what the app *is*
 (common when a container wraps something else -- e.g., nginx serving a
 pre-rendered static site), set a compose label:
 

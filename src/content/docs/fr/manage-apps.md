@@ -3,23 +3,22 @@ title: "Gérer les applications"
 description: "Déployez de nouvelles applications via Portainer et posez les étiquettes qui décident qui peut atteindre chacune et où elle est publiée."
 ---
 
-Lorsque vous déployez une nouvelle application via Portainer, vous
-contrôlez qui peut y accéder en ajoutant des étiquettes au fichier
-compose. La suite lit ces étiquettes et provisionne automatiquement les
-bons groupes et politiques Keycloak -- vous ne touchez jamais à l'API
-d'Keycloak directement.
+Une nouvelle application déployée via Portainer reçoit ses règles
+d'accès des étiquettes posées dans le fichier compose. La suite lit ces
+étiquettes et provisionne automatiquement les bons groupes et politiques
+Keycloak -- l'API de Keycloak n'est jamais manipulée à la main.
 
-Vous accédez à Portainer à `portainer.yourdomain.com` (la même connexion
-SSO que vos autres outils ; seuls les administrateurs peuvent l'ouvrir).
-C'est le plan de contrôle des conteneurs de votre VPS -- l'endroit où vous
-créez, déployez et gérez les stacks d'applications.
+Portainer se trouve à `portainer.yourdomain.com` (la même connexion SSO
+que les autres outils ; seuls les administrateurs peuvent l'ouvrir).
+C'est le plan de contrôle des conteneurs du VPS -- l'endroit où les
+stacks d'applications sont créés, déployés et gérés.
 
-## Que puis-je déployer ?
+## Ce qui peut être déployé
 
 Tout ce qui fournit un Docker Compose fonctionne. Quelques sources
-utiles pour choisir ce que vous auto-hébergez :
+utiles pour choisir quoi auto-héberger :
 
-- **Les App Templates de votre VPS** -- ouvrez Portainer à
+- **Les App Templates du VPS** -- ouvrez Portainer à
   `portainer.yourdomain.com` et regardez sous **App Templates**. Nous
   pré-câblons un ensemble d'applications entièrement prêtes (SSO,
   stockage, réseau, étiquettes, SSL déjà configurés). Commencez par là
@@ -30,15 +29,15 @@ utiles pour choisir ce que vous auto-hébergez :
   d'alternatives open-source aux SaaS populaires (p. ex.
   "alternatives à Notion", "alternatives à Slack"). Chaque
   entrée renvoie au dépôt du projet et à ses instructions
-  d'auto-hébergement. Sélection plus large mais vous faites plus
-  de vérifications vous-même.
+  d'auto-hébergement. Sélection plus large, davantage de
+  vérifications à faire.
 - **[awweso.me](https://awweso.me)** -- une interface filtrable
   pour la liste GitHub `awesome-selfhosted` (plus de 1300 projets).
   Affiche les étoiles GitHub et l'activité récente de chaque
   entrée, pour repérer d'un coup d'œil les projets vivants et
   populaires. La sélection la plus large des trois.
 
-Quoi que vous choisissiez, les étiquettes de la suite
+Quel que soit le choix, les étiquettes de la suite
 (`vps.auth.groups`, `vps.auth.mode`, `vps.auth.oidc`,
 `vps.auto-update`, `vps.homepage.*`) s'appliquent par-dessus --
 elles filtrent l'accès, câblent le SSO, marquent les mises à jour
@@ -47,20 +46,20 @@ et alimentent le tableau de bord, peu importe d'où vient le compose.
 Avant de déployer quelque chose de nouveau, vérifiez les **App
 Templates** dans Portainer -- nous pré-câblons quelques applications
 prêtes à l'emploi (voir "Applications pré-configurées prêtes à
-activer" plus bas) qui couvrent peut-être déjà votre besoin.
+activer" plus bas) qui couvrent peut-être déjà le besoin.
 
 ## Démarrage rapide
 
-Déployer une nouvelle application (par exemple, Paperless pour votre
+Déployer une nouvelle application (par exemple, Paperless pour une
 équipe de comptabilité) :
 
-1. Connectez-vous à `portainer.yourdomain.com` (Portainer).
-2. Créez un nouveau Stack. Collez votre fichier compose.
-3. Ajoutez un bloc `labels:` (pour le contrôle d'accès et l'URL
+1. Ouvrir une session sur `portainer.yourdomain.com` (Portainer).
+2. Créer un nouveau Stack. Coller le fichier compose.
+3. Ajouter un bloc `labels:` (pour le contrôle d'accès et l'URL
    publique) ET un alias `catena-network` sur le service public, en
    minuscules avec traits d'union (`paperless` -> `paperless`, `MyApp` ->
    `myapp`, `My-App` -> `my-app`). Traefik utilise cet alias pour
-   atteindre votre conteneur ; sans lui le service retourne 502.
+   atteindre le conteneur ; sans lui le service retourne 502.
    L'étiquette `vps.route.host` est ce qui publie l'application à une URL
    publique (il n'y a pas d'onglet Domains distinct).
 
@@ -80,7 +79,7 @@ Déployer une nouvelle application (par exemple, Paperless pour votre
        external: true
    ```
 
-4. Déployez le stack.
+4. Déployer le stack.
 
 En moins de 5 minutes, `dashboard-sync` détecte la nouvelle application,
 crée le groupe `accounting` dans Keycloak (s'il n'existe pas), câble
@@ -90,7 +89,7 @@ uniquement pour les utilisateurs du groupe `accounting`.
 ## Aide-mémoire des étiquettes
 
 Chaque étiquette, son défaut (entre parenthèses), ses valeurs
-acceptées et ce qu'elle fait. Suivez une étiquette vers sa section plus
+acceptées et ce qu'elle fait. Suivre une étiquette vers sa section plus
 bas pour l'explication complète. Toutes sont optionnelles ; une
 application sans étiquette `vps.auth.*` n'est accessible que par
 `admin` (refus par défaut).
@@ -103,8 +102,8 @@ application sans étiquette `vps.auth.*` n'est accessible que par
 | [`vps.auth.protected`](#vpsauthprotectedtrue)<br>(`false`) | `true` \| `false` | Marque une application qui ne doit jamais devenir publique |
 | [`vps.auth.oidc`](#forward-auth-ou-oidc)<br>(`false`) | `true` \| `false` (plus `vps.auth.oidc.redirect_uris`, `vps.auth.oidc.scopes` optionnel) | Ajoute une connexion OIDC native par-dessus la barrière |
 | [`vps.auto-update`](#choisir-lagressivité-des-mises-à-jour)<br>(`patch`) | `patch` \| `minor` \| `major` \| `off` | Jusqu'où l'updater peut monter l'image |
-| [`vps.homepage.*`](#personnaliser-lapparence-de-votre-application-sur-le-tableau-de-bord)<br>(tuile affichée) | `name`, `icon`, `description`, `hidden` | Présentation de la tuile du tableau de bord |
-| [`vps.display-name`](#remplacer-laffichage-de-votre-application-sur-la-page-détat-gatus)<br>(nom court de l'image) | toute chaîne | Nom affiché sur la carte d'état Gatus |
+| [`vps.homepage.*`](#personnaliser-lapparence-dune-application-sur-le-tableau-de-bord)<br>(tuile affichée) | `name`, `icon`, `description`, `hidden` | Présentation de la tuile du tableau de bord |
+| [`vps.display-name`](#remplacer-laffichage-dune-application-sur-la-page-détat-gatus)<br>(nom court de l'image) | toute chaîne | Nom affiché sur la carte d'état Gatus |
 
 Pas une étiquette, mais requis pour le routage : donnez au service
 public un alias `catena-network` en minuscules avec traits d'union,
@@ -113,10 +112,10 @@ sinon Traefik ne peut pas l'atteindre (502). Voir
 
 ## Applications pré-configurées prêtes à activer
 
-Portainer fournit un catalogue **App Templates** sur votre VPS contenant
+Portainer fournit un catalogue **App Templates** sur le VPS contenant
 des applications prêtes à déployer, correctement câblées dès le
 départ -- authentification, SSO, stockage, réseau, étiquettes, SSL.
-Cliquez Deploy sur celles que vous voulez, ignorez les autres.
+Cliquez Deploy sur celles qui sont utiles, ignorez les autres.
 
 Catalogue complet avec notes par application :
 **[Applications pré-configurées](/fr/apps/)**.
@@ -124,7 +123,7 @@ Catalogue complet avec notes par application :
 ## Applications multi-conteneurs (exemple : Nextcloud)
 
 Une application mono-image ne nécessite que le rattachement à
-`catena-network` illustré plus haut. Dès que votre compose contient
+`catena-network` illustré plus haut. Dès que le compose contient
 **plusieurs services** -- une vraie application comme Nextcloud embarque
 Postgres et Redis à côté du processus web -- la règle de réseau est :
 
@@ -203,7 +202,7 @@ ne le verrait pas et renverrait une 502. Il faut les deux.
 **Pourquoi `db`, `redis` et `cron` restent hors de `catena-network`** :
 tous les projets sur cet hôte partagent ce réseau. En gardant les
 services internes sur le `default` propre au projet, les conteneurs
-d'un autre projet ne peuvent pas joindre votre base Nextcloud en
+d'un autre projet ne peuvent pas joindre la base Nextcloud en
 devinant le nom du service -- l'isolation réseau de Docker s'en charge.
 
 **Adressage entre voisins** : depuis `app`, Postgres est joignable à
@@ -227,38 +226,39 @@ en transfert, et rend une restauration complète pénible.
 
 Pour cette famille d'applications, déployez la **variante avec
 stockage S3** (le modèle Nextcloud à stockage S3 dans App Templates) :
-les fichiers vivent directement dans un bucket d'objets qui vous
-appartient, pas dans un volume local du VPS. Chaque sauvegarde ne copie
-alors que le code et la
+les fichiers vivent directement dans un bucket d'objets appartenant à
+l'entreprise, pas dans un volume local du VPS. Chaque sauvegarde ne
+copie alors que le code et la
 configuration de l'application (quelques centaines de Mo), et le
 bucket gère l'historique des fichiers de son côté.
 
-Ce que ça change pour vous :
+Ce que ça change :
 
-- **Rien dans l'interface.** Pour vos utilisateurs, l'application a
+- **Rien dans l'interface.** Pour les utilisateurs, l'application a
   l'air exactement pareille. Même connexion, même explorateur de
   fichiers, tout pareil.
-- **Votre sauvegarde est en deux morceaux, pas un.** Le code, la
+- **La sauvegarde est en deux morceaux, pas un.** Le code, la
   config et la base de données restent dans chaque sauvegarde ; les
   fichiers vivent dans le bucket S3 (avec 30 jours d'historique de
-  suppression intégrés). Les deux vous appartiennent.
-- **La restauration est plus rapide.** Si le VPS brûle, vos fichiers
+  suppression intégrés). Les deux restent la propriété de
+  l'entreprise.
+- **La restauration est plus rapide.** Si le VPS brûle, les fichiers
   survivent indépendamment -- le nouveau VPS se reconnecte simplement
   au même bucket, et chaque fichier y est déjà.
 
-Vous ne câblez pas la plomberie du bucket à la main : pour un
-déploiement avec beaucoup de fichiers, choisissez le modèle à stockage
-S3 plutôt que le modèle ordinaire et il configure le stockage d'objets
-pour vous.
+La plomberie du bucket ne se câble pas à la main : pour un
+déploiement avec beaucoup de fichiers, choisir le modèle à stockage
+S3 plutôt que le modèle ordinaire, et il configure le stockage
+d'objets tout seul.
 
-## Garder vos applications à jour
+## Garder les applications à jour
 
-Sur une base hebdomadaire, votre VPS vérifie si de nouvelles versions
+Sur une base hebdomadaire, le VPS vérifie si de nouvelles versions
 existent pour chaque image déployée, récupère celles qui respectent
-votre politique, redéploie, fait un contrôle de santé et annule
-(rollback) si le contrôle échoue. Vous n'avez rien à faire -- ça tourne
-dans la fenêtre de mise à jour, en dehors des heures ouvrables, et
-vous n'êtes alerté qu'en cas de problème.
+la politique configurée, redéploie, fait un contrôle de santé et
+annule (rollback) si le contrôle échoue. Rien à faire à la main -- ça
+tourne dans la fenêtre de mise à jour, en dehors des heures ouvrables,
+et une alerte ne part qu'en cas de problème.
 
 **Mais seules les applications épinglées à une version complète sont
 gérées.** La suite refuse de toucher à toute image dont le tag
@@ -279,11 +279,11 @@ est pire que pas de mise à jour du tout.
 | `ubuntu:latest`                              | ✗ non (flottant) |
 | `monapp` (sans tag)                          | ✗ non (flottant, implicitement `latest`) |
 
-Si votre tag est dans la colonne ✗, l'image déployée reste celle qui
-tourne jusqu'à ce que vous redéployiez manuellement. Aucun correctif
+Un tag dans la colonne ✗ laisse tourner exactement l'image déployée
+jusqu'à un redéploiement manuel. Aucun correctif
 de sécurité, aucun correctif de bug -- mais aussi aucune surprise la
-nuit où un mauvais release est publié. Vous gérez le calendrier de
-mise à jour de bout en bout.
+nuit où une mauvaise version est publiée. Le calendrier de mise à jour
+reste entièrement manuel.
 
 ### Choisir l'agressivité des mises à jour
 
@@ -301,16 +301,15 @@ labels:
 
 Valeurs par défaut, par type de service :
 
-- **Applications clientes** (les vôtres) : `patch`. Conservateur --
+- **Applications clientes** : `patch`. Conservateur --
   correctifs de bugs et mises à jour de sécurité, aucun changement de
   comportement.
 - **Infrastructure de base** (Keycloak, Portainer, Traefik,
   Gatus, etc.) : `patch+minor`, pour que les correctifs de sécurité
   arrivent d'eux-mêmes.
 
-Sauf raison contraire, laisser l'étiquette non définie sur vos apps
-est le bon choix. Vous recevrez les correctifs de sécurité
-automatiquement.
+Sauf raison contraire, laisser l'étiquette non définie est le bon
+choix : les correctifs de sécurité arrivent alors automatiquement.
 
 ### Ce que fait concrètement le "rollback automatique"
 
@@ -318,25 +317,25 @@ Après chaque service mis à jour, l'updater exécute une vérification
 de santé de base (même contrôle que le drill de reprise) : le conteneur
 répond-il, la page renvoie-t-elle 2xx/3xx, le temps de réponse
 reste-t-il raisonnable. Si un élément échoue, le tag est remis à la
-dernière bonne version, redéployé, et vous recevez une alerte
-ntfy avec le nom du service et la mauvaise version. Le passage
+dernière bonne version, redéployé, et une alerte ntfy part avec le nom
+du service et la mauvaise version. Le passage
 suivant se souvient de la mauvaise version et la saute --
-vous ne retomberez pas sur le même mauvais release en boucle.
+pas de retombée en boucle sur la même version cassée.
 
 Pour voir l'état en cours (en attente / rollback récents /
 quarantaine) : le tableau de bord Gatus affiche la version en cours
 d'exécution sur chaque carte de service -- un épinglage bloqué se
-repère d'un coup d'œil. L'onglet **Maintenance** de votre tableau de
+repère d'un coup d'œil. L'onglet **Maintenance** du tableau de
 bord porte le résumé complet (bumps échoués, versions en
 quarantaine, prochaine exécution planifiée).
 
 ### Quand tout ceci compte
 
-Utilisez un vrai tag `X.Y.Z` sur chaque service public. Si votre
-éditeur ne publie que `:latest` ou `:stable`, soit vous épinglez à un
-digest et mettez à jour manuellement, soit vous assumez de sortir du
+Utiliser un vrai tag `X.Y.Z` sur chaque service public. Quand un
+éditeur ne publie que `:latest` ou `:stable`, deux options : épingler
+à un digest et mettre à jour manuellement, ou assumer de sortir du
 filet de sécurité. Le `compose-lint` de la suite détecte les tags
-non-semver au moment du déploiement et vous le rappelle ; la page
+non-semver au moment du déploiement et le signale ; la page
 d'état Gatus affiche la version concrète en cours d'exécution par
 service, ce qui rend toute dérive facile à repérer.
 
@@ -350,16 +349,16 @@ utilisateur appartenant à AU MOINS UN des groupes listés passe
 -- un administrateur n'est jamais verrouillé hors d'une application par
 une étiquette.
 
-Les valeurs que vous pouvez lister :
+Les valeurs possibles :
 
 - **`visitor`** -- un mot-clé spécial signifiant **public, sans aucune
   connexion**. Ce n'est pas un vrai groupe ; voir la note plus bas.
-- **`client`** -- vos utilisateurs externes (clients, partenaires).
-- **`staff`** -- vos employés. La base pour votre équipe.
+- **`client`** -- les utilisateurs externes (clients, partenaires).
+- **`staff`** -- les employés. La base pour toute l'équipe.
 - **tout sous-groupe de `staff`** -- par nom (`accounting`,
   `engineering`, ...), pour un accès plus fin.
 - **`admin`** -- les personnes qui opèrent le serveur. Toujours autorisé
-  implicitement, vous n'avez donc jamais à le lister.
+  implicitement, il n'a donc jamais besoin d'être listé.
 
 **Exemples :**
 
@@ -379,9 +378,9 @@ contradictoire -- `visitor` l'emporte et l'application est publique.
 
 **Les groupes ne sont PAS créés automatiquement.** Un groupe nommé ici
 doit exister dans Keycloak et avoir des membres, sinon personne (sauf
-`admin`) ne peut accéder à l'application. Consultez d'un coup d'oeil qui
-peut atteindre quoi dans l'onglet Accès de votre tableau de bord, et
-ajoutez des membres dans Keycloak (lien depuis l'onglet Accès).
+`admin`) ne peut accéder à l'application. Qui peut atteindre quoi se
+consulte d'un coup d'œil dans l'onglet Accès du tableau de bord, et
+les membres s'ajoutent dans Keycloak (lien depuis l'onglet Accès).
 
 ### `vps.auth.mode=<mode>`
 
@@ -397,11 +396,11 @@ Un raccourci pour les ensembles de groupes courants. Utilisez ceci OU
 **La posture par défaut (aucune étiquette) est le REFUS.** Une
 application déployée sans aucune étiquette `vps.auth.*` est accessible
 uniquement par `admin` -- inaccessible à tous les autres niveaux. C'est
-sécurisé par défaut : vous optez explicitement pour un accès plus large
+sécurisé par défaut : un accès plus large est un choix explicite, posé
 en ajoutant `vps.auth.groups` (ou `vps.auth.mode`). Une application sans
-étiquette qui devrait être accessible à votre équipe lui retournera 403
-jusqu'à ce que vous ajoutiez `vps.auth.groups=staff` (ou le bon
-département).
+étiquette qui devrait être accessible à l'équipe lui retournera 403
+tant que `vps.auth.groups=staff` (ou le bon département) n'est pas
+ajouté.
 
 ### `vps.auth.protected=true`
 
@@ -417,7 +416,7 @@ labels:
   - "vps.auth.protected=true"
 ```
 
-## Ce que dashboard-sync fait pour vous
+## Ce que fait dashboard-sync
 
 Toutes les 5 minutes (via un timer systemd), `dashboard-sync.service` :
 
@@ -438,29 +437,29 @@ Toutes les 5 minutes (via un timer systemd), `dashboard-sync.service` :
 - **API Keycloak inaccessible pendant la synchronisation.**
   dashboard-sync journalise l'erreur, n'écrit pas la route Traefik,
   réessaie au tick suivant. L'application reste 404 jusqu'au
-  rétablissement d'Keycloak.
-- **Vous avez mal tapé un nom de groupe.** Un groupe portant ce nom est
-  créé automatiquement (vide). Vous le remarquerez car l'application
-  retourne 403. Correction : renommez le groupe dans l'interface
-  Keycloak, ou corrigez l'étiquette dans Portainer et redéployez.
-- **Vous avez retiré l'étiquette mais gardé l'application.** Au
+  rétablissement de Keycloak.
+- **Nom de groupe mal saisi.** Un groupe portant ce nom est
+  créé automatiquement (vide). Le symptôme : l'application
+  retourne 403. Correction : renommer le groupe dans l'interface
+  Keycloak, ou corriger l'étiquette dans Portainer et redéployer.
+- **Étiquette retirée mais application conservée.** Au
   prochain sync, les liaisons de politique reviennent à
   `admin` (catchall). Personne sauf les admins ne peut y
   accéder. Intentionnel -- échec fermé.
 - **Deux applications avec le même nom d'hôte mais des groupes
-  différents.** La dernière liaison de politique écrite l'emporte. Ne
-  faites pas ça ; donnez un nom d'hôte unique à chaque application.
+  différents.** La dernière liaison de politique écrite l'emporte. À
+  éviter ; donner un nom d'hôte unique à chaque application.
 
 ## Vérifications en libre-service
 
-- `https://auth.yourdomain.com` -> Directory -> Groups. Vos groupes
-  définis apparaissent ici. Ajoutez / retirez des membres via
+- `https://auth.yourdomain.com` -> Directory -> Groups. Les groupes
+  définis apparaissent ici. Ajouter / retirer des membres via
   l'interface.
-- `https://portainer.yourdomain.com` -> votre stack -> Logs.
+- `https://portainer.yourdomain.com` -> le stack -> Logs.
   Après le déploiement, les logs montrent les appels forward-auth
   Keycloak (203 -> injection d'en-têtes -> upstream).
-- `https://monitor.yourdomain.com` (Gatus). Votre
-  application reçoit une entrée dans le groupe `client-apps` en moins
+- `https://monitor.yourdomain.com` (Gatus). L'application
+  reçoit une entrée dans le groupe `client-apps` en moins
   de 5 minutes, sondée toutes les 60 secondes. Rouge = application
   hors service OU sync pas encore exécuté.
 
@@ -476,10 +475,10 @@ porte.
 ## Forward-auth ou OIDC
 
 Les étiquettes ci-dessus (`vps.auth.groups`, `vps.auth.mode`)
-activent le **forward-auth** : Keycloak se place devant votre
-application au niveau Traefik et ne laisse passer que les
+activent le **forward-auth** : Keycloak se place devant
+l'application au niveau Traefik et ne laisse passer que les
 utilisateurs connectés. L'application elle-même n'a rien à savoir
-d'Keycloak -- elle reçoit simplement du trafic authentifié. C'est
+de Keycloak -- elle reçoit simplement du trafic authentifié. C'est
 le mode **par défaut, toujours actif**, et il fonctionne pour
 n'importe quelle application.
 
@@ -491,28 +490,28 @@ permissions par utilisateur *à l'intérieur* de l'application -- qui
 peut éditer ou seulement consulter un tableau, qui peut approuver
 une demande, etc. -- et une déconnexion propre.
 
-**OIDC s'ajoute au forward-auth, il ne le remplace pas.** Lorsque
-vous l'activez :
+**OIDC s'ajoute au forward-auth, il ne le remplace pas.** Une fois
+activé :
 - Le forward-auth reste devant l'application (la barrière de
   sécurité ne change pas).
 - Un client OIDC est en plus provisionné pour que l'application
   puisse demander à Keycloak "qui est cet utilisateur connecté"
   une fois qu'il a franchi la barrière.
-- Si votre câblage OIDC est incorrect, la barrière tient toujours --
-  au pire le bouton "Se connecter avec Keycloak" n'apparaît pas
+- Un câblage OIDC incorrect n'affaiblit pas la barrière -- au pire
+  le bouton "Se connecter avec Keycloak" n'apparaît pas
   ou échoue, mais l'application reste joignable et protégée.
 
 La suite détaille la procédure complète.
 
 ### Activer OIDC : étape par étape
 
-#### 1. Récupérer les prérequis OIDC de votre application
+#### 1. Récupérer les prérequis OIDC de l'application
 
-Deux informations, puisées dans la **documentation de votre
-application** :
+Deux informations, puisées dans la **documentation de
+l'application** :
 
 - **URL de redirection (chemin de rappel) :** l'URL vers laquelle
-  votre application renvoie l'utilisateur après qu'Keycloak l'a
+  l'application renvoie l'utilisateur après que Keycloak l'a
   connecté. Spécifique à chaque application.
 
   | Application | Chemin de rappel typique |
@@ -524,7 +523,7 @@ application** :
   | Vault | `/ui/vault/auth/oidc/oidc/callback` |
   | Keycloak (fédérant Keycloak) | `/auth/realms/<realm>/broker/<alias>/endpoint` |
 
-- **Noms des variables d'environnement OIDC que votre application
+- **Noms des variables d'environnement OIDC que l'application
   lit.** Chaque application nomme ses variables OIDC différemment.
   Quelques préfixes :
 
@@ -535,12 +534,12 @@ application** :
   | Harbor | `HARBOR_OIDC_*` (plus config serveur) |
   | Gitea | via la CLI, pas de variables d'environnement |
 
-  Si votre application ne figure pas ci-dessus, cherchez "OIDC"
+  Pour une application absente de la liste, chercher "OIDC"
   ou "OpenID Connect" dans sa documentation -- les noms sont
   généralement listés sur la page de configuration
   d'authentification.
 
-#### 2. Ajouter trois étiquettes à votre service compose
+#### 2. Ajouter trois étiquettes au service compose
 
 ```yaml
 labels:
@@ -557,15 +556,15 @@ labels:
 - `vps.auth.oidc.redirect_uris=<url>` -- l'URL de rappel relevée à
   l'étape 1. Obligatoire ; sans elle, OIDC n'est pas
   provisionné. Plusieurs URL séparées par des virgules sont
-  autorisées si votre application en exige plusieurs.
+  autorisées quand une application en exige plusieurs.
 
-#### 3. Mapper les variables injectées aux noms de votre application
+#### 3. Mapper les variables injectées aux noms de l'application
 
 Dans les ~5 minutes qui suivent, `dashboard-sync` va :
 
 - Créer une application cliente OAuth2 dans Keycloak.
 - Générer un ID client + un secret.
-- Injecter ces quatre variables dans l'environnement de votre
+- Injecter ces quatre variables dans l'environnement du
   compose :
   - `OIDC_CLIENT_ID`
   - `OIDC_CLIENT_SECRET`
@@ -573,12 +572,12 @@ Dans les ~5 minutes qui suivent, `dashboard-sync` va :
   - `OIDC_REDIRECT_URL`
 
 Ce sont des **noms volontairement fixés** -- pas
-un standard que votre application lira directement. Vous devez
-ajouter des lignes au bloc `environment:` de votre service pour
-mapper ces variables vers celles qu'attend votre application, avec
-la substitution `${...}` de Docker Compose.
+un standard qu'une application lit directement. Le bloc
+`environment:` du service doit recevoir des lignes qui mappent ces
+variables vers celles qu'attend l'application, avec la
+substitution `${...}` de Docker Compose.
 
-Voici un compose Grafana complet en référence :
+Un compose Grafana complet en référence :
 
 ```yaml
 services:
@@ -618,52 +617,52 @@ du conteneur au démarrage.
 Sauvegarder le compose dans Portainer déclenche un redéploiement.
 Au tic de synchronisation suivant, dashboard-sync met à jour le
 bloc env et Portainer redéploie l'application une fois de plus avec
-les valeurs remplies. Ensuite, connectez-vous à la page d'accueil
-de l'application -- vous devriez voir un bouton "Se connecter avec
-Keycloak" (le libellé dépend de l'application). Cliquez,
-autorisez, vous êtes dedans.
+les valeurs remplies. Ensuite, la page d'accueil de l'application
+porte un bouton "Se connecter avec Keycloak" (le libellé dépend de
+l'application). Un clic, une autorisation, et c'est fait.
 
 ### Vérifier que ça fonctionne
 
 - **Interface de l'application :** l'application affiche un bouton
-  SSO et cliquer dessus vous connecte sans second mot de passe (si
-  vous êtes déjà connecté à une autre application de la session --
-  Keycloak vous maintient connecté entre applications).
-- **Interface admin d'Keycloak** (`auth.yourdomain.com`) ->
-  Annuaire -> Applications : vous verrez deux entrées par
+  SSO et un clic dessus ouvre la session sans second mot de passe
+  (dès lors qu'une autre application de la même session est déjà
+  ouverte -- Keycloak maintient une seule session entre
+  applications).
+- **Interface admin de Keycloak** (`auth.yourdomain.com`) ->
+  Annuaire -> Applications : deux entrées apparaissent par
   application OIDC -- une pour la barrière forward-auth, et
   `<nom> (OIDC)` pour le client OIDC.
 
 ### Erreurs courantes
 
 - **Substitution `${...}` oubliée.** La synchro injecte bien les
-  variables, mais votre application ne les voit pas parce que son
+  variables, mais l'application ne les voit pas parce que son
   `environment` ne les référence pas. Symptôme : aucun bouton SSO
   n'apparaît. `compose-lint` émet un avertissement à ce sujet au
   déploiement.
 - **Mauvaise valeur de `redirect_uris`.** Keycloak affiche "URL
   de redirection invalide" pendant le flux. Correctif : revérifier
-  la documentation de votre application pour le chemin de rappel
+  la documentation de l'application pour le chemin de rappel
   exact, ajuster l'étiquette, sauvegarder.
 - **Utilisateur absent de `vps.auth.groups`.** Keycloak affiche
   "Permission refusée" à l'écran de consentement. Correctif :
   ajoutez l'utilisateur au groupe via Annuaire -> Groupes, ou
   élargissez la liste dans l'étiquette.
-- **Valeurs codées en dur au lieu de `${...}`.** Si vous collez
-  directement l'ID client / le secret dans l'environnement de
-  votre service au lieu de les référencer, votre application
-  fonctionnera une fois puis cassera à la rotation du secret.
-  Toujours utiliser la forme `${...}`.
+- **Valeurs codées en dur au lieu de `${...}`.** Coller
+  directement l'ID client / le secret dans l'environnement du
+  service au lieu de les référencer fonctionne une fois, puis
+  casse à la rotation du secret. Toujours utiliser la forme
+  `${...}`.
 
 ### Désactiver OIDC
 
 Supprimez l'étiquette `vps.auth.oidc=true` (les deux autres
 étiquettes OIDC peuvent rester -- elles sont inoffensives sans
 l'interrupteur). Au tic de synchronisation suivant, dashboard-sync
-démonte l'application + le fournisseur OIDC d'Keycloak, arrête
+démonte l'application + le fournisseur OIDC de Keycloak, arrête
 d'injecter les variables, et l'application revient au
-forward-auth seul. Vous pouvez ensuite retirer les lignes
-`${OIDC_*}` de votre `environment`.
+forward-auth seul. Les lignes `${OIDC_*}` peuvent ensuite sortir
+du bloc `environment`.
 
 ### Hors périmètre
 
@@ -674,12 +673,12 @@ Vaultwarden (fichier haché) -- ne sont pas couvertes par ce flux
 d'étiquettes. Pour celles-ci, câblez OIDC à la main dans le fichier de
 configuration de l'application.
 
-## Personnaliser l'apparence de votre application sur le tableau de bord
+## Personnaliser l'apparence d'une application sur le tableau de bord
 
-Votre tableau de bord à
+Le tableau de bord à
 [`dash.yourdomain.com`](https://dash.yourdomain.com)
 affiche une tuile pour chaque application déployée. Quatre étiquettes
-optionnelles permettent d'ajuster la présentation vous-même :
+optionnelles ajustent la présentation :
 
 ```yaml
 services:
@@ -700,25 +699,25 @@ services:
   nom.
 - **`vps.homepage.hidden=true`** -- masque l'application du tableau
   de bord (elle reste déployée et fonctionnelle à son URL, juste
-  non listée). Utile pour des services en arrière-plan que vous ne
-  voulez pas voir cliqués par le personnel.
+  non listée). Utile pour des services en arrière-plan sur lesquels
+  le personnel n'a pas à cliquer.
 
 Les changements s'appliquent à la prochaine synchronisation
 dashboard-sync (toutes les 5 minutes), ou cliquez sur **Sync all
 (apps + monitors)** dans l'onglet **Actions** du tableau de bord pour
 forcer un rafraîchissement immédiat.
 
-C'est là toute la surface de personnalisation, par design. Si vous
-avez besoin de plus -- un autre groupe, une URL personnalisée, de la
-visibilité par utilisateur -- faites la modification directement sur
-le serveur (connexion SSH via Tailscale).
+C'est là toute la surface de personnalisation, par design. Tout ce qui
+va au-delà -- un autre groupe, une URL personnalisée, de la
+visibilité par utilisateur -- se modifie directement sur le serveur
+(connexion SSH via Tailscale).
 
-## Remplacer l'affichage de votre application sur la page d'état Gatus
+## Remplacer l'affichage d'une application sur la page d'état Gatus
 
-Par défaut, la carte Gatus de votre application affiche le nom court
+Par défaut, la carte Gatus d'une application affiche le nom court
 de l'image conteneur suivi de sa version -- p. ex. `paperless-ngx
-2.12.3`. Lorsque le nom court de l'image ne reflète pas ce que votre
-application *est* (cas courant quand un conteneur enveloppe autre
+2.12.3`. Lorsque le nom court de l'image ne reflète pas ce que
+l'application *est* (cas courant quand un conteneur enveloppe autre
 chose -- p. ex. nginx servant un site statique pré-généré), définissez
 une étiquette compose :
 
