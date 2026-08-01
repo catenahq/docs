@@ -1,97 +1,95 @@
 ---
-title: "Reconstruire votre serveur à partir de la sauvegarde"
-description: "Si votre serveur est perdu, il peut être reconstruit à partir de votre sauvegarde avec votre seul jeu de clés de récupération."
+title: "Reconstruire un serveur à partir de la sauvegarde"
+description: "Un serveur perdu peut être reconstruit à partir de sa sauvegarde avec le seul jeu de clés de récupération."
 ---
 
-Si votre serveur est un jour perdu -- panne matérielle, incident de
+Si un serveur est un jour perdu -- panne matérielle, incident de
 centre de données, effacement accidentel, rançongiciel -- il peut
-être reconstruit à partir de votre dernière sauvegarde. Vous n'avez
-rien à reconstituer à la main, et vous n'avez à mémoriser aucun des
-réglages internes ni des mots de passe qu'utilisent vos applications.
+être reconstruit à partir de sa dernière sauvegarde. Rien n'est à
+reconstituer à la main, et aucun des réglages internes ni des mots de
+passe qu'utilisent les applications n'est à mémoriser.
 
-## La seule chose à conserver : votre jeu de clés de récupération
+## La seule chose à conserver : le jeu de clés de récupération
 
-Tout ce qu'il faut pour ramener votre serveur tient en trois
-éléments. Conservez-les dans votre gestionnaire de mots de passe,
-chacun comme une entrée distincte et clairement étiquetée :
+Tout ce qu'il faut pour ramener un serveur tient en trois éléments.
+Ils ont leur place dans un gestionnaire de mots de passe, chacun comme
+une entrée distincte et clairement étiquetée :
 
-- L'**emplacement du dépôt de sauvegarde** -- l'adresse de votre
-  stockage de sauvegarde plus le nom du compartiment (là où vivent
-  vos sauvegardes).
+- L'**emplacement du dépôt de sauvegarde** -- l'adresse du stockage de
+  sauvegarde plus le nom du compartiment (là où vivent les
+  sauvegardes).
 - Les **clés de stockage** de ce compartiment -- une clé d'accès et
   une clé secrète, appariées.
-- Votre **mot de passe de chiffrement de la sauvegarde** -- la clé
-  qui déverrouille la sauvegarde chiffrée.
+- Le **mot de passe de chiffrement de la sauvegarde** -- la clé qui
+  déverrouille la sauvegarde chiffrée.
 
 Voilà tout le jeu de clés. Tant que ces trois éléments survivent
-ailleurs que sur le serveur lui-même, vos données sont récupérables.
+ailleurs que sur le serveur lui-même, les données sont récupérables.
 
 ## Tout le reste revient de lui-même
 
-Votre sauvegarde est chiffrée de bout en bout et contient bien plus
-que vos fichiers. Chaque réglage interne et chaque secret dont
-dépendent vos applications -- mots de passe de base de données,
-configuration de connexion, réglages de messagerie -- se trouve à
-l'intérieur de cette sauvegarde chiffrée. Lorsque vos données sont
-restaurées, tout cela revient automatiquement. Il n'y a rien à
-ressaisir et aucune liste d'identifiants à retaper.
+La sauvegarde est chiffrée de bout en bout et contient bien plus que
+des fichiers. Chaque réglage interne et chaque secret dont dépendent
+les applications -- mots de passe de base de données, configuration de
+connexion, réglages de messagerie -- se trouve à l'intérieur de cette
+sauvegarde chiffrée. Lorsque les données sont restaurées, tout cela
+revient automatiquement. Il n'y a rien à ressaisir et aucune liste
+d'identifiants à retaper.
 
 C'est pourquoi le jeu de clés est court : les trois éléments
 ci-dessus sont les seules choses qui vivent *à l'extérieur* de la
-sauvegarde, donc les seules que vous devez conserver vous-même.
+sauvegarde, donc les seules à conserver séparément.
 
 ## Comment se déroule une reconstruction
 
-Vous faites la reconstruction vous-même avec une seule commande, et
-elle est rapide :
+La reconstruction part d'une seule commande, et elle est rapide :
 
-1. Louez un VPS neuf (n'importe quel fournisseur).
-2. Depuis votre dépôt Catena, lancez `catena recover`. Il demande votre
-   jeu de clés de récupération, puis prépare la machine, restaure votre
+1. Louer un VPS neuf (n'importe quel fournisseur).
+2. Depuis un dépôt Catena, lancer `catena recover`. Il demande le jeu
+   de clés de récupération, puis prépare la machine, restaure le
    dernier instantané, ramène les applications et valide.
-3. Vos applications reviennent avec leurs données et leurs réglages
+3. Les applications reviennent avec leurs données et leurs réglages
    intacts.
 
-Votre seul rôle en amont est de garder votre jeu de clés de
-récupération en sécurité. Dès que vous constatez que le serveur est
-perdu, vous pouvez lancer la reconstruction -- c'est une commande de
-routine, pas un projet spécial. Vous préférez un coup de main la
-première fois ? Joignez votre contact Catena -- optionnel, pas
-obligatoire.
+Le seul travail en amont est de garder le jeu de clés de récupération
+en sécurité. La reconstruction peut démarrer dès que la perte du
+serveur est constatée -- c'est une commande de routine, pas un projet
+spécial. Un coup de main pour la première exécution reste disponible
+auprès du contact Catena -- optionnel, pas obligatoire.
 
 ## Pourquoi chaque partie du jeu de clés compte
 
-La sauvegarde est protégée pour que vous seul (et les personnes à qui
-vous confiez le jeu de clés) puissiez la lire :
+La sauvegarde est protégée pour que seuls les détenteurs du jeu de
+clés puissent la lire :
 
 - Le **mot de passe de chiffrement** déverrouille les données.
-- Les **clés de stockage** permettent à la restauration de lire
-  votre compartiment.
+- Les **clés de stockage** permettent à la restauration de lire le
+  compartiment.
 - L'**emplacement du dépôt** indique où chercher.
 
 Les trois sont requis ensemble. Sans le mot de passe de chiffrement,
 la sauvegarde est du texte chiffré illisible pour quiconque -- c'est
-précisément pour cela que vous le détenez, et pourquoi le perdre est
-le seul cas qui ne peut pas être récupéré.
+précisément pour cela qu'il est détenu par le client, et pourquoi le
+perdre est le seul cas qui ne peut pas être récupéré.
 [Tâches récurrentes](/fr/disaster-prevention/) détaille comment
 conserver le jeu de clés pour que cela n'arrive jamais.
 
-## Ce qui revient, et ce que vous pourriez perdre
+## Ce qui revient, et ce qui peut être perdu
 
-Restauré automatiquement depuis la sauvegarde : vos bases de données,
-les réglages de vos applications, les fichiers que la plupart des
+Restauré automatiquement depuis la sauvegarde : les bases de données,
+les réglages des applications, les fichiers que la plupart des
 applications stockent localement, et la configuration système
 sous-jacente.
 
 La seule chose à risque est ce qui a changé entre la dernière
 sauvegarde et le moment de la perte du serveur -- de quelques minutes
-à une journée, selon votre calendrier de sauvegarde.
-[Où sont mes données](/fr/where-is-my-data/) explique exactement où
+à une journée, selon le calendrier de sauvegarde.
+[Où vivent les données](/fr/where-is-my-data/) explique exactement où
 vit chaque chose, et la page
 [Se remettre d'une panne](/fr/disaster-recovery/) associe chaque
 situation "ce qui a cassé" à sa voie de récupération.
 
-## Si vous utilisez Nextcloud avec stockage de fichiers S3
+## Nextcloud avec stockage de fichiers S3
 
 Certaines configurations à forte volumétrie gardent les fichiers
 téléversés dans Nextcloud dans leur propre compartiment de stockage,
@@ -99,24 +97,22 @@ séparé de la sauvegarde. Ce compartiment survit indépendamment du
 serveur : si le serveur est perdu, les fichiers sont toujours dans le
 compartiment, et quand le Nextcloud reconstruit se reconnecte au même
 compartiment, chaque fichier est là.
-[Où sont mes données](/fr/where-is-my-data/) couvre ceci en détail.
+[Où vivent les données](/fr/where-is-my-data/) couvre ceci en détail.
 
 ## Garder une copie hors ligne
 
-Si votre serveur est tombé et que vous avez besoin de ces
-instructions pour le relever, le site de documentation ne vous aidera
-pas s'il se trouve sur le même chemin. Enregistrez les pages que vous
-utiliseriez lors d'un incident -- celle-ci plus
-[Se remettre d'une panne](/fr/disaster-recovery/) et
-[Où sont mes données](/fr/where-is-my-data/) -- sur votre poste avec
-la fonction "Enregistrer sous..." de votre navigateur (ou imprimez-les
-en PDF) à la prise en charge, et rafraîchissez la copie une fois par
-an.
+Un site de documentation n'aide pas pendant un incident s'il se trouve
+sur le chemin qui est tombé. Les pages qui méritent une copie locale --
+celle-ci plus [Se remettre d'une panne](/fr/disaster-recovery/) et
+[Où vivent les données](/fr/where-is-my-data/) -- s'enregistrent avec
+la fonction "Enregistrer sous..." d'un navigateur (ou s'impriment en
+PDF) à la prise en charge, et la copie mérite un rafraîchissement une
+fois par an.
 
 Si le serveur fonctionne encore et que seules ses données sont
-mauvaises, rien de tout ceci n'est nécessaire : remettez les données en
+mauvaises, rien de tout ceci n'est nécessaire : remettre les données en
 place depuis le panneau d'administration. Voir
-[Restaurer vos données depuis le panneau d'administration](/fr/restore-data/).
+[Restaurer les données depuis le panneau d'administration](/fr/restore-data/).
 
 Pour des restaurations de fichiers et des commandes de sauvegarde qui
 fonctionnent sans le panneau d'administration, voir
