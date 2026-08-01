@@ -13,7 +13,10 @@
 // SCOPE. Prose only. Fenced code blocks and inline code spans are skipped:
 // a placeholder like `your-domain.com` inside a command is part of an
 // example, and rewriting it would change what the example says to copy.
-// Everything outside a code span is prose, including frontmatter titles and
+// Link DESTINATIONS and bare URLs are skipped for the same reason -- an
+// anchor like #ajoutez-un-second-compartiment is generated from the target
+// page's heading, so it changes when that page is converted and not before.
+// Link TEXT is prose and is scanned. So are frontmatter titles and
 // descriptions.
 //
 // GENERATED PAGES ARE IN SCOPE. Several pages under apps/ come from the
@@ -35,7 +38,9 @@ import { readFileSync, existsSync } from "node:fs";
 const RULES = [
   { re: /\b(you|your|yours|yourself|yourselves|you'?re|you'?ve|you'?ll|you'?d)\b/gi,
     lang: "en", name: 'second person ("you"/"your")' },
-  { re: /\b(vous|votre|vos|v[oô]tres?)\b/gi,
+  // (?<!rendez-) because "rendez-vous" is the French for appointment, and a
+  // hyphen is a word boundary. It is a noun, not an address to the reader.
+  { re: /\b(?<!rendez-)(vous|votre|vos|v[oô]tres?)\b/gi,
     lang: "fr", name: 'deuxieme personne ("vous"/"votre")' },
 ];
 
@@ -64,7 +69,11 @@ function stripCode(text) {
       return "";
     }
     if (fenced) return "";
-    return line.replace(/`[^`]*`/g, "");
+    return line
+      .replace(/`[^`]*`/g, "")
+      // Link destination only; the bracketed text stays.
+      .replace(/\]\([^)]*\)/g, "]")
+      .replace(/https?:\/\/\S+/g, "");
   });
 }
 
