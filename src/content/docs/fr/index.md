@@ -1,39 +1,39 @@
 ---
-title: Votre VPS, votre documentation
+title: Documentation de référence du VPS
 description: Documentation de référence publique pour la suite logicielle auto-hébergée catena.
 ---
 
 Voici la documentation de référence publique pour la suite logicielle
-catena telle que déployée sur votre VPS. Chaque page s'applique à
+catena telle que déployée sur un VPS. Chaque page s'applique à
 **toute installation catena** ; les spécificités par-installation
-(vos noms de domaine, votre hôte d'inventaire, votre seau S3) sont
-celles avec lesquelles votre propre déploiement a été configuré.
+(noms de domaine, hôte d'inventaire, seau S3) sont celles avec
+lesquelles ce déploiement précis a été configuré.
 
-Si vous évaluez catena, commencez par
+Pour une évaluation,
 [Comment fonctionne cette suite logicielle](/fr/how-this-stack-works/)
-pour la visite en langage clair.
+est la visite en langage clair.
 
 ## Par où commencer
 
 - **[Comment fonctionne cette suite logicielle](/fr/how-this-stack-works/)** --
   une visite en langage clair des services et de comment ils
-  s'assemblent. Commencez ici si c'est votre première fois.
-- **[Où vivent vos données](/fr/where-is-my-data/)** -- ce qui est
-  sur le VPS, ce qui est dans votre seau S3, ce qui est perdu si le
+  s'assemblent. Le point de départ à la première lecture.
+- **[Où vivent les données](/fr/where-is-my-data/)** -- ce qui est
+  sur le VPS, ce qui est dans le seau S3, ce qui est perdu si le
   VPS prend feu.
-- **[Fichiers à ne pas toucher](/fr/do-not-touch/)** -- le VPS opère
-  la machine entière et gère ses propres fichiers. Voici la seule
-  règle à suivre.
+- **[Fichiers à ne pas modifier](/fr/do-not-touch/)** -- le VPS opère
+  la machine entière et gère ses propres fichiers. Une seule règle
+  suffit.
 
 ## Au quotidien
 
 - **[Gérer les utilisateurs et les rôles](/fr/manage-users-and-roles/)**
-  -- créez les comptes dans Keycloak et attribuez le rôle qui décide
+  -- créer les comptes dans Keycloak et attribuer le rôle qui décide
   des applications accessibles à chaque personne.
-- **[Gérer les applications](/fr/manage-apps/)** -- déployez de
-  nouvelles applications et posez les étiquettes qui filtrent l'accès
+- **[Gérer les applications](/fr/manage-apps/)** -- déployer de
+  nouvelles applications et poser les étiquettes qui filtrent l'accès
   et publient l'URL.
-- **[Ce que vous pouvez faire vous-même](/fr/self-service/)** --
+- **[Ce que couvre le panneau d'administration](/fr/self-service/)** --
   tâches quotidiennes qui n'ont jamais besoin de nous joindre.
 
 ## Tâches
@@ -42,26 +42,24 @@ pour la visite en langage clair.
   liste à faire à l'intégration, une fois par mois et une fois par
   an pour que la reprise reste toujours possible.
 - **[Se remettre d'une panne](/fr/disaster-recovery/)** -- ce qui se
-  passe, et ce que vous faites, quand le VPS est perdu.
-- **[Reconstruire votre serveur vous-même](/fr/self-restore/)** -- le
-  flux à un script que vous pouvez lancer pour démarrer un
-  remplacement.
+  passe, et ce qu'il faut faire, quand le VPS est perdu.
+- **[Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/)**
+  -- le flux à un script qui démarre un remplacement.
 
-## Vos sous-domaines
+## Les sous-domaines
 
 Chaque installation catena publie le même ensemble de sous-domaines
-sous votre zone. La forme :
+sous sa zone. La forme :
 
 | Service | Sous-domaine |
 |---|---|
 | Keycloak (identité + SSO) | `auth.yourdomain.com` |
 | Portainer (déploiement d'applications) | `portainer.yourdomain.com` |
 | Gatus (santé des services) | `monitor.yourdomain.com` |
-| catena-admin (votre tableau de bord + actions à un clic) | `dash.yourdomain.com` |
+| catena-admin (tableau de bord + actions à un clic) | `dash.yourdomain.com` |
 | Healthchecks (cron / homme mort) | `heartbeat.yourdomain.com` |
 
 > **Note :** Dans toute la documentation, `yourdomain.com` représente
-> le domaine d'entreprise que vous avez fourni à l'intégration --
-> la pastille en haut de cette page réécrit chaque occurrence à la
-> volée afin que les URL affichées correspondent à votre
-> installation.
+> le domaine d'entreprise fourni à l'intégration -- la pastille en
+> haut de cette page réécrit chaque occurrence à la volée afin que
+> les URL affichées correspondent à l'installation décrite.

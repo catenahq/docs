@@ -3,14 +3,14 @@ title: "Manage users and roles"
 description: "Create staff and client accounts in Keycloak and assign the roles that decide which apps each person can reach."
 ---
 
-Everyone who signs in to any of your apps has one account in
-**Keycloak**, your identity server at `auth.yourdomain.com`. The role
-(Keycloak group) you put them in decides which apps they can reach --
+Everyone who signs in to any app on the server has one account in
+**Keycloak**, the identity server at `auth.yourdomain.com`. The role
+(Keycloak group) they belong to decides which apps they can reach --
 [app access is gated by group](/en/manage-apps/), so getting the role
 right here is what opens or closes the door everywhere else.
 
-Sign in at `auth.yourdomain.com` with your administrator account to
-manage people.
+People are managed by signing in at `auth.yourdomain.com` with an
+administrator account.
 
 ## Add a person
 
@@ -30,22 +30,22 @@ Roles are Keycloak groups. Four tiers, widest access at the bottom:
 
 | Role | Who it is | Default access |
 |---|---|---|
-| `client` | Your external users (customers, partners) | Only apps explicitly opened to `client`. New accounts land here. |
-| `staff` | Your employees | Every app opened to `staff`. The baseline for anyone on your team. |
-| Department subgroup of `staff` (e.g. `accounting`, `engineering`) | A team within your staff | Apps opened to that department only. Use these for finer-grained access. |
-| `admin` | Whoever runs the server (you, and anyone you trust with full control) | Everything, always. Assign deliberately -- never by default. |
+| `client` | External users (customers, partners) | Only apps explicitly opened to `client`. New accounts land here. |
+| `staff` | Employees | Every app opened to `staff`. The baseline for anyone on the team. |
+| Department subgroup of `staff` (e.g. `accounting`, `engineering`) | A team within staff | Apps opened to that department only. These give finer-grained access. |
+| `admin` | Whoever runs the server, and anyone trusted with full control | Everything, always. Assigned deliberately -- never by default. |
 
 - A regular employee goes in `staff`.
 - Someone who should only see one department's apps goes in the
   matching department subgroup instead of (or in addition to) `staff`.
 - An external user stays in `client`.
-- Leave `admin` alone unless you have a specific reason.
+- `admin` stays untouched without a specific reason.
 
-To change someone's access, add or remove them from a group under
-**Directory -> Groups**. The change takes effect the next time they
-sign in.
+Access changes by adding or removing the account from a group under
+**Directory -> Groups**. The change takes effect the next time that
+person signs in.
 
-## What people can do without you
+## What people can do unassisted
 
 These flows work on their own, no request needed:
 
