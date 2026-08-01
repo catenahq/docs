@@ -1,21 +1,21 @@
 ---
-title: Create your provider accounts
-description: Create the external accounts a catena deployment relies on -- a VPS, Cloudflare, Tailscale, S3 backup storage, and an SMTP relay -- all kept in your name.
+title: Creating the provider accounts
+description: Create the external accounts a catena deployment relies on -- a VPS, Cloudflare, Tailscale, S3 backup storage, and an SMTP relay -- all kept in the client's name.
 ---
 
 A catena deployment leans on a handful of external accounts that stay
-in **your** name and billing. You own them, and the installer wires
-them into the server for you -- you just create the accounts first and
-feed their credentials to the install.
+in **the client's** name and billing. They are client-owned, and the
+installer wires them into the server; the accounts are created first,
+and their credentials are fed to the install.
 
-As you go, record each credential in your password manager. The exact
-values the install needs are listed under each step and gathered in
-[Credentials to record](#credentials-to-record) at the end.
+Each credential belongs in a password manager as it is created. The
+exact values the install needs are listed under each step and gathered
+in [Credentials to record](#credentials-to-record) at the end.
 
 ## 1. Rent a VPS
 
-The server that runs everything. Order one in your business name from a
-provider you are comfortable with:
+The server that runs everything. Order one in the business name from a
+provider that feels comfortable:
 
 - **[Hetzner](https://www.hetzner.com/cloud)** -- low cost, EU + US
   regions.
@@ -26,25 +26,25 @@ provider you are comfortable with:
 - **[DigitalOcean](https://www.digitalocean.com/products/droplets)** --
   simple console, wide region choice.
 
-Pick a region in the jurisdiction your data should stay in. Size it for
-your headcount and the apps you plan to run -- most providers let you
-resize the VPS later if you outgrow it.
+The region decides the jurisdiction the data stays in. Size it for
+headcount and the apps planned -- most providers allow a resize later
+if the VPS is outgrown.
 
 *Record: the provider login, the server's public IP, and the SSH
-access details (or the root password if that is all the provider
-gives you at first).*
+access details (or the root password, if that is all the provider
+gives out at first).*
 
 ## 2. Cloudflare: account + API token
 
-Cloudflare is your public front door and issues the private tunnel that
+Cloudflare is the public front door and issues the private tunnel that
 keeps the server's real address hidden.
 
-1. [Sign up](https://dash.cloudflare.com/sign-up) with the email you
-   want on the invoice.
-2. Add your business domain to Cloudflare DNS (the free tier is
+1. [Sign up](https://dash.cloudflare.com/sign-up) with the email that
+   belongs on the invoice.
+2. Add the business domain to Cloudflare DNS (the free tier is
    enough).
-3. Create an API token scoped to your zone so the install can publish
-   DNS records and the tunnel on your behalf.
+3. Create an API token scoped to that zone so the install can publish
+   DNS records and the tunnel.
 
 Cloudflare's own guide walks through token creation:
 [Create an API token](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/).
@@ -57,9 +57,9 @@ Tailscale is the private network we use to reach the server for updates
 and maintenance. Public SSH stays closed.
 
 1. [Start a tailnet](https://login.tailscale.com/start) using SSO from
-   an identity you already have (Google, Microsoft, GitHub).
+   an identity that already exists (Google, Microsoft, GitHub).
 2. Create an OAuth client so the install can join the new server to
-   your network without you sharing a personal login.
+   that network without a personal login being shared.
 
 Tailscale's own guide:
 [OAuth clients](https://tailscale.com/kb/1215/oauth-clients/).
@@ -68,10 +68,10 @@ Tailscale's own guide:
 
 ## 4. S3 backup storage
 
-Your off-site, encrypted backups land in an object-storage bucket you
-own -- separate provider from the VPS, so one outage can't take out
-both. **The bucket must support S3 Object Lock and versioning** so a
-snapshot cannot be silently deleted or overwritten, even by someone
+The off-site, encrypted backups land in a client-owned object-storage
+bucket -- a separate provider from the VPS, so one outage cannot take
+out both. **The bucket must support S3 Object Lock and versioning** so
+a snapshot cannot be silently deleted or overwritten, even by someone
 with valid keys.
 
 Providers that support Object Lock + versioning:
@@ -87,9 +87,9 @@ Providers that support Object Lock + versioning:
   -- no egress fees, US-based.
 
 Create the bucket with **Object Lock and versioning enabled at
-creation** (most providers gate this behind a checkbox you cannot tick
-later). Keep it in a different city -- ideally a different country --
-from your server.
+creation** (most providers gate this behind a checkbox that cannot be
+ticked later). Keep it in a different city -- ideally a different
+country -- from the server.
 
 *Record: the endpoint URL, the bucket name, the access key, and the
 secret key.*
@@ -98,9 +98,9 @@ secret key.*
 
 Two different things get called "email", and they need different setup:
 
-- **Mailboxes** (the inbox your team reads and replies from). You can
-  run a mail server as one of the apps, or integrate the provider you
-  already use. Either way is fine.
+- **Mailboxes** (the inbox the team reads and replies from). A mail
+  server can run as one of the apps, or an existing provider can be
+  integrated. Either way is fine.
 - **Automated sending** (password-reset links, calendar invites,
   ticket notifications, campaign email). This is where an **external,
   independent SMTP sending service is required.** A VPS sending its own
@@ -108,22 +108,21 @@ Two different things get called "email", and they need different setup:
   dedicated sender's reputation, so catena always relays automated
   email through one.
 
-Pick a transactional sender and add your domain to it:
+Pick a transactional sender and add the domain to it:
 
-- **[Resend](https://resend.com/)** -- default. Add your domain, drop
-  the DNS records it gives you into Cloudflare, generate an API key.
+- **[Resend](https://resend.com/)** -- default. Add the domain, drop
+  the DNS records it gives back into Cloudflare, generate an API key.
   Guide: [Resend domains](https://resend.com/docs/dashboard/domains/introduction).
 - **[Brevo](https://www.brevo.com/)** -- generous free tier.
-- Or your existing transactional-email provider, if you already have
-  one.
+- Or an existing transactional-email provider, where there is one.
 
 *Record: the SMTP host, port (usually 587), username, password or API
-key, and the from-address you verified.*
+key, and the verified from-address.*
 
 ## Credentials to record
 
-Before you run the install, have these in your password manager, each
-as its own entry -- the install prompts for them:
+Before the install runs, these belong in a password manager, each as
+its own entry -- the install prompts for them:
 
 | Account | What to record |
 |---|---|
@@ -134,5 +133,5 @@ as its own entry -- the install prompts for them:
 | SMTP relay | host, port, username, password/API key, from-address |
 
 With all of these in hand the install runs start to finish on its own.
-Prefer a hand walking through it? Reach your Catena contact -- it is an
+A hand walking through it is available from the Catena contact -- an
 option, not a requirement.
