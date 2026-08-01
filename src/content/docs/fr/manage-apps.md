@@ -53,9 +53,9 @@ activer" plus bas) qui couvrent peut-être déjà le besoin.
 Déployer une nouvelle application (par exemple, Paperless pour une
 équipe de comptabilité) :
 
-1. Ouvrir une session sur `portainer.yourdomain.com` (Portainer).
-2. Créer un nouveau Stack. Coller le fichier compose.
-3. Ajouter un bloc `labels:` (pour le contrôle d'accès et l'URL
+1. Connexion à `portainer.yourdomain.com` (Portainer).
+2. Créez un nouveau Stack. Collez le fichier compose.
+3. Ajoutez un bloc `labels:` (pour le contrôle d'accès et l'URL
    publique) ET un alias `catena-network` sur le service public, en
    minuscules avec traits d'union (`paperless` -> `paperless`, `MyApp` ->
    `myapp`, `My-App` -> `my-app`). Traefik utilise cet alias pour
@@ -79,7 +79,7 @@ Déployer une nouvelle application (par exemple, Paperless pour une
        external: true
    ```
 
-4. Déployer le stack.
+4. Déployez le stack.
 
 En moins de 5 minutes, `dashboard-sync` détecte la nouvelle application,
 crée le groupe `accounting` dans Keycloak (s'il n'existe pas), câble
@@ -89,7 +89,7 @@ uniquement pour les utilisateurs du groupe `accounting`.
 ## Aide-mémoire des étiquettes
 
 Chaque étiquette, son défaut (entre parenthèses), ses valeurs
-acceptées et ce qu'elle fait. Suivre une étiquette vers sa section plus
+acceptées et ce qu'elle fait. Suivez une étiquette vers sa section plus
 bas pour l'explication complète. Toutes sont optionnelles ; une
 application sans étiquette `vps.auth.*` n'est accessible que par
 `admin` (refus par défaut).
@@ -247,7 +247,7 @@ Ce que ça change :
   au même bucket, et chaque fichier y est déjà.
 
 La plomberie du bucket ne se câble pas à la main : pour un
-déploiement avec beaucoup de fichiers, choisir le modèle à stockage
+déploiement avec beaucoup de fichiers, choisissez le modèle à stockage
 S3 plutôt que le modèle ordinaire, et il configure le stockage
 d'objets tout seul.
 
@@ -331,7 +331,7 @@ quarantaine, prochaine exécution planifiée).
 
 ### Quand tout ceci compte
 
-Utiliser un vrai tag `X.Y.Z` sur chaque service public. Quand un
+Utilisez un vrai tag `X.Y.Z` sur chaque service public. Quand un
 éditeur ne publie que `:latest` ou `:stable`, deux options : épingler
 à un digest et mettre à jour manuellement, ou assumer de sortir du
 filet de sécurité. Le `compose-lint` de la suite détecte les tags
@@ -440,20 +440,20 @@ Toutes les 5 minutes (via un timer systemd), `dashboard-sync.service` :
   rétablissement de Keycloak.
 - **Nom de groupe mal saisi.** Un groupe portant ce nom est
   créé automatiquement (vide). Le symptôme : l'application
-  retourne 403. Correction : renommer le groupe dans l'interface
-  Keycloak, ou corriger l'étiquette dans Portainer et redéployer.
+  retourne 403. Correction : renommez le groupe dans l'interface
+  Keycloak, ou corrigez l'étiquette dans Portainer et redéployez.
 - **Étiquette retirée mais application conservée.** Au
   prochain sync, les liaisons de politique reviennent à
   `admin` (catchall). Personne sauf les admins ne peut y
   accéder. Intentionnel -- échec fermé.
 - **Deux applications avec le même nom d'hôte mais des groupes
-  différents.** La dernière liaison de politique écrite l'emporte. À
-  éviter ; donner un nom d'hôte unique à chaque application.
+  différents.** La dernière liaison de politique écrite l'emporte. Ne
+  faites pas ça ; donnez un nom d'hôte unique à chaque application.
 
 ## Vérifications en libre-service
 
 - `https://auth.yourdomain.com` -> Directory -> Groups. Les groupes
-  définis apparaissent ici. Ajouter / retirer des membres via
+  définis apparaissent ici. Ajoutez / retirez des membres via
   l'interface.
 - `https://portainer.yourdomain.com` -> le stack -> Logs.
   Après le déploiement, les logs montrent les appels forward-auth
@@ -534,7 +534,7 @@ l'application** :
   | Harbor | `HARBOR_OIDC_*` (plus config serveur) |
   | Gitea | via la CLI, pas de variables d'environnement |
 
-  Pour une application absente de la liste, chercher "OIDC"
+  Pour une application absente de la liste, cherchez "OIDC"
   ou "OpenID Connect" dans sa documentation -- les noms sont
   généralement listés sur la page de configuration
   d'authentification.
@@ -577,7 +577,7 @@ un standard qu'une application lit directement. Le bloc
 variables vers celles qu'attend l'application, avec la
 substitution `${...}` de Docker Compose.
 
-Un compose Grafana complet en référence :
+Voici un compose Grafana complet en référence :
 
 ```yaml
 services:
