@@ -1,10 +1,10 @@
 ---
-title: "Quel VPS me faut-il ?"
+title: "Dimensionner un VPS"
 description: "Empreinte ressources par application pour choisir un palier de VPS. Dernière mesure : 2026-04-29."
 ---
 
 Empreinte ressources de chaque application pré-configurée, pour choisir
-un palier de VPS adapté à ce que vous comptez déployer.
+un palier de VPS adapté au déploiement prévu.
 
 **Dernière mesure :** 2026-04-29
 **Mesuré sur :** dev1 (1 vCPU / 2 GB OVH VPS)
@@ -43,7 +43,7 @@ massif Nextcloud, première passe de l'assistant ERPNext, etc.).
 
 ## Recommandations par palier
 
-Ce sont des points de départ ; vos chiffres réels dépendent du nombre
+Ce sont des points de départ. Les chiffres réels dépendent du nombre
 d'utilisateurs et de l'intensité de la charge.
 
 - **VPS 6 Go (palier de départ) :** confortable pour le combo
@@ -108,8 +108,8 @@ le CPU.
 ### n8n
 
 Léger au repos ; un workflow lance des processus Node par nœud
-et peut faire pointer RAM/CPU. Si vous automatisez beaucoup,
-dimensionnez sur le pic, pas le repos.
+et peut faire pointer RAM/CPU. Une automatisation intensive se
+dimensionne sur le pic, pas sur le repos.
 ### ERPNext
 
 ~10 conteneurs. Le template le plus lourd du catalogue. Prévoyez
@@ -200,7 +200,7 @@ deux clamd. Estimation prudente pré-lancement, pas encore mesurée.
 
 ---
 
-Si vous avez besoin d'un palier différent de celui initialement
-provisionné, contactez votre opérateur -- un changement de palier est
+Un palier autre que celui initialement provisionné est disponible
+sur demande -- un changement de palier est
 une migration en une commande vers un nouveau VPS avec les mêmes
 données.

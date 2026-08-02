@@ -1,10 +1,10 @@
 ---
-title: "How big a VPS do I need?"
-description: "Per-app resource footprint to size your VPS. Last measured: 2026-04-29."
+title: "Sizing a VPS"
+description: "Per-app resource footprint for sizing a VPS. Last measured: 2026-04-29."
 ---
 
-Resource footprint of every pre-configured app, so you can pick a VPS
-tier that matches what you plan to deploy.
+Resource footprint of every pre-configured app, for picking a VPS
+tier that matches the intended deployment.
 
 **Last measured:** 2026-04-29
 **Measured on:** dev1 (1 vCPU / 2 GB OVH VPS)
@@ -43,8 +43,8 @@ Nextcloud, the first wizard pass on ERPNext, etc.).
 
 ## Tier guidance
 
-These are starting points; your real numbers depend on how many users
-log in and how heavy the workload is.
+These are starting points. Real numbers depend on how many users log
+in and how heavy the workload is.
 
 - **6 GB VPS (starting tier):** comfortable for the productivity bundle
   (Nextcloud + EspoCRM + Rocket.Chat + Outline) plus one mid-weight
@@ -97,7 +97,7 @@ EspoCRM for tighter footprint.
 
 Multi-container stack (api + worker + beat + frontend + space +
 MinIO + Postgres + Redis). Heavy idle RAM; budget 1 GB
-headroom over the rest of your suite.
+headroom over the rest of the suite.
 ### WordPress
 
 nginx + php-fpm + MariaDB + Redis. FastCGI cache absorbs
@@ -192,6 +192,6 @@ estimate, not yet measured.
 
 ---
 
-If you need a different tier than what your operator initially
-provisioned, contact them -- a tier change is a one-command migration
-to a fresh VPS with the same data.
+A tier other than the one initially provisioned is available on
+request -- a tier change is a one-command migration to a fresh VPS
+with the same data.
