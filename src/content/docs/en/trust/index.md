@@ -27,13 +27,11 @@ A rehearsal counts here only when its last recorded run passed. One that exists 
 
 ## Included in Community
 
-### Encrypted backups to client-owned storage (10 rehearsals)
+### Encrypted backups to client-owned storage (11 rehearsals)
 
 A scheduled weekly backup plus manual backups any time. Backups are encrypted on the server before leaving it and land in object storage the client owns; snapshots can be listed, browsed and exported without a restore. Daily and sub-daily cadence is a Catena Pro feature.
 
-Rehearsals: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
-
-Written, not yet passing: `fi_b4_locked_pack_rotation`
+Rehearsals: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
 
 ### Single sign-on across the suite (10 rehearsals)
 
@@ -77,13 +75,13 @@ Rehearsals: `ce_install_headscale`, `cf_activate`, `cf_tunnel_regenerate_round_t
 
 Written, not yet passing: `cloudflare_api_rotation_round_trip`, `fi_v3_tailscale_acl_misconfig`, `tailscale_oauth_rotation_round_trip`
 
-### Disaster recovery and restore (14 rehearsals)
+### Disaster recovery and restore (15 rehearsals)
 
 A whole server can be rebuilt from nothing but the backup endpoint and its key, and a live server can be restored in place. Databases and applications come back as one coordinated operation, consistent with each other rather than each from its own moment in time. Both paths are rehearsed continuously, including across operating-system and database major versions.
 
-Rehearsals: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `s3_reconcile_orphan_cleanup`
+Rehearsals: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `s3_reconcile_orphan_cleanup`
 
-Written, not yet passing: `debian_major_upgrade_restore`, `fi_d3_postgres_oom_mid_restore`, `pg_major_version_cross_restore`, `selective_restore_round_trip`
+Written, not yet passing: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`, `selective_restore_round_trip`
 
 ### No lock-in, ever (2 rehearsals)
 
@@ -117,9 +115,9 @@ Rehearsals: `ee_audit_ship`
 
 A second backup copy at a different provider, write-locked so that even a compromised server cannot alter or delete it, with recurring verification that both copies actually restore.
 
-Rehearsals: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `restic_check_subset_weekly`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`
+Rehearsals: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`, `worm_round_trip`
 
-Written, not yet passing: `worm_round_trip`
+Written, not yet passing: `restic_check_subset_weekly`
 
 ### Vulnerability scanning (1 rehearsal)
 
@@ -127,11 +125,13 @@ Recurring scans of the installed software and its containers for known vulnerabi
 
 Rehearsals: `cve_residual_emits_findings`
 
-### Automated daily maintenance (13 rehearsals)
+### Automated daily maintenance (12 rehearsals)
 
 A supervised daily routine on the server: hourly backups, package and health checks, and an ordered maintenance chain that resumes safely after interruption.
 
-Rehearsals: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_security_rollback`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
+Rehearsals: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_security_rollback`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
+
+Written, not yet passing: `daily_chain_verify_cold_blocks_mirror`
 
 ### Managed lifecycle operations (migration, decommission) (rehearsed as a managed operation)
 
@@ -143,11 +143,11 @@ Pro features activate through a cryptographically signed license and deactivate 
 
 Rehearsals: `activate_ee`, `ee_ce_regression`, `ee_entitlement_partial`, `ee_lapse`, `ee_named_buttons`, `license_domain_mismatch`
 
-### Identity posture monitoring (rehearsal written, not yet passing)
+### Identity posture monitoring (1 rehearsal)
 
 Recurring checks that the account structure stays healthy: enforced multi-factor authentication, the agreed group model, and no unexpected administrator accounts -- with drift raised as an alert.
 
-Written, not yet passing: `ee_identity_probe`
+Rehearsals: `ee_identity_probe`
 
 ### Managed updates with automatic rollback (9 rehearsals)
 

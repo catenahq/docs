@@ -27,13 +27,11 @@ Une répétition ne compte ici que si sa dernière exécution enregistrée a ré
 
 ## Inclus dans Community
 
-### Sauvegardes chiffrées vers un stockage détenu par le client (10 répétitions)
+### Sauvegardes chiffrées vers un stockage détenu par le client (11 répétitions)
 
 Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout temps. Les sauvegardes sont chiffrées sur le serveur avant d'en sortir et aboutissent dans un stockage objet appartenant au client; les instantanés se listent, se parcourent et s'exportent sans restauration. La cadence quotidienne et infra-quotidienne est une fonction Catena Pro.
 
-Répétitions: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
-
-Écrite, pas encore réussie: `fi_b4_locked_pack_rotation`
+Répétitions: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
 
 ### Authentification unique pour toute la suite (10 répétitions)
 
@@ -77,13 +75,13 @@ Répétitions: `ce_install_headscale`, `cf_activate`, `cf_tunnel_regenerate_roun
 
 Écrite, pas encore réussie: `cloudflare_api_rotation_round_trip`, `fi_v3_tailscale_acl_misconfig`, `tailscale_oauth_rotation_round_trip`
 
-### Reprise après sinistre et restauration (14 répétitions)
+### Reprise après sinistre et restauration (15 répétitions)
 
 Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde et de sa clé, et un serveur en marche se restaure sur place. Bases de données et applications reviennent en une seule opération coordonnée, cohérentes entre elles plutôt que chacune à son propre instant. Les deux chemins sont répétés en continu, y compris à travers les versions majeures du système et de la base de données.
 
-Répétitions: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `s3_reconcile_orphan_cleanup`
+Répétitions: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `s3_reconcile_orphan_cleanup`
 
-Écrite, pas encore réussie: `debian_major_upgrade_restore`, `fi_d3_postgres_oom_mid_restore`, `pg_major_version_cross_restore`, `selective_restore_round_trip`
+Écrite, pas encore réussie: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`, `selective_restore_round_trip`
 
 ### Aucune dépendance forcée, jamais (2 répétitions)
 
@@ -117,9 +115,9 @@ Répétitions: `ee_audit_ship`
 
 Une seconde copie de sauvegarde chez un fournisseur différent, verrouillée en écriture pour qu'un serveur compromis ne puisse ni la modifier ni l'effacer, avec vérification récurrente que les deux copies se restaurent réellement.
 
-Répétitions: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `restic_check_subset_weekly`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`
+Répétitions: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`, `worm_round_trip`
 
-Écrite, pas encore réussie: `worm_round_trip`
+Écrite, pas encore réussie: `restic_check_subset_weekly`
 
 ### Analyse de vulnérabilités (1 répétition)
 
@@ -127,11 +125,13 @@ Analyses récurrentes des logiciels installés et de leurs conteneurs pour vuln�
 
 Répétitions: `cve_residual_emits_findings`
 
-### Entretien quotidien automatisé (13 répétitions)
+### Entretien quotidien automatisé (12 répétitions)
 
 Une routine quotidienne supervisée sur le serveur : sauvegardes horaires, contrôles de paquets et de santé, et une chaîne d'entretien ordonnée qui reprend sans danger après interruption.
 
-Répétitions: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_security_rollback`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
+Répétitions: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_security_rollback`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
+
+Écrite, pas encore réussie: `daily_chain_verify_cold_blocks_mirror`
 
 ### Opérations de cycle de vie gérées (migration, retrait) (répétée comme opération gérée)
 
@@ -143,11 +143,11 @@ Les fonctions Pro s'activent par une licence signée cryptographiquement et se d
 
 Répétitions: `activate_ee`, `ee_ce_regression`, `ee_entitlement_partial`, `ee_lapse`, `ee_named_buttons`, `license_domain_mismatch`
 
-### Surveillance de la posture d'identité (répétition écrite, pas encore réussie)
+### Surveillance de la posture d'identité (1 répétition)
 
 Contrôles récurrents de la santé des comptes : authentification multifacteur imposée, modèle de groupes convenu et aucun compte administrateur inattendu -- toute dérive lève une alerte.
 
-Écrite, pas encore réussie: `ee_identity_probe`
+Répétitions: `ee_identity_probe`
 
 ### Mises à jour gérées avec retour arrière automatique (9 répétitions)
 
