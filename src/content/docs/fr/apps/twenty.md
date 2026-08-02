@@ -12,7 +12,7 @@ CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation e
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min.
-2. Visitez votre domaine Twenty et créez le compte initial (workspace + admin).
+2. Visitez le domaine Twenty et créez le compte initial (workspace + admin).
 3. *(Optionnel)* Activez Keycloak SSO : **Settings** -> **Security** -> **Single sign-on** -> collez `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_ISSUER_URL` depuis l'onglet Environment. Validez.
 
 **EspoCRM vs Twenty.** EspoCRM est le CRM par défaut de cette stack (mature, OIDC natif, apps mobiles). Twenty est offert comme alternative pour les clients qui préfèrent son UI façon Notion ; les deux peuvent cohabiter. Le domaine par défaut `crm.<votre-domaine>` est réservé à EspoCRM -- Twenty utilise par défaut `twenty.<votre-domaine>`.
@@ -20,9 +20,9 @@ CRM moderne open-source. Contacts, entreprises, opportunités, synchronisation e
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -36,9 +36,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `server:3000`
 - **Nom d'hôte :** `twenty.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

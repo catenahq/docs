@@ -12,7 +12,7 @@ Automatisation de flux de travail -- enchaînez visuellement des centaines d'int
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min le temps que Postgres + n8n s'initialisent.
-2. Visitez votre domaine n8n et créez le compte propriétaire via l'assistant.
+2. Visitez le domaine n8n et créez le compte propriétaire via l'assistant.
 3. Invitez d'autres utilisateurs : **Settings** -> **Users** -> **Invite**. Chaque utilisateur reçoit une invitation par courriel.
 4. Créez des workflows : **Workflows** -> **+ Add Workflow**. Parcourez la bibliothèque d'intégrations pour les nœuds prêts à l'emploi.
 
@@ -21,9 +21,9 @@ Automatisation de flux de travail -- enchaînez visuellement des centaines d'int
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -39,9 +39,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `n8n:5678`
 - **Nom d'hôte :** `automate.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

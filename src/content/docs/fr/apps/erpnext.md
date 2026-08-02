@@ -11,8 +11,8 @@ Suite ERP open-source complète -- comptabilité, inventaire, RH/paie, CRM, prod
 
 ## Étapes de configuration
 
-1. Cliquez **Deploy**. Le premier démarrage dure 5-10 min -- le site est créé, MariaDB initialisé, les apps Python installées. Consultez les logs du conteneur `create-site` dans Portainer si vous voulez suivre.
-2. Visitez votre domaine ERPNext. Connectez-vous avec `Administrator` / `ERPNEXT_ADMIN_PASSWORD` de l'onglet Environment.
+1. Cliquez **Deploy**. Le premier démarrage dure 5-10 min -- le site est créé, MariaDB initialisé, les apps Python installées. Les logs du conteneur `create-site` dans Portainer permettent de suivre la progression.
+2. Visitez le domaine ERPNext. Connexion avec `Administrator` / `ERPNEXT_ADMIN_PASSWORD` de l'onglet Environment.
 3. Complétez l'assistant : nom de société, exercice fiscal, devise, plan comptable.
 4. *(Optionnel)* Activez Keycloak SSO : **Integrations** -> **Social Login Keys** -> **New** -> **Provider: OpenID Connect**. Remplissez :
    - **Client ID :** `OIDC_CLIENT_ID` depuis Environment
@@ -20,16 +20,16 @@ Suite ERP open-source complète -- comptabilité, inventaire, RH/paie, CRM, prod
    - **Base URL :** `OIDC_ISSUER_URL`
    - Validez. La page de connexion affiche **Login with OpenID Connect**.
 
-**Ressources.** ERPNext est lourd -- 10+ conteneurs, minimum ~3 GB RAM + 2 CPUs recommandés. Envisagez un VPS dédié si vous déployez aussi Nextcloud + chat + autres apps en parallèle.
+**Ressources.** ERPNext est lourd -- 10+ conteneurs, minimum ~3 GB RAM + 2 CPUs recommandés. Un VPS dédié s'impose lorsque Nextcloud + chat + d'autres apps tournent en parallèle.
 
 **Montées de version.** Les bumps majeurs (v15 -> v16) nécessitent `bench migrate`. Le template laisse `vps.auto-update=patch` sur chaque service : les mises à jour hebdomadaires automatiques restent en v15.x.x -- les majeurs sont une action opérateur délibérée, pas une auto-update à 3 h du matin.
 
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -43,9 +43,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `frontend:8080`
 - **Nom d'hôte :** `erp.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

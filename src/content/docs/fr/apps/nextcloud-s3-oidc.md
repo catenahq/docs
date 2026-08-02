@@ -7,24 +7,24 @@ Partage de fichiers et collaboration auto-hébergés -- le hub auquel d'autres t
 
 - **Projet original :** <https://nextcloud.com>
 - **Remplace :** **Google Drive**, **Dropbox**, **OneDrive Entreprise**
-- **Connexion (SSO) :** Câblé automatiquement -- la convergence de votre opérateur exécute un hook CLI idempotent qui enregistre Keycloak dans l'app à chaque passage. Aucune étape post-déploiement côté client.
+- **Connexion (SSO) :** Câblé automatiquement -- la convergence gérée exécute un hook CLI idempotent qui enregistre Keycloak dans l'app à chaque passage. Aucune étape post-déploiement côté client.
 
 ## Étapes de configuration
 
-1. Ouvrez l'onglet **Environment** et remplissez `S3_BUCKET`, `S3_REGION`, `S3_HOST`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` avec les coordonnées de votre seau S3. (Le reste est pré-rempli -- `NEXTCLOUD_HOSTNAME`, identifiants admin/DB, variables d'intégration OIDC.)
+1. Ouvrez l'onglet **Environment** et remplissez `S3_BUCKET`, `S3_REGION`, `S3_HOST`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` avec les coordonnées du seau S3. (Le reste est pré-rempli -- `NEXTCLOUD_HOSTNAME`, identifiants admin/DB, variables d'intégration OIDC.)
 2. Cliquez **Deploy**. Patientez ~2 min pour le premier démarrage.
 3. Câblez le SSO : ouvrez `dash.<votre-domaine>`, allez dans l'onglet **Actions** puis cliquez **Câbler l'OIDC pour Nextcloud**. L'action enregistre Keycloak comme fournisseur OIDC à l'intérieur de Nextcloud (idempotent -- peut être relancée sans risque après un redéploiement ou une rotation de secret).
-4. Connectez-vous sur votre domaine Nextcloud avec **Se connecter avec keycloak** (utilise votre identité gérée par l'opérateur), ou repli sur `NEXTCLOUD_ADMIN_USER` / `NEXTCLOUD_ADMIN_PASSWORD` de l'onglet Environment.
+4. Connexion sur le domaine Nextcloud avec **Se connecter avec keycloak** (utilise l'identité gérée), ou repli sur `NEXTCLOUD_ADMIN_USER` / `NEXTCLOUD_ADMIN_PASSWORD` de l'onglet Environment.
 
 ### Connexion avec Keycloak -- câblée par une action catena-admin
 
-Après le premier déploiement de Nextcloud, vous cliquez
-**Câbler l'OIDC pour Nextcloud** dans l'onglet **Actions** sur
-`dash.<votre-domaine>`. L'action active l'application
+Après le premier déploiement de Nextcloud, le bouton
+**Câbler l'OIDC pour Nextcloud** de l'onglet **Actions** sur
+`dash.<votre-domaine>` active l'application
 `user_oidc` de Nextcloud et enregistre un fournisseur
 `keycloak` avec les valeurs OIDC de l'onglet Environment. La
 page de connexion Nextcloud affiche alors **Se connecter
-avec keycloak** à votre prochaine visite. La connexion admin
+avec keycloak** à la visite suivante. La connexion admin
 locale (`NEXTCLOUD_ADMIN_USER` / `NEXTCLOUD_ADMIN_PASSWORD`)
 continue de fonctionner en parallèle comme issue de secours.
 
@@ -38,40 +38,40 @@ rafraîchir l'enregistrement du fournisseur.
 L'authentification Keycloak gouverne la **connexion des
 utilisateurs** à Nextcloud. Elle ne restreint **pas** les
 liens de partage publics anonymes -- les URL
-`/s/<jeton>` que votre équipe génère depuis Nextcloud
+`/s/<jeton>` générées depuis Nextcloud
 restent accessibles aux destinataires qui n'ont pas de
 compte Keycloak.
 
 Le flux courant fonctionne donc tel quel :
 
-1. Un membre de votre équipe (utilisateur connecté) crée un
+1. Un membre de l'équipe (utilisateur connecté) crée un
    lien de partage dans Nextcloud, avec un mot de passe et
    une date d'expiration s'il le souhaite.
 2. Nextcloud envoie le lien par courriel au destinataire.
 3. Le destinataire clique le lien. Cloudflare Tunnel
    achemine la requête directement à Nextcloud ; Nextcloud
    sert la page de partage publique (ou l'invite de mot de
-   passe, si vous en avez défini un). Pas de redirection
-   Keycloak, pas de connexion requise.
+   passe, lorsqu'un mot de passe a été défini). Pas de
+   redirection Keycloak, pas de connexion requise.
 
 Cela fonctionne parce que Nextcloud est atteint via son
 propre code d'authentification, pas via un proxy
 forward-auth. Le module `user_oidc` ne gère que le flux de
-connexion pour *les membres de votre équipe* ; les points
+connexion pour *les membres de l'équipe* ; les points
 d'accès des partages publics restent anonymes par
 conception.
 
-Si vous souhaitez verrouiller complètement les partages
-publics, le bon contrôle est à l'intérieur de Nextcloud
-(Paramètres -> Partage -> "Autoriser le partage par lien
-public"), pas au niveau réseau.
+Le verrouillage complet des partages publics est un
+contrôle interne à Nextcloud (Paramètres -> Partage ->
+"Autoriser le partage par lien public"), pas au niveau
+réseau.
 
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -107,9 +107,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `app:80`
 - **Nom d'hôte :** `nextcloud.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

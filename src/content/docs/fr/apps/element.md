@@ -14,7 +14,7 @@ Element + serveur Matrix auto-hébergés -- messagerie d'équipe avec chiffremen
 1. Cliquez **Deploy**. Le premier démarrage prend ~3 min (Synapse génère ses clés de signature, postgres s'initialise, les composants Jitsi s'enregistrent).
 2. Ouvrez `element.<votre-domaine>` -- le client web Element s'ouvre. Cliquez **Se connecter avec Keycloak**.
 3. Le premier utilisateur Keycloak arrive comme utilisateur Matrix normal. Pour le promouvoir admin du homeserver, ouvrez `synapseadmin.<votre-domaine>` (réservé opérateur, protégé par le groupe admin Keycloak), trouvez l'utilisateur, et activez l'indicateur admin.
-4. *(Optionnel)* Activez l'entrée SIP : remplissez `JIGASI_SIP_URI`, `JIGASI_SIP_PASSWORD`, `JIGASI_SIP_SERVER` dans l'onglet Environment avec les identifiants de votre fournisseur SIP, puis redéployez. Sans ces valeurs, chat / voix / vidéo fonctionnent quand même -- seule l'entrée par téléphone est désactivée.
+4. *(Optionnel)* Activez l'entrée SIP : remplissez `JIGASI_SIP_URI`, `JIGASI_SIP_PASSWORD`, `JIGASI_SIP_SERVER` dans l'onglet Environment avec les identifiants du fournisseur SIP, puis redéployez. Sans ces valeurs, chat / voix / vidéo fonctionnent quand même -- seule l'entrée par téléphone est désactivée.
 5. *(Optionnel)* Ouvrez la fédération : éditez `FEDERATION_DOMAIN_WHITELIST` dans l'onglet Environment (ex : `"matrix.org","example.com"`) puis redéployez. Par défaut vide (pas de fédération -- le homeserver ne parle qu'à lui-même).
 
 ### Chiffrement de bout en bout
@@ -24,19 +24,19 @@ Les nouveaux messages directs et les nouveaux salons sur invitation sont chiffr�
 ### Voix et vidéo
 
 - **Appels 1:1** utilisent le moteur d'appel Element/Matrix et le serveur TURN/STUN partagé `turn.<votre-domaine>` pour relayer les médias en réseau restrictif.
-- **Appels de groupe** s'ouvrent dans un widget Jitsi embarqué sur `elementmeet.<votre-domaine>` (l'instance Jitsi embarquée). Les appels ne quittent jamais votre serveur -- pas de repli sur `meet.jit.si`.
+- **Appels de groupe** s'ouvrent dans un widget Jitsi embarqué sur `elementmeet.<votre-domaine>` (l'instance Jitsi embarquée). Les appels ne quittent jamais le serveur -- pas de repli sur `meet.jit.si`.
 - **Entrée SIP** (jigasi) permet à un téléphone classique d'appeler un numéro SIP pour rejoindre un salon Jitsi. Activez en remplissant les variables d'environnement `JIGASI_SIP_*` (voir étape 4 ci-dessus).
 
 ### Applications mobiles
 
-Les apps iOS et Android d'Element se connectent directement à votre homeserver. Les utilisateurs touchent **Utiliser un serveur personnalisé** au premier lancement et saisissent `matrix.<votre-domaine>`. La connexion via Keycloak fonctionne dans l'app.
+Les apps iOS et Android d'Element se connectent directement au homeserver. Les utilisateurs touchent **Utiliser un serveur personnalisé** au premier lancement et saisissent `matrix.<votre-domaine>`. La connexion via Keycloak fonctionne dans l'app.
 
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -69,9 +69,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `element-web:80`
 - **Nom d'hôte :** `element.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

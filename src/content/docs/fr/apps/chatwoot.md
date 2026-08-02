@@ -12,7 +12,7 @@ Boîte de réception omnicanale orientée conversation. Email, widget de chat, W
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~2 min le premier démarrage (migrations Rails).
-2. Visitez votre domaine Chatwoot. Complétez l'assistant pour créer le premier admin.
+2. Visitez le domaine Chatwoot. Complétez l'assistant pour créer le premier admin.
 3. Ajoutez des canaux : **Settings** -> **Inboxes** -> **Add inbox**. Choisissez le canal (email, widget, WhatsApp, etc.) et suivez les instructions.
 
 **À propos de la connexion :** l'édition communautaire de Chatwoot ne supporte pas OIDC/SSO -- chaque agent garde un email/mot de passe spécifique à l'app. Le SSO SAML/OIDC est enterprise uniquement. Si le SSO est important, envisagez Zammad (compromis : flux orienté ticket au lieu de l'inbox orienté conversation de Chatwoot).
@@ -20,9 +20,9 @@ Boîte de réception omnicanale orientée conversation. Email, widget de chat, W
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -36,9 +36,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `rails:3000`
 - **Nom d'hôte :** `support.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

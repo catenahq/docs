@@ -12,16 +12,16 @@ Application de réservation côté client pour un ou plusieurs prestataires (cli
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min pour le premier démarrage (la base de données s'initialise au premier lancement).
-2. Visitez votre domaine Easy!Appointments et complétez l'assistant initial (compte admin, nom de l'entreprise, heures d'ouverture).
+2. Visitez le domaine Easy!Appointments et complétez l'assistant initial (compte admin, nom de l'entreprise, heures d'ouverture).
 3. Ajoutez les prestataires (membres du personnel avec calendriers réservables), les services (durées + prix), et les clients au besoin.
 4. *(Optionnel)* Configurez SMTP sous **Settings** -> **Business Logic** -> **Email** pour envoyer les confirmations et rappels de rendez-vous. Sans SMTP, les clients et le personnel voient les réservations dans l'application, mais aucun courriel n'est envoyé.
-5. *(Optionnel)* Intégrez la page de réservation à votre site web : copiez l'URL publique depuis **Settings** -> **Booking Settings** et liez-la depuis votre site ou vos fiches d'établissement.
+5. *(Optionnel)* Intégrez la page de réservation à un site web : copiez l'URL publique depuis **Settings** -> **Booking Settings** et liez-la depuis le site ou une fiche d'établissement.
 
 ### Authentification
 
 Easy!Appointments v1.5.2 utilise une connexion locale par courriel/mot de passe pour le personnel. Pas d'OIDC natif dans la version upstream. La page de réservation côté client est publique par conception -- les visiteurs réservent un créneau sans compte, en fournissant seulement leur nom, courriel et téléphone. L'absence de SSO ne touche donc que la connexion du personnel et reste gérable pour les petites équipes (1 à 10 personnes) ciblées par l'application.
 
-Si un SSO unifié pour le personnel est requis, contactez votre opérateur pour discuter d'un proxy oauth2 en façade ; le déploiement par défaut utilise des comptes locaux.
+Un SSO unifié pour le personnel est disponible sur demande sous forme de proxy oauth2 en façade ; le déploiement par défaut utilise des comptes locaux.
 
 ### Rappels courriel + SMS
 
@@ -29,14 +29,14 @@ Les rappels par courriel fonctionnent dès que SMTP est configuré. Les rappels 
 
 ### URL de réservation publique
 
-L'URL publique par défaut est `https://book.<votre-domaine>/`. Partagez-la directement avec vos clients, intégrez-la comme bouton sur votre site web, ou listez-la sur votre fiche Google Business.
+L'URL publique par défaut est `https://book.<votre-domaine>/`. Elle peut être partagée directement avec les clients, intégrée comme bouton sur un site web, ou listée sur une fiche Google Business.
 
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -50,9 +50,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `easyappointments:80`
 - **Nom d'hôte :** `book.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

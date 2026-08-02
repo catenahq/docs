@@ -12,10 +12,10 @@ CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calend
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min.
-2. Visitez votre domaine EspoCRM. Connectez-vous avec `ESPOCRM_ADMIN_USERNAME` / `ESPOCRM_ADMIN_PASSWORD` de l'onglet Environment.
+2. Visitez le domaine EspoCRM. Connexion avec `ESPOCRM_ADMIN_USERNAME` / `ESPOCRM_ADMIN_PASSWORD` de l'onglet Environment.
 3. *(Optionnel)* Activez Keycloak SSO : **Administration** -> **Authentication** -> réglez **Method** sur **OIDC** -> collez :
    - **Client ID :** `OIDC_CLIENT_ID` depuis Environment (`espocrm`)
-   - **Client Secret :** `OIDC_CLIENT_SECRET` depuis Environment (demandez à votre opérateur de le générer côté Keycloak si vide)
+   - **Client Secret :** `OIDC_CLIENT_SECRET` depuis Environment (généré côté Keycloak sur demande lorsqu'il est vide)
    - **Authorization Endpoint :** `<OIDC_ISSUER_URL>/protocol/openid-connect/auth`
    - **Token Endpoint :** `<OIDC_ISSUER_URL>/protocol/openid-connect/token`
    - **JSON Web Key Set Endpoint :** `<OIDC_ISSUER_URL>/protocol/openid-connect/certs`
@@ -24,7 +24,7 @@ CRM par défaut de la stack. Contacts, comptes, opportunités, prospects, calend
 
 ### Pourquoi EspoCRM est le CRM par défaut
 
-C'est le seul CRM entièrement open-source du catalogue avec OIDC natif en édition communautaire (sans palier Pro), des apps mobiles existantes et un historique stable de mises à jour. Twenty est l'alternative si vous préférez son UI moderne façon Notion ; les deux restent au catalogue pour vous laisser choisir.
+C'est le seul CRM entièrement open-source du catalogue avec OIDC natif en édition communautaire (sans palier Pro), des apps mobiles existantes et un historique stable de mises à jour. Twenty est l'alternative pour une UI moderne façon Notion ; les deux restent au catalogue pour laisser le choix ouvert.
 
 ### Ressources
 
@@ -33,9 +33,9 @@ EspoCRM tourne en PHP-Apache + MariaDB + un cron sidecar. Prévoyez ~1 GB RAM au
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -54,9 +54,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `espocrm:80`
 - **Nom d'hôte :** `crm.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

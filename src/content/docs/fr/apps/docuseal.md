@@ -12,10 +12,10 @@ Application de signature électronique par défaut de la stack (remplace Documen
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min pour le premier démarrage.
-2. Visitez votre domaine DocuSeal et complétez l'assistant initial (création du compte admin).
+2. Visitez le domaine DocuSeal et complétez l'assistant initial (création du compte admin).
 3. *(Optionnel)* Activez Keycloak SSO : **Settings** -> **SSO** -> choisissez **OpenID Connect** -> collez :
    - **Client ID :** `OIDC_CLIENT_ID` depuis Environment (`docuseal`)
-   - **Client Secret :** `OIDC_CLIENT_SECRET` depuis Environment (demandez à votre opérateur de le générer côté Keycloak si vide)
+   - **Client Secret :** `OIDC_CLIENT_SECRET` depuis Environment (généré côté Keycloak sur demande lorsqu'il est vide)
    - **Issuer URL :** `OIDC_ISSUER_URL`
    - Validez. La page de connexion affiche **Sign in with Keycloak**. La connexion admin locale continue de fonctionner comme issue de secours.
 4. *(Optionnel)* Configurez SMTP pour les e-mails de demande de signature : remplissez `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_ADDRESS` dans l'onglet Environment puis redéployez. Sans SMTP, les destinataires ne voient que les demandes en attente dans leur tableau de bord.
@@ -26,7 +26,7 @@ DocuSeal remplace Documenso (toujours au catalogue avec un bandeau de déprécia
 
 ### Certificat de signature
 
-DocuSeal génère des PDF signés d'emblée sans étape de génération de certificat. Adobe Acrobat affiche la signature comme cryptographiquement valide mais avec un avertissement "racine auto-signée" par défaut -- même limite que Documenso. Pour des signatures à valeur légale, contactez votre opérateur pour installer un certificat émis par une AC via l'UI admin DocuSeal (Settings -> Signature -> Certificates).
+DocuSeal génère des PDF signés d'emblée sans étape de génération de certificat. Adobe Acrobat affiche la signature comme cryptographiquement valide mais avec un avertissement "racine auto-signée" par défaut -- même limite que Documenso. Les signatures à valeur légale demandent un certificat émis par une AC, installé sur demande via l'UI admin DocuSeal (Settings -> Signature -> Certificates).
 
 ### SMTP
 
@@ -35,9 +35,9 @@ Sans SMTP configuré, les e-mails de demande de signature ne sont pas envoyés. 
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -60,9 +60,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `docuseal:3000`
 - **Nom d'hôte :** `sign.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

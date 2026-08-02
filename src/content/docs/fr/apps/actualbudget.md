@@ -6,13 +6,13 @@ description: "Finances personnelles auto-hébergées. Budgétisation par envelop
 Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro bancaire via SimpleFIN ou GoCardless, chiffré de bout en bout.
 
 - **Projet original :** <https://actualbudget.org/>
-- **Remplace :** **YNAB (You Need A Budget)**, **Mint**, **EveryDollar**
+- **Remplace :** **YNAB**, **Mint**, **EveryDollar**
 - **Connexion (SSO) :** Non disponible -- l'édition communautaire de cette app ne supporte pas OIDC. Les utilisateurs gardent un email/mot de passe par app.
 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~30 s.
-2. Visitez votre domaine Actual Budget. Définissez un mot de passe serveur au premier accès (stocké localement ; retenez-le -- pas de récupération).
+2. Visitez le domaine Actual Budget. Définissez un mot de passe serveur au premier accès (stocké localement ; retenez-le -- pas de récupération).
 3. Créez un nouveau budget ou importez-en un existant (menu fichier -> Importer depuis YNAB4 / YNAB5 / nYNAB).
 4. *(Optionnel)* Connectez des comptes bancaires via **Settings** -> **Connected Accounts** -> SimpleFIN (USD/CAD, payant) ou GoCardless (EUR/GBP, gratuit).
 
@@ -21,9 +21,9 @@ Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro b
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -34,9 +34,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `actual:5006`
 - **Nom d'hôte :** `budget.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

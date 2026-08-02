@@ -12,35 +12,35 @@ Facturation open-source avec passerelles de paiement Stripe + PayPal, facturatio
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~2 min pour le premier démarrage (migrations Laravel + création de l'admin par `init.sh`).
-2. **Une seule fois : générez APP_KEY**. Depuis un terminal sur votre VPS :
+2. **Une seule fois : générez APP_KEY**. Depuis un terminal sur le VPS :
    ```
    docker exec $(docker ps --filter name=invoiceninja-app --format '{{.Names}}' | head -1) \
      runuser -u www-data -- php artisan key:generate --show --no-interaction
    ```
    Copiez la sortie `base64:...`. Dans Portainer : modifiez les **variables d'environnement** -> réglez `INVOICENINJA_APP_KEY` à la valeur copiée, puis cliquez **Update the stack** pour redéployer.
-3. Visitez votre domaine Invoice Ninja. Connectez-vous avec `INVOICENINJA_ADMIN_EMAIL` / `INVOICENINJA_ADMIN_PASSWORD` de l'onglet Environment.
-4. Configurez votre **profil d'entreprise** (Settings -> Company Details) : logo, adresse, identifiants fiscaux (TPS/TVQ au Canada), devise par défaut.
-5. Connectez **Stripe** : Settings -> Online Payments -> Add Gateway -> Stripe. Collez vos clés publishable + secret. Le portail client accepte les paiements par carte après cela.
+3. Visitez le domaine Invoice Ninja. Connexion avec `INVOICENINJA_ADMIN_EMAIL` / `INVOICENINJA_ADMIN_PASSWORD` de l'onglet Environment.
+4. Configurez le **profil d'entreprise** (Settings -> Company Details) : logo, adresse, identifiants fiscaux (TPS/TVQ au Canada), devise par défaut.
+5. Connectez **Stripe** : Settings -> Online Payments -> Add Gateway -> Stripe. Collez les clés publishable + secret. Le portail client accepte les paiements par carte après cela.
 6. *(Optionnel)* Configurez SMTP : collez `INVOICENINJA_SMTP_*` dans l'onglet Environment, cliquez Redeploy. L'envoi de courriel reste en file d'attente silencieusement tant que SMTP n'est pas câblé.
 
 ### Facturation dans la suite Catena
 
-Invoice Ninja est le maître de la facturation dans la suite Catena. Les heures depuis Kimai (maître du suivi du temps) alimentent les factures Invoice Ninja via la synchronisation mensuelle de votre contact, et les factures payées depuis Invoice Ninja alimentent ERPNext (maître de la comptabilité) via l'action de fin de mois de votre contact. Les clients dans Invoice Ninja portent un champ personnalisé `espo_account_id` afin que chaque facture soit liée au compte EspoCRM correspondant.
+Invoice Ninja est le maître de la facturation dans la suite Catena. Les heures depuis Kimai (maître du suivi du temps) alimentent les factures Invoice Ninja via la synchronisation mensuelle, et les factures payées depuis Invoice Ninja alimentent ERPNext (maître de la comptabilité) via l'action de fin de mois. Les clients dans Invoice Ninja portent un champ personnalisé `espo_account_id` afin que chaque facture soit liée au compte EspoCRM correspondant.
 
 ### Licence
 
 L'édition auto-hébergée d'Invoice Ninja est sous Elastic License 2.0. Deux implications pratiques :
-- Héberger Invoice Ninja pour votre entreprise sur votre VPS, et votre contact qui l'héberge pour vous et facture pour le service d'hébergement, sont explicitement autorisés par la licence.
-- Revendre Invoice Ninja comme SaaS, ou l'intégrer comme partie d'un autre SaaS, requiert une licence commerciale d'Invoice Ninja LLC. Le modèle Catena est "nous déployons sur votre VPS ; vous possédez le déploiement" -- c'est la voie d'hébergement autorisée.
-- L'édition gratuite affiche un bandeau "Powered by Invoice Ninja" sur les surfaces client. Une licence white-label à 40 USD/an le retire. Recommandé dès que vous facturez de vrais clients.
+- Héberger Invoice Ninja pour une entreprise sur son propre VPS, et un tiers qui l'héberge pour le compte de cette entreprise et facture le service d'hébergement, sont explicitement autorisés par la licence.
+- Revendre Invoice Ninja comme SaaS, ou l'intégrer comme partie d'un autre SaaS, requiert une licence commerciale d'Invoice Ninja LLC. Le modèle Catena est "déployé sur un VPS appartenant au client, qui en reste propriétaire" -- c'est la voie d'hébergement autorisée.
+- L'édition gratuite affiche un bandeau "Powered by Invoice Ninja" sur les surfaces client. Une licence white-label à 40 USD/an le retire, ce qui vaut la peine dès que de vrais clients sont facturés.
 
 ### Authentification
 
-OIDC natif en auto-hébergement est une demande ouverte côté upstream. En attendant, Invoice Ninja utilise un identifiant local. Le groupe Keycloak `staff` filtre l'accès au bord Traefik via oauth2-proxy avant que le trafic n'atteigne Invoice Ninja, donc les personnes hors de votre équipe ne peuvent pas atteindre la page de connexion.
+OIDC natif en auto-hébergement est une demande ouverte côté upstream. En attendant, Invoice Ninja utilise un identifiant local. Le groupe Keycloak `staff` filtre l'accès au bord Traefik via oauth2-proxy avant que le trafic n'atteigne Invoice Ninja, donc les personnes hors de l'équipe ne peuvent pas atteindre la page de connexion.
 
 ### Traitement des paiements
 
-Invoice Ninja gère le côté paiement client. Quand un client paie via le portail, Stripe traite la carte et Invoice Ninja marque la facture payée + enregistre le paiement. Le montant est versé sur votre compte Stripe (à votre nom, votre identifiant fiscal) ; Catena ne fait transiter aucun paiement par un compte appartenant au contact.
+Invoice Ninja gère le côté paiement client. Quand un client paie via le portail, Stripe traite la carte et Invoice Ninja marque la facture payée + enregistre le paiement. Le montant est versé sur le compte Stripe de l'entreprise, à son nom et sous son identifiant fiscal ; Catena ne fait transiter aucun paiement par un compte qu'elle contrôle.
 
 ### Ressources
 
@@ -49,9 +49,9 @@ Invoice Ninja tourne en PHP-FPM + nginx + MariaDB + Redis -- quatre conteneurs. 
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -74,9 +74,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `nginx:80`
 - **Nom d'hôte :** `invoice.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

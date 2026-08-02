@@ -12,15 +12,15 @@ Open-source invoicing with Stripe + PayPal payment gateways, recurring billing, 
 ## Setup steps
 
 1. Click **Deploy**. Wait ~2 min for the first boot (Laravel migrations + admin user seeding via `init.sh`).
-2. **One-time: generate APP_KEY**. From a shell on your VPS:
+2. **One-time: generate APP_KEY**. From a shell on the VPS:
    ```
    docker exec $(docker ps --filter name=invoiceninja-app --format '{{.Names}}' | head -1) \
      runuser -u www-data -- php artisan key:generate --show --no-interaction
    ```
    Copy the `base64:...` output. In Portainer: edit the **Environment variables** -> set `INVOICENINJA_APP_KEY` to the copied value, then click **Update the stack** to redeploy.
-3. Visit your Invoice Ninja domain. Sign in as `INVOICENINJA_ADMIN_EMAIL` / `INVOICENINJA_ADMIN_PASSWORD` from the Environment tab.
-4. Configure your **company profile** (Settings -> Company Details): logo, address, tax IDs (GST/QST for Canada), default currency.
-5. Wire **Stripe**: Settings -> Online Payments -> Add Gateway -> Stripe. Paste your Stripe publishable + secret keys. The client portal will accept card payments after this.
+3. Visit the Invoice Ninja domain. Sign in as `INVOICENINJA_ADMIN_EMAIL` / `INVOICENINJA_ADMIN_PASSWORD` from the Environment tab.
+4. Configure the **company profile** (Settings -> Company Details): logo, address, tax IDs (GST/QST for Canada), default currency.
+5. Wire **Stripe**: Settings -> Online Payments -> Add Gateway -> Stripe. Paste the Stripe publishable + secret keys. The client portal accepts card payments after this.
 6. *(Optional)* Configure SMTP: paste `INVOICENINJA_SMTP_*` in the Environment tab, click Redeploy. Mail send fails silently into the queue until SMTP is wired.
 
 ### Invoicing in the Catena suite
@@ -30,17 +30,17 @@ Invoice Ninja is the invoicing master in the Catena suite. Hours from Kimai (the
 ### License
 
 Invoice Ninja's self-hosted edition ships under the Elastic License 2.0. Two practical implications:
-- Hosting Invoice Ninja for your business on your VPS, and your operator hosting it for you and billing for the hosting service, are both explicitly within the license terms.
-- Reselling Invoice Ninja as a SaaS product, or bundling it into another SaaS, requires a commercial license from Invoice Ninja LLC. Catena's deployment model is "we deploy onto your VPS; you own the deployment" -- the licensed-and-permitted hosting path.
-- The free self-hosted edition shows "Powered by Invoice Ninja" branding on client-facing surfaces. A US$40/year white-label license removes this. Recommended once you're invoicing real clients.
+- Hosting Invoice Ninja for a business on its own VPS, and a third party hosting it on that business's behalf and billing for the hosting service, are both explicitly within the license terms.
+- Reselling Invoice Ninja as a SaaS product, or bundling it into another SaaS, requires a commercial license from Invoice Ninja LLC. Catena's deployment model is "deployed onto a client-owned VPS, owned by that client" -- the licensed-and-permitted hosting path.
+- The free self-hosted edition shows "Powered by Invoice Ninja" branding on client-facing surfaces. A US$40/year white-label license removes it, which is worth doing once real clients are being invoiced.
 
 ### Authentication
 
-Native OIDC for self-hosted is an open feature request upstream. Until it ships, Invoice Ninja uses local username/password. The Keycloak `staff` group gates access at the Traefik edge via oauth2-proxy before traffic reaches Invoice Ninja, so people outside your staff group cannot reach the login page.
+Native OIDC for self-hosted is an open feature request upstream. Until it ships, Invoice Ninja uses local username/password. The Keycloak `staff` group gates access at the Traefik edge via oauth2-proxy before traffic reaches Invoice Ninja, so people outside the staff group cannot reach the login page.
 
 ### Payment processing
 
-Invoice Ninja handles the client-payment side. When a client pays via the portal, Stripe processes the card and Invoice Ninja marks the invoice paid + records the payment. The amount is settled into your Stripe account (under your name, your tax ID); Catena does not route payments through any operator-owned account.
+Invoice Ninja handles the client-payment side. When a client pays via the portal, Stripe processes the card and Invoice Ninja marks the invoice paid + records the payment. The amount settles into the business's own Stripe account, under its own name and tax ID; Catena routes no payment through any account it controls.
 
 ### Resource note
 
@@ -48,10 +48,10 @@ Invoice Ninja runs as PHP-FPM + nginx + MariaDB + Redis -- four containers. Plan
 
 ## Environment variables
 
-These values are the fields you fill in when deploying the template
-from your server's **App Templates** panel (Portainer). Random
-secrets are minted automatically when the template is first seeded --
-you don't need to generate them yourself.
+These values are the fields filled in when deploying the template
+from the server's **App Templates** panel (Portainer). Random
+secrets are minted automatically when the template is first seeded,
+so none of them has to be generated by hand.
 
 | Variable | Default |
 |---|---|
@@ -74,15 +74,15 @@ you don't need to generate them yourself.
 - **Service and port:** `nginx:80`
 - **Hostname:** `invoice.yourdomain.com`
 
-The hostname is attached automatically when the template is deployed;
-talk to your contact before deploying if you want something else.
+The hostname is attached automatically when the template is deployed.
+A different one is arranged before deploying, on request.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Portainer automatically; the
-client-facing adjustments you make happen in the deploy form's
-environment fields (described above), never in the compose itself.
+client-facing adjustments belong in the deploy form's environment
+fields (described above), never in the compose itself.
 
 ```yaml
 # Invoice Ninja -- invoicing + Stripe payments + recurring billing +

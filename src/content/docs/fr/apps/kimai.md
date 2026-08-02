@@ -12,26 +12,26 @@ Suivi du temps open-source. Clients, projets, activités, feuilles de temps, éq
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min pour le premier démarrage (les migrations de base s'exécutent au premier lancement).
-2. Visitez votre domaine Kimai. Connectez-vous avec `KIMAI_ADMIN_EMAIL` / `KIMAI_ADMIN_PASSWORD` de l'onglet Environment.
+2. Visitez le domaine Kimai. Connexion avec `KIMAI_ADMIN_EMAIL` / `KIMAI_ADMIN_PASSWORD` de l'onglet Environment.
 3. *(Optionnel)* Activez Keycloak SAML SSO : **System** -> **Settings** -> **SAML** -> activez et collez :
-   - **Identity Provider Entity ID :** `<OIDC_ISSUER_URL>/protocol/saml/descriptor` (votre contact peut générer un client SAML dans Keycloak)
+   - **Identity Provider Entity ID :** `<OIDC_ISSUER_URL>/protocol/saml/descriptor` (un client SAML peut être généré dans Keycloak sur demande)
    - **URL de connexion unique :** `<OIDC_ISSUER_URL>/protocol/saml`
    - **Certificat X.509 :** tiré des métadonnées du realm Keycloak
    - **Attribut nom d'utilisateur :** `username` (ou `email`)
    - Validez. La connexion admin locale continue de fonctionner comme issue de secours.
-4. Configurez votre modèle de facture par défaut sous **Invoices** -> **Templates** -> choisissez-en un (DOCX / HTML / PDF). Réglez le logo, l'adresse et les taux de taxe sous **System** -> **Configuration**.
+4. Configurez le modèle de facture par défaut sous **Invoices** -> **Templates** -> choisissez-en un (DOCX / HTML / PDF). Réglez le logo, l'adresse et les taux de taxe sous **System** -> **Configuration**.
 
 ### Suivi du temps dans la suite Catena
 
-Kimai est le maître du suivi du temps dans la suite Catena. Les heures saisies ici alimentent votre application de facturation (Invoice Ninja) via la synchronisation mensuelle de votre contact (demandez-lui de l'automatiser si vous le souhaitez). Les fiches clients dans Kimai portent un champ personnalisé `espo_account_id` afin que chaque feuille de temps soit liée au compte EspoCRM correspondant.
+Kimai est le maître du suivi du temps dans la suite Catena. Les heures saisies ici alimentent l'application de facturation (Invoice Ninja) via une synchronisation mensuelle, automatisable sur demande. Les fiches clients dans Kimai portent un champ personnalisé `espo_account_id` afin que chaque feuille de temps soit liée au compte EspoCRM correspondant.
 
 ### Facturation intégrée
 
-Kimai peut générer des factures PDF directement depuis le temps suivi. Utilisez cette voie si votre flux de facturation est "envoyer un PDF, le client paie par virement Interac ou bancaire". Si vous avez besoin de paiements en ligne via Stripe, d'un portail client ou de facturation récurrente, demandez à votre contact de déployer Invoice Ninja et la suite acheminera les factures à travers lui.
+Kimai peut générer des factures PDF directement depuis le temps suivi. Cette voie convient à un flux "envoyer un PDF, le client paie par virement Interac ou bancaire". Les paiements en ligne via Stripe, un portail client ou la facturation récurrente appellent plutôt Invoice Ninja, déployé sur demande, et la suite achemine alors les factures à travers lui.
 
 ### Authentification
 
-Tant que SAML n'est pas câblé (étape 3 ci-dessus), Kimai utilise un identifiant local. Même après SAML, la connexion admin locale continue de fonctionner comme issue de secours. Le groupe Keycloak `staff` filtre l'accès au bord Traefik via oauth2-proxy avant que le trafic n'atteigne Kimai, donc les personnes hors de votre équipe ne peuvent pas atteindre la page de connexion.
+Tant que SAML n'est pas câblé (étape 3 ci-dessus), Kimai utilise un identifiant local. Même après SAML, la connexion admin locale continue de fonctionner comme issue de secours. Le groupe Keycloak `staff` filtre l'accès au bord Traefik via oauth2-proxy avant que le trafic n'atteigne Kimai, donc les personnes hors de l'équipe ne peuvent pas atteindre la page de connexion.
 
 ### Ressources
 
@@ -40,9 +40,9 @@ Kimai tourne en PHP-Apache + MariaDB. Prévoyez ~250 Mo de RAM au repos, ~500 Mo
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -61,9 +61,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `kimai:8001`
 - **Nom d'hôte :** `time.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

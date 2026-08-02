@@ -1,9 +1,9 @@
 ---
 title: "Applications pré-configurées à activer"
-description: "Catalogue d'applications à un clic offertes dans le panneau Portainer de votre serveur : auth, réseau, SSO, stockage et SSL pré-configurés."
+description: "Catalogue d'applications à un clic offertes dans le panneau Portainer du serveur : auth, réseau, SSO, stockage et SSL pré-configurés."
 ---
 
-Le panneau **Portainer** de votre serveur comprend un catalogue
+Le panneau **Portainer** du serveur comprend un catalogue
 **App Templates**. Chaque entrée est une application entièrement
 câblée -- authentification, réseau, SSO, stockage et SSL sont
 pré-configurés.
@@ -14,9 +14,9 @@ chaque entrée :
 - **Cliquez Deploy** -> l'application démarre avec toutes les intégrations actives.
 - Pour retirer une application plus tard, supprimez-la dans la vue
   **Stacks** de Portainer. Elle reste supprimée; rien ne la réinstalle
-  sans vous.
+  sans intervention.
 
-Si un modèle ne vous est pas utile, il reste simplement non déployé.
+Un modèle sans utilité reste simplement non déployé.
 
 ## Templates disponibles
 
@@ -70,7 +70,7 @@ Automatisation de flux de travail -- enchaînez visuellement des centaines d'int
 ### 15. ERPNext -- remplace SAP Business One, Odoo, Oracle NetSuite
 Suite ERP open-source complète -- comptabilité, inventaire, RH/paie, CRM, production, projets, et un module site web / e-commerce intégré. [-> Voir les détails](/fr/apps/erpnext/)
 
-### 16. Actual Budget -- remplace YNAB (You Need A Budget), Mint, EveryDollar
+### 16. Actual Budget -- remplace YNAB, Mint, EveryDollar
 Finances personnelles auto-hébergées. Budgétisation par enveloppes, synchro bancaire via SimpleFIN ou GoCardless, chiffré de bout en bout. [-> Voir les détails](/fr/apps/actualbudget/)
 
 ### 17. Postiz -- remplace Buffer, Hootsuite, Later
@@ -89,7 +89,7 @@ Suivi du temps open-source. Clients, projets, activités, feuilles de temps, éq
 Facturation open-source avec passerelles de paiement Stripe + PayPal, facturation récurrente, suivi des dépenses, portail client pour paiement en ligne. L'auto-hébergement débloque toutes les fonctionnalités Pro + Enterprise. [-> Voir les détails](/fr/apps/invoiceninja/)
 
 ### 22. Serveur de courriel + webmail -- remplace Google Workspace (Gmail), Microsoft 365 (Exchange Online)
-Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi requiert un relais SMTP via un fournisseur réputé (configuré avant le déploiement) pour éviter le classement en pourriel. [-> Voir les détails](/fr/apps/mailserver/)
+Courriel auto-hébergé -- stockage des boîtes sur le VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi requiert un relais SMTP via un fournisseur réputé (configuré avant le déploiement) pour éviter le classement en pourriel. [-> Voir les détails](/fr/apps/mailserver/)
 
 ## À propos de la connexion (SSO)
 

@@ -1,24 +1,24 @@
 ---
 title: "Mail server + webmail"
-description: "Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on."
+description: "Self-hosted email -- inbox storage on the VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on."
 ---
 
-Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound requires an SMTP relay through a reputable provider (set up before deploy) so messages are not flagged as spam.
+Self-hosted email -- inbox storage on the VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound requires an SMTP relay through a reputable provider (set up before deploy) so messages are not flagged as spam.
 
 - **Upstream project:** <https://docker-mailserver.github.io/>
 - **Replaces:** **Google Workspace (Gmail)**, **Microsoft 365 (Exchange Online)**
-- **Sign-in (SSO):** Wired automatically -- your operator's converge runs an idempotent CLI hook that registers Keycloak inside the app on every run. Zero post-deploy step on the client side.
+- **Sign-in (SSO):** Wired automatically -- the managed converge runs an idempotent CLI hook that registers Keycloak inside the app on every run. Zero post-deploy step on the client side.
 
 ## Setup steps
 
-1. **Before deploy -- DNS + relay.** Mail needs DNS records and an outbound relay set up first. Your contact handles the MX, SPF, DKIM, DMARC, reverse-DNS, and MTA-STS / TLS-RPT records and pastes the relay credentials. See the operator runbook.
+1. **Before deploy -- DNS + relay.** Mail needs DNS records and an outbound relay set up first. The MX, SPF, DKIM, DMARC, reverse-DNS and MTA-STS / TLS-RPT records are set up for the domain, and the relay credentials pasted in, before the first deploy.
 2. Click **Deploy**. Wait ~3 minutes for the first boot (mail services + Roundcube).
-3. Sign in at your webmail domain (`webmail.<your-domain>`). The login goes through Keycloak -- one account for every app in the suite. There is no separate mail password.
-4. Mailboxes are created automatically for your staff and client users from Keycloak. A new user can sign in to webmail as soon as their account exists.
+3. Sign in at the webmail domain (`webmail.<your-domain>`). The login goes through Keycloak -- one account for every app in the suite. There is no separate mail password.
+4. Mailboxes are created automatically for staff and client users from Keycloak. A new user can sign in to webmail as soon as their account exists.
 
 ### How sign-in works
 
-Roundcube sends you to Keycloak to log in, then connects to your mailbox on your behalf using a single-sign-on token. You never type a separate email password, and nothing stores one. Because this needs a normal browser tab, webmail opens in its own tab from the suite menu rather than embedded inside another app.
+Roundcube redirects to Keycloak for login, then connects to the mailbox on the signed-in user's behalf with a single-sign-on token. No separate email password is ever typed, and none is stored. Because this needs a normal browser tab, webmail opens in its own tab from the suite menu rather than embedded inside another app.
 
 ### Desktop and phone mail apps
 
@@ -26,18 +26,18 @@ This template targets **webmail**. Standard desktop clients (Thunderbird, Apple 
 
 ### Why outbound goes through a relay
 
-Sending mail straight from a VPS lands in spam: large providers distrust new server IPs. Outbound is relayed through a reputable provider so your messages are delivered, while your inbox and data stay on your VPS. This relay is separate from the suite's notification email.
+Sending mail straight from a VPS lands in spam: large providers distrust new server IPs. Outbound is relayed through a reputable provider so messages are delivered, while the inbox and its data stay on the VPS. This relay is separate from the suite's notification email.
 
 ### Spam and virus scanning
 
-Incoming mail is checked for spam (sender reputation, content scoring) and every attachment is scanned for viruses before it reaches your inbox, the same protection a hosted suite gives you. The virus scanner is shared with Nextcloud when both are deployed, so files you upload there are scanned by the same engine.
+Incoming mail is checked for spam (sender reputation, content scoring) and every attachment is scanned for viruses before it reaches the inbox -- the same protection a hosted suite provides. The virus scanner is shared with Nextcloud when both are deployed, so files uploaded there are scanned by the same engine.
 
 ## Environment variables
 
-These values are the fields you fill in when deploying the template
-from your server's **App Templates** panel (Portainer). Random
-secrets are minted automatically when the template is first seeded --
-you don't need to generate them yourself.
+These values are the fields filled in when deploying the template
+from the server's **App Templates** panel (Portainer). Random
+secrets are minted automatically when the template is first seeded,
+so none of them has to be generated by hand.
 
 | Variable | Default |
 |---|---|
@@ -56,15 +56,15 @@ you don't need to generate them yourself.
 - **Service and port:** `roundcube:80`
 - **Hostname:** `webmail.yourdomain.com`
 
-The hostname is attached automatically when the template is deployed;
-talk to your contact before deploying if you want something else.
+The hostname is attached automatically when the template is deployed.
+A different one is arranged before deploying, on request.
 
 ## Compose file
 
 For reference -- this is what the template deploys. **Do not paste this
 anywhere.** The compose is seeded into Portainer automatically; the
-client-facing adjustments you make happen in the deploy form's
-environment fields (described above), never in the compose itself.
+client-facing adjustments belong in the deploy form's environment
+fields (described above), never in the compose itself.
 
 ```yaml
 # Self-hosted mailserver -- docker-mailserver (Postfix + Dovecot + Rspamd)

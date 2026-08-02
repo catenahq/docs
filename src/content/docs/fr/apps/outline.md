@@ -13,16 +13,16 @@ Wiki d'équipe / base de connaissances. Pages façon Notion, collections, docume
 
 1. Cliquez **Deploy**. Les valeurs par défaut de l'Environment sont pré-remplies.
 2. Patientez ~1 min pour le premier démarrage.
-3. Visitez votre domaine Outline -> cliquez **Se connecter avec Keycloak**. Le premier utilisateur devient l'admin du workspace.
+3. Visitez le domaine Outline -> cliquez **Se connecter avec Keycloak**. Le premier utilisateur devient l'admin du workspace.
 
 
 
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -37,9 +37,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `outline:3000`
 - **Nom d'hôte :** `wiki.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

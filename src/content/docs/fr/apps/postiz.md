@@ -12,17 +12,17 @@ Planifier et publier des posts sociaux sur Twitter/X, LinkedIn, Facebook, Instag
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~1 min.
-2. Visitez votre domaine Postiz et créez le compte admin.
-3. Ajoutez les identifiants d'application de chaque réseau : **Settings** -> choisissez le réseau -> collez le client ID + secret de votre app développeur depuis le portail du réseau. Une fois par réseau.
+2. Visitez le domaine Postiz et créez le compte admin.
+3. Ajoutez les identifiants d'application de chaque réseau : **Settings** -> choisissez le réseau -> collez le client ID + secret de l'app développeur depuis le portail du réseau. Une fois par réseau.
 
 **À propos de la connexion :** Postiz utilise un email/mot de passe local. Pas d'OIDC natif dans la version communautaire actuelle. Le nombre d'utilisateurs pour cet outil est typiquement de 1 à 3 personnes en marketing, donc l'absence de SSO est moins impactante que pour les outils de chat / helpdesk.
 
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -36,9 +36,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `postiz:5000`
 - **Nom d'hôte :** `social.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

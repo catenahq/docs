@@ -1,24 +1,24 @@
 ---
 title: "Serveur de courriel + webmail"
-description: "Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak."
+description: "Courriel auto-hébergé -- stockage des boîtes sur le VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak."
 ---
 
-Courriel auto-hébergé -- stockage des boîtes sur votre VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi requiert un relais SMTP via un fournisseur réputé (configuré avant le déploiement) pour éviter le classement en pourriel.
+Courriel auto-hébergé -- stockage des boîtes sur le VPS (Postfix + Dovecot + Rspamd) avec le webmail Roundcube et l'authentification unique Keycloak. L'envoi requiert un relais SMTP via un fournisseur réputé (configuré avant le déploiement) pour éviter le classement en pourriel.
 
 - **Projet original :** <https://docker-mailserver.github.io/>
 - **Remplace :** **Google Workspace (Gmail)**, **Microsoft 365 (Exchange Online)**
-- **Connexion (SSO) :** Câblé automatiquement -- la convergence de votre opérateur exécute un hook CLI idempotent qui enregistre Keycloak dans l'app à chaque passage. Aucune étape post-déploiement côté client.
+- **Connexion (SSO) :** Câblé automatiquement -- la convergence gérée exécute un hook CLI idempotent qui enregistre Keycloak dans l'app à chaque passage. Aucune étape post-déploiement côté client.
 
 ## Étapes de configuration
 
-1. **Avant le déploiement -- DNS + relais.** Le courriel nécessite des enregistrements DNS et un relais d'envoi configurés au préalable. Votre contact s'occupe des enregistrements MX, SPF, DKIM, DMARC, DNS inverse, et MTA-STS / TLS-RPT, et colle les identifiants du relais. Voir le guide de l'exploitant.
+1. **Avant le déploiement -- DNS + relais.** Le courriel nécessite des enregistrements DNS et un relais d'envoi configurés au préalable. Les enregistrements MX, SPF, DKIM, DMARC, DNS inverse et MTA-STS / TLS-RPT sont configurés pour le domaine, et les identifiants du relais renseignés, avant le premier déploiement.
 2. Cliquez **Deploy**. Patientez ~3 minutes pour le premier démarrage (services de courriel + Roundcube).
-3. Connectez-vous à votre domaine webmail (`webmail.<votre-domaine>`). La connexion passe par Keycloak -- un seul compte pour toutes les applications de la suite. Aucun mot de passe de courriel distinct.
-4. Les boîtes sont créées automatiquement pour vos utilisateurs staff et client depuis Keycloak. Un nouvel utilisateur peut se connecter au webmail dès que son compte existe.
+3. Connexion sur le domaine webmail (`webmail.<votre-domaine>`). La connexion passe par Keycloak -- un seul compte pour toutes les applications de la suite. Aucun mot de passe de courriel distinct.
+4. Les boîtes sont créées automatiquement pour les utilisateurs staff et client depuis Keycloak. Un nouvel utilisateur peut se connecter au webmail dès que son compte existe.
 
 ### Fonctionnement de la connexion
 
-Roundcube vous redirige vers Keycloak pour vous connecter, puis accède à votre boîte en votre nom à l'aide d'un jeton d'authentification unique. Vous ne saisissez jamais de mot de passe de courriel distinct, et aucun n'est stocké. Comme cela exige un onglet de navigateur standard, le webmail s'ouvre dans son propre onglet depuis le menu de la suite plutôt qu'intégré dans une autre application.
+Roundcube redirige vers Keycloak pour la connexion, puis accède à la boîte au nom de l'utilisateur connecté à l'aide d'un jeton d'authentification unique. Aucun mot de passe de courriel distinct n'est saisi, et aucun n'est stocké. Comme cela exige un onglet de navigateur standard, le webmail s'ouvre dans son propre onglet depuis le menu de la suite plutôt qu'intégré dans une autre application.
 
 ### Applications de bureau et mobiles
 
@@ -26,18 +26,18 @@ Ce modèle vise le **webmail**. Les clients de bureau classiques (Thunderbird, A
 
 ### Pourquoi l'envoi passe par un relais
 
-Envoyer du courriel directement depuis un VPS finit en pourriel : les grands fournisseurs se méfient des nouvelles IP de serveur. L'envoi passe par un fournisseur réputé pour que vos messages soient livrés, tandis que votre boîte et vos données restent sur votre VPS. Ce relais est distinct du courriel de notification de la suite.
+Envoyer du courriel directement depuis un VPS finit en pourriel : les grands fournisseurs se méfient des nouvelles IP de serveur. L'envoi passe par un fournisseur réputé pour que les messages soient livrés, tandis que la boîte et ses données restent sur le VPS. Ce relais est distinct du courriel de notification de la suite.
 
 ### Analyse antipourriel et antivirus
 
-Le courriel entrant est vérifié contre le pourriel (réputation de l'expéditeur, pointage du contenu) et chaque pièce jointe est analysée contre les virus avant d'atteindre votre boîte, la même protection qu'une suite hébergée. L'antivirus est partagé avec Nextcloud lorsque les deux sont déployés, donc les fichiers que vous y téléversez sont analysés par le même moteur.
+Le courriel entrant est vérifié contre le pourriel (réputation de l'expéditeur, pointage du contenu) et chaque pièce jointe est analysée contre les virus avant d'atteindre la boîte -- la même protection qu'une suite hébergée. L'antivirus est partagé avec Nextcloud lorsque les deux sont déployés, donc les fichiers téléversés là sont analysés par le même moteur.
 
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -56,9 +56,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `roundcube:80`
 - **Nom d'hôte :** `webmail.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

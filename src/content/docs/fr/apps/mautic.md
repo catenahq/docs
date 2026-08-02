@@ -12,25 +12,25 @@ Automatisation marketing open-source. Segments de contacts, campagnes courriel, 
 ## Étapes de configuration
 
 1. Cliquez **Deploy**. Patientez ~2 min pour le premier démarrage (les migrations de base s'exécutent au premier lancement).
-2. Visitez votre domaine Mautic et complétez l'assistant initial :
+2. Visitez le domaine Mautic et complétez l'assistant initial :
    - **Base de données** : pré-remplie (hôte `db`, nom `mautic`, utilisateur `mautic`, mot de passe depuis la variable `DB_PASSWORD`).
-   - **Utilisateur admin** : créez votre compte admin initial.
-   - **Paramètres courriel** : collez les identifiants SMTP de votre relais géré (hôte, port `587`, nom d'utilisateur, mot de passe, adresse expéditeur). Sautez cette étape si vous préférez la configurer plus tard sous **Settings** -> **Configuration** -> **Email Settings**.
+   - **Utilisateur admin** : créez le compte admin initial.
+   - **Paramètres courriel** : collez les identifiants SMTP du relais géré (hôte, port `587`, nom d'utilisateur, mot de passe, adresse expéditeur). Cette étape peut aussi être faite plus tard sous **Settings** -> **Configuration** -> **Email Settings**.
 3. Vérifiez que les conteneurs cron + worker tournent dans Portainer (Mautic a besoin de `mautic_cron` pour les campagnes planifiées + `mautic_worker` pour la file d'envoi).
-4. Créez votre premier segment : **Segments** -> **New** -> filtrez par attribut de contact.
-5. Créez votre première campagne : **Campaigns** -> **New** -> glissez l'action **Send email** sur un déclencheur de segment.
+4. Créez un premier segment : **Segments** -> **New** -> filtrez par attribut de contact.
+5. Créez une première campagne : **Campaigns** -> **New** -> glissez l'action **Send email** sur un déclencheur de segment.
 
 ### Authentification
 
-Mautic édition communautaire ne fournit pas d'OIDC natif. Connexion locale par nom d'utilisateur/mot de passe par défaut. SAML2 est supporté en amont mais demande une configuration par déploiement ; des plugins OAuth2 génériques tiers existent. Si un SSO unifié pour la stack est requis, contactez votre opérateur pour ajouter une couche oauth2-proxy en façade (le groupe Keycloak `staff` filtre l'accès au niveau Traefik avant que le trafic n'atteigne Mautic).
+Mautic édition communautaire ne fournit pas d'OIDC natif. Connexion locale par nom d'utilisateur/mot de passe par défaut. SAML2 est supporté en amont mais demande une configuration par déploiement ; des plugins OAuth2 génériques tiers existent. Un SSO unifié pour la suite est disponible sur demande sous forme de couche oauth2-proxy en façade (le groupe Keycloak `staff` filtre l'accès au niveau Traefik avant que le trafic n'atteigne Mautic).
 
 ### SMTP et réputation d'envoi
 
-Mautic n'envoie PAS directement les courriels. Il remet chaque envoi à votre relais SMTP géré (voir le [guide des comptes fournisseurs](/fr/guides/provider-accounts/) pour les expéditeurs recommandés). Réputation d'envoi, SPF/DKIM/DMARC, et gestion des rebonds vivent au niveau du relais. Configurez SMTP sous **Settings** -> **Configuration** -> **Email Settings** avec les identifiants de votre relais avant la première campagne.
+Mautic n'envoie PAS directement les courriels. Il remet chaque envoi au relais SMTP géré (voir le [guide des comptes fournisseurs](/fr/guides/provider-accounts/) pour les expéditeurs recommandés). Réputation d'envoi, SPF/DKIM/DMARC, et gestion des rebonds vivent au niveau du relais. SMTP se configure sous **Settings** -> **Configuration** -> **Email Settings** avec les identifiants du relais avant la première campagne.
 
 ### Contenu d'aimant à prospects et copie des séquences drip
 
-Le template fournit le moteur. La rédaction des PDF d'aimants, des séquences drip et des modèles d'envoi est le travail de votre équipe (ou de votre opérateur, s'il offre des services de contenu marketing). Mautic lui-même ne livre aucune campagne pré-bâtie.
+Le template fournit le moteur. La rédaction des PDF d'aimants, des séquences drip et des modèles d'envoi relève du travail de contenu, pas du déploiement. Mautic lui-même ne livre aucune campagne pré-bâtie.
 
 ### Ressources
 
@@ -39,9 +39,9 @@ Mautic tourne en Apache + MariaDB + un worker sidecar + un cron sidecar. Prévoy
 ## Variables d'environnement
 
 Ces valeurs sont les champs à remplir au déploiement du template
-depuis le panneau **App Templates** de votre serveur (Portainer). Les
-secrets aléatoires sont générés automatiquement au premier semi du
-template -- vous n'avez pas à les générer vous-même.
+depuis le panneau **App Templates** du serveur (Portainer). Les
+secrets aléatoires sont générés automatiquement au premier semis du
+template : aucun n'est à générer à la main.
 
 | Variable | Valeur par défaut |
 |---|---|
@@ -60,9 +60,8 @@ template -- vous n'avez pas à les générer vous-même.
 - **Service et port :** `mautic_web:80`
 - **Nom d'hôte :** `marketing.yourdomain.com`
 
-Le nom d'hôte est attaché automatiquement au déploiement du template ;
-parlez-en à votre contact avant de déployer si vous souhaitez autre
-chose.
+Le nom d'hôte est attaché automatiquement au déploiement du template.
+Un autre nom se convient avant le déploiement, sur demande.
 
 ## Fichier compose
 

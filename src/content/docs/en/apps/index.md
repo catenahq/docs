@@ -1,9 +1,9 @@
 ---
-title: "Pre-configured apps you can enable"
-description: "Catalog of one-click apps available in your server's Portainer panel: each is fully wired (auth, networking, SSO, storage, SSL)."
+title: "Pre-configured apps available to enable"
+description: "Catalog of one-click apps available in the server's Portainer panel: each is fully wired (auth, networking, SSO, storage, SSL)."
 ---
 
-Your server's **Portainer** panel includes an **App Templates**
+The server's **Portainer** panel includes an **App Templates**
 catalog. Each entry is a fully-wired application -- authentication,
 networking, SSO hooks, storage, and SSL are pre-configured.
 
@@ -11,9 +11,9 @@ Open **App Templates** in Portainer's sidebar. For each entry:
 
 - **Click Deploy** -> the app starts with all integrations active.
 - To remove an app later, delete it from Portainer's **Stacks** view.
-  It stays removed; nothing reinstalls it without you.
+  It stays removed; nothing reinstalls it unattended.
 
-If a template isn't useful for you, it simply stays un-deployed.
+A template that is not useful simply stays un-deployed.
 
 ## Available templates
 
@@ -66,7 +66,7 @@ Workflow automation -- visually chain hundreds of integrations (APIs, apps, data
 ### 15. ERPNext -- replaces SAP Business One, Odoo, Oracle NetSuite
 Full open-source ERP suite -- accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module. [-> Full details](/en/apps/erpnext/)
 
-### 16. Actual Budget -- replaces YNAB (You Need A Budget), Mint, EveryDollar
+### 16. Actual Budget -- replaces YNAB, Mint, EveryDollar
 Self-hosted personal finance. Envelope budgeting, bank account syncing via SimpleFIN or GoCardless, encrypted end-to-end. [-> Full details](/en/apps/actualbudget/)
 
 ### 17. Postiz -- replaces Buffer, Hootsuite, Later
@@ -85,7 +85,7 @@ Open-source time tracker. Customers, projects, activities, timesheets, multi-use
 Open-source invoicing with Stripe + PayPal payment gateways, recurring billing, expense tracking, client portal for online payment. Self-hosted gets all Pro + Enterprise features. [-> Full details](/en/apps/invoiceninja/)
 
 ### 22. Mail server + webmail -- replaces Google Workspace (Gmail), Microsoft 365 (Exchange Online)
-Self-hosted email -- inbox storage on your VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound requires an SMTP relay through a reputable provider (set up before deploy) so messages are not flagged as spam. [-> Full details](/en/apps/mailserver/)
+Self-hosted email -- inbox storage on the VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound requires an SMTP relay through a reputable provider (set up before deploy) so messages are not flagged as spam. [-> Full details](/en/apps/mailserver/)
 
 ## A note on sign-in (SSO)
 
