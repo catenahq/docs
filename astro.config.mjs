@@ -100,12 +100,14 @@ export default defineConfig({
         {
           label: "Trust",
           translations: { fr: "Confiance" },
+          // One generated page. The four that used to sit beside it
+          // (security-model / how-we-validate / verify-what-you-run /
+          // what-we-test) were hand-written restatements of the same
+          // claims and drifted apart from the gates they described;
+          // trust/index.md is rendered from the feature manifest, so a
+          // claim that stops resolving now fails the build.
           items: [
             { slug: "trust" },
-            { slug: "trust/security-model" },
-            { slug: "trust/how-we-validate" },
-            { slug: "trust/verify-what-you-run" },
-            { slug: "trust/what-we-test" },
             { slug: "leaving" },
           ],
         },

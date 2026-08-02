@@ -85,7 +85,7 @@ freely available installer and works without the admin panel.
 
 Deleting the admin panel itself changes nothing about the data or the
 running applications. It is a display and convenience layer; removing it
-is rehearsed as part of Catena's [continuous validation](/en/trust/how-we-validate/).
+is rehearsed as part of Catena's [continuous validation](/en/trust/).
 
 ## What is given up
 
