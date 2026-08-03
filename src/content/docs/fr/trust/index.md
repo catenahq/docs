@@ -27,11 +27,13 @@ Une répétition ne compte ici que si sa dernière exécution enregistrée a ré
 
 ## Inclus dans Community
 
-### Sauvegardes chiffrées vers un stockage détenu par le client (11 répétitions)
+### Sauvegardes chiffrées vers un stockage détenu par le client (10 répétitions)
 
 Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout temps. Les sauvegardes sont chiffrées sur le serveur avant d'en sortir et aboutissent dans un stockage objet appartenant au client; les instantanés se listent, se parcourent et s'exportent sans restauration. La cadence quotidienne et infra-quotidienne est une fonction Catena Pro.
 
-Répétitions: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
+Répétitions: `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
+
+Écrite, pas encore réussie: `backup_rollback`
 
 ### Authentification unique pour toute la suite (10 répétitions)
 
