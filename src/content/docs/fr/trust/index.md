@@ -27,13 +27,11 @@ Une répétition ne compte ici que si sa dernière exécution enregistrée a ré
 
 ## Inclus dans Community
 
-### Sauvegardes chiffrées vers un stockage détenu par le client (10 répétitions)
+### Sauvegardes chiffrées vers un stockage détenu par le client (11 répétitions)
 
 Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout temps. Les sauvegardes sont chiffrées sur le serveur avant d'en sortir et aboutissent dans un stockage objet appartenant au client; les instantanés se listent, se parcourent et s'exportent sans restauration. La cadence quotidienne et infra-quotidienne est une fonction Catena Pro.
 
-Répétitions: `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
-
-Écrite, pas encore réussie: `backup_rollback`
+Répétitions: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
 
 ### Authentification unique pour toute la suite (10 répétitions)
 
@@ -163,12 +161,12 @@ Sur les forfaits payants, un même serveur peut héberger plusieurs domaines dis
 
 Répétitions: `ee_multidomain`
 
-### Un déplacement annulable (1 répétition)
+### Un déplacement annulable (2 répétitions)
 
 Déplacer les données vers un autre serveur copie presque tout pendant que l'ancien continue de servir : l'indisponibilité des applications se compte donc en minutes plutôt qu'en heures. Jusqu'à la dernière vérification, le déplacement peut être annulé et l'ancien serveur se remet en service de lui-même. Passé ce point, il continue de répondre à une seule demande -- remets-toi en service -- même après l'arrêt de tout le reste, et ses propres sauvegardes restent intactes comme voie de retour. Cette demande passe par le réseau privé du client et ne fonctionne que pendant une fenêtre ouverte depuis le serveur lui-même, avec un code à usage unique affiché une seule fois.
 
-Répétitions: `migrate_lane_auth_denied`
+Répétitions: `migrate_lane_auth_denied`, `migrate_preseed_no_split_brain`
 
-Écrite, pas encore réussie: `migrate_preseed_no_split_brain`, `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
+Écrite, pas encore réussie: `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
 
 Le détail technique complet (chemins d'implémentation et noms de scénarios pour l'édition Community) se trouve dans la [fiche de validation publique sur GitHub](https://github.com/catenahq/catena-ce/blob/main/VALIDATION.md).

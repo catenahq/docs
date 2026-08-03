@@ -27,13 +27,11 @@ A rehearsal counts here only when its last recorded run passed. One that exists 
 
 ## Included in Community
 
-### Encrypted backups to client-owned storage (10 rehearsals)
+### Encrypted backups to client-owned storage (11 rehearsals)
 
 A scheduled weekly backup plus manual backups any time. Backups are encrypted on the server before leaving it and land in object storage the client owns; snapshots can be listed, browsed and exported without a restore. Daily and sub-daily cadence is a Catena Pro feature.
 
-Rehearsals: `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
-
-Written, not yet passing: `backup_rollback`
+Rehearsals: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
 
 ### Single sign-on across the suite (10 rehearsals)
 
@@ -163,12 +161,12 @@ On paid plans a single server can host several separate, unlinked domains, each 
 
 Rehearsals: `ee_multidomain`
 
-### A move that can be called off (1 rehearsal)
+### A move that can be called off (2 rehearsals)
 
 Moving to another server copies almost everything while the old one is still serving, so application downtime is measured in minutes rather than hours. Up to the last check the move can be called off and the old server puts itself back into service on its own. Past that point it keeps answering one request, named `put yourself back in service`, even after everything else on it has stopped, and its own backups are left untouched as the way back. That request travels over the client's own private network and works only during a window opened from the server itself, using a one-time code it displays once.
 
-Rehearsals: `migrate_lane_auth_denied`
+Rehearsals: `migrate_lane_auth_denied`, `migrate_preseed_no_split_brain`
 
-Written, not yet passing: `migrate_preseed_no_split_brain`, `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
+Written, not yet passing: `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
 
 Full technical detail (implementation paths and scenario names for the Community edition) lives in the public [validation sheet on GitHub](https://github.com/catenahq/catena-ce/blob/main/VALIDATION.md).
