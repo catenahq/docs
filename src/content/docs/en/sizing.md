@@ -20,6 +20,7 @@ tier that matches the intended deployment.
 | EspoCRM | 240 MB | 480 MB | 1% | 40% | 200 MB |
 | Twenty | 580 MB | 920 MB | 4% | 55% | 220 MB |
 | Plane | 720 MB | 1040 MB | 4% | 50% | 380 MB |
+| Windshift | _n/a_ | 2300 MB | _n/a_ | _n/a_ | _n/a_ |
 | WordPress | 320 MB | 600 MB | 1% | 70% | 180 MB |
 | n8n | 280 MB | 700 MB | 2% | 80% | 150 MB |
 | ERPNext | 2100 MB | 2900 MB | 8% | 90% | 850 MB |
@@ -98,6 +99,15 @@ EspoCRM for tighter footprint.
 Multi-container stack (api + worker + beat + frontend + space +
 MinIO + Postgres + Redis). Heavy idle RAM; budget 1 GB
 headroom over the rest of the suite.
+### Windshift
+
+NOT MEASURED. peak_ram_mb here is a declared budget, not an
+observation: 2048 MB is the process budget Windshift ships as its
+own default (WINDSHIFT_MEMORY_LIMIT_MB, matched by mem_limit: 2g
+in the compose), plus ~250 MB for the Postgres side. The bench
+scheduler needs a positive int, and over-declaring only costs
+parallel slots. Replace all five numbers on the first measured
+run and drop this paragraph.
 ### WordPress
 
 nginx + php-fpm + MariaDB + Redis. FastCGI cache absorbs

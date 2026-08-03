@@ -51,40 +51,43 @@ Modern open-source CRM. Contacts, companies, opportunities, email sync, pipeline
 ### 10. Plane -- replaces Jira, Linear, Asana, ClickUp
 Open-source project management -- issues, cycles, modules, pages, workspaces. [-> Full details](/en/apps/plane/)
 
-### 11. Zammad -- replaces Zendesk, Freshdesk, Jira Service Desk
+### 11. Windshift -- replaces Jira, Jira Service Management, Tempo, Xray
+Work management with test runs, time tracking, and branded customer portals. [-> Full details](/en/apps/windshift/)
+
+### 12. Zammad -- replaces Zendesk, Freshdesk, Jira Service Desk
 Ticket-first help desk. Email, Telegram, social channels, SLAs, knowledge base. Native OIDC. [-> Full details](/en/apps/zammad/)
 
-### 12. Chatwoot -- replaces Intercom, Front, Help Scout (for chat channels)
+### 13. Chatwoot -- replaces Intercom, Front, Help Scout (for chat channels)
 Conversation-first omnichannel inbox. Email, live-chat widget, WhatsApp, Facebook, Instagram, Twitter/X in one inbox. [-> Full details](/en/apps/chatwoot/)
 
-### 13. WordPress -- replaces Wix, Squarespace, self-hosted Drupal
+### 14. WordPress -- replaces Wix, Squarespace, self-hosted Drupal
 Production-ready public CMS / website platform with FastCGI cache, Redis object cache, and a curated free-tier plugin set pre-installed. The site serves anonymously; admin sign-in runs on /wp-admin and can be wired to Keycloak via a plugin. [-> Full details](/en/apps/wordpress/)
 
-### 14. n8n -- replaces Zapier, Make (Integromat), Tray.io
+### 15. n8n -- replaces Zapier, Make (Integromat), Tray.io
 Workflow automation -- visually chain hundreds of integrations (APIs, apps, databases) into no-code/low-code workflows. [-> Full details](/en/apps/n8n/)
 
-### 15. ERPNext -- replaces SAP Business One, Odoo, Oracle NetSuite
+### 16. ERPNext -- replaces SAP Business One, Odoo, Oracle NetSuite
 Full open-source ERP suite -- accounting, inventory, HR/payroll, CRM, manufacturing, projects, and a built-in website/e-commerce module. [-> Full details](/en/apps/erpnext/)
 
-### 16. Actual Budget -- replaces YNAB, Mint, EveryDollar
+### 17. Actual Budget -- replaces YNAB, Mint, EveryDollar
 Self-hosted personal finance. Envelope budgeting, bank account syncing via SimpleFIN or GoCardless, encrypted end-to-end. [-> Full details](/en/apps/actualbudget/)
 
-### 17. Postiz -- replaces Buffer, Hootsuite, Later
+### 18. Postiz -- replaces Buffer, Hootsuite, Later
 Schedule and publish social media posts across Twitter/X, LinkedIn, Facebook, Instagram, YouTube, TikTok, and more. [-> Full details](/en/apps/postiz/)
 
-### 18. Easy!Appointments -- replaces Calendly, Acuity, SimplyBook, Setmore
+### 19. Easy!Appointments -- replaces Calendly, Acuity, SimplyBook, Setmore
 Customer-facing booking app for one or many providers (clinic, salon, lessons, repair shop). Public booking page; staff calendars; email + SMS reminders; ICS export. [-> Full details](/en/apps/easyappointments/)
 
-### 19. Mautic -- replaces Mailchimp, ActiveCampaign, HubSpot Marketing, Brevo (Sendinblue)
+### 20. Mautic -- replaces Mailchimp, ActiveCampaign, HubSpot Marketing, Brevo (Sendinblue)
 Open-source marketing automation. Contact segments, email campaigns, drip sequences, landing pages, forms, lead scoring. Replaces Mailchimp / ActiveCampaign / HubSpot Marketing. [-> Full details](/en/apps/mautic/)
 
-### 20. Kimai -- replaces Toggl, Clockify, Harvest, TimeCamp
+### 21. Kimai -- replaces Toggl, Clockify, Harvest, TimeCamp
 Open-source time tracker. Customers, projects, activities, timesheets, multi-user teams, invoice generation from tracked time. SAML federates with Keycloak via the post-deploy admin UI. [-> Full details](/en/apps/kimai/)
 
-### 21. Invoice Ninja -- replaces FreshBooks, QuickBooks (invoicing module), Zoho Invoice, Harvest (invoicing)
+### 22. Invoice Ninja -- replaces FreshBooks, QuickBooks (invoicing module), Zoho Invoice, Harvest (invoicing)
 Open-source invoicing with Stripe + PayPal payment gateways, recurring billing, expense tracking, client portal for online payment. Self-hosted gets all Pro + Enterprise features. [-> Full details](/en/apps/invoiceninja/)
 
-### 22. Mail server + webmail -- replaces Google Workspace (Gmail), Microsoft 365 (Exchange Online)
+### 23. Mail server + webmail -- replaces Google Workspace (Gmail), Microsoft 365 (Exchange Online)
 Self-hosted email -- inbox storage on the VPS (Postfix + Dovecot + Rspamd) with Roundcube webmail and Keycloak single sign-on. Outbound requires an SMTP relay through a reputable provider (set up before deploy) so messages are not flagged as spam. [-> Full details](/en/apps/mailserver/)
 
 ## A note on sign-in (SSO)

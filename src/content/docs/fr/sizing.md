@@ -20,6 +20,7 @@ un palier de VPS adapté au déploiement prévu.
 | EspoCRM | 240 MB | 480 MB | 1% | 40% | 200 MB |
 | Twenty | 580 MB | 920 MB | 4% | 55% | 220 MB |
 | Plane | 720 MB | 1040 MB | 4% | 50% | 380 MB |
+| Windshift | _n/a_ | 2300 MB | _n/a_ | _n/a_ | _n/a_ |
 | WordPress | 320 MB | 600 MB | 1% | 70% | 180 MB |
 | n8n | 280 MB | 700 MB | 2% | 80% | 150 MB |
 | ERPNext | 2100 MB | 2900 MB | 8% | 90% | 850 MB |
@@ -99,6 +100,15 @@ moderne ; EspoCRM pour l'empreinte plus légère.
 Pile multi-conteneurs (api + worker + beat + frontend + space +
 MinIO + Postgres + Redis). Empreinte RAM importante ; prévoyez
 1 Go au-dessus du reste de la suite.
+### Windshift
+
+NON MESURÉ. La valeur peak_ram_mb est un budget déclaré, pas une
+observation : 2048 Mo correspond au budget que Windshift applique
+par défaut (WINDSHIFT_MEMORY_LIMIT_MB, aligné sur mem_limit: 2g
+dans le compose), plus ~250 Mo pour la base Postgres. Le
+planificateur du banc exige un entier positif, et surestimer ne
+coûte que des créneaux parallèles. À remplacer par les cinq
+mesures réelles dès la première campagne.
 ### WordPress
 
 nginx + php-fpm + MariaDB + Redis. Le cache FastCGI absorbe le
