@@ -14,25 +14,25 @@ un palier de VPS adapté au déploiement prévu.
 | Application | RAM (repos) | RAM (pic) | CPU (repos) | CPU (pic) | Disque (base) |
 |---|---|---|---|---|---|
 | Nextcloud | 420 MB | 880 MB | 2% | 65% | 320 MB |
-| Rocket.Chat | 520 MB | 720 MB | 3% | 35% | 180 MB |
+| Collabora Online (CODE) | _n/a_ | 1024 MB | _n/a_ | _n/a_ | _n/a_ |
 | OnlyOffice | 380 MB | 620 MB | 1% | 80% | 90 MB |
+| Rocket.Chat | 520 MB | 720 MB | 3% | 35% | 180 MB |
+| Element / Matrix | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
+| DocuSeal | 320 MB | 540 MB | 1% | 35% | 140 MB |
 | Outline | 280 MB | 420 MB | 1% | 25% | 110 MB |
 | EspoCRM | 240 MB | 480 MB | 1% | 40% | 200 MB |
 | Twenty | 580 MB | 920 MB | 4% | 55% | 220 MB |
 | Plane | 720 MB | 1040 MB | 4% | 50% | 380 MB |
 | Windshift | _n/a_ | 2300 MB | _n/a_ | _n/a_ | _n/a_ |
+| Zammad | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
+| Chatwoot | _n/a_ | 768 MB | _n/a_ | _n/a_ | _n/a_ |
 | WordPress | 320 MB | 600 MB | 1% | 70% | 180 MB |
 | n8n | 280 MB | 700 MB | 2% | 80% | 150 MB |
 | ERPNext | 2100 MB | 2900 MB | 8% | 90% | 850 MB |
 | Actual Budget | 80 MB | 180 MB | 1% | 15% | 30 MB |
 | Postiz | 480 MB | 680 MB | 2% | 35% | 200 MB |
-| DocuSeal | 320 MB | 540 MB | 1% | 35% | 140 MB |
-| Mautic | 1500 MB | 3000 MB | 3% | 75% | 420 MB |
-| Collabora Online (CODE) | _n/a_ | 1024 MB | _n/a_ | _n/a_ | _n/a_ |
-| Element / Matrix | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
-| Zammad | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
-| Chatwoot | _n/a_ | 768 MB | _n/a_ | _n/a_ | _n/a_ |
 | Easy!Appointments | _n/a_ | 384 MB | _n/a_ | _n/a_ | _n/a_ |
+| Mautic | 1500 MB | 3000 MB | 3% | 75% | 420 MB |
 | Kimai | 250 MB | 500 MB | 1% | 35% | 180 MB |
 | Invoice Ninja | 400 MB | 800 MB | 2% | 45% | 350 MB |
 | Serveur de courriel + webmail | 520 MB | 900 MB | 3% | 40% | 600 MB |
@@ -69,17 +69,34 @@ grossit. L'antivirus (files_antivirus, mode Daemon) est câblé par
 l'opérateur vers le clamd PARTAGÉ (réseau catena-clamav, ~1,5 Go
 résident), NON compté ici -- c'est de l'infrastructure partagée
 avec le serveur de courriel ; à budgéter une fois au niveau du VPS.
-### Rocket.Chat
+### Collabora Online (CODE)
 
-Le replica set MongoDB + le process Node Rocket.Chat. Le cache
-WiredTiger de MongoDB domine ; les réglages par défaut tiennent
-sans difficulté sur le palier de départ 6 Go.
+Éditeur de documents sans état adossé à Nextcloud. Le
+dimensionnement est dominé par les workers par document lors de
+l'édition active ; l'empreinte au repos est faible. La valeur de
+pic ci-dessus est une estimation prudente pré-lancement, pas
+encore une mesure réelle.
 ### OnlyOffice
 
 Au repos, c'est léger ; chaque session d'édition lance des
 workers par document. Trois éditeurs concurrents poussent le CPU
 à 80 % sur un seul vCPU. À utiliser avec Nextcloud (pas d'UI
 directe).
+### Rocket.Chat
+
+Le replica set MongoDB + le process Node Rocket.Chat. Le cache
+WiredTiger de MongoDB domine ; les réglages par défaut tiennent
+sans difficulté sur le palier de départ 6 Go.
+### Element / Matrix
+
+Element (Synapse + Postgres + Redis) consomme beaucoup de mémoire
+lors de la première synchronisation fédérée ; la valeur ci-dessus
+est un plancher de mise en service. Estimation prudente
+pré-lancement, pas encore une mesure réelle.
+### DocuSeal
+
+Rails + Postgres. Léger au repos ; le tamponnage PDF du flux de
+signature est le pic de charge.
 ### Outline
 
 App Node + Postgres + Redis. Léger en régime de croisière ; la
@@ -109,6 +126,16 @@ dans le compose), plus ~250 Mo pour la base Postgres. Le
 planificateur du banc exige un entier positif, et surestimer ne
 coûte que des créneaux parallèles. À remplacer par les cinq
 mesures réelles dès la première campagne.
+### Zammad
+
+Zammad (Rails + Postgres + Elasticsearch + Redis) se dimensionne
+autour du heap JVM d'Elastic ; prévoyez de la marge. Estimation
+prudente pré-lancement, pas encore une mesure réelle.
+### Chatwoot
+
+Chatwoot (Rails + Postgres + Redis + Sidekiq) ; le pic croît avec
+le nombre de conversations actives. Estimation prudente
+pré-lancement, pas encore une mesure réelle.
 ### WordPress
 
 nginx + php-fpm + MariaDB + Redis. Le cache FastCGI absorbe le
@@ -134,10 +161,11 @@ quasi gratuit.
 Postiz + Postgres + Redis. Poids moyen ; les publications avec
 images sollicitent fortement la bibliothèque Sharp lors de la
 planification.
-### DocuSeal
+### Easy!Appointments
 
-Rails + Postgres. Léger au repos ; le tamponnage PDF du flux de
-signature est le pic de charge.
+PHP-Apache + MariaDB ; empreinte légère dominée par la base de
+données. Estimation prudente pré-lancement, pas encore une mesure
+réelle.
 ### Mautic
 
 Trois conteneurs Apache/PHP (web + worker + cron) au-dessus de
@@ -147,34 +175,6 @@ reconstructions de segments poussent le pic RAM vers 3 Go et le
 CPU au-dessus de 75 % sur un vCPU. Prévoyez un palier 6 Go si
 Mautic cohabite avec Nextcloud + Rocket.Chat ; sinon un palier
 4 Go tient pour de faibles volumes d'envoi.
-### Collabora Online (CODE)
-
-Éditeur de documents sans état adossé à Nextcloud. Le
-dimensionnement est dominé par les workers par document lors de
-l'édition active ; l'empreinte au repos est faible. La valeur de
-pic ci-dessus est une estimation prudente pré-lancement, pas
-encore une mesure réelle.
-### Element / Matrix
-
-Element (Synapse + Postgres + Redis) consomme beaucoup de mémoire
-lors de la première synchronisation fédérée ; la valeur ci-dessus
-est un plancher de mise en service. Estimation prudente
-pré-lancement, pas encore une mesure réelle.
-### Zammad
-
-Zammad (Rails + Postgres + Elasticsearch + Redis) se dimensionne
-autour du heap JVM d'Elastic ; prévoyez de la marge. Estimation
-prudente pré-lancement, pas encore une mesure réelle.
-### Chatwoot
-
-Chatwoot (Rails + Postgres + Redis + Sidekiq) ; le pic croît avec
-le nombre de conversations actives. Estimation prudente
-pré-lancement, pas encore une mesure réelle.
-### Easy!Appointments
-
-PHP-Apache + MariaDB ; empreinte légère dominée par la base de
-données. Estimation prudente pré-lancement, pas encore une mesure
-réelle.
 ### Kimai
 
 PHP-Apache + MariaDB. Au repos comparable à EspoCRM. Export de

@@ -14,25 +14,25 @@ tier that matches the intended deployment.
 | Template | RAM (idle) | RAM (peak) | CPU (idle) | CPU (peak) | Disk (baseline) |
 |---|---|---|---|---|---|
 | Nextcloud | 420 MB | 880 MB | 2% | 65% | 320 MB |
-| Rocket.Chat | 520 MB | 720 MB | 3% | 35% | 180 MB |
+| Collabora Online (CODE) | _n/a_ | 1024 MB | _n/a_ | _n/a_ | _n/a_ |
 | OnlyOffice | 380 MB | 620 MB | 1% | 80% | 90 MB |
+| Rocket.Chat | 520 MB | 720 MB | 3% | 35% | 180 MB |
+| Element / Matrix | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
+| DocuSeal | 320 MB | 540 MB | 1% | 35% | 140 MB |
 | Outline | 280 MB | 420 MB | 1% | 25% | 110 MB |
 | EspoCRM | 240 MB | 480 MB | 1% | 40% | 200 MB |
 | Twenty | 580 MB | 920 MB | 4% | 55% | 220 MB |
 | Plane | 720 MB | 1040 MB | 4% | 50% | 380 MB |
 | Windshift | _n/a_ | 2300 MB | _n/a_ | _n/a_ | _n/a_ |
+| Zammad | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
+| Chatwoot | _n/a_ | 768 MB | _n/a_ | _n/a_ | _n/a_ |
 | WordPress | 320 MB | 600 MB | 1% | 70% | 180 MB |
 | n8n | 280 MB | 700 MB | 2% | 80% | 150 MB |
 | ERPNext | 2100 MB | 2900 MB | 8% | 90% | 850 MB |
 | Actual Budget | 80 MB | 180 MB | 1% | 15% | 30 MB |
 | Postiz | 480 MB | 680 MB | 2% | 35% | 200 MB |
-| DocuSeal | 320 MB | 540 MB | 1% | 35% | 140 MB |
-| Mautic | 1500 MB | 3000 MB | 3% | 75% | 420 MB |
-| Collabora Online (CODE) | _n/a_ | 1024 MB | _n/a_ | _n/a_ | _n/a_ |
-| Element / Matrix | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
-| Zammad | _n/a_ | 1536 MB | _n/a_ | _n/a_ | _n/a_ |
-| Chatwoot | _n/a_ | 768 MB | _n/a_ | _n/a_ | _n/a_ |
 | Easy!Appointments | _n/a_ | 384 MB | _n/a_ | _n/a_ | _n/a_ |
+| Mautic | 1500 MB | 3000 MB | 3% | 75% | 420 MB |
 | Kimai | 250 MB | 500 MB | 1% | 35% | 180 MB |
 | Invoice Ninja | 400 MB | 800 MB | 2% | 45% | 350 MB |
 | Mail server + webmail | 520 MB | 900 MB | 3% | 40% | 600 MB |
@@ -69,16 +69,31 @@ Antivirus (files_antivirus, Daemon mode) is wired by ops to the
 SHARED ops-managed clamd (catena-clamav network, ~1.5 GB resident),
 NOT counted in these figures -- it is base infra shared with the
 mail server; budget it once at the VPS level.
-### Rocket.Chat
+### Collabora Online (CODE)
 
-MongoDB replica set + Rocket.Chat node process. MongoDB's WiredTiger
-cache is the dominant cost; default settings fit comfortably on the
-6 GB starting tier.
+Stateless document editor backed by Nextcloud. Sizing is dominated
+by per-document worker processes spawned during active editing;
+idle footprint is small. The peak figure above is a conservative
+pre-launch estimate, not yet a measured value.
 ### OnlyOffice
 
 Idle is light; a single editing session spawns per-document worker
 processes. Three concurrent editors push CPU to 80% on a single
 vCPU. Pair with Nextcloud (it's a backend, no direct UI).
+### Rocket.Chat
+
+MongoDB replica set + Rocket.Chat node process. MongoDB's WiredTiger
+cache is the dominant cost; default settings fit comfortably on the
+6 GB starting tier.
+### Element / Matrix
+
+Element (Synapse + Postgres + Redis) is memory-hungry during the
+first federation sync; the value above is a launch-day floor.
+Conservative pre-launch estimate, not yet a measured value.
+### DocuSeal
+
+Rails + Postgres. Light at idle; signing flow's PDF cert-stamping
+is the peak workload.
 ### Outline
 
 Node app + Postgres + Redis. Lightweight in steady state; the
@@ -108,6 +123,16 @@ in the compose), plus ~250 MB for the Postgres side. The bench
 scheduler needs a positive int, and over-declaring only costs
 parallel slots. Replace all five numbers on the first measured
 run and drop this paragraph.
+### Zammad
+
+Zammad (Rails + Postgres + Elasticsearch + Redis) sizes around the
+Elastic JVM heap; budget room for it. Conservative pre-launch
+estimate, not yet a measured value.
+### Chatwoot
+
+Chatwoot (Rails + Postgres + Redis + Sidekiq); peak grows with
+active conversation count. Conservative pre-launch estimate, not
+yet a measured value.
 ### WordPress
 
 nginx + php-fpm + MariaDB + Redis. FastCGI cache absorbs
@@ -131,10 +156,11 @@ effectively free to add.
 
 Postiz + Postgres + Redis. Mid-weight; image-heavy posts push the
 Sharp library hard during scheduling.
-### DocuSeal
+### Easy!Appointments
 
-Rails + Postgres. Light at idle; signing flow's PDF cert-stamping
-is the peak workload.
+PHP-Apache + MariaDB; lightweight footprint dominated by the
+database. Conservative pre-launch estimate, not yet a measured
+value.
 ### Mautic
 
 Three Apache/PHP containers (web + worker + cron) on top of
@@ -143,32 +169,6 @@ MariaDB. Idle RAM is dominated by the worker and cron sidecars
 push peak RAM near 3 GB and CPU above 75% on one vCPU. Plan for
 a 6 GB tier if Mautic is co-located with Nextcloud + Rocket.Chat;
 otherwise a 4 GB tier holds for low-volume sending.
-### Collabora Online (CODE)
-
-Stateless document editor backed by Nextcloud. Sizing is dominated
-by per-document worker processes spawned during active editing;
-idle footprint is small. The peak figure above is a conservative
-pre-launch estimate, not yet a measured value.
-### Element / Matrix
-
-Element (Synapse + Postgres + Redis) is memory-hungry during the
-first federation sync; the value above is a launch-day floor.
-Conservative pre-launch estimate, not yet a measured value.
-### Zammad
-
-Zammad (Rails + Postgres + Elasticsearch + Redis) sizes around the
-Elastic JVM heap; budget room for it. Conservative pre-launch
-estimate, not yet a measured value.
-### Chatwoot
-
-Chatwoot (Rails + Postgres + Redis + Sidekiq); peak grows with
-active conversation count. Conservative pre-launch estimate, not
-yet a measured value.
-### Easy!Appointments
-
-PHP-Apache + MariaDB; lightweight footprint dominated by the
-database. Conservative pre-launch estimate, not yet a measured
-value.
 ### Kimai
 
 PHP-Apache + MariaDB. Idle is comparable to EspoCRM. Bulk
