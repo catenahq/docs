@@ -39,13 +39,11 @@ One account signs in to every application, with per-application access control a
 
 Rehearsals: `fi_a1_realm_marker_collision`, `fi_a2_oidc_secret_rotation`, `fi_a3_keycloak_unreachable`, `fi_a4_master_realm_idempotent`, `fi_a5_wrong_group_assignment`, `keycloak_admin_email_loss_recovery`, `keycloak_signing_keys_rotation_round_trip`, `oauth2_proxy_cookie_rotation_round_trip`, `user_recovery_2fa_reset`, `user_recovery_kcadm_temp_password`
 
-### Administration dashboard (4 rehearsals)
+### Administration dashboard (5 rehearsals)
 
 A web dashboard with role-aware access (staff see status, administrators also get maintenance actions). Every action a button triggers is logged in the server's system journal.
 
-Rehearsals: `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `quiesce_resume_round_trip`
-
-Written, not yet passing: `wizard_restore_smoke`
+Rehearsals: `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
 
 ### Installation and application deployment (15 rehearsals)
 
@@ -75,13 +73,13 @@ Rehearsals: `ce_install_headscale`, `cf_activate`, `cf_tunnel_regenerate_round_t
 
 Written, not yet passing: `cloudflare_api_rotation_round_trip`, `fi_v3_tailscale_acl_misconfig`, `tailscale_oauth_rotation_round_trip`
 
-### Disaster recovery and restore (15 rehearsals)
+### Disaster recovery and restore (16 rehearsals)
 
 A whole server can be rebuilt from nothing but the backup endpoint and its key, and a live server can be restored in place. Databases and applications come back as one coordinated operation, consistent with each other rather than each from its own moment in time. Both paths are rehearsed continuously, including across operating-system and database major versions.
 
-Rehearsals: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `s3_reconcile_orphan_cleanup`
+Rehearsals: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `s3_reconcile_orphan_cleanup`, `selective_restore_round_trip`
 
-Written, not yet passing: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`, `selective_restore_round_trip`
+Written, not yet passing: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`
 
 ### No lock-in, ever (2 rehearsals)
 
@@ -111,13 +109,11 @@ Every administrative action on the server is also shipped off the machine to cen
 
 Rehearsals: `ee_audit_ship`
 
-### Offsite immutable backup copy (5 rehearsals)
+### Offsite immutable backup copy (6 rehearsals)
 
 A second backup copy at a different provider, write-locked so that even a compromised server cannot alter or delete it, with recurring verification that both copies actually restore.
 
-Rehearsals: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`, `worm_round_trip`
-
-Written, not yet passing: `restic_check_subset_weekly`
+Rehearsals: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `restic_check_subset_weekly`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`, `worm_round_trip`
 
 ### Vulnerability scanning (1 rehearsal)
 
@@ -125,13 +121,11 @@ Recurring scans of the installed software and its containers for known vulnerabi
 
 Rehearsals: `cve_residual_emits_findings`
 
-### Automated daily maintenance (12 rehearsals)
+### Automated daily maintenance (13 rehearsals)
 
 A supervised daily routine on the server: hourly backups, package and health checks, and an ordered maintenance chain that resumes safely after interruption.
 
-Rehearsals: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_security_rollback`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
-
-Written, not yet passing: `daily_chain_verify_cold_blocks_mirror`
+Rehearsals: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_security_rollback`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
 
 ### Managed lifecycle operations (migration, decommission) (rehearsed as a managed operation)
 

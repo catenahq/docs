@@ -39,13 +39,11 @@ Un seul compte ouvre toutes les applications, avec contrôle d'accès par applic
 
 Répétitions: `fi_a1_realm_marker_collision`, `fi_a2_oidc_secret_rotation`, `fi_a3_keycloak_unreachable`, `fi_a4_master_realm_idempotent`, `fi_a5_wrong_group_assignment`, `keycloak_admin_email_loss_recovery`, `keycloak_signing_keys_rotation_round_trip`, `oauth2_proxy_cookie_rotation_round_trip`, `user_recovery_2fa_reset`, `user_recovery_kcadm_temp_password`
 
-### Tableau de bord d'administration (4 répétitions)
+### Tableau de bord d'administration (5 répétitions)
 
 Un tableau de bord web à accès selon le rôle (le personnel voit l'état, les administrateurs ont aussi les actions d'entretien). Chaque action déclenchée par un bouton est consignée au journal système du serveur.
 
-Répétitions: `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `quiesce_resume_round_trip`
-
-Écrite, pas encore réussie: `wizard_restore_smoke`
+Répétitions: `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
 
 ### Installation et déploiement des applications (15 répétitions)
 
@@ -75,13 +73,13 @@ Répétitions: `ce_install_headscale`, `cf_activate`, `cf_tunnel_regenerate_roun
 
 Écrite, pas encore réussie: `cloudflare_api_rotation_round_trip`, `fi_v3_tailscale_acl_misconfig`, `tailscale_oauth_rotation_round_trip`
 
-### Reprise après sinistre et restauration (15 répétitions)
+### Reprise après sinistre et restauration (16 répétitions)
 
 Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde et de sa clé, et un serveur en marche se restaure sur place. Bases de données et applications reviennent en une seule opération coordonnée, cohérentes entre elles plutôt que chacune à son propre instant. Les deux chemins sont répétés en continu, y compris à travers les versions majeures du système et de la base de données.
 
-Répétitions: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `s3_reconcile_orphan_cleanup`
+Répétitions: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `s3_reconcile_orphan_cleanup`, `selective_restore_round_trip`
 
-Écrite, pas encore réussie: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`, `selective_restore_round_trip`
+Écrite, pas encore réussie: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`
 
 ### Aucune dépendance forcée, jamais (2 répétitions)
 
@@ -111,13 +109,11 @@ Chaque action administrative sur le serveur est aussi expédiée hors de la mach
 
 Répétitions: `ee_audit_ship`
 
-### Copie de sauvegarde hors site immuable (5 répétitions)
+### Copie de sauvegarde hors site immuable (6 répétitions)
 
 Une seconde copie de sauvegarde chez un fournisseur différent, verrouillée en écriture pour qu'un serveur compromis ne puisse ni la modifier ni l'effacer, avec vérification récurrente que les deux copies se restaurent réellement.
 
-Répétitions: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`, `worm_round_trip`
-
-Écrite, pas encore réussie: `restic_check_subset_weekly`
+Répétitions: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `restic_check_subset_weekly`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`, `worm_round_trip`
 
 ### Analyse de vulnérabilités (1 répétition)
 
@@ -125,13 +121,11 @@ Analyses récurrentes des logiciels installés et de leurs conteneurs pour vuln�
 
 Répétitions: `cve_residual_emits_findings`
 
-### Entretien quotidien automatisé (12 répétitions)
+### Entretien quotidien automatisé (13 répétitions)
 
 Une routine quotidienne supervisée sur le serveur : sauvegardes horaires, contrôles de paquets et de santé, et une chaîne d'entretien ordonnée qui reprend sans danger après interruption.
 
-Répétitions: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_security_rollback`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
-
-Écrite, pas encore réussie: `daily_chain_verify_cold_blocks_mirror`
+Répétitions: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_security_rollback`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
 
 ### Opérations de cycle de vie gérées (migration, retrait) (répétée comme opération gérée)
 
