@@ -77,9 +77,9 @@ Répétitions: `ce_install_headscale`, `cf_activate`, `cf_tunnel_regenerate_roun
 
 Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde et de sa clé, et un serveur en marche se restaure sur place. Bases de données et applications reviennent en une seule opération coordonnée, cohérentes entre elles plutôt que chacune à son propre instant. Les deux chemins sont répétés en continu, y compris à travers les versions majeures du système et de la base de données.
 
-Répétitions: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_version_skew_abort`, `s3_reconcile_orphan_cleanup`, `selective_restore_round_trip`
+Répétitions: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `selective_restore_round_trip`
 
-Écrite, pas encore réussie: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`, `restore_dr`
+Écrite, pas encore réussie: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`, `s3_reconcile_orphan_cleanup`
 
 ### Aucune dépendance forcée, jamais (2 répétitions)
 
