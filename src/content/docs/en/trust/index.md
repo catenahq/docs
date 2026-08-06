@@ -143,11 +143,13 @@ Recurring checks that the account structure stays healthy: enforced multi-factor
 
 Rehearsals: `ee_identity_probe`
 
-### Managed updates with automatic rollback (9 rehearsals)
+### Managed updates with automatic rollback (8 rehearsals)
 
 Applications and system components update on a managed schedule; a failed update is detected and rolled back to the last working version without intervention.
 
-Rehearsals: `auto_update_mid_crash`, `auto_update_rollback`, `control_plane_update_rollback`, `daily_chain_container_rollback`, `daily_chain_security_rollback`, `fi_u2_resume_after_reboot`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`
+Rehearsals: `auto_update_mid_crash`, `auto_update_rollback`, `daily_chain_container_rollback`, `daily_chain_security_rollback`, `fi_u2_resume_after_reboot`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`
+
+Written, not yet passing: `control_plane_update_rollback`
 
 ### External availability monitoring (rehearsal written, not yet passing)
 

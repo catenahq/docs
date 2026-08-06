@@ -143,11 +143,13 @@ Contrôles récurrents de la santé des comptes : authentification multifacteur 
 
 Répétitions: `ee_identity_probe`
 
-### Mises à jour gérées avec retour arrière automatique (9 répétitions)
+### Mises à jour gérées avec retour arrière automatique (8 répétitions)
 
 Les applications et composants système se mettent à jour selon un calendrier géré; une mise à jour ratée est détectée et ramenée à la dernière version fonctionnelle sans intervention.
 
-Répétitions: `auto_update_mid_crash`, `auto_update_rollback`, `control_plane_update_rollback`, `daily_chain_container_rollback`, `daily_chain_security_rollback`, `fi_u2_resume_after_reboot`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`
+Répétitions: `auto_update_mid_crash`, `auto_update_rollback`, `daily_chain_container_rollback`, `daily_chain_security_rollback`, `fi_u2_resume_after_reboot`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`
+
+Écrite, pas encore réussie: `control_plane_update_rollback`
 
 ### Supervision externe de la disponibilité (répétition écrite, pas encore réussie)
 
