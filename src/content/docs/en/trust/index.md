@@ -161,12 +161,10 @@ On paid plans a single server can host several separate, unlinked domains, each 
 
 Rehearsals: `ee_multidomain`
 
-### A move that can be called off (2 rehearsals)
+### A move that can be called off (4 rehearsals)
 
 Moving to another server copies almost everything while the old one is still serving, so application downtime is measured in minutes rather than hours. Up to the last check the move can be called off and the old server puts itself back into service on its own. Past that point it keeps answering one request, named `put yourself back in service`, even after everything else on it has stopped, and its own backups are left untouched as the way back. That request travels over the client's own private network and works only during a window opened from the server itself, using a one-time code it displays once.
 
-Rehearsals: `migrate_lane_auth_denied`, `migrate_preseed_no_split_brain`
-
-Written, not yet passing: `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
+Rehearsals: `migrate_lane_auth_denied`, `migrate_preseed_no_split_brain`, `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
 
 Full technical detail (implementation paths and scenario names for the Community edition) lives in the public [validation sheet on GitHub](https://github.com/catenahq/catena-ce/blob/main/VALIDATION.md).

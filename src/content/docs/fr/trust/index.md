@@ -161,12 +161,10 @@ Sur les forfaits payants, un même serveur peut héberger plusieurs domaines dis
 
 Répétitions: `ee_multidomain`
 
-### Un déplacement annulable (2 répétitions)
+### Un déplacement annulable (4 répétitions)
 
 Déplacer les données vers un autre serveur copie presque tout pendant que l'ancien continue de servir : l'indisponibilité des applications se compte donc en minutes plutôt qu'en heures. Jusqu'à la dernière vérification, le déplacement peut être annulé et l'ancien serveur se remet en service de lui-même. Passé ce point, il continue de répondre à une seule demande -- remets-toi en service -- même après l'arrêt de tout le reste, et ses propres sauvegardes restent intactes comme voie de retour. Cette demande passe par le réseau privé du client et ne fonctionne que pendant une fenêtre ouverte depuis le serveur lui-même, avec un code à usage unique affiché une seule fois.
 
-Répétitions: `migrate_lane_auth_denied`, `migrate_preseed_no_split_brain`
-
-Écrite, pas encore réussie: `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
+Répétitions: `migrate_lane_auth_denied`, `migrate_preseed_no_split_brain`, `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
 
 Le détail technique complet (chemins d'implémentation et noms de scénarios pour l'édition Community) se trouve dans la [fiche de validation publique sur GitHub](https://github.com/catenahq/catena-ce/blob/main/VALIDATION.md).
