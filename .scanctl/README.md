@@ -1,10 +1,11 @@
 # scanctl baseline
 
-`baseline.sarif` is a committed set of security findings that are reviewed and
-accepted as benign. `security.yml` passes it to scanctl (`baseline:
-.scanctl/baseline.sarif`), which marks matching findings as suppressed so
-per-PR code scanning stays clean while every finding remains auditable in the
-SARIF. Only NEW findings gate or surface.
+`baseline.sarif` is a committed set of security findings for THIS repo that
+are reviewed and accepted as benign. For how the mechanism works generally
+(what `baseline:`/`--dismiss-baseline` do, how to seed or regenerate a
+baseline, the drift-check pattern) see
+[catenahq/scanctl's README](https://github.com/catenahq/scanctl#baseline-gate-only-on-new-findings) --
+this file only records what's baselined here and why.
 
 ## What is currently baselined
 
@@ -20,35 +21,9 @@ SARIF. Only NEW findings gate or surface.
 
 ## Drift detection
 
-`baseline-drift.yml` re-scans WITHOUT the baseline and runs `drift-check.py` to
-compare live findings against the committed baseline. It fails on:
-
-- **STALE** - a baseline entry the scan no longer produces (prune it).
-- **NEW** - a finding the baseline does not cover (review, then fix or
-  re-accept).
-
-It triggers on changes to `package-lock.json` / `package.json` / `renovate.json`
-/ `.scanctl/**`, weekly, and via `workflow_dispatch`.
-
-## Regenerating the baseline
-
-When drift-check reports a legitimate change to re-accept:
-
-```sh
-scanctl run --profile full --out current.sarif --sbom /tmp/sbom.json \
-  --summary /dev/null .
-python3 - <<'PY'
-import json
-rep = json.load(open("current.sarif"))
-runs = [
-    {"tool": {"driver": {"name": r["tool"]["driver"]["name"]}}, "results": r["results"]}
-    for r in rep.get("runs", []) if r.get("results")
-]
-out = {"$schema": rep["$schema"], "version": rep["version"], "runs": runs}
-json.dump(out, open(".scanctl/baseline.sarif", "w"), indent=2)
-open(".scanctl/baseline.sarif", "a").write("\n")
-PY
-```
-
-Review the diff before committing: every entry must be a finding you have
-confirmed is benign.
+`baseline-drift.yml` re-scans WITHOUT the baseline and runs `drift-check.py`
+(repo-local copy of the comparator scanctl's README documents) weekly + on
+`workflow_dispatch`, triggered also by changes to `package-lock.json` /
+`package.json` / `renovate.json` / `.scanctl/**`. On drift, regenerate per
+scanctl's README ("Seeding or regenerating a baseline") and review the diff --
+every entry must be a finding a human has confirmed is benign here.
