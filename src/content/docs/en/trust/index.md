@@ -149,7 +149,7 @@ Applications and system components update on a managed schedule; a failed update
 
 Rehearsals: `auto_update_mid_crash`, `auto_update_rollback`, `control_plane_update_rollback`, `daily_chain_container_rollback`, `daily_chain_security_rollback`, `fi_u2_resume_after_reboot`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`
 
-Written, not yet passing: `infra_stack_update_rollback`
+Written, not yet passing: `catena_admin_self_update`, `infra_stack_update_rollback`
 
 ### External availability monitoring (rehearsal written, not yet passing)
 

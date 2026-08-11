@@ -149,7 +149,7 @@ Les applications et composants système se mettent à jour selon un calendrier g
 
 Répétitions: `auto_update_mid_crash`, `auto_update_rollback`, `control_plane_update_rollback`, `daily_chain_container_rollback`, `daily_chain_security_rollback`, `fi_u2_resume_after_reboot`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`
 
-Écrite, pas encore réussie: `infra_stack_update_rollback`
+Écrite, pas encore réussie: `catena_admin_self_update`, `infra_stack_update_rollback`
 
 ### Supervision externe de la disponibilité (répétition écrite, pas encore réussie)
 
