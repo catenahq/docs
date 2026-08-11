@@ -51,7 +51,7 @@ Prépare un serveur neuf, installe la plateforme et déploie les applications ch
 
 Répétitions: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modify`, `fi_c1_docker_daemon_hang`, `fi_c3_portainer_crash_mid_deploy`, `fi_c4_registry_pull_timeout`, `fi_c6_cloudflared_flapping`, `fi_c7_coturn_cert_expired`, `fi_c8_nextcloud_init_loop`, `fi_u1_compose_lint_reject`, `mixed_template_negative_restore`, `repair_broken_template_round_trip`, `scheduler_easyappointments`, `swarm_overlay_selfheal`
 
-Écrite, pas encore réussie: `converge_preserves_bumped_image`, `dev_to_prod_cutover_round_trip`
+Écrite, pas encore réussie: `converge_preserves_bumped_image`, `dev_to_prod_cutover_round_trip`, `release_manifest_converge_state`
 
 ### Catalogue d'applications et intégrations de la suite (2 répétitions)
 
