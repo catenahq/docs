@@ -55,8 +55,8 @@ Le flux courant fonctionne donc tel quel :
    redirection Keycloak, pas de connexion requise.
 
 Cela fonctionne parce que Nextcloud est atteint via son
-propre code d'authentification, pas via un proxy
-forward-auth. Le module `user_oidc` ne gère que le flux de
+propre code d'authentification, sans proxy SSO
+devant lui. Le module `user_oidc` ne gère que le flux de
 connexion pour *les membres de l'équipe* ; les points
 d'accès des partages publics restent anonymes par
 conception.

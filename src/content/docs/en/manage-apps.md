@@ -74,9 +74,9 @@ Deploying a new app (say, Paperless for an accounting team):
 4. Deploy the stack.
 
 Within 5 minutes, `dashboard-sync` picks up the new app, creates the
-`accounting` group in Keycloak (if it doesn't exist), wires the
-forward-auth middleware, and makes the app reachable -- but only for
-users in `accounting`.
+`accounting` group in Keycloak (if it doesn't exist), puts an SSO gate in
+front of the app, and makes it reachable -- but only for users in
+`accounting`.
 
 ## Label cheat sheet
 
@@ -91,7 +91,7 @@ only (deny-by-default).
 | [`vps.auth.groups`](#vpsauthgroupscsv)<br>(`admin` only) | csv of `staff`, `client`, department names, `visitor`, `admin` | Who can reach the app |
 | [`vps.auth.mode`](#vpsauthmodemode)<br>(`admin-only`) | `public` \| `private` \| `admin-only` | Shorthand for a common group set (use this OR `vps.auth.groups`) |
 | [`vps.auth.protected`](#vpsauthprotectedtrue)<br>(`false`) | `true` \| `false` | Flags an app that must never resolve to public |
-| [`vps.auth.oidc`](#forward-auth-vs-oidc)<br>(`false`) | `true` \| `false` (plus `vps.auth.oidc.redirect_uris`, optional `vps.auth.oidc.scopes`) | Adds native OIDC login on top of the gate |
+| [`vps.auth.oidc`](#sso-gate-vs-oidc)<br>(`false`) | `true` \| `false` (plus `vps.auth.oidc.redirect_uris`, optional `vps.auth.oidc.scopes`) | Adds native OIDC login on top of the gate |
 | [`vps.auto-update`](#choosing-how-aggressive-updates-are)<br>(`patch`) | `patch` \| `minor` \| `major` \| `off` | How far the auto-updater may bump the image |
 | [`vps.homepage.*`](#customize-how-an-app-appears-on-the-dashboard)<br>(tile shown) | `name`, `icon`, `description`, `hidden` | Dashboard tile presentation |
 | [`vps.display-name`](#override-how-an-app-appears-on-the-gatus-status-page)<br>(image short name) | any string | Name shown on the Gatus status card |
@@ -420,7 +420,8 @@ Every 5 minutes (via systemd timer), `dashboard-sync.service`:
 - `https://auth.yourdomain.com` -> Directory -> Groups. The defined
   groups show here. Add/remove members through the UI.
 - `https://portainer.yourdomain.com` -> the stack -> Logs. After deploy,
-  logs show Keycloak forward-auth hits (203 -> inject headers -> upstream).
+  the app's SSO gate logs each request it lets through, with the
+  signed-in identity attached as headers.
 - `https://monitor.yourdomain.com` (Gatus). The app gets
   an entry in the `client-apps` group within ~5 min, probed every 60s.
   If it's red, either the app is down OR the sync hasn't run yet.
@@ -432,13 +433,13 @@ NOT control *authorization* (what users can do within the app). Apps
 that support their own permission model (Paperless users, Nextcloud
 groups, etc.) keep using that model; Keycloak just gates the door.
 
-## Forward-auth vs. OIDC
+## SSO gate vs. OIDC
 
-The labels above (`vps.auth.groups`, `vps.auth.mode`) wire
-**forward-auth**: Keycloak sits in front of the app at the
-Traefik layer and only passes signed-in users through. The app
-itself doesn't need to know about Keycloak -- it just receives
-authenticated traffic. This is the **default, always-on** path
+The labels above (`vps.auth.groups`, `vps.auth.mode`) wire an **SSO
+gate**: a small proxy stands in front of the app, sends anyone without a
+session to the Keycloak login page, and passes only signed-in users
+through. The app itself doesn't need to know about Keycloak -- it just
+receives authenticated traffic. This is the **default, always-on** path
 and works for any app.
 
 Apps that speak **OIDC natively** (Grafana, Gitea, n8n, Keycloak,
@@ -449,7 +450,7 @@ can edit vs. view a dashboard, who can approve a PR, etc. -- and
 proper sign-out.
 
 **OIDC is additive, not a replacement.** Once enabled:
-- Forward-auth stays in front of the app (the security gate doesn't
+- The SSO gate stays in front of the app (the security boundary doesn't
   change).
 - An OIDC client is additionally provisioned so the app can ask
   Keycloak "who is this signed-in user?" once the user is through
@@ -504,7 +505,7 @@ labels:
 
 - `vps.auth.oidc=true` -- enables OIDC provisioning for this
   service.
-- `vps.auth.groups=<csv>` -- same label as forward-auth. Defines
+- `vps.auth.groups=<csv>` -- the same label the SSO gate uses. Defines
   who can sign in via OIDC (reuses the existing group semantics).
 - `vps.auth.oidc.redirect_uris=<url>` -- the callback URL from
   step 1. Required; without it, OIDC isn't provisioned. Multiple
@@ -578,8 +579,7 @@ button (label app-specific). Click it, authorize, done.
   across apps).
 - **Keycloak admin UI** (`auth.yourdomain.com`) -> Directory ->
   Applications: two entries appear per OIDC-enabled app -- one
-  for the forward-auth gate, and `<name> (OIDC)` for the OIDC
-  client.
+  for the SSO gate, and `<name> (OIDC)` for the OIDC client.
 
 ### Common mistakes
 
@@ -605,7 +605,7 @@ Remove the `vps.auth.oidc=true` label (the other two OIDC labels
 can stay -- they're harmless without the switch). On the next
 sync tick, dashboard-sync tears down the Keycloak OIDC
 application + provider, stops injecting the env vars, and the app
-reverts to forward-auth-only. The `${OIDC_*}` lines can then come
+reverts to the SSO gate alone. The `${OIDC_*}` lines can then come
 out of the service environment.
 
 ### Out of scope

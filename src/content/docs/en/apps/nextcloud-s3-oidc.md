@@ -50,7 +50,7 @@ So the common workflow stays intact:
    set). No Keycloak redirect, no login required.
 
 This works because Nextcloud is reached via Nextcloud's own
-auth code, not a forward-auth proxy. The `user_oidc` plugin
+auth code, with no SSO proxy in front. The `user_oidc` plugin
 only handles the login flow for *team members*; the
 public-share endpoints remain anonymous-by-design.
 

@@ -82,8 +82,8 @@ Déployer une nouvelle application (par exemple, Paperless pour une
 4. Déployez le stack.
 
 En moins de 5 minutes, `dashboard-sync` détecte la nouvelle application,
-crée le groupe `accounting` dans Keycloak (s'il n'existe pas), câble
-le middleware forward-auth et rend l'application accessible -- mais
+crée le groupe `accounting` dans Keycloak (s'il n'existe pas), place une
+barrière SSO devant l'application et la rend accessible -- mais
 uniquement pour les utilisateurs du groupe `accounting`.
 
 ## Aide-mémoire des étiquettes
@@ -100,7 +100,7 @@ application sans étiquette `vps.auth.*` n'est accessible que par
 | [`vps.auth.groups`](#vpsauthgroupscsv)<br>(`admin` seulement) | csv de `staff`, `client`, noms de départements, `visitor`, `admin` | Qui peut atteindre l'application |
 | [`vps.auth.mode`](#vpsauthmodemode)<br>(`admin-only`) | `public` \| `private` \| `admin-only` | Raccourci pour un ensemble de groupes courant (ceci OU `vps.auth.groups`) |
 | [`vps.auth.protected`](#vpsauthprotectedtrue)<br>(`false`) | `true` \| `false` | Marque une application qui ne doit jamais devenir publique |
-| [`vps.auth.oidc`](#forward-auth-ou-oidc)<br>(`false`) | `true` \| `false` (plus `vps.auth.oidc.redirect_uris`, `vps.auth.oidc.scopes` optionnel) | Ajoute une connexion OIDC native par-dessus la barrière |
+| [`vps.auth.oidc`](#barrière-sso-ou-oidc)<br>(`false`) | `true` \| `false` (plus `vps.auth.oidc.redirect_uris`, `vps.auth.oidc.scopes` optionnel) | Ajoute une connexion OIDC native par-dessus la barrière |
 | [`vps.auto-update`](#choisir-lagressivité-des-mises-à-jour)<br>(`patch`) | `patch` \| `minor` \| `major` \| `off` | Jusqu'où l'updater peut monter l'image |
 | [`vps.homepage.*`](#personnaliser-lapparence-dune-application-sur-le-tableau-de-bord)<br>(tuile affichée) | `name`, `icon`, `description`, `hidden` | Présentation de la tuile du tableau de bord |
 | [`vps.display-name`](#remplacer-laffichage-dune-application-sur-la-page-détat-gatus)<br>(nom court de l'image) | toute chaîne | Nom affiché sur la carte d'état Gatus |
@@ -456,8 +456,9 @@ Toutes les 5 minutes (via un timer systemd), `dashboard-sync.service` :
   définis apparaissent ici. Ajoutez / retirez des membres via
   l'interface.
 - `https://portainer.yourdomain.com` -> le stack -> Logs.
-  Après le déploiement, les logs montrent les appels forward-auth
-  Keycloak (203 -> injection d'en-têtes -> upstream).
+  Après le déploiement, la barrière SSO de l'application journalise
+  chaque requête qu'elle laisse passer, avec l'identité connectée
+  jointe en en-têtes.
 - `https://monitor.yourdomain.com` (Gatus). L'application
   reçoit une entrée dans le groupe `client-apps` en moins
   de 5 minutes, sondée toutes les 60 secondes. Rouge = application
@@ -472,15 +473,16 @@ leur propre modèle de permissions (utilisateurs Paperless, groupes
 Nextcloud, etc.) conservent ce modèle ; Keycloak garde simplement la
 porte.
 
-## Forward-auth ou OIDC
+## Barrière SSO ou OIDC
 
 Les étiquettes ci-dessus (`vps.auth.groups`, `vps.auth.mode`)
-activent le **forward-auth** : Keycloak se place devant
-l'application au niveau Traefik et ne laisse passer que les
-utilisateurs connectés. L'application elle-même n'a rien à savoir
-de Keycloak -- elle reçoit simplement du trafic authentifié. C'est
-le mode **par défaut, toujours actif**, et il fonctionne pour
-n'importe quelle application.
+activent une **barrière SSO** : un petit proxy se place devant
+l'application, renvoie vers la page de connexion Keycloak quiconque
+n'a pas de session, et ne laisse passer que les utilisateurs
+connectés. L'application elle-même n'a rien à savoir de Keycloak --
+elle reçoit simplement du trafic authentifié. C'est le mode **par
+défaut, toujours actif**, et il fonctionne pour n'importe quelle
+application.
 
 Les applications qui parlent nativement **OIDC** (Grafana, Gitea,
 n8n, Keycloak, Vault, Nextcloud, Harbor, et bien d'autres) peuvent
@@ -490,9 +492,9 @@ permissions par utilisateur *à l'intérieur* de l'application -- qui
 peut éditer ou seulement consulter un tableau, qui peut approuver
 une demande, etc. -- et une déconnexion propre.
 
-**OIDC s'ajoute au forward-auth, il ne le remplace pas.** Une fois
+**OIDC s'ajoute à la barrière SSO, il ne la remplace pas.** Une fois
 activé :
-- Le forward-auth reste devant l'application (la barrière de
+- La barrière SSO reste devant l'application (la frontière de
   sécurité ne change pas).
 - Un client OIDC est en plus provisionné pour que l'application
   puisse demander à Keycloak "qui est cet utilisateur connecté"
@@ -550,9 +552,9 @@ labels:
 
 - `vps.auth.oidc=true` -- active le provisionnement OIDC pour ce
   service.
-- `vps.auth.groups=<liste>` -- même étiquette que le forward-auth.
-  Définit qui peut se connecter via OIDC (réutilise la sémantique
-  existante des groupes).
+- `vps.auth.groups=<liste>` -- la même étiquette que celle employée
+  par la barrière SSO. Définit qui peut se connecter via OIDC
+  (réutilise la sémantique existante des groupes).
 - `vps.auth.oidc.redirect_uris=<url>` -- l'URL de rappel relevée à
   l'étape 1. Obligatoire ; sans elle, OIDC n'est pas
   provisionné. Plusieurs URL séparées par des virgules sont
@@ -630,7 +632,7 @@ l'application). Un clic, une autorisation, et c'est fait.
   applications).
 - **Interface admin de Keycloak** (`auth.yourdomain.com`) ->
   Annuaire -> Applications : deux entrées apparaissent par
-  application OIDC -- une pour la barrière forward-auth, et
+  application OIDC -- une pour la barrière SSO, et
   `<nom> (OIDC)` pour le client OIDC.
 
 ### Erreurs courantes
@@ -660,8 +662,8 @@ Supprimez l'étiquette `vps.auth.oidc=true` (les deux autres
 étiquettes OIDC peuvent rester -- elles sont inoffensives sans
 l'interrupteur). Au tic de synchronisation suivant, dashboard-sync
 démonte l'application + le fournisseur OIDC de Keycloak, arrête
-d'injecter les variables, et l'application revient au
-forward-auth seul. Les lignes `${OIDC_*}` peuvent ensuite sortir
+d'injecter les variables, et l'application revient à la barrière
+SSO seule. Les lignes `${OIDC_*}` peuvent ensuite sortir
 du bloc `environment`.
 
 ### Hors périmètre
