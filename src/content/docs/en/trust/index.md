@@ -45,13 +45,13 @@ A web dashboard with role-aware access (staff see status, administrators also ge
 
 Rehearsals: `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
 
-### Installation and application deployment (15 rehearsals)
+### Installation and application deployment (17 rehearsals)
 
 Prepares a fresh server, installs the platform, and deploys the selected applications. Re-running the same managed operation converges the server back to its declared configuration, so a drifted or half-configured server is repaired, not rebuilt by hand.
 
-Rehearsals: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modify`, `fi_c1_docker_daemon_hang`, `fi_c3_portainer_crash_mid_deploy`, `fi_c4_registry_pull_timeout`, `fi_c6_cloudflared_flapping`, `fi_c7_coturn_cert_expired`, `fi_c8_nextcloud_init_loop`, `fi_u1_compose_lint_reject`, `mixed_template_negative_restore`, `repair_broken_template_round_trip`, `scheduler_easyappointments`, `swarm_overlay_selfheal`
+Rehearsals: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modify`, `converge_preserves_bumped_image`, `fi_c1_docker_daemon_hang`, `fi_c3_portainer_crash_mid_deploy`, `fi_c4_registry_pull_timeout`, `fi_c6_cloudflared_flapping`, `fi_c7_coturn_cert_expired`, `fi_c8_nextcloud_init_loop`, `fi_u1_compose_lint_reject`, `mixed_template_negative_restore`, `release_manifest_converge_state`, `repair_broken_template_round_trip`, `scheduler_easyappointments`, `swarm_overlay_selfheal`
 
-Written, not yet passing: `converge_preserves_bumped_image`, `dev_to_prod_cutover_round_trip`, `release_manifest_converge_state`
+Written, not yet passing: `dev_to_prod_cutover_round_trip`
 
 ### Application catalog and suite integrations (2 rehearsals)
 
@@ -73,13 +73,13 @@ Rehearsals: `ce_install_headscale`, `cf_activate`, `cf_tunnel_regenerate_round_t
 
 Written, not yet passing: `cloudflare_api_rotation_round_trip`, `fi_v3_tailscale_acl_misconfig`, `tailscale_oauth_rotation_round_trip`
 
-### Disaster recovery and restore (16 rehearsals)
+### Disaster recovery and restore (17 rehearsals)
 
 A whole server can be rebuilt from nothing but the backup endpoint and its key, and a live server can be restored in place. Databases and applications come back as one coordinated operation, consistent with each other rather than each from its own moment in time. Both paths are rehearsed continuously, including across operating-system and database major versions.
 
-Rehearsals: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `s3_reconcile_orphan_cleanup`, `selective_restore_round_trip`
+Rehearsals: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `restore_version_skew_upgrade`, `s3_reconcile_orphan_cleanup`, `selective_restore_round_trip`
 
-Written, not yet passing: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`, `restore_version_skew_upgrade`
+Written, not yet passing: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`
 
 ### No lock-in, ever (2 rehearsals)
 
@@ -143,13 +143,11 @@ Recurring checks that the account structure stays healthy: enforced multi-factor
 
 Rehearsals: `ee_identity_probe`
 
-### Managed updates with automatic rollback (9 rehearsals)
+### Managed updates with automatic rollback (11 rehearsals)
 
 Applications and system components update on a managed schedule; a failed update is detected and rolled back to the last working version without intervention.
 
-Rehearsals: `auto_update_mid_crash`, `auto_update_rollback`, `control_plane_update_rollback`, `daily_chain_container_rollback`, `daily_chain_security_rollback`, `fi_u2_resume_after_reboot`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`
-
-Written, not yet passing: `catena_admin_self_update`, `infra_stack_update_rollback`
+Rehearsals: `auto_update_mid_crash`, `auto_update_rollback`, `catena_admin_self_update`, `control_plane_update_rollback`, `daily_chain_container_rollback`, `daily_chain_security_rollback`, `fi_u2_resume_after_reboot`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`, `infra_stack_update_rollback`
 
 ### External availability monitoring (rehearsal written, not yet passing)
 
