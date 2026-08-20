@@ -45,6 +45,8 @@ A web dashboard with role-aware access (staff see status, administrators also ge
 
 Rehearsals: `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
 
+Written, not yet passing: `admin_action_unknown_rejected`
+
 ### Installation and application deployment (17 rehearsals)
 
 Prepares a fresh server, installs the platform, and deploys the selected applications. Re-running the same managed operation converges the server back to its declared configuration, so a drifted or half-configured server is repaired, not rebuilt by hand.

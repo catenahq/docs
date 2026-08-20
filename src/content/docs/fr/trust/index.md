@@ -45,6 +45,8 @@ Un tableau de bord web à accès selon le rôle (le personnel voit l'état, les 
 
 Répétitions: `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
 
+Écrite, pas encore réussie: `admin_action_unknown_rejected`
+
 ### Installation et déploiement des applications (17 répétitions)
 
 Prépare un serveur neuf, installe la plateforme et déploie les applications choisies. Relancer la même opération gérée ramène le serveur à sa configuration déclarée : un serveur ayant dérivé est réparé, pas reconstruit à la main.
