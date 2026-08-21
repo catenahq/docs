@@ -139,6 +139,12 @@ Les fonctions Pro s'activent par une licence signée cryptographiquement et se d
 
 Répétitions: `activate_ee`, `ee_ce_regression`, `ee_entitlement_partial`, `ee_lapse`, `ee_named_buttons`, `license_domain_mismatch`
 
+### Gestion des comptes du personnel et des clients (répétition écrite, pas encore réussie)
+
+Comptes, groupes et appartenances des personnes du serveur, gérés depuis le panneau d'administration : ajouter quelqu'un, le changer de groupe, suspendre un compte pendant un incident ou le supprimer. Avant de renommer ou de supprimer un groupe, le panneau nomme chaque application qui cesserait d'admettre les personnes concernées, afin qu'un changement d'accès ne soit jamais fait à l'aveugle.
+
+Écrite, pas encore réussie: `identity_group_gates_access`
+
 ### Surveillance de la posture d'identité (1 répétition)
 
 Contrôles récurrents de la santé des comptes : authentification multifacteur imposée, modèle de groupes convenu et aucun compte administrateur inattendu -- toute dérive lève une alerte.

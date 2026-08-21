@@ -139,6 +139,12 @@ Pro features activate through a cryptographically signed license and deactivate 
 
 Rehearsals: `activate_ee`, `ee_ce_regression`, `ee_entitlement_partial`, `ee_lapse`, `ee_named_buttons`, `license_domain_mismatch`
 
+### Staff and client account management (rehearsal written, not yet passing)
+
+Accounts, groups and memberships for the server's own people, managed from the admin panel: adding someone, moving them between groups, suspending an account during an incident, or removing it. Before a group is renamed or deleted the panel names every application that would stop admitting the people who hold it, so an access change is never made blind.
+
+Written, not yet passing: `identity_group_gates_access`
+
 ### Identity posture monitoring (1 rehearsal)
 
 Recurring checks that the account structure stays healthy: enforced multi-factor authentication, the agreed group model, and no unexpected administrator accounts -- with drift raised as an alert.
