@@ -115,6 +115,8 @@ Une seconde copie de sauvegarde chez un fournisseur différent, verrouillée en 
 
 Répétitions: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `restic_check_subset_weekly`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`, `worm_round_trip`
 
+Écrite, pas encore réussie: `offsite_copy_unreachable_target`
+
 ### Analyse de vulnérabilités (1 répétition)
 
 Analyses récurrentes des logiciels installés et de leurs conteneurs pour vulnérabilités connues, avec résultats versés aux rapports d'entretien et d'attestation.

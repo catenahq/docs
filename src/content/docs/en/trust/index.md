@@ -115,6 +115,8 @@ A second backup copy at a different provider, write-locked so that even a compro
 
 Rehearsals: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `restic_check_subset_weekly`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`, `worm_round_trip`
 
+Written, not yet passing: `offsite_copy_unreachable_target`
+
 ### Vulnerability scanning (1 rehearsal)
 
 Recurring scans of the installed software and its containers for known vulnerabilities, with findings fed into the maintenance and attestation reporting.
