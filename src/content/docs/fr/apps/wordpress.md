@@ -86,7 +86,12 @@ lui-même.
 services:
   wp:
     image: wordpress:6.9.4-fpm-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: wordpress
@@ -120,11 +125,6 @@ services:
     volumes:
       - wp-files:/var/www/html
       - wp-cache:/var/cache/nginx/fastcgi
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "test -f /var/www/html/wp-load.php"]
       interval: 5s
@@ -133,12 +133,19 @@ services:
       start_period: 60s
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-wordpress"
+      - "vps.component=wp"
     networks:
       - default
 
   nginx:
     image: nginx:1.29.8-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     # Add www-data uid 82 (matches php-fpm-alpine) before starting nginx
     # so workers can read/write the FastCGI cache that NPP unlinks from
     # php-fpm. Ensure the cache dir is owned by www-data on first boot.
@@ -157,9 +164,6 @@ services:
     configs:
       - source: wp_nginx_conf
         target: /etc/nginx/nginx.conf
-    depends_on:
-      wp:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost/ || exit 1"]
       interval: 10s
@@ -171,15 +175,22 @@ services:
       - "vps.route.service=nginx"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-wordpress"
+      - "vps.component=nginx"
     networks:
       catena-network:
         aliases:
-          - wordpress
+          - catena-wordpress
       default: {}
 
   db:
     image: mariadb:11.8.6
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       MARIADB_DATABASE: wordpress
       MARIADB_USER: wordpress
@@ -194,12 +205,16 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-wordpress"
+      - "vps.component=db"
     networks:
       - default
 
   redis:
     image: redis:7.4.9-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -207,6 +222,8 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-wordpress"
+      - "vps.component=redis"
     networks:
       - default
 

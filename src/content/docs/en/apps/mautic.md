@@ -105,7 +105,12 @@ fields (described above), never in the compose itself.
 services:
   mautic_web:
     image: mautic/mautic:7.1.1-apache
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       MAUTIC_DB_HOST: db
       MAUTIC_DB_PORT: "3306"
@@ -130,9 +135,6 @@ services:
       - config-data:/var/www/html/config
       - logs-data:/var/www/html/var/logs
       - media-data:/var/www/html/docroot/media
-    depends_on:
-      db:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost/ >/dev/null || exit 1"]
       interval: 15s
@@ -145,15 +147,22 @@ services:
       - "vps.route.service=mautic_web"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-mautic"
+      - "vps.component=mautic_web"
     networks:
       catena-network:
         aliases:
-          - mautic
+          - catena-mautic
       default: {}
 
   mautic_worker:
     image: mautic/mautic:7.1.1-apache
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       DOCKER_MAUTIC_ROLE: mautic_worker
       MAUTIC_DB_HOST: db
@@ -167,17 +176,21 @@ services:
       - config-data:/var/www/html/config
       - logs-data:/var/www/html/var/logs
       - media-data:/var/www/html/docroot/media
-    depends_on:
-      mautic_web:
-        condition: service_healthy
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-mautic"
+      - "vps.component=mautic_worker"
     networks:
       - default
 
   mautic_cron:
     image: mautic/mautic:7.1.1-apache
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       DOCKER_MAUTIC_ROLE: mautic_cron
       MAUTIC_DB_HOST: db
@@ -189,17 +202,21 @@ services:
       - config-data:/var/www/html/config
       - logs-data:/var/www/html/var/logs
       - media-data:/var/www/html/docroot/media
-    depends_on:
-      mautic_web:
-        condition: service_healthy
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-mautic"
+      - "vps.component=mautic_cron"
     networks:
       - default
 
   db:
     image: mariadb:11.8.6
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MARIADB_DATABASE: mautic
@@ -214,6 +231,8 @@ services:
       retries: 10
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-mautic"
+      - "vps.component=db"
     networks:
       - default
 

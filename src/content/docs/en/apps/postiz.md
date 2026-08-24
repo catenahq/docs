@@ -55,7 +55,12 @@ fields (described above), never in the compose itself.
 services:
   postiz:
     image: ghcr.io/gitroomhq/postiz-app:v2.21.7
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       NOT_SECURED: "false"
       IS_GENERAL: "true"
@@ -70,11 +75,6 @@ services:
       REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET}
       DISABLE_REGISTRATION: "false"
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
     volumes:
       - postiz-uploads:/uploads
       - postiz-config:/config
@@ -84,15 +84,22 @@ services:
       - "vps.route.service=postiz"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-postiz"
+      - "vps.component=postiz"
     networks:
       catena-network:
         aliases:
-          - postiz
+          - catena-postiz
       default: {}
 
   db:
     image: postgres:18.4-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       POSTGRES_USER: postiz
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -107,14 +114,20 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-postiz"
+      - "vps.component=db"
     networks:
       - default
 
   redis:
     image: redis:8.6.3-alpine3.23
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-postiz"
+      - "vps.component=redis"
     networks:
       - default
 

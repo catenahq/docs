@@ -70,71 +70,85 @@ x-zammad-env: &zammad-env
 services:
   zammad-init:
     image: zammad/zammad:7.0.1-0035
-    restart: on-failure
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["zammad-init"]
     environment: *zammad-env
     volumes:
       - zammad-storage:/opt/zammad/storage
-    depends_on:
-      db:
-        condition: service_healthy
-      elasticsearch:
-        condition: service_healthy
+    labels:
+      - "vps.app=catena-zammad"
+      - "vps.component=zammad-init"
     networks:
       - default
 
   zammad-railsserver:
     image: zammad/zammad:7.0.1-0035
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["zammad-railsserver"]
     environment: *zammad-env
     volumes:
       - zammad-storage:/opt/zammad/storage
-    depends_on:
-      - zammad-init
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-zammad"
+      - "vps.component=zammad-railsserver"
     networks:
       - default
 
   zammad-websocket:
     image: zammad/zammad:7.0.1-0035
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     command: ["zammad-websocket"]
     environment: *zammad-env
-    depends_on:
-      - zammad-init
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-zammad"
+      - "vps.component=zammad-websocket"
     networks:
       - default
 
   zammad-scheduler:
     image: zammad/zammad:7.0.1-0035
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["zammad-scheduler"]
     environment: *zammad-env
     volumes:
       - zammad-storage:/opt/zammad/storage
-    depends_on:
-      - zammad-init
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-zammad"
+      - "vps.component=zammad-scheduler"
     networks:
       - default
 
   # Public-facing: fronts railsserver + websocket under a single vhost.
   zammad-nginx:
     image: zammad/zammad:7.0.1-0035
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     command: ["zammad-nginx"]
     environment:
       <<: *zammad-env
       NGINX_SERVER_NAME: ${ZAMMAD_HOSTNAME}
       NGINX_CLIENT_MAX_BODY_SIZE: 50M
-    depends_on:
-      - zammad-railsserver
-      - zammad-websocket
     labels:
       - "vps.route.host=${DOMAIN_HOST}"
       - "vps.route.port=8080"
@@ -145,15 +159,22 @@ services:
       - "vps.auth.oidc.redirect_uris=https://${ZAMMAD_HOSTNAME}/auth/openid_connect/callback"
       - "vps.auth.oidc.scopes=openid email profile"
       - "vps.auto-update=patch"
+      - "vps.app=catena-zammad"
+      - "vps.component=zammad-nginx"
     networks:
       catena-network:
         aliases:
-          - zammad
+          - catena-zammad
       default: {}
 
   db:
     image: postgres:18.4-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       POSTGRES_USER: zammad
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -168,29 +189,44 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-zammad"
+      - "vps.component=db"
     networks:
       - default
 
   redis:
     image: redis:8.6.3-alpine3.23
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-zammad"
+      - "vps.component=redis"
     networks:
       - default
 
   memcached:
     image: memcached:1.6.41-alpine3.23
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     command: ["memcached", "-m", "256"]
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-zammad"
+      - "vps.component=memcached"
     networks:
       - default
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.19.15
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       discovery.type: single-node
       xpack.security.enabled: "false"
@@ -205,6 +241,8 @@ services:
       start_period: 60s
     labels:
       - "vps.auto-update=off"
+      - "vps.app=catena-zammad"
+      - "vps.component=elasticsearch"
     networks:
       - default
 

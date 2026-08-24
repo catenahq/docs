@@ -60,13 +60,18 @@ sudo bash -c 'set -a; . /etc/catena/backup.env; set +a; \
   restic restore latest --target / --include /path/to/restore'
 ```
 
-Applications are ordinary containers. Standard Docker commands show
-what is running and start or stop anything:
+Applications run under Docker's own orchestrator, so standard Docker
+commands list them and stop or start any one of them:
 
 ```sh
-docker ps
-docker start <name>
+docker service ls
+docker service scale <name>=0
+docker service scale <name>=1
 ```
+
+Scaling to zero is the stop, and back to one is the start. Docker keeps
+each application running on its own, which is why stopping one is asked
+for rather than done to a container directly.
 
 A whole-server rebuild from the keyset alone follows
 [Rebuilding a server from backup](/en/self-restore/). That flow uses the

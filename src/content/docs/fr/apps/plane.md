@@ -60,43 +60,51 @@ lui-même.
 services:
   web:
     image: makeplane/plane-frontend:v1.3.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     environment:
       NEXT_PUBLIC_API_BASE_URL: ""
-    depends_on:
-      - api
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-plane"
+      - "vps.component=web"
     networks:
       - default
 
   space:
     image: makeplane/plane-space:v1.3.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     environment:
       NEXT_PUBLIC_API_BASE_URL: ""
-    depends_on:
-      - api
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-plane"
+      - "vps.component=space"
     networks:
       - default
 
   admin:
     image: makeplane/plane-admin:v1.3.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     environment:
       NEXT_PUBLIC_API_BASE_URL: ""
-    depends_on:
-      - api
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-plane"
+      - "vps.component=admin"
     networks:
       - default
 
   api:
     image: makeplane/plane-backend:v1.3.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     command: ./bin/docker-entrypoint-api.sh
     environment: &backend-env
       DEBUG: "0"
@@ -121,65 +129,63 @@ services:
       AWS_S3_BUCKET_NAME: uploads
       USE_MINIO: "1"
       FILE_SIZE_LIMIT: "5242880"
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-      minio:
-        condition: service_started
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-plane"
+      - "vps.component=api"
     networks:
       - default
 
   worker:
     image: makeplane/plane-backend:v1.3.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     command: ./bin/docker-entrypoint-worker.sh
     environment: *backend-env
-    depends_on:
-      - api
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-plane"
+      - "vps.component=worker"
     networks:
       - default
 
   beat-worker:
     image: makeplane/plane-backend:v1.3.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     command: ./bin/docker-entrypoint-beat.sh
     environment: *backend-env
-    depends_on:
-      - api
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-plane"
+      - "vps.component=beat-worker"
     networks:
       - default
 
   live:
     image: makeplane/plane-live:v1.3.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     environment:
       API_BASE_URL: http://api:8000
-    depends_on:
-      - api
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-plane"
+      - "vps.component=live"
     networks:
       - default
 
   proxy:
     image: makeplane/plane-proxy:v1.3.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     environment:
       FILE_SIZE_LIMIT: "5242880"
       BUCKET_NAME: uploads
-    depends_on:
-      - web
-      - api
-      - space
-      - admin
     labels:
       - "vps.route.host=${DOMAIN_HOST}"
       - "vps.route.port=80"
@@ -190,15 +196,22 @@ services:
       - "vps.auth.oidc.redirect_uris=https://${PLANE_HOSTNAME}/auth/oidc/callback/"
       - "vps.auth.oidc.scopes=openid email profile"
       - "vps.auto-update=patch"
+      - "vps.app=catena-plane"
+      - "vps.component=proxy"
     networks:
       catena-network:
         aliases:
-          - plane
+          - catena-plane
       default: {}
 
   db:
     image: postgres:18.4-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       POSTGRES_USER: plane
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -213,22 +226,36 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-plane"
+      - "vps.component=db"
     networks:
       - default
 
   redis:
     image: redis:8.6.3-alpine3.23
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     volumes:
       - redis-data:/data
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-plane"
+      - "vps.component=redis"
     networks:
       - default
 
   minio:
     image: minio/minio:RELEASE.2025-09-07T16-13-09Z
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: server /export --console-address ":9090"
     environment:
       MINIO_ROOT_USER: ${PLANE_MINIO_ACCESS_KEY}
@@ -237,6 +264,8 @@ services:
       - minio-data:/export
     labels:
       - "vps.auto-update=off"
+      - "vps.app=catena-plane"
+      - "vps.component=minio"
     networks:
       - default
 

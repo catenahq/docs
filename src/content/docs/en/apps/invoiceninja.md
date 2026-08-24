@@ -124,7 +124,12 @@ fields (described above), never in the compose itself.
 services:
   app:
     image: invoiceninja/invoiceninja-debian:5
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
@@ -161,28 +166,27 @@ services:
     volumes:
       - app_public:/var/www/html/public
       - app_storage:/var/www/html/storage
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-invoiceninja"
+      - "vps.component=app"
     networks:
       - default
 
   nginx:
     image: nginx:1.29.8-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     volumes:
       - app_public:/var/www/html/public:ro
       - app_storage:/var/www/html/storage:ro
     configs:
       - source: invoiceninja_nginx_conf
         target: /etc/nginx/conf.d/default.conf
-    depends_on:
-      app:
-        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost/ || exit 1"]
       interval: 10s
@@ -195,15 +199,22 @@ services:
       - "vps.auth.mode=public"
       - "vps.auth.groups=staff"
       - "vps.auto-update=patch"
+      - "vps.app=catena-invoiceninja"
+      - "vps.component=nginx"
     networks:
       catena-network:
         aliases:
-          - invoiceninja
+          - catena-invoiceninja
       default: {}
 
   db:
     image: mariadb:11.8.6
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MARIADB_DATABASE: invoiceninja
@@ -218,12 +229,19 @@ services:
       retries: 10
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-invoiceninja"
+      - "vps.component=db"
     networks:
       - default
 
   redis:
     image: redis:7.4.9-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     volumes:
       - redis-data:/data
     healthcheck:
@@ -233,6 +251,8 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-invoiceninja"
+      - "vps.component=redis"
     networks:
       - default
 

@@ -64,7 +64,12 @@ fields (described above), never in the compose itself.
 services:
   documentserver:
     image: onlyoffice/documentserver:9.3.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       JWT_ENABLED: "true"
       JWT_SECRET: ${JWT_SECRET}
@@ -84,10 +89,12 @@ services:
       - "vps.route.service=documentserver"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-onlyoffice"
+      - "vps.component=documentserver"
     networks:
       catena-network:
         aliases:
-          - onlyoffice
+          - catena-onlyoffice
       default: {}
 
 volumes:

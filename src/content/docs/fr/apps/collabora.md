@@ -68,7 +68,9 @@ lui-même.
 services:
   collabora:
     image: collabora/code:25.04.9.4.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     environment:
       # Regex of WOPI hosts allowed to use this CODE instance. The
       # `nextcloud\..*` pattern matches any `nextcloud.<zone>` FQDN;
@@ -85,10 +87,12 @@ services:
       - "vps.route.service=collabora"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-collabora"
+      - "vps.component=collabora"
     networks:
       catena-network:
         aliases:
-          - collabora
+          - catena-collabora
       default: {}
 
 networks:

@@ -64,14 +64,19 @@ sudo bash -c 'set -a; . /etc/catena/backup.env; set +a; \
   restic restore latest --target / --include /chemin/a/restaurer'
 ```
 
-Les applications sont des conteneurs ordinaires. Les commandes Docker
-standards montrent ce qui tourne et démarrent ou arrêtent n'importe
-quoi :
+Les applications tournent sous l'orchestrateur de Docker : les
+commandes Docker standards les listent et arrêtent ou démarrent
+n'importe laquelle :
 
 ```sh
-docker ps
-docker start <nom>
+docker service ls
+docker service scale <nom>=0
+docker service scale <nom>=1
 ```
+
+Passer à zéro, c'est l'arrêt ; revenir à un, c'est le démarrage. Docker
+maintient chaque application en marche de lui-même, d'où la demande
+plutôt qu'une action directe sur un conteneur.
 
 Reconstruire un serveur entier à partir de la seule trousse suit
 [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/).

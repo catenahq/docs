@@ -68,7 +68,12 @@ fields (described above), never in the compose itself.
 services:
   mongodb:
     image: mongo:7.0.32
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     # Rocket.Chat tails the oplog, which requires a replica set. Starting
     # mongod with --replSet enables the rs; the healthcheck calls
     # rs.initiate() on first boot (idempotent: subsequent runs hit the
@@ -92,6 +97,8 @@ services:
       - mongodb-config:/data/configdb
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-rocketchat"
+      - "vps.component=mongodb"
     networks:
       default:
         aliases:
@@ -99,7 +106,9 @@ services:
 
   rocketchat:
     image: docker.io/rocketchat/rocket.chat:8.4.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     environment:
       ROOT_URL: https://${ROCKETCHAT_HOSTNAME}
       PORT: "3000"
@@ -127,9 +136,6 @@ services:
       OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-name_field: "name"
       OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-groups_claim: "groups"
       OVERWRITE_SETTING_Accounts_OAuth_Custom-keycloak-merge_users: "true"
-    depends_on:
-      mongodb:
-        condition: service_healthy
     labels:
       - "vps.route.host=${DOMAIN_HOST}"
       - "vps.route.port=3000"
@@ -140,10 +146,12 @@ services:
       - "vps.auth.oidc.redirect_uris=https://${ROCKETCHAT_HOSTNAME}/_oauth/keycloak"
       - "vps.auth.oidc.scopes=openid email profile groups"
       - "vps.auto-update=patch"
+      - "vps.app=catena-rocketchat"
+      - "vps.component=rocketchat"
     networks:
       catena-network:
         aliases:
-          - rocketchat
+          - catena-rocketchat
       default: {}
 
   # === JITSI BEGIN -- bundled on-server video conferencing ================
@@ -161,11 +169,9 @@ services:
 
   prosody:
     image: jitsi/prosody:stable-10888
-    restart: unless-stopped
-    expose:
-      - "5222"
-      - "5347"
-      - "5280"
+    deploy:
+      restart_policy:
+        condition: any
     environment:
       AUTH_TYPE: internal
       ENABLE_AUTH: "1"
@@ -191,6 +197,8 @@ services:
       TZ: Etc/UTC
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-rocketchat"
+      - "vps.component=prosody"
     networks:
       default:
         aliases:
@@ -208,7 +216,9 @@ services:
 
   jicofo:
     image: jitsi/jicofo:stable-10888
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     environment:
       XMPP_DOMAIN: meet.jitsi
       XMPP_AUTH_DOMAIN: auth.meet.jitsi
@@ -219,16 +229,18 @@ services:
       JICOFO_AUTH_USER: focus
       JICOFO_AUTH_PASSWORD: ${JITSI_JICOFO_AUTH_PASSWORD}
       TZ: Etc/UTC
-    depends_on:
-      - prosody
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-rocketchat"
+      - "vps.component=jicofo"
     networks:
       - default
 
   jvb:
     image: jitsi/jvb:stable-10888
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     # Media UDP MUST be host-published. mode: host bypasses Swarm's
     # routing mesh so packets carry the real public source IP and
     # JVB's ICE candidates point at a routable address.
@@ -254,18 +266,18 @@ services:
       JVB_TURN_TRANSPORT: tcp
       JVB_TURN_SECRET: ${TURN_STATIC_AUTH_SECRET}
       TZ: Etc/UTC
-    depends_on:
-      - prosody
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-rocketchat"
+      - "vps.component=jvb"
     networks:
       - default
 
   jitsi-web:
     image: jitsi/web:stable-10888
-    restart: unless-stopped
-    expose:
-      - "80"
+    deploy:
+      restart_policy:
+        condition: any
     environment:
       ENABLE_LETSENCRYPT: "0"
       ENABLE_HTTP_REDIRECT: "0"
@@ -279,8 +291,6 @@ services:
       XMPP_MUC_DOMAIN: muc.meet.jitsi
       XMPP_RECORDER_DOMAIN: recorder.meet.jitsi
       TZ: Etc/UTC
-    depends_on:
-      - prosody
     labels:
       # Routed via Traefik on meet.<base>; HTTP only on the container
       # side, TLS terminates at cloudflared/Traefik upstream like every
@@ -289,6 +299,8 @@ services:
       # Keycloak-gated for v1).
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-rocketchat"
+      - "vps.component=jitsi-web"
     networks:
       catena-network:
         aliases:

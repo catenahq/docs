@@ -77,7 +77,12 @@ services:
   # One-shot: render common_site_config.json from the env above.
   configurator:
     image: frappe/erpnext:v15.107.0
-    restart: "no"
+    deploy:
+      restart_policy:
+        condition: none
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     entrypoint:
       - bash
       - -c
@@ -97,15 +102,20 @@ services:
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
-    depends_on:
-      db:
-        condition: service_healthy
 
   # One-shot: create the ERPNext site on first run (idempotent: bench
   # new-site no-ops when the site already exists).
+    labels:
+      - "vps.app=catena-erpnext"
+      - "vps.component=configurator"
   create-site:
     image: frappe/erpnext:v15.107.0
-    restart: "no"
+    deploy:
+      restart_policy:
+        condition: none
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     entrypoint:
       - bash
       - -c
@@ -130,26 +140,37 @@ services:
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
-    depends_on:
-      - configurator
+    labels:
+      - "vps.app=catena-erpnext"
+      - "vps.component=create-site"
 
   backend:
     image: frappe/erpnext:v15.107.0
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment: *frappe-env
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
-    depends_on:
-      - create-site
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-erpnext"
+      - "vps.component=backend"
     networks:
       - default
 
   frontend:
     image: frappe/erpnext:v15.107.0
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["nginx-entrypoint.sh"]
     environment:
       BACKEND: backend:8000
@@ -163,99 +184,128 @@ services:
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
-    depends_on:
-      - backend
-      - websocket
     labels:
       - "vps.route.host=${DOMAIN_HOST}"
       - "vps.route.port=8080"
       - "vps.route.service=frontend"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-erpnext"
+      - "vps.component=frontend"
     networks:
       catena-network:
         aliases:
-          - erpnext
+          - catena-erpnext
       default: {}
 
   websocket:
     image: frappe/erpnext:v15.107.0
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["node", "/home/frappe/frappe-bench/apps/frappe/socketio.js"]
     environment: *frappe-env
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
-    depends_on:
-      - create-site
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-erpnext"
+      - "vps.component=websocket"
     networks:
       - default
 
   queue-default:
     image: frappe/erpnext:v15.107.0
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["bench", "worker", "--queue", "default"]
     environment: *frappe-env
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
-    depends_on:
-      - create-site
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-erpnext"
+      - "vps.component=queue-default"
     networks:
       - default
 
   queue-short:
     image: frappe/erpnext:v15.107.0
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["bench", "worker", "--queue", "short,default"]
     environment: *frappe-env
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
-    depends_on:
-      - create-site
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-erpnext"
+      - "vps.component=queue-short"
     networks:
       - default
 
   queue-long:
     image: frappe/erpnext:v15.107.0
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["bench", "worker", "--queue", "long,default,short"]
     environment: *frappe-env
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
-    depends_on:
-      - create-site
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-erpnext"
+      - "vps.component=queue-long"
     networks:
       - default
 
   scheduler:
     image: frappe/erpnext:v15.107.0
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["bench", "schedule"]
     environment: *frappe-env
     volumes:
       - sites:/home/frappe/frappe-bench/sites
       - logs:/home/frappe/frappe-bench/logs
-    depends_on:
-      - create-site
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-erpnext"
+      - "vps.component=scheduler"
     networks:
       - default
 
   db:
     image: mariadb:11.8.6
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -273,24 +323,37 @@ services:
       start_period: 30s
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-erpnext"
+      - "vps.component=db"
     networks:
       - default
 
   redis-cache:
     image: redis:8.6.3-alpine3.23
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-erpnext"
+      - "vps.component=redis-cache"
     networks:
       - default
 
   redis-queue:
     image: redis:8.6.3-alpine3.23
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     volumes:
       - redis-queue-data:/data
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-erpnext"
+      - "vps.component=redis-queue"
     networks:
       - default
 

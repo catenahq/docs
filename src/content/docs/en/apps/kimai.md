@@ -94,7 +94,12 @@ fields (described above), never in the compose itself.
 services:
   kimai:
     image: kimai/kimai2:stable
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       DATABASE_URL: "mysql://kimai:${DB_PASSWORD}@db:3306/kimai?charset=utf8mb4&serverVersion=11.8.6-MariaDB"
       APP_SECRET: ${KIMAI_APP_SECRET}
@@ -107,9 +112,6 @@ services:
       memory_limit: "512M"
     volumes:
       - kimai-data:/opt/kimai/var
-    depends_on:
-      db:
-        condition: service_healthy
     labels:
       - "vps.route.host=${DOMAIN_HOST}"
       - "vps.route.port=8001"
@@ -117,15 +119,22 @@ services:
       - "vps.auth.mode=public"
       - "vps.auth.groups=staff"
       - "vps.auto-update=patch"
+      - "vps.app=catena-kimai"
+      - "vps.component=kimai"
     networks:
       catena-network:
         aliases:
-          - kimai
+          - catena-kimai
       default: {}
 
   db:
     image: mariadb:11.8.6
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MARIADB_DATABASE: kimai
@@ -140,6 +149,8 @@ services:
       retries: 10
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-kimai"
+      - "vps.component=db"
     networks:
       - default
 

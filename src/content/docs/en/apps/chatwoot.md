@@ -54,7 +54,12 @@ fields (described above), never in the compose itself.
 services:
   rails:
     image: chatwoot/chatwoot:v4.13.0-ce
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     entrypoint: docker/entrypoints/rails.sh
     command: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
     environment:
@@ -72,11 +77,6 @@ services:
       REDIS_URL: redis://redis:6379
       RAILS_LOG_TO_STDOUT: "true"
       ACTIVE_STORAGE_SERVICE: local
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
     volumes:
       - storage-data:/app/storage
     labels:
@@ -85,15 +85,22 @@ services:
       - "vps.route.service=rails"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-chatwoot"
+      - "vps.component=rails"
     networks:
       catena-network:
         aliases:
-          - chatwoot
+          - catena-chatwoot
       default: {}
 
   sidekiq:
     image: chatwoot/chatwoot:v4.13.0-ce
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
     environment:
       RAILS_ENV: production
@@ -106,18 +113,23 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       REDIS_URL: redis://redis:6379
       ACTIVE_STORAGE_SERVICE: local
-    depends_on:
-      - rails
     volumes:
       - storage-data:/app/storage
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-chatwoot"
+      - "vps.component=sidekiq"
     networks:
       - default
 
   db:
     image: postgres:18.4-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       POSTGRES_USER: chatwoot
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -132,14 +144,20 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-chatwoot"
+      - "vps.component=db"
     networks:
       - default
 
   redis:
     image: redis:8.6.3-alpine3.23
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-chatwoot"
+      - "vps.component=redis"
     networks:
       - default
 

@@ -54,7 +54,12 @@ lui-même.
 services:
   actual:
     image: actualbudget/actual-server:26.5.1-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       ACTUAL_HTTPS: "false"               # TLS terminated by Traefik
       ACTUAL_TRUST_PROXY: "true"
@@ -67,10 +72,12 @@ services:
       - "vps.route.service=actual"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-actualbudget"
+      - "vps.component=actual"
     networks:
       catena-network:
         aliases:
-          - actualbudget
+          - catena-actualbudget
       default: {}
 
 volumes:

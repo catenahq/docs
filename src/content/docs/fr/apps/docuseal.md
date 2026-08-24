@@ -89,7 +89,12 @@ lui-même.
 services:
   docuseal:
     image: docuseal/docuseal:2.5.2
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       HOST: https://${DOCUSEAL_HOSTNAME}
       FORCE_SSL: "true"
@@ -114,9 +119,6 @@ services:
       OIDC_ISSUER_URL: ${OIDC_ISSUER_URL}
     volumes:
       - docuseal-data:/data
-    depends_on:
-      db:
-        condition: service_healthy
     labels:
       - "vps.route.host=${DOMAIN_HOST}"
       - "vps.route.port=3000"
@@ -127,15 +129,22 @@ services:
       - "vps.auth.oidc.redirect_uris=https://${DOCUSEAL_HOSTNAME}/users/auth/openid_connect/callback"
       - "vps.auth.oidc.scopes=openid email profile"
       - "vps.auto-update=patch"
+      - "vps.app=catena-docuseal"
+      - "vps.component=docuseal"
     networks:
       catena-network:
         aliases:
-          - docuseal
+          - catena-docuseal
       default: {}
 
   db:
     image: postgres:18.4-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       POSTGRES_USER: docuseal
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -150,6 +159,8 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-docuseal"
+      - "vps.component=db"
     networks:
       - default
 

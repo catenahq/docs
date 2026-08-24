@@ -56,7 +56,12 @@ fields (described above), never in the compose itself.
 services:
   server:
     image: twentycrm/twenty:v2.3.2
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       NODE_ENV: production
       PG_DATABASE_URL: postgres://postgres:${DB_PASSWORD}@db:5432/default
@@ -72,11 +77,6 @@ services:
       OIDC_ISSUER_URL: ${OIDC_ISSUER_URL}
     volumes:
       - server-data:/app/.local-storage
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
     labels:
       - "vps.route.host=${DOMAIN_HOST}"
       - "vps.route.port=3000"
@@ -87,15 +87,22 @@ services:
       - "vps.auth.oidc.redirect_uris=https://${TWENTY_HOSTNAME}/auth/oidc/callback"
       - "vps.auth.oidc.scopes=openid email profile"
       - "vps.auto-update=patch"
+      - "vps.app=catena-twenty"
+      - "vps.component=server"
     networks:
       catena-network:
         aliases:
-          - twenty
+          - catena-twenty
       default: {}
 
   worker:
     image: twentycrm/twenty:v2.3.2
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: ["yarn", "worker:prod"]
     environment:
       NODE_ENV: production
@@ -107,16 +114,21 @@ services:
       APP_SECRET: ${TWENTY_APP_SECRET}
     volumes:
       - server-data:/app/.local-storage
-    depends_on:
-      - server
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-twenty"
+      - "vps.component=worker"
     networks:
       - default
 
   db:
     image: postgres:18.4-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -131,14 +143,20 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-twenty"
+      - "vps.component=db"
     networks:
       - default
 
   redis:
     image: redis:8.6.3-alpine3.23
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-twenty"
+      - "vps.component=redis"
     networks:
       - default
 

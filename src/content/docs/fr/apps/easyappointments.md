@@ -80,7 +80,12 @@ lui-même.
 services:
   easyappointments:
     image: alextselegidis/easyappointments:1.5.2
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       BASE_URL: https://${EASYAPPOINTMENTS_HOSTNAME}
       DB_HOST: db
@@ -90,9 +95,6 @@ services:
       DEBUG_MODE: "FALSE"
     volumes:
       - server-data:/var/www/html/storage
-    depends_on:
-      db:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost/ >/dev/null || exit 1"]
       interval: 15s
@@ -105,15 +107,22 @@ services:
       - "vps.route.service=easyappointments"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-easyappointments"
+      - "vps.component=easyappointments"
     networks:
       catena-network:
         aliases:
-          - easyappointments
+          - catena-easyappointments
       default: {}
 
   db:
     image: mariadb:11.8.6
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MARIADB_DATABASE: easyappointments
@@ -128,6 +137,8 @@ services:
       retries: 10
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-easyappointments"
+      - "vps.component=db"
     networks:
       - default
 

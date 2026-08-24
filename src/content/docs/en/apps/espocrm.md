@@ -81,7 +81,12 @@ fields (described above), never in the compose itself.
 services:
   espocrm:
     image: espocrm/espocrm:9.3.6
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       ESPOCRM_DATABASE_PLATFORM: Mysql
       ESPOCRM_DATABASE_HOST: db
@@ -101,9 +106,6 @@ services:
       OIDC_ISSUER_URL: ${OIDC_ISSUER_URL}
     volumes:
       - server-data:/var/www/html/data
-    depends_on:
-      db:
-        condition: service_healthy
     labels:
       - "vps.route.host=${DOMAIN_HOST}"
       - "vps.route.port=80"
@@ -114,15 +116,22 @@ services:
       - "vps.auth.oidc.redirect_uris=https://${ESPOCRM_HOSTNAME}/oauth-callback.php"
       - "vps.auth.oidc.scopes=openid email profile"
       - "vps.auto-update=patch"
+      - "vps.app=catena-espocrm"
+      - "vps.component=espocrm"
     networks:
       catena-network:
         aliases:
-          - espocrm
+          - catena-espocrm
       default: {}
 
   cron:
     image: espocrm/espocrm:9.3.6
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     entrypoint: docker-cron.sh
     environment:
       ESPOCRM_DATABASE_PLATFORM: Mysql
@@ -133,17 +142,21 @@ services:
       ESPOCRM_DATABASE_PASSWORD: ${DB_PASSWORD}
     volumes:
       - server-data:/var/www/html/data
-    depends_on:
-      espocrm:
-        condition: service_started
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-espocrm"
+      - "vps.component=cron"
     networks:
       - default
 
   db:
     image: mariadb:11.8.6
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MARIADB_DATABASE: espocrm
@@ -158,6 +171,8 @@ services:
       retries: 10
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-espocrm"
+      - "vps.component=db"
     networks:
       - default
 

@@ -55,7 +55,12 @@ fields (described above), never in the compose itself.
 services:
   outline:
     image: outlinewiki/outline:1.7.1
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     command: >-
       sh -c "yarn db:migrate --env production-ssl-disabled && yarn start"
     environment:
@@ -84,11 +89,6 @@ services:
       OIDC_SCOPES: openid profile email
     volumes:
       - outline-data:/var/lib/outline/data
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
     labels:
       - "vps.route.host=${DOMAIN_HOST}"
       - "vps.route.port=3000"
@@ -99,15 +99,22 @@ services:
       - "vps.auth.oidc.redirect_uris=https://${OUTLINE_HOSTNAME}/auth/oidc.callback"
       - "vps.auth.oidc.scopes=openid email profile"
       - "vps.auto-update=patch"
+      - "vps.app=catena-outline"
+      - "vps.component=outline"
     networks:
       catena-network:
         aliases:
-          - outline
+          - catena-outline
       default: {}
 
   db:
     image: postgres:18.4-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       POSTGRES_USER: outline
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -122,14 +129,20 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-outline"
+      - "vps.component=db"
     networks:
       - default
 
   redis:
     image: redis:8.6.3-alpine3.23
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-outline"
+      - "vps.component=redis"
     networks:
       - default
 

@@ -58,7 +58,12 @@ lui-même.
 services:
   n8n:
     image: n8nio/n8n:2.19.5
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       N8N_HOST: ${N8N_HOSTNAME}
       WEBHOOK_URL: https://${N8N_HOSTNAME}/
@@ -79,24 +84,28 @@ services:
       N8N_RUNNERS_ENABLED: "true"
     volumes:
       - n8n-data:/home/node/.n8n
-    depends_on:
-      db:
-        condition: service_healthy
     labels:
       - "vps.route.host=${DOMAIN_HOST}"
       - "vps.route.port=5678"
       - "vps.route.service=n8n"
       - "vps.auth.mode=public"
       - "vps.auto-update=patch"
+      - "vps.app=catena-n8n"
+      - "vps.component=n8n"
     networks:
       catena-network:
         aliases:
-          - n8n
+          - catena-n8n
       default: {}
 
   db:
     image: postgres:18.4-alpine
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
     environment:
       POSTGRES_USER: n8n
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -111,6 +120,8 @@ services:
       retries: 5
     labels:
       - "vps.auto-update=patch"
+      - "vps.app=catena-n8n"
+      - "vps.component=db"
     networks:
       - default
 
