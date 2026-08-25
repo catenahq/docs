@@ -33,6 +33,8 @@ Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout te
 
 Répétitions: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
 
+Écrite, pas encore réussie: `ce_backup_deferred`
+
 ### Authentification unique pour toute la suite (10 répétitions)
 
 Un seul compte ouvre toutes les applications, avec contrôle d'accès par application et séparation employé/administrateur appliquée en amont des applications, pas dans chacune.

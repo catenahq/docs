@@ -33,6 +33,8 @@ A scheduled weekly backup plus manual backups any time. Backups are encrypted on
 
 Rehearsals: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
 
+Written, not yet passing: `ce_backup_deferred`
+
 ### Single sign-on across the suite (10 rehearsals)
 
 One account signs in to every application, with per-application access control and staff/administrator separation enforced in front of the applications, not inside each one.
