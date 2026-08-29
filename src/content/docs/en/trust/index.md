@@ -47,6 +47,12 @@ A web dashboard with role-aware access (staff see status, administrators also ge
 
 Rehearsals: `admin_action_unknown_rejected`, `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `payload_action_dispatches_without_converge`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
 
+### Self-serve application catalog (rehearsal written, not yet passing)
+
+A catalog of ready-to-deploy applications on the server's own console, with every setting already filled in for that server: its domain names, its single sign-on, and a fresh password for each application, generated on the server itself.
+
+Written, not yet passing: `marketplace_catalog_resolved`
+
 ### Installation and application deployment (18 rehearsals)
 
 Prepares a fresh server, installs the platform, and deploys the selected applications. Re-running the same managed operation converges the server back to its declared configuration, so a drifted or half-configured server is repaired, not rebuilt by hand.

@@ -47,6 +47,12 @@ Un tableau de bord web à accès selon le rôle (le personnel voit l'état, les 
 
 Répétitions: `admin_action_unknown_rejected`, `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `payload_action_dispatches_without_converge`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
 
+### Catalogue d'applications en libre-service (répétition écrite, pas encore réussie)
+
+Un catalogue d'applications prêtes à déployer dans la console du serveur, chaque réglage déjà rempli pour ce serveur : ses noms de domaine, son authentification unique, et un mot de passe distinct par application, généré sur le serveur lui-même.
+
+Écrite, pas encore réussie: `marketplace_catalog_resolved`
+
 ### Installation et déploiement des applications (18 répétitions)
 
 Prépare un serveur neuf, installe la plateforme et déploie les applications choisies. Relancer la même opération gérée ramène le serveur à sa configuration déclarée : un serveur ayant dérivé est réparé, pas reconstruit à la main.
