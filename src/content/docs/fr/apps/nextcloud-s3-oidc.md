@@ -429,6 +429,17 @@ services:
       TURN_HOSTNAME: ${TURN_HOSTNAME}
       TURN_STATIC_AUTH_SECRET: ${TURN_STATIC_AUTH_SECRET}
     volumes:
+      # THE CODE TREE MUST SURVIVE THE CONTAINER. The entrypoint reads
+      # /var/www/html/version.php to tell an existing installation from a
+      # new one. On a recreated container -- an image bump, a node reboot,
+      # a service update, a rollback -- that file goes with the old
+      # writable layer, while the config volume still records the
+      # installation. The entrypoint then runs its fresh-install path
+      # against an instance that is already installed, which cannot
+      # succeed, and the container restarts into the same state.
+      # Persisting the code tree is the upstream layout: a recreated
+      # container is recognised as an existing installation.
+      - nc-html:/var/www/html
       - nc-config:/var/www/html/config
       - nc-apps:/var/www/html/custom_apps
       # Even with S3 primary storage, /var/www/html/data still holds
@@ -564,6 +575,10 @@ services:
       OBJECTSTORE_S3_KEY: ${S3_ACCESS_KEY}
       OBJECTSTORE_S3_SECRET: ${S3_SECRET_KEY}
     volumes:
+      # Same tree the app service runs from, for the same reason: cron execs
+      # occ, which needs the code, and a cron container that populates its
+      # own empty /var/www/html would diverge from the app's.
+      - nc-html:/var/www/html
       - nc-config:/var/www/html/config
       - nc-apps:/var/www/html/custom_apps
       # Cron and app must share the data volume -- background jobs
@@ -679,6 +694,9 @@ services:
   # === HPB END =============================================================
 
 volumes:
+  # The Nextcloud code tree. Persisted so a recreated container is an
+  # UPGRADE rather than a fresh install -- see the app service's volumes.
+  nc-html:
   nc-config:
   nc-apps:
   nc-data:
