@@ -31,41 +31,47 @@ Une répétition ne compte ici que si sa dernière exécution enregistrée a ré
 
 Une sauvegarde hebdomadaire planifiée plus des sauvegardes manuelles en tout temps. Les sauvegardes sont chiffrées sur le serveur avant d'en sortir et aboutissent dans un stockage objet appartenant au client; les instantanés se listent, se parcourent et s'exportent sans restauration. La cadence quotidienne et infra-quotidienne est une fonction Catena Pro.
 
-Répétitions: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
+Répétitions: `backup_schedule_applied`, `ce_backup_deferred`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
 
-Écrite, pas encore réussie: `ce_backup_deferred`
+Écrite, pas encore réussie: `backup_rollback`
 
-### Authentification unique pour toute la suite (10 répétitions)
+### Authentification unique pour toute la suite (9 répétitions)
 
 Un seul compte ouvre toutes les applications, avec contrôle d'accès par application et séparation employé/administrateur appliquée en amont des applications, pas dans chacune.
 
-Répétitions: `fi_a1_realm_marker_collision`, `fi_a2_oidc_secret_rotation`, `fi_a3_keycloak_unreachable`, `fi_a4_master_realm_idempotent`, `fi_a5_wrong_group_assignment`, `keycloak_admin_email_loss_recovery`, `keycloak_signing_keys_rotation_round_trip`, `oauth2_proxy_cookie_rotation_round_trip`, `user_recovery_2fa_reset`, `user_recovery_kcadm_temp_password`
+Répétitions: `fi_a1_realm_marker_collision`, `fi_a2_oidc_secret_rotation`, `fi_a3_keycloak_unreachable`, `fi_a4_master_realm_idempotent`, `keycloak_admin_email_loss_recovery`, `keycloak_signing_keys_rotation_round_trip`, `oauth2_proxy_cookie_rotation_round_trip`, `user_recovery_2fa_reset`, `user_recovery_kcadm_temp_password`
 
-### Tableau de bord d'administration (7 répétitions)
+Écrite, pas encore réussie: `fi_a5_wrong_group_assignment`
+
+### Tableau de bord d'administration (6 répétitions)
 
 Un tableau de bord web à accès selon le rôle (le personnel voit l'état, les administrateurs ont aussi les actions d'entretien). Chaque action déclenchée par un bouton est consignée au journal système du serveur.
 
-Répétitions: `admin_action_unknown_rejected`, `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `payload_action_dispatches_without_converge`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
+Répétitions: `admin_action_unknown_rejected`, `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `payload_action_dispatches_without_converge`, `quiesce_resume_round_trip`
 
-### Catalogue d'applications en libre-service (répétition écrite, pas encore réussie)
+Écrite, pas encore réussie: `wizard_restore_smoke`
+
+### Catalogue d'applications en libre-service (1 répétition)
 
 Un catalogue d'applications prêtes à déployer dans la console du serveur, chaque réglage déjà rempli pour ce serveur : ses noms de domaine, son authentification unique, et un mot de passe distinct par application, généré sur le serveur lui-même.
 
-Écrite, pas encore réussie: `marketplace_catalog_resolved`
+Répétitions: `marketplace_catalog_resolved`
 
-### Installation et déploiement des applications (18 répétitions)
+### Installation et déploiement des applications (17 répétitions)
 
 Prépare un serveur neuf, installe la plateforme et déploie les applications choisies. Relancer la même opération gérée ramène le serveur à sa configuration déclarée : un serveur ayant dérivé est réparé, pas reconstruit à la main.
 
-Répétitions: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modify`, `converge_preserves_bumped_image`, `fi_c1_docker_daemon_hang`, `fi_c3_portainer_crash_mid_deploy`, `fi_c4_registry_pull_timeout`, `fi_c6_cloudflared_flapping`, `fi_c7_coturn_cert_expired`, `fi_c8_nextcloud_init_loop`, `fi_u1_compose_lint_reject`, `mixed_template_negative_restore`, `payload_prune_respects_ce`, `release_manifest_converge_state`, `repair_broken_template_round_trip`, `scheduler_easyappointments`, `swarm_overlay_selfheal`
+Répétitions: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modify`, `converge_preserves_bumped_image`, `fi_c1_docker_daemon_hang`, `fi_c4_registry_pull_timeout`, `fi_c6_cloudflared_flapping`, `fi_c7_coturn_cert_expired`, `fi_c8_nextcloud_init_loop`, `fi_u1_compose_lint_reject`, `mixed_template_negative_restore`, `payload_prune_respects_ce`, `release_manifest_converge_state`, `repair_broken_template_round_trip`, `scheduler_easyappointments`, `swarm_overlay_selfheal`
 
-Écrite, pas encore réussie: `dev_to_prod_cutover_round_trip`
+Écrite, pas encore réussie: `dev_to_prod_cutover_round_trip`, `fi_c3_portainer_crash_mid_deploy`
 
-### Catalogue d'applications et intégrations de la suite (2 répétitions)
+### Catalogue d'applications et intégrations de la suite (1 répétition)
 
 Déploiement par application plus le câblage qui fait de la suite un seul produit : courriel, clavardage et visioconférence, intégration fichiers/bureautique, veille antivirus et canaris de livraison.
 
-Répétitions: `mailserver_round_trip`, `nextcloud_versions_retention_applied`
+Répétitions: `nextcloud_versions_retention_applied`
+
+Écrite, pas encore réussie: `mailserver_deploy`, `mailserver_round_trip`
 
 ### Supervision auto-hébergée (1 répétition)
 
@@ -81,13 +87,13 @@ Répétitions: `ce_install_headscale`, `cf_activate`, `cf_tunnel_regenerate_roun
 
 Écrite, pas encore réussie: `cloudflare_api_rotation_round_trip`, `fi_v3_tailscale_acl_misconfig`, `tailscale_oauth_rotation_round_trip`
 
-### Reprise après sinistre et restauration (17 répétitions)
+### Reprise après sinistre et restauration (11 répétitions)
 
 Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde et de sa clé, et un serveur en marche se restaure sur place. Bases de données et applications reviennent en une seule opération coordonnée, cohérentes entre elles plutôt que chacune à son propre instant. Les deux chemins sont répétés en continu, y compris à travers les versions majeures du système et de la base de données.
 
-Répétitions: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `restore_version_skew_upgrade`, `s3_reconcile_orphan_cleanup`, `selective_restore_round_trip`
+Répétitions: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `s3_reconcile_orphan_cleanup`
 
-Écrite, pas encore réussie: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`
+Écrite, pas encore réussie: `debian_major_upgrade_restore`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pg_major_version_cross_restore`, `restore_dr`, `restore_version_skew_abort`, `restore_version_skew_upgrade`, `selective_restore_round_trip`
 
 ### Aucune dépendance forcée, jamais (2 répétitions)
 
@@ -117,13 +123,13 @@ Chaque action administrative sur le serveur est aussi expédiée hors de la mach
 
 Répétitions: `ee_audit_ship`
 
-### Copie de sauvegarde hors site immuable (6 répétitions)
+### Copie de sauvegarde hors site immuable (4 répétitions)
 
 Une seconde copie de sauvegarde chez un fournisseur différent, verrouillée en écriture pour qu'un serveur compromis ne puisse ni la modifier ni l'effacer, avec vérification récurrente que les deux copies se restaurent réellement.
 
-Répétitions: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `restic_check_subset_weekly`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`, `worm_round_trip`
+Répétitions: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `restic_check_subset_weekly`, `worm_object_lock_expiry_edge`
 
-Écrite, pas encore réussie: `offsite_copy_unreachable_target`
+Écrite, pas encore réussie: `offsite_copy_unreachable_target`, `verify_hot_bootprobe_weekly`, `worm_round_trip`
 
 ### Analyse de vulnérabilités (1 répétition)
 

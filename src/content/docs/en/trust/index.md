@@ -31,41 +31,47 @@ A rehearsal counts here only when its last recorded run passed. One that exists 
 
 A scheduled weekly backup plus manual backups any time. Backups are encrypted on the server before leaving it and land in object storage the client owns; snapshots can be listed, browsed and exported without a restore. Daily and sub-daily cadence is a Catena Pro feature.
 
-Rehearsals: `backup_rollback`, `backup_schedule_applied`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
+Rehearsals: `backup_schedule_applied`, `ce_backup_deferred`, `concurrent_backup_lock_contention`, `fi_b2_pg_dump_failed`, `fi_b3_snapshot_id_mismatch`, `fi_b4_locked_pack_rotation`, `fi_b6_healthchecks_down`, `fi_b7_ntfy_delivery_fails`, `malformed_catalog_rejection`, `restic_password_rotation_round_trip`, `snapshot_export_round_trip`
 
-Written, not yet passing: `ce_backup_deferred`
+Written, not yet passing: `backup_rollback`
 
-### Single sign-on across the suite (10 rehearsals)
+### Single sign-on across the suite (9 rehearsals)
 
 One account signs in to every application, with per-application access control and staff/administrator separation enforced in front of the applications, not inside each one.
 
-Rehearsals: `fi_a1_realm_marker_collision`, `fi_a2_oidc_secret_rotation`, `fi_a3_keycloak_unreachable`, `fi_a4_master_realm_idempotent`, `fi_a5_wrong_group_assignment`, `keycloak_admin_email_loss_recovery`, `keycloak_signing_keys_rotation_round_trip`, `oauth2_proxy_cookie_rotation_round_trip`, `user_recovery_2fa_reset`, `user_recovery_kcadm_temp_password`
+Rehearsals: `fi_a1_realm_marker_collision`, `fi_a2_oidc_secret_rotation`, `fi_a3_keycloak_unreachable`, `fi_a4_master_realm_idempotent`, `keycloak_admin_email_loss_recovery`, `keycloak_signing_keys_rotation_round_trip`, `oauth2_proxy_cookie_rotation_round_trip`, `user_recovery_2fa_reset`, `user_recovery_kcadm_temp_password`
 
-### Administration dashboard (7 rehearsals)
+Written, not yet passing: `fi_a5_wrong_group_assignment`
+
+### Administration dashboard (6 rehearsals)
 
 A web dashboard with role-aware access (staff see status, administrators also get maintenance actions). Every action a button triggers is logged in the server's system journal.
 
-Rehearsals: `admin_action_unknown_rejected`, `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `payload_action_dispatches_without_converge`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
+Rehearsals: `admin_action_unknown_rejected`, `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `payload_action_dispatches_without_converge`, `quiesce_resume_round_trip`
 
-### Self-serve application catalog (rehearsal written, not yet passing)
+Written, not yet passing: `wizard_restore_smoke`
+
+### Self-serve application catalog (1 rehearsal)
 
 A catalog of ready-to-deploy applications on the server's own console, with every setting already filled in for that server: its domain names, its single sign-on, and a fresh password for each application, generated on the server itself.
 
-Written, not yet passing: `marketplace_catalog_resolved`
+Rehearsals: `marketplace_catalog_resolved`
 
-### Installation and application deployment (18 rehearsals)
+### Installation and application deployment (17 rehearsals)
 
 Prepares a fresh server, installs the platform, and deploys the selected applications. Re-running the same managed operation converges the server back to its declared configuration, so a drifted or half-configured server is repaired, not rebuilt by hand.
 
-Rehearsals: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modify`, `converge_preserves_bumped_image`, `fi_c1_docker_daemon_hang`, `fi_c3_portainer_crash_mid_deploy`, `fi_c4_registry_pull_timeout`, `fi_c6_cloudflared_flapping`, `fi_c7_coturn_cert_expired`, `fi_c8_nextcloud_init_loop`, `fi_u1_compose_lint_reject`, `mixed_template_negative_restore`, `payload_prune_respects_ce`, `release_manifest_converge_state`, `repair_broken_template_round_trip`, `scheduler_easyappointments`, `swarm_overlay_selfheal`
+Rehearsals: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modify`, `converge_preserves_bumped_image`, `fi_c1_docker_daemon_hang`, `fi_c4_registry_pull_timeout`, `fi_c6_cloudflared_flapping`, `fi_c7_coturn_cert_expired`, `fi_c8_nextcloud_init_loop`, `fi_u1_compose_lint_reject`, `mixed_template_negative_restore`, `payload_prune_respects_ce`, `release_manifest_converge_state`, `repair_broken_template_round_trip`, `scheduler_easyappointments`, `swarm_overlay_selfheal`
 
-Written, not yet passing: `dev_to_prod_cutover_round_trip`
+Written, not yet passing: `dev_to_prod_cutover_round_trip`, `fi_c3_portainer_crash_mid_deploy`
 
-### Application catalog and suite integrations (2 rehearsals)
+### Application catalog and suite integrations (1 rehearsal)
 
 Per-application deployment plus the wiring that makes the suite feel like one product: email, chat and video calling, file/office integration, antivirus watch and delivery canaries.
 
-Rehearsals: `mailserver_round_trip`, `nextcloud_versions_retention_applied`
+Rehearsals: `nextcloud_versions_retention_applied`
+
+Written, not yet passing: `mailserver_deploy`, `mailserver_round_trip`
 
 ### Self-hosted monitoring (1 rehearsal)
 
@@ -81,13 +87,13 @@ Rehearsals: `ce_install_headscale`, `cf_activate`, `cf_tunnel_regenerate_round_t
 
 Written, not yet passing: `cloudflare_api_rotation_round_trip`, `fi_v3_tailscale_acl_misconfig`, `tailscale_oauth_rotation_round_trip`
 
-### Disaster recovery and restore (17 rehearsals)
+### Disaster recovery and restore (11 rehearsals)
 
 A whole server can be rebuilt from nothing but the backup endpoint and its key, and a live server can be restored in place. Databases and applications come back as one coordinated operation, consistent with each other rather than each from its own moment in time. Both paths are rehearsed continuously, including across operating-system and database major versions.
 
-Rehearsals: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `restore_version_skew_upgrade`, `s3_reconcile_orphan_cleanup`, `selective_restore_round_trip`
+Rehearsals: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `s3_reconcile_orphan_cleanup`
 
-Written, not yet passing: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`
+Written, not yet passing: `debian_major_upgrade_restore`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pg_major_version_cross_restore`, `restore_dr`, `restore_version_skew_abort`, `restore_version_skew_upgrade`, `selective_restore_round_trip`
 
 ### No lock-in, ever (2 rehearsals)
 
@@ -117,13 +123,13 @@ Every administrative action on the server is also shipped off the machine to cen
 
 Rehearsals: `ee_audit_ship`
 
-### Offsite immutable backup copy (6 rehearsals)
+### Offsite immutable backup copy (4 rehearsals)
 
 A second backup copy at a different provider, write-locked so that even a compromised server cannot alter or delete it, with recurring verification that both copies actually restore.
 
-Rehearsals: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `restic_check_subset_weekly`, `verify_hot_bootprobe_weekly`, `worm_object_lock_expiry_edge`, `worm_round_trip`
+Rehearsals: `mirror_skips_on_bad_verify_hot`, `rclone_copy_preserves_pruned_packs`, `restic_check_subset_weekly`, `worm_object_lock_expiry_edge`
 
-Written, not yet passing: `offsite_copy_unreachable_target`
+Written, not yet passing: `offsite_copy_unreachable_target`, `verify_hot_bootprobe_weekly`, `worm_round_trip`
 
 ### Vulnerability scanning (1 rehearsal)
 
