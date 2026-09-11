@@ -9,7 +9,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "check:unicode": "node scripts/check-unicode.mjs",
+    "check:unicode": "node ../contracts/scripts/check-unicode.mjs",
+    "check:prose": "node ../contracts/scripts/check-prose.mjs",
     "check:voice": "node scripts/check-voice.mjs",
     "sync:brand": "node scripts/sync-brand-assets.mjs",
     "postinstall": "node scripts/sync-brand-assets.mjs"
