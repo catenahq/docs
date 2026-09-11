@@ -13,3 +13,4 @@
 # they are warnings and do not block.
 
 .github/workflows/baseline-drift.yml -- 1 finding(s): NoHistory
+astro.config.mjs -- 1 finding(s): NoHistory
