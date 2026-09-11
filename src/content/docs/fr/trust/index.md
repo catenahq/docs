@@ -45,11 +45,11 @@ Un tableau de bord web à accès selon le rôle (le personnel voit l'état, les 
 
 Répétitions: `admin_action_unknown_rejected`, `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `payload_action_dispatches_without_converge`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
 
-### Catalogue d'applications en libre-service (répétition écrite, pas encore réussie)
+### Catalogue d'applications en libre-service (1 répétition)
 
 Un catalogue d'applications prêtes à déployer dans la console du serveur, chaque réglage déjà rempli pour ce serveur : ses noms de domaine, son authentification unique, et un mot de passe distinct par application, généré sur le serveur lui-même.
 
-Écrite, pas encore réussie: `marketplace_catalog_resolved`
+Répétitions: `marketplace_catalog_resolved`
 
 ### Installation et déploiement des applications (18 répétitions)
 
@@ -79,13 +79,13 @@ Répétitions: `ce_install_headscale`, `cf_activate`, `cf_tunnel_regenerate_roun
 
 Écrite, pas encore réussie: `cloudflare_api_rotation_round_trip`, `fi_v3_tailscale_acl_misconfig`, `tailscale_oauth_rotation_round_trip`
 
-### Reprise après sinistre et restauration (14 répétitions)
+### Reprise après sinistre et restauration (16 répétitions)
 
 Un serveur entier se reconstruit à partir du seul point d'accès de sauvegarde et de sa clé, et un serveur en marche se restaure sur place. Bases de données et applications reviennent en une seule opération coordonnée, cohérentes entre elles plutôt que chacune à son propre instant. Les deux chemins sont répétés en continu, y compris à travers les versions majeures du système et de la base de données.
 
-Répétitions: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `restore_version_skew_upgrade`, `s3_reconcile_orphan_cleanup`
+Répétitions: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `restore_version_skew_upgrade`, `s3_reconcile_orphan_cleanup`
 
-Écrite, pas encore réussie: `debian_major_upgrade_restore`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pg_major_version_cross_restore`, `selective_restore_round_trip`
+Écrite, pas encore réussie: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`, `selective_restore_round_trip`
 
 ### Aucune dépendance forcée, jamais (2 répétitions)
 
@@ -173,12 +173,10 @@ Sur les forfaits payants, un même serveur peut héberger plusieurs domaines dis
 
 Répétitions: `ee_multidomain`
 
-### Un déplacement annulable (3 répétitions)
+### Un déplacement annulable (4 répétitions)
 
 Déplacer les données vers un autre serveur copie presque tout pendant que l'ancien continue de servir : l'indisponibilité des applications se compte donc en minutes plutôt qu'en heures. Jusqu'à la dernière vérification, le déplacement peut être annulé et l'ancien serveur se remet en service de lui-même. Passé ce point, il continue de répondre à une seule demande -- remets-toi en service -- même après l'arrêt de tout le reste, et ses propres sauvegardes restent intactes comme voie de retour. Cette demande passe par le réseau privé du client et ne fonctionne que pendant une fenêtre ouverte depuis le serveur lui-même, avec un code à usage unique affiché une seule fois.
 
-Répétitions: `migrate_lane_auth_denied`, `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
-
-Écrite, pas encore réussie: `migrate_preseed_no_split_brain`
+Répétitions: `migrate_lane_auth_denied`, `migrate_preseed_no_split_brain`, `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
 
 Le détail technique complet (chemins d'implémentation et noms de scénarios pour l'édition Community) se trouve dans la [fiche de validation publique sur GitHub](https://github.com/catenahq/catena-ce/blob/main/VALIDATION.md).

@@ -45,11 +45,11 @@ A web dashboard with role-aware access (staff see status, administrators also ge
 
 Rehearsals: `admin_action_unknown_rejected`, `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `payload_action_dispatches_without_converge`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
 
-### Self-serve application catalog (rehearsal written, not yet passing)
+### Self-serve application catalog (1 rehearsal)
 
 A catalog of ready-to-deploy applications on the server's own console, with every setting already filled in for that server: its domain names, its single sign-on, and a fresh password for each application, generated on the server itself.
 
-Written, not yet passing: `marketplace_catalog_resolved`
+Rehearsals: `marketplace_catalog_resolved`
 
 ### Installation and application deployment (18 rehearsals)
 
@@ -79,13 +79,13 @@ Rehearsals: `ce_install_headscale`, `cf_activate`, `cf_tunnel_regenerate_round_t
 
 Written, not yet passing: `cloudflare_api_rotation_round_trip`, `fi_v3_tailscale_acl_misconfig`, `tailscale_oauth_rotation_round_trip`
 
-### Disaster recovery and restore (14 rehearsals)
+### Disaster recovery and restore (16 rehearsals)
 
 A whole server can be rebuilt from nothing but the backup endpoint and its key, and a live server can be restored in place. Databases and applications come back as one coordinated operation, consistent with each other rather than each from its own moment in time. Both paths are rehearsed continuously, including across operating-system and database major versions.
 
-Rehearsals: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `restore_version_skew_upgrade`, `s3_reconcile_orphan_cleanup`
+Rehearsals: `ce_restore`, `fi_d2_pg_dumpall_replay_constraint`, `fi_d3_postgres_oom_mid_restore`, `fi_d4_disk_full_mid_snapshot`, `fi_d5_disk_full_mid_converge`, `fi_d6_volume_uid_drift`, `fi_d7_restic_corrupt_pack`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pitr_fuse_round_trip`, `recover_secrets_from_running_host`, `recovery_landing_page_bilingual_parity`, `restore_dr`, `restore_version_skew_abort`, `restore_version_skew_upgrade`, `s3_reconcile_orphan_cleanup`
 
-Written, not yet passing: `debian_major_upgrade_restore`, `nc_s3_hot_recovery`, `nc_sync_wipe_restore`, `pg_major_version_cross_restore`, `selective_restore_round_trip`
+Written, not yet passing: `debian_major_upgrade_restore`, `pg_major_version_cross_restore`, `selective_restore_round_trip`
 
 ### No lock-in, ever (2 rehearsals)
 
@@ -173,12 +173,10 @@ On paid plans a single server can host several separate, unlinked domains, each 
 
 Rehearsals: `ee_multidomain`
 
-### A move that can be called off (3 rehearsals)
+### A move that can be called off (4 rehearsals)
 
 Moving to another server copies almost everything while the old one is still serving, so application downtime is measured in minutes rather than hours. Up to the last check the move can be called off and the old server puts itself back into service on its own. Past that point it keeps answering one request, named `put yourself back in service`, even after everything else on it has stopped, and its own backups are left untouched as the way back. That request travels over the client's own private network and works only during a window opened from the server itself, using a one-time code it displays once.
 
-Rehearsals: `migrate_lane_auth_denied`, `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
-
-Written, not yet passing: `migrate_preseed_no_split_brain`
+Rehearsals: `migrate_lane_auth_denied`, `migrate_preseed_no_split_brain`, `wizard_migrate_resume_source`, `wizard_migrate_round_trip`
 
 Full technical detail (implementation paths and scenario names for the Community edition) lives in the public [validation sheet on GitHub](https://github.com/catenahq/catena-ce/blob/main/VALIDATION.md).
