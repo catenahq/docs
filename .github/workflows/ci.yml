@@ -48,6 +48,11 @@ jobs:
             echo "::error::Install on the self-hosted runner: sudo apt-get install -y git -- see catenahq/ops internal_docs/tools/ci-runner-provisioning.md"
             exit 1
           fi
+      - name: Shared scripts match catenahq/contracts
+        working-directory: ./contracts
+        env:
+          CATENAHQ_DOCS_ROOT: ${{ github.workspace }}/docs
+        run: node scripts/sync-shared.mjs --check
       - name: Unicode hygiene (no em dashes / smart quotes / decorative symbols)
         working-directory: ./docs
         run: npm run check:unicode
