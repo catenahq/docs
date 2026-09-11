@@ -2,15 +2,7 @@
 # contracts/scripts/check-prose.mjs.
 # Format: <path relative to the repo root> -- <reason>
 #
-# Every entry is a file whose comments carry history, a plan reference,
-# or a definition by contrast. The list is a measured backlog, seeded on
-# 2026-09-11 when the gate first ran, and it is meant to shrink.
-#
 # A listed file with no finding fails the gate. Delete the entry when the
 # file is fixed, or the gate stops gating that file.
-#
-# The advisory rules (NoComparison, NoNegation) never reach this file:
-# they are warnings and do not block.
 
-.github/workflows/baseline-drift.yml -- 1 finding(s): NoHistory
-astro.config.mjs -- 1 finding(s): NoHistory
+.github/workflows/baseline-drift.yml -- false positive: "no longer match" is a runtime condition, not this repo's history

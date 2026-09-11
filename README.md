@@ -69,5 +69,16 @@ checks out catenahq/contracts as a sibling before running npm install.
 ## CI gates
 
 - unicode hygiene (`npm run check:unicode` -- no em dashes, smart
-  quotes, decorative Unicode per workspace CLAUDE.md)
+  quotes, decorative Unicode per workspace CLAUDE.md, plus a scan for
+  the names of systems Catena stopped shipping)
+- voice (`npm run check:voice` -- the documentation does not address a
+  reader; `scripts/voice-debt.txt` lists the pages not yet converted)
+- comment prose (`npm run check:prose` -- comments describe the code as
+  it stands, with its history in the commit message)
 - Astro typecheck + Starlight build (catches broken internal links)
+
+The first and third live in catenahq/contracts and run from the sibling
+checkout, so this repo holds no copy of either. What it owns is the debt
+lists: `prose-debt.txt` here, `scripts/voice-debt.txt` for voice. An
+entry in either that has become clean FAILS the gate and must be
+deleted.

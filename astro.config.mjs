@@ -100,12 +100,11 @@ export default defineConfig({
         {
           label: "Trust",
           translations: { fr: "Confiance" },
-          // One generated page. The four that used to sit beside it
-          // (security-model / how-we-validate / verify-what-you-run /
-          // what-we-test) were hand-written restatements of the same
-          // claims and drifted apart from the gates they described;
-          // trust/index.md is rendered from the feature manifest, so a
-          // claim that stops resolving now fails the build.
+          // One generated page, on purpose. trust/index.md is rendered
+          // from the feature manifest, so a claim that stops resolving
+          // fails the build. A hand-written page restating the same
+          // claims carries no such anchor and drifts from the gates it
+          // describes, which is why this section stays at one page.
           items: [
             { slug: "trust" },
             { slug: "leaving" },
