@@ -18,9 +18,10 @@ Anything that ships a Docker Compose file works. A few good sources to
 browse when deciding what to self-host:
 
 - **The VPS's App Templates** -- open Portainer at
-  `portainer.yourdomain.com` and look under **App Templates**. We
-  pre-seed a set of fully-wired apps (SSO, storage, networking, labels,
-  SSL already configured). Start here for common apps -- one click to
+  `portainer.yourdomain.com` and look under **App Templates**. This
+  catalog ships pre-seeded with fully-wired apps (SSO, storage,
+  networking, labels, SSL already configured). Start here for common
+  apps -- one click to
   deploy. Full catalog with per-app notes:
   **[Pre-configured templates](/en/apps/)**.
 - **[openalternative.co](https://openalternative.co)** -- a directory of
@@ -38,8 +39,8 @@ apply on top -- they gate access, wire SSO, tag updates, and populate
 the dashboard regardless of where the compose came from.
 
 Before deploying something new, check **App Templates** in Portainer --
-we pre-seed a few fully-wired apps (see "Pre-configured apps ready to
-enable" below) that may already cover the need.
+a few fully-wired apps ship pre-seeded (see "Pre-configured apps ready
+to enable" below) that may already cover the need.
 
 ## Quick start
 

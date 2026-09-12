@@ -31,7 +31,7 @@ is the plain-language tour.
 - **[Manage apps](/en/manage-apps/)** -- deploy new apps and set the
   labels that gate access and publish the URL.
 - **[What the admin panel covers](/en/self-service/)** -- day-to-day
-  tasks that never need to reach us.
+  tasks handled entirely from the admin panel.
 
 ## Tasks
 

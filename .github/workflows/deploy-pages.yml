@@ -7,7 +7,7 @@
 #
 # @catenahq/contracts is consumed via sibling read (file:../contracts);
 # the build checks out catenahq/contracts alongside. contracts is
-# public (2026-07-11), so no token is needed.
+# public, so no token is needed.
 
 name: Deploy to GitHub Pages
 

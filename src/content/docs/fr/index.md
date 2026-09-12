@@ -34,7 +34,8 @@ est la visite en langage clair.
   nouvelles applications et poser les étiquettes qui filtrent l'accès
   et publient l'URL.
 - **[Ce que couvre le panneau d'administration](/fr/self-service/)** --
-  tâches quotidiennes qui n'ont jamais besoin de nous joindre.
+  tâches quotidiennes prises en charge entièrement depuis le panneau
+  d'administration.
 
 ## Tâches
 

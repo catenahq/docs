@@ -55,7 +55,7 @@ Le guide de Cloudflare détaille la création du jeton :
 
 ## 3. Tailscale : client OAuth
 
-Tailscale est le réseau privé que nous utilisons pour atteindre le
+Tailscale est le réseau privé utilisé pour atteindre le
 serveur lors des mises à jour et de la maintenance. Le SSH public reste
 fermé.
 

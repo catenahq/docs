@@ -53,7 +53,7 @@ Cloudflare's own guide walks through token creation:
 
 ## 3. Tailscale: OAuth client
 
-Tailscale is the private network we use to reach the server for updates
+Tailscale is the private network used to reach the server for updates
 and maintenance. Public SSH stays closed.
 
 1. [Start a tailnet](https://login.tailscale.com/start) using SSO from

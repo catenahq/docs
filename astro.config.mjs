@@ -32,7 +32,8 @@ export default defineConfig({
       },
       plugins: [
         starlightLinksValidator({
-          // Provider-installation screenshots land later (see backlog).
+          // Provider-installation screenshots land later (see
+          // ops/BACKLOG_TECHNICAL.md, "starlight-image-zoom plugin").
           // Until then, exclude the directory rather than maintain a
           // file-by-file ignore list.
           exclude: ["/img/guides/provider-accounts/**"],
@@ -121,11 +122,8 @@ export default defineConfig({
           label: "Apps",
           translations: { fr: "Applications" },
           collapsed: true,
-          // Starlight 0.39 requires `autogenerate` to live INSIDE an
-          // `items` array on a sidebar group. The legacy top-level
-          // `autogenerate` shape (still accepted in 0.38) was removed.
-          // This nested form is the canonical schema documented for
-          // 0.38 and 0.39, so it works on both.
+          // `autogenerate` must live inside an `items` array on a
+          // sidebar group; there is no top-level `autogenerate` shape.
           items: [{ autogenerate: { directory: "apps" } }],
         },
       ],
@@ -138,7 +136,7 @@ export default defineConfig({
     // Vite's dev fs-allow-list resolves through the symlink to the REAL
     // path and rejects it as outside the project root, throwing "outside
     // of Vite serving allow list" for the .otf/.svg request. Allow the
-    // sibling explicitly. See CLAUDE.md "Brand assets (sibling read)".
+    // sibling explicitly. See AGENTS.md "Brand assets (sibling read)".
     server: {
       fs: {
         allow: [

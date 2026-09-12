@@ -66,7 +66,7 @@ One more item is worth keeping alongside the keyset, though it is
 about *access* rather than *recovery*:
 
 - A **copy of the SSH private key** used to sign in to the server --
-  the fallback for direct access when we cannot be reached
+  the direct-access path if the web dashboards are ever unreachable
   (see section 2).
 
 Each item belongs in a password manager, labelled clearly ("server --

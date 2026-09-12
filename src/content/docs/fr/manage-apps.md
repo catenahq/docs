@@ -19,9 +19,10 @@ Tout ce qui fournit un Docker Compose fonctionne. Quelques sources
 utiles pour choisir quoi auto-héberger :
 
 - **Les App Templates du VPS** -- ouvrez Portainer à
-  `portainer.yourdomain.com` et regardez sous **App Templates**. Nous
-  pré-câblons un ensemble d'applications entièrement prêtes (SSO,
-  stockage, réseau, étiquettes, SSL déjà configurés). Commencez par là
+  `portainer.yourdomain.com` et regardez sous **App Templates**. Ce
+  catalogue est livré avec un ensemble d'applications entièrement
+  prêtes (SSO, stockage, réseau, étiquettes, SSL déjà configurés).
+  Commencez par là
   pour les applications courantes -- un clic pour déployer. Catalogue
   complet avec notes par application :
   **[Applications pré-configurées](/fr/apps/)**.
@@ -44,8 +45,8 @@ elles filtrent l'accès, câblent le SSO, marquent les mises à jour
 et alimentent le tableau de bord, peu importe d'où vient le compose.
 
 Avant de déployer quelque chose de nouveau, vérifiez les **App
-Templates** dans Portainer -- nous pré-câblons quelques applications
-prêtes à l'emploi (voir "Applications pré-configurées prêtes à
+Templates** dans Portainer -- quelques applications prêtes à l'emploi
+y sont déjà livrées (voir "Applications pré-configurées prêtes à
 activer" plus bas) qui couvrent peut-être déjà le besoin.
 
 ## Démarrage rapide

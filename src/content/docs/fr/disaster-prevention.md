@@ -75,8 +75,8 @@ Un élément de plus vaut la peine d'être conservé aux côtés du jeu de
 clés, même s'il concerne l'*accès* plutôt que la *récupération* :
 
 - Une **copie de la clé SSH privée** utilisée pour se connecter au
-  serveur -- le filet de sécurité pour un accès direct quand nous ne
-  sommes pas joignables (voir la section 2).
+  serveur -- l'accès direct si les tableaux de bord web deviennent
+  injoignables (voir la section 2).
 
 Chaque élément a sa place dans un gestionnaire de mots de passe,
 étiqueté clairement ("serveur -- chiffrement sauvegarde", "serveur --
