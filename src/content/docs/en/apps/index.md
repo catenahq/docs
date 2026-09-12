@@ -37,7 +37,7 @@ Team chat -- channels, direct messages, file sharing, mobile apps, and video cal
 Self-hosted Element + Matrix homeserver -- federated-capable team chat with end-to-end encryption, voice, group video (bundled Jitsi), and SIP dial-in. [-> Full details](/en/apps/element/)
 
 ### 6. DocuSeal -- replaces DocuSign, HelloSign, PandaDoc, Adobe Sign
-Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in. [-> Full details](/en/apps/docuseal/)
+Default document-signing app in the stack. Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in. [-> Full details](/en/apps/docuseal/)
 
 ### 7. Outline -- replaces Notion, Confluence, Google Sites
 Team wiki / knowledge base. Notion-style pages, collections, nested docs. Keycloak SSO pre-wired. [-> Full details](/en/apps/outline/)

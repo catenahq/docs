@@ -1,9 +1,9 @@
 ---
 title: "DocuSeal"
-description: "Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature."
+description: "Application de signature électronique par défaut de la stack. Téléversez un PDF, placez les champs de signature, envoyez pour signature."
 ---
 
-Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées.
+Application de signature électronique par défaut de la stack. Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées.
 
 - **Projet original :** <https://www.docuseal.com/>
 - **Remplace :** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**
@@ -20,13 +20,9 @@ Application de signature électronique par défaut de la stack (remplace Documen
    - Validez. La page de connexion affiche **Sign in with Keycloak**. La connexion admin locale continue de fonctionner comme issue de secours.
 4. *(Optionnel)* Configurez SMTP pour les e-mails de demande de signature : remplissez `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_ADDRESS` dans l'onglet Environment puis redéployez. Sans SMTP, les destinataires ne voient que les demandes en attente dans leur tableau de bord.
 
-### Pourquoi DocuSeal est par défaut
-
-DocuSeal remplace Documenso (toujours au catalogue avec un bandeau de dépréciation). Démarrage plus rapide, gestion du certificat de signature simplifiée (pas d'étape PKCS12 au premier déploiement), et apps iOS/Android maintenues. Documenso reste au catalogue le temps que les clients existants migrent.
-
 ### Certificat de signature
 
-DocuSeal génère des PDF signés d'emblée sans étape de génération de certificat. Adobe Acrobat affiche la signature comme cryptographiquement valide mais avec un avertissement "racine auto-signée" par défaut -- même limite que Documenso. Les signatures à valeur légale demandent un certificat émis par une AC, installé sur demande via l'UI admin DocuSeal (Settings -> Signature -> Certificates).
+DocuSeal génère des PDF signés d'emblée sans étape de génération de certificat. Adobe Acrobat affiche la signature comme cryptographiquement valide mais avec un avertissement "racine auto-signée" par défaut. Les signatures à valeur légale demandent un certificat émis par une AC, installé sur demande via l'UI admin DocuSeal (Settings -> Signature -> Certificates).
 
 ### SMTP
 
@@ -72,9 +68,7 @@ formulaire de déploiement (décrits plus haut), jamais dans le compose
 lui-même.
 
 ```yaml
-# DocuSeal -- open-source document signing, and the one this stack ships
-# (F5a decision, 2026-04-29). Documenso stays in the catalog under a
-# deprecation banner while the migration window is open.
+# DocuSeal -- open-source document signing, the one this stack ships.
 #
 # Auth: DocuSeal community edition has admin-UI SSO config (Settings ->
 # SSO). Marked sso_mode=post-deploy-ui in the catalog -- after first

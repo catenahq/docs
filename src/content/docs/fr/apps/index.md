@@ -41,7 +41,7 @@ Messagerie d'équipe -- canaux, messages directs, partage de fichiers, apps mobi
 Element + serveur Matrix auto-hébergés -- messagerie d'équipe avec chiffrement de bout en bout, voix, visio de groupe (Jitsi embarqué), et entrée SIP par téléphone. Fédération capable mais désactivée par défaut. [-> Voir les détails](/fr/apps/element/)
 
 ### 6. DocuSeal -- remplace DocuSign, HelloSign, PandaDoc, Adobe Sign
-Application de signature électronique par défaut de la stack (remplace Documenso). Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées. [-> Voir les détails](/fr/apps/docuseal/)
+Application de signature électronique par défaut de la stack. Téléversez un PDF, placez les champs de signature, envoyez pour signature. Piste d'audit + génération de PDF signé intégrées. [-> Voir les détails](/fr/apps/docuseal/)
 
 ### 7. Outline -- remplace Notion, Confluence, Google Sites
 Wiki d'équipe / base de connaissances. Pages façon Notion, collections, documents imbriqués. Keycloak SSO pré-câblé. [-> Voir les détails](/fr/apps/outline/)

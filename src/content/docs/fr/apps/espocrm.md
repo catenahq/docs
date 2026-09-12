@@ -66,8 +66,8 @@ formulaire de déploiement (décrits plus haut), jamais dans le compose
 lui-même.
 
 ```yaml
-# EspoCRM -- open-source CRM, and the default one in this stack (D8
-# decision, 2026-04-29). Twenty stays in the catalog as the alternative.
+# EspoCRM -- open-source CRM, the default one in this stack. Twenty stays
+# in the catalog as the alternative.
 #
 # Auth: EspoCRM has native OIDC in the community edition. Enable from
 # Administration -> Authentication -> set Method to OIDC -> paste OIDC_*

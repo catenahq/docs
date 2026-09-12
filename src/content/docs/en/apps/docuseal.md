@@ -1,9 +1,9 @@
 ---
 title: "DocuSeal"
-description: "Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature."
+description: "Default document-signing app in the stack. Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in."
 ---
 
-Default document-signing app in the stack (replaces Documenso). Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in.
+Default document-signing app in the stack. Upload a PDF, place signature fields, send for signature. Audit trail + signed-PDF generation built-in.
 
 - **Upstream project:** <https://www.docuseal.com/>
 - **Replaces:** **DocuSign**, **HelloSign**, **PandaDoc**, **Adobe Sign**
@@ -20,13 +20,9 @@ Default document-signing app in the stack (replaces Documenso). Upload a PDF, pl
    - Save. The login page gains a **Sign in with Keycloak** button. Local admin login keeps working as a break-glass.
 4. *(Optional)* Configure SMTP for signature-request emails: fill `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_ADDRESS` in the Environment tab and redeploy. Without SMTP, recipients only see pending requests in their DocuSeal dashboard.
 
-### Why DocuSeal is the default
-
-DocuSeal supersedes Documenso (still in the catalog under a deprecation banner). Faster boot, simpler signing-cert handling (no PKCS12 mint step on first deploy), and a maintained iOS/Android app. Documenso remains in catalog while existing clients migrate.
-
 ### Signing certificate
 
-DocuSeal generates signed PDFs out of the box without a separate signing-cert mint step. Adobe Acrobat shows the signature as cryptographically valid but with a "self-signed root" warning by default -- same caveat as Documenso. Legally-binding signatures need a CA-issued cert, installed on request via DocuSeal's admin UI (Settings -> Signature -> Certificates).
+DocuSeal generates signed PDFs out of the box without a separate signing-cert mint step. Adobe Acrobat shows the signature as cryptographically valid but with a "self-signed root" warning by default. Legally-binding signatures need a CA-issued cert, installed on request via DocuSeal's admin UI (Settings -> Signature -> Certificates).
 
 ### SMTP
 
@@ -71,9 +67,7 @@ client-facing adjustments belong in the deploy form's environment
 fields (described above), never in the compose itself.
 
 ```yaml
-# DocuSeal -- open-source document signing, and the one this stack ships
-# (F5a decision, 2026-04-29). Documenso stays in the catalog under a
-# deprecation banner while the migration window is open.
+# DocuSeal -- open-source document signing, the one this stack ships.
 #
 # Auth: DocuSeal community edition has admin-UI SSO config (Settings ->
 # SSO). Marked sso_mode=post-deploy-ui in the catalog -- after first
