@@ -71,9 +71,9 @@ client-facing adjustments belong in the deploy form's environment
 fields (described above), never in the compose itself.
 
 ```yaml
-# DocuSeal -- open-source document signing. Replaces Documenso in this
-# stack as of 2026-04-29 (F5a decision); Documenso is kept in catalog
-# under a deprecation banner for the migration window.
+# DocuSeal -- open-source document signing, and the one this stack ships
+# (F5a decision, 2026-04-29). Documenso stays in the catalog under a
+# deprecation banner while the migration window is open.
 #
 # Auth: DocuSeal community edition has admin-UI SSO config (Settings ->
 # SSO). Marked sso_mode=post-deploy-ui in the catalog -- after first
