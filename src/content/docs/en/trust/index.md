@@ -39,11 +39,13 @@ One account signs in to every application, with per-application access control a
 
 Rehearsals: `fi_a1_realm_marker_collision`, `fi_a2_oidc_secret_rotation`, `fi_a3_keycloak_unreachable`, `fi_a4_master_realm_idempotent`, `fi_a5_wrong_group_assignment`, `keycloak_admin_email_loss_recovery`, `keycloak_signing_keys_rotation_round_trip`, `oauth2_proxy_cookie_rotation_round_trip`, `user_recovery_2fa_reset`, `user_recovery_kcadm_temp_password`
 
-### Administration dashboard (7 rehearsals)
+### Administration dashboard (6 rehearsals)
 
 A web dashboard with role-aware access (staff see status, administrators also get maintenance actions). Every action a button triggers is logged in the server's system journal.
 
-Rehearsals: `admin_action_unknown_rejected`, `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `payload_action_dispatches_without_converge`, `quiesce_resume_round_trip`, `wizard_restore_smoke`
+Rehearsals: `admin_action_unknown_rejected`, `audit_chain_tamper_evident`, `ce_admin_actions`, `ce_admin_smoke`, `payload_action_dispatches_without_converge`, `quiesce_resume_round_trip`
+
+Written, not yet passing: `wizard_restore_smoke`
 
 ### Self-serve application catalog (1 rehearsal)
 
