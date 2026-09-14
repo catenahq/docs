@@ -79,6 +79,6 @@ checks out catenahq/contracts as a sibling before running npm install.
 
 The first and third live in catenahq/contracts and run from the sibling
 checkout, so this repo holds no copy of either. What it owns is the debt
-lists: `prose-debt.txt` here, `scripts/voice-debt.txt` for voice. An
-entry in either that has become clean FAILS the gate and must be
-deleted.
+lists: `.github/prose-debt.txt` here, `scripts/voice-debt.txt` for
+voice. An entry in either that has become clean FAILS the gate and must
+be deleted.
