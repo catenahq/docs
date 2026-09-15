@@ -187,7 +187,7 @@ services:
       catena-clamav: {}
 
   roundcube:
-    image: roundcube/roundcubemail:1.7.1-apache
+    image: roundcube/roundcubemail:1.7.3-apache
     deploy:
       restart_policy:
         condition: any
@@ -239,7 +239,7 @@ services:
   # tunnel like any HTTP app (catalog extra_domains adds the router).
   # The policy is baked from MAIL_HOSTNAME at container start.
   mta-sts:
-    image: nginx:1.27-alpine
+    image: nginx:1.31-alpine
     deploy:
       restart_policy:
         condition: any

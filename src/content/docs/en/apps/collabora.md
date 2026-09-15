@@ -66,7 +66,7 @@ fields (described above), never in the compose itself.
 
 services:
   collabora:
-    image: collabora/code:25.04.9.4.1
+    image: collabora/code:26.04.3.2.1
     deploy:
       restart_policy:
         condition: any

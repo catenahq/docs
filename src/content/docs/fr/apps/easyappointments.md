@@ -79,7 +79,7 @@ lui-même.
 
 services:
   easyappointments:
-    image: alextselegidis/easyappointments:1.5.2
+    image: alextselegidis/easyappointments:1.6.0
     deploy:
       restart_policy:
         condition: any
@@ -116,7 +116,7 @@ services:
       default: {}
 
   db:
-    image: mariadb:11.8.6
+    image: mariadb:12.3.2
     deploy:
       restart_policy:
         condition: any

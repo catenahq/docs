@@ -81,7 +81,7 @@ fields (described above), never in the compose itself.
 
 services:
   docuseal:
-    image: docuseal/docuseal:2.5.2
+    image: docuseal/docuseal:3.2.4
     deploy:
       restart_policy:
         condition: any
@@ -131,7 +131,7 @@ services:
       default: {}
 
   db:
-    image: postgres:18.4-alpine
+    image: postgres:18.6-alpine
     deploy:
       restart_policy:
         condition: any

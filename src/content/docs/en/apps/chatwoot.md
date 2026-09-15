@@ -53,7 +53,7 @@ fields (described above), never in the compose itself.
 
 services:
   rails:
-    image: chatwoot/chatwoot:v4.13.0-ce
+    image: chatwoot/chatwoot:v4.17.1-ce
     deploy:
       restart_policy:
         condition: any
@@ -94,7 +94,7 @@ services:
       default: {}
 
   sidekiq:
-    image: chatwoot/chatwoot:v4.13.0-ce
+    image: chatwoot/chatwoot:v4.17.1-ce
     deploy:
       restart_policy:
         condition: any
@@ -123,7 +123,7 @@ services:
       - default
 
   db:
-    image: postgres:18.4-alpine
+    image: postgres:18.6-alpine
     deploy:
       restart_policy:
         condition: any

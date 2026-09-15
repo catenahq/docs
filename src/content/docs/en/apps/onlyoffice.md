@@ -63,7 +63,7 @@ fields (described above), never in the compose itself.
 
 services:
   documentserver:
-    image: onlyoffice/documentserver:9.3.1
+    image: onlyoffice/documentserver:9.4.0
     deploy:
       restart_policy:
         condition: any

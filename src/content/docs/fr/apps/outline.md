@@ -55,7 +55,7 @@ lui-même.
 
 services:
   outline:
-    image: outlinewiki/outline:1.7.1
+    image: outlinewiki/outline:1.10.0
     deploy:
       restart_policy:
         condition: any
@@ -109,7 +109,7 @@ services:
       default: {}
 
   db:
-    image: postgres:18.4-alpine
+    image: postgres:18.6-alpine
     deploy:
       restart_policy:
         condition: any

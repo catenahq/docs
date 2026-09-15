@@ -56,7 +56,7 @@ lui-même.
 
 services:
   server:
-    image: twentycrm/twenty:v2.3.2
+    image: twentycrm/twenty:v2.39.1
     deploy:
       restart_policy:
         condition: any
@@ -97,7 +97,7 @@ services:
       default: {}
 
   worker:
-    image: twentycrm/twenty:v2.3.2
+    image: twentycrm/twenty:v2.39.1
     deploy:
       restart_policy:
         condition: any
@@ -123,7 +123,7 @@ services:
       - default
 
   db:
-    image: postgres:18.4-alpine
+    image: postgres:18.6-alpine
     deploy:
       restart_policy:
         condition: any

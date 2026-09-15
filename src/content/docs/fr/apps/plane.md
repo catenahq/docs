@@ -59,7 +59,7 @@ lui-même.
 
 services:
   web:
-    image: makeplane/plane-frontend:v1.3.1
+    image: makeplane/plane-frontend:v1.4.2
     deploy:
       restart_policy:
         condition: any
@@ -73,7 +73,7 @@ services:
       - default
 
   space:
-    image: makeplane/plane-space:v1.3.1
+    image: makeplane/plane-space:v1.4.2
     deploy:
       restart_policy:
         condition: any
@@ -87,7 +87,7 @@ services:
       - default
 
   admin:
-    image: makeplane/plane-admin:v1.3.1
+    image: makeplane/plane-admin:v1.4.2
     deploy:
       restart_policy:
         condition: any
@@ -101,7 +101,7 @@ services:
       - default
 
   api:
-    image: makeplane/plane-backend:v1.3.1
+    image: makeplane/plane-backend:v1.4.2
     deploy:
       restart_policy:
         condition: any
@@ -137,7 +137,7 @@ services:
       - default
 
   worker:
-    image: makeplane/plane-backend:v1.3.1
+    image: makeplane/plane-backend:v1.4.2
     deploy:
       restart_policy:
         condition: any
@@ -151,7 +151,7 @@ services:
       - default
 
   beat-worker:
-    image: makeplane/plane-backend:v1.3.1
+    image: makeplane/plane-backend:v1.4.2
     deploy:
       restart_policy:
         condition: any
@@ -165,7 +165,7 @@ services:
       - default
 
   live:
-    image: makeplane/plane-live:v1.3.1
+    image: makeplane/plane-live:v1.4.2
     deploy:
       restart_policy:
         condition: any
@@ -179,7 +179,7 @@ services:
       - default
 
   proxy:
-    image: makeplane/plane-proxy:v1.3.1
+    image: makeplane/plane-proxy:v1.4.2
     deploy:
       restart_policy:
         condition: any
@@ -205,7 +205,7 @@ services:
       default: {}
 
   db:
-    image: postgres:18.4-alpine
+    image: postgres:18.6-alpine
     deploy:
       restart_policy:
         condition: any

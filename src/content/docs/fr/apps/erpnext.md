@@ -77,7 +77,7 @@ x-common: &frappe-env
 services:
   # One-shot: render common_site_config.json from the env above.
   configurator:
-    image: frappe/erpnext:v15.107.0
+    image: frappe/erpnext:v16.34.1
     deploy:
       restart_policy:
         condition: none
@@ -110,7 +110,7 @@ services:
       - "vps.app=catena-erpnext"
       - "vps.component=configurator"
   create-site:
-    image: frappe/erpnext:v15.107.0
+    image: frappe/erpnext:v16.34.1
     deploy:
       restart_policy:
         condition: none
@@ -146,7 +146,7 @@ services:
       - "vps.component=create-site"
 
   backend:
-    image: frappe/erpnext:v15.107.0
+    image: frappe/erpnext:v16.34.1
     deploy:
       restart_policy:
         condition: any
@@ -165,7 +165,7 @@ services:
       - default
 
   frontend:
-    image: frappe/erpnext:v15.107.0
+    image: frappe/erpnext:v16.34.1
     deploy:
       restart_policy:
         condition: any
@@ -200,7 +200,7 @@ services:
       default: {}
 
   websocket:
-    image: frappe/erpnext:v15.107.0
+    image: frappe/erpnext:v16.34.1
     deploy:
       restart_policy:
         condition: any
@@ -220,7 +220,7 @@ services:
       - default
 
   queue-default:
-    image: frappe/erpnext:v15.107.0
+    image: frappe/erpnext:v16.34.1
     deploy:
       restart_policy:
         condition: any
@@ -240,7 +240,7 @@ services:
       - default
 
   queue-short:
-    image: frappe/erpnext:v15.107.0
+    image: frappe/erpnext:v16.34.1
     deploy:
       restart_policy:
         condition: any
@@ -260,7 +260,7 @@ services:
       - default
 
   queue-long:
-    image: frappe/erpnext:v15.107.0
+    image: frappe/erpnext:v16.34.1
     deploy:
       restart_policy:
         condition: any
@@ -280,7 +280,7 @@ services:
       - default
 
   scheduler:
-    image: frappe/erpnext:v15.107.0
+    image: frappe/erpnext:v16.34.1
     deploy:
       restart_policy:
         condition: any
@@ -300,7 +300,7 @@ services:
       - default
 
   db:
-    image: mariadb:11.8.6
+    image: mariadb:12.3.2
     deploy:
       restart_policy:
         condition: any

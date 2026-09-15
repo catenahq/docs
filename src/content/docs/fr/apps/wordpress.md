@@ -139,7 +139,7 @@ services:
       - default
 
   nginx:
-    image: nginx:1.29.8-alpine
+    image: nginx:1.31.5-alpine
     deploy:
       restart_policy:
         condition: any
@@ -318,7 +318,7 @@ services:
       default: {}
 
   db:
-    image: mariadb:11.8.6
+    image: mariadb:12.3.2
     deploy:
       restart_policy:
         condition: any

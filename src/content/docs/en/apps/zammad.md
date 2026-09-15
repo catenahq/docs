@@ -168,7 +168,7 @@ services:
       default: {}
 
   db:
-    image: postgres:18.4-alpine
+    image: postgres:18.6-alpine
     deploy:
       restart_policy:
         condition: any
@@ -207,7 +207,7 @@ services:
       - default
 
   memcached:
-    image: memcached:1.6.41-alpine3.23
+    image: memcached:1.6.42-alpine3.23
     deploy:
       restart_policy:
         condition: any
