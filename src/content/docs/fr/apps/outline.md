@@ -55,7 +55,7 @@ lui-même.
 
 services:
   outline:
-    image: outlinewiki/outline:1.10.0
+    image: outlinewiki/outline:1.10.1
     deploy:
       restart_policy:
         condition: any

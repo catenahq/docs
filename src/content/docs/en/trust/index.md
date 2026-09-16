@@ -59,6 +59,12 @@ Rehearsals: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modify`
 
 Written, not yet passing: `dev_to_prod_cutover_round_trip`
 
+### Operating-system security updates (rehearsal written, not yet passing)
+
+The operating system applies its own security updates, and the server reports when a restart is needed to finish the job rather than taking one on its own.
+
+Written, not yet passing: `reboot_required_notified`
+
 ### Application catalog and suite integrations (3 rehearsals)
 
 Per-application deployment plus the wiring that makes the suite feel like one product: email, chat and video calling, file/office integration, antivirus watch and delivery canaries.
@@ -127,11 +133,11 @@ Recurring scans of the installed software and its containers for known vulnerabi
 
 Rehearsals: `cve_residual_emits_findings`
 
-### Automated daily maintenance (13 rehearsals)
+### Automated daily maintenance (12 rehearsals)
 
 A supervised daily routine on the server: hourly backups, package and health checks, and an ordered maintenance chain that resumes safely after interruption.
 
-Rehearsals: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_security_rollback`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
+Rehearsals: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
 
 ### Managed lifecycle operations (migration, decommission) (rehearsed as a managed operation)
 
@@ -142,6 +148,8 @@ Whole-server migration between providers, orderly decommission with data handbac
 Pro features activate through a cryptographically signed license and deactivate cleanly when it lapses; the Community base keeps working either way.
 
 Rehearsals: `activate_ee`, `ee_ce_regression`, `ee_entitlement_partial`, `ee_lapse`, `ee_named_buttons`, `license_domain_mismatch`
+
+Written, not yet passing: `unlicensed_schedules_nothing`
 
 ### Staff and client account management (1 rehearsal)
 
@@ -155,11 +163,11 @@ Recurring checks that the account structure stays healthy: enforced multi-factor
 
 Rehearsals: `ee_identity_probe`
 
-### Managed updates with automatic rollback (11 rehearsals)
+### Managed updates with automatic rollback (7 rehearsals)
 
 Applications and system components update on a managed schedule; a failed update is detected and rolled back to the last working version without intervention.
 
-Rehearsals: `auto_update_mid_crash`, `auto_update_rollback`, `catena_admin_self_update`, `control_plane_update_rollback`, `daily_chain_container_rollback`, `daily_chain_security_rollback`, `fi_u2_resume_after_reboot`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`, `infra_stack_update_rollback`
+Rehearsals: `catena_admin_self_update`, `control_plane_update_rollback`, `daily_chain_container_rollback`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`, `infra_stack_update_rollback`
 
 ### External availability monitoring (rehearsal written, not yet passing)
 

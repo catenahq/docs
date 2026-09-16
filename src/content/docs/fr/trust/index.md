@@ -59,6 +59,12 @@ Répétitions: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modi
 
 Écrite, pas encore réussie: `dev_to_prod_cutover_round_trip`
 
+### Mises à jour de sécurité du système (répétition écrite, pas encore réussie)
+
+Le système d'exploitation applique lui-même ses mises à jour de sécurité, et le serveur signale qu'un redémarrage est nécessaire pour les finaliser au lieu d'en prendre un de sa propre initiative.
+
+Écrite, pas encore réussie: `reboot_required_notified`
+
 ### Catalogue d'applications et intégrations de la suite (3 répétitions)
 
 Déploiement par application plus le câblage qui fait de la suite un seul produit : courriel, clavardage et visioconférence, intégration fichiers/bureautique, veille antivirus et canaris de livraison.
@@ -127,11 +133,11 @@ Analyses récurrentes des logiciels installés et de leurs conteneurs pour vuln�
 
 Répétitions: `cve_residual_emits_findings`
 
-### Entretien quotidien automatisé (13 répétitions)
+### Entretien quotidien automatisé (12 répétitions)
 
 Une routine quotidienne supervisée sur le serveur : sauvegardes horaires, contrôles de paquets et de santé, et une chaîne d'entretien ordonnée qui reprend sans danger après interruption.
 
-Répétitions: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_security_rollback`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
+Répétitions: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
 
 ### Opérations de cycle de vie gérées (migration, retrait) (répétée comme opération gérée)
 
@@ -142,6 +148,8 @@ Migration complète de serveur entre fournisseurs, retrait ordonné avec remise 
 Les fonctions Pro s'activent par une licence signée cryptographiquement et se désactivent proprement à son échéance; la base Community continue de fonctionner dans les deux cas.
 
 Répétitions: `activate_ee`, `ee_ce_regression`, `ee_entitlement_partial`, `ee_lapse`, `ee_named_buttons`, `license_domain_mismatch`
+
+Écrite, pas encore réussie: `unlicensed_schedules_nothing`
 
 ### Gestion des comptes du personnel et des clients (1 répétition)
 
@@ -155,11 +163,11 @@ Contrôles récurrents de la santé des comptes : authentification multifacteur 
 
 Répétitions: `ee_identity_probe`
 
-### Mises à jour gérées avec retour arrière automatique (11 répétitions)
+### Mises à jour gérées avec retour arrière automatique (7 répétitions)
 
 Les applications et composants système se mettent à jour selon un calendrier géré; une mise à jour ratée est détectée et ramenée à la dernière version fonctionnelle sans intervention.
 
-Répétitions: `auto_update_mid_crash`, `auto_update_rollback`, `catena_admin_self_update`, `control_plane_update_rollback`, `daily_chain_container_rollback`, `daily_chain_security_rollback`, `fi_u2_resume_after_reboot`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`, `infra_stack_update_rollback`
+Répétitions: `catena_admin_self_update`, `control_plane_update_rollback`, `daily_chain_container_rollback`, `fi_u4_ovh_rate_limited`, `fi_u5_persistent_quarantine`, `fi_u6_full_rollback_state`, `infra_stack_update_rollback`
 
 ### Supervision externe de la disponibilité (répétition écrite, pas encore réussie)
 
