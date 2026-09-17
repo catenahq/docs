@@ -56,7 +56,7 @@ lui-même.
 
 services:
   server:
-    image: twentycrm/twenty:v2.39.1
+    image: twentycrm/twenty:v2.39.5
     deploy:
       restart_policy:
         condition: any
@@ -97,7 +97,7 @@ services:
       default: {}
 
   worker:
-    image: twentycrm/twenty:v2.39.1
+    image: twentycrm/twenty:v2.39.5
     deploy:
       restart_policy:
         condition: any
