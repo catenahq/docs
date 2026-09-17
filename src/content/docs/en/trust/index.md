@@ -57,13 +57,13 @@ Prepares a fresh server, installs the platform, and deploys the selected applica
 
 Rehearsals: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modify`, `converge_preserves_bumped_image`, `fi_c1_docker_daemon_hang`, `fi_c3_portainer_crash_mid_deploy`, `fi_c4_registry_pull_timeout`, `fi_c6_cloudflared_flapping`, `fi_c7_coturn_cert_expired`, `fi_c8_nextcloud_init_loop`, `fi_u1_compose_lint_reject`, `mixed_template_negative_restore`, `payload_prune_respects_ce`, `release_manifest_converge_state`, `repair_broken_template_round_trip`, `scheduler_easyappointments`, `swarm_overlay_selfheal`
 
-Written, not yet passing: `dev_to_prod_cutover_round_trip`
+Written, not yet passing: `container_delete_recreated`, `dev_to_prod_cutover_round_trip`
 
 ### Operating-system security updates (rehearsal written, not yet passing)
 
 The operating system applies its own security updates, and the server reports when a restart is needed to finish the job rather than taking one on its own.
 
-Written, not yet passing: `reboot_required_notified`
+Written, not yet passing: `host_reboot_recovery`, `reboot_required_notified`
 
 ### Application catalog and suite integrations (3 rehearsals)
 
@@ -133,11 +133,11 @@ Recurring scans of the installed software and its containers for known vulnerabi
 
 Rehearsals: `cve_residual_emits_findings`
 
-### Automated daily maintenance (12 rehearsals)
+### Automated daily maintenance (11 rehearsals)
 
-A supervised daily routine on the server: hourly backups, package and health checks, and an ordered maintenance chain that resumes safely after interruption.
+A supervised daily routine on the server: hourly backups, health and vulnerability checks, and an ordered maintenance chain that resumes safely after interruption.
 
-Rehearsals: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
+Rehearsals: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
 
 ### Managed lifecycle operations (migration, decommission) (rehearsed as a managed operation)
 

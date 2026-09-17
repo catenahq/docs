@@ -57,13 +57,13 @@ Prépare un serveur neuf, installe la plateforme et déploie les applications ch
 
 Répétitions: `ce_converge`, `ce_install_suite`, `ce_uninstall`, `converge_modify`, `converge_preserves_bumped_image`, `fi_c1_docker_daemon_hang`, `fi_c3_portainer_crash_mid_deploy`, `fi_c4_registry_pull_timeout`, `fi_c6_cloudflared_flapping`, `fi_c7_coturn_cert_expired`, `fi_c8_nextcloud_init_loop`, `fi_u1_compose_lint_reject`, `mixed_template_negative_restore`, `payload_prune_respects_ce`, `release_manifest_converge_state`, `repair_broken_template_round_trip`, `scheduler_easyappointments`, `swarm_overlay_selfheal`
 
-Écrite, pas encore réussie: `dev_to_prod_cutover_round_trip`
+Écrite, pas encore réussie: `container_delete_recreated`, `dev_to_prod_cutover_round_trip`
 
 ### Mises à jour de sécurité du système (répétition écrite, pas encore réussie)
 
 Le système d'exploitation applique lui-même ses mises à jour de sécurité, et le serveur signale qu'un redémarrage est nécessaire pour les finaliser au lieu d'en prendre un de sa propre initiative.
 
-Écrite, pas encore réussie: `reboot_required_notified`
+Écrite, pas encore réussie: `host_reboot_recovery`, `reboot_required_notified`
 
 ### Catalogue d'applications et intégrations de la suite (3 répétitions)
 
@@ -133,11 +133,11 @@ Analyses récurrentes des logiciels installés et de leurs conteneurs pour vuln�
 
 Répétitions: `cve_residual_emits_findings`
 
-### Entretien quotidien automatisé (12 répétitions)
+### Entretien quotidien automatisé (11 répétitions)
 
-Une routine quotidienne supervisée sur le serveur : sauvegardes horaires, contrôles de paquets et de santé, et une chaîne d'entretien ordonnée qui reprend sans danger après interruption.
+Une routine quotidienne supervisée sur le serveur : sauvegardes horaires, contrôles de santé et de vulnérabilités, et une chaîne d'entretien ordonnée qui reprend sans danger après interruption.
 
-Répétitions: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_resume_after_reboot`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
+Répétitions: `daily_chain_container_rollback`, `daily_chain_full_pass`, `daily_chain_preflight_aborts_low_disk`, `daily_chain_quiesce_invoked`, `daily_chain_quiesce_invoked_backup_abort`, `daily_chain_verify_cold_blocks_mirror`, `daily_chain_verify_cold_fail_configurable`, `daily_chain_verify_hot_fail_aborts_updates`, `daily_state_corrupt_fallback`, `daily_umbrella_healthchecks`, `ee_daily_cycle`
 
 ### Opérations de cycle de vie gérées (migration, retrait) (répétée comme opération gérée)
 
