@@ -89,8 +89,8 @@ freely available installer and works without the admin panel.
    readable with restic alone, for as long as the keyset is kept.
 
 Deleting the admin panel itself changes nothing about the data or the
-running applications. It is a display and convenience layer; removing it
-is rehearsed as part of Catena's [continuous validation](/en/trust/).
+running applications. It is a display and convenience layer, and removing
+it is one of the scenarios Catena rehearses on real machines.
 
 ## What is given up
 

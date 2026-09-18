@@ -101,13 +101,7 @@ export default defineConfig({
         {
           label: "Trust",
           translations: { fr: "Confiance" },
-          // One generated page, on purpose. trust/index.md is rendered
-          // from the feature manifest, so a claim that stops resolving
-          // fails the build. A hand-written page restating the same
-          // claims carries no such anchor and drifts from the gates it
-          // describes, which is why this section stays at one page.
           items: [
-            { slug: "trust" },
             { slug: "leaving" },
           ],
         },

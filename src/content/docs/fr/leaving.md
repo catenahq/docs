@@ -97,8 +97,8 @@ sans le panneau d'administration.
 
 Supprimer le panneau d'administration lui-même ne change rien aux
 données ni aux applications en marche. C'est une couche d'affichage et
-de commodité ; son retrait est répété dans le cadre de la
-[validation continue](/fr/trust/) de Catena.
+de commodité, et son retrait fait partie des scénarios que Catena répète
+sur de vraies machines.
 
 ## Ce qui est perdu
 

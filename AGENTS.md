@@ -63,10 +63,11 @@ Astro / Starlight feature question rather than guessing.
 ## Security invariants (machine-enforced -- do not weaken silently)
 
 - Client docs never reference operator paths, internal tooling or
-  scenario names; trust/what-we-test.md is GENERATED (do not
-  hand-edit; the ops-side drift gate fails on divergence).
-- Public trust claims live on generated or gate-backed pages only; a
-  new claim needs a pointer to the gate that enforces it (see
-  trust/how-we-validate).
+  scenario names.
+- Every page is hand-written except `apps/`, which is rendered from
+  the catenahq/catena-templates catalog. Nothing here is generated
+  from the maintainers' test bench, so a claim about what is tested
+  carries no automatic anchor: make it only when the gate behind it is
+  named in catenahq/catena-ce SPEC.md.
 - No secrets in tree or history (gitleaks; history re-rooted clean at
   publication 2026-07-12 -- never push the backup-pre-reroot-* branches).
