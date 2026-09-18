@@ -38,9 +38,9 @@ un palier de VPS adapté au déploiement prévu.
 | Serveur de courriel + webmail | 520 MB | 900 MB | 3% | 40% | 600 MB |
 
 Le CPU est normalisé sur un cœur : 100 % = un vCPU complet. Les pics
-correspondent à ce que nous avons observé en exerçant l'application
-selon les [étapes de configuration](/fr/apps/) (premier import
-massif Nextcloud, première passe de l'assistant ERPNext, etc.).
+proviennent de chaque application exercée selon ses propres étapes de
+configuration (premier import massif Nextcloud, première passe de
+l'assistant ERPNext, et ainsi de suite).
 
 ## Recommandations par palier
 

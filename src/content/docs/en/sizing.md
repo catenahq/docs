@@ -38,9 +38,9 @@ tier that matches the intended deployment.
 | Mail server + webmail | 520 MB | 900 MB | 3% | 40% | 600 MB |
 
 CPU is normalized to one core: 100% means one full vCPU is busy. Peak
-values are what we observed while exercising the app the way the
-[setup steps](/en/apps/) describe (the first mass-upload to
-Nextcloud, the first wizard pass on ERPNext, etc.).
+values come from exercising each application the way its own setup
+steps describe (the first mass-upload to Nextcloud, the first wizard
+pass on ERPNext, and so on).
 
 ## Tier guidance
 

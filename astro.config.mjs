@@ -112,14 +112,6 @@ export default defineConfig({
             { slug: "do-not-touch" },
           ],
         },
-        {
-          label: "Apps",
-          translations: { fr: "Applications" },
-          collapsed: true,
-          // `autogenerate` must live inside an `items` array on a
-          // sidebar group; there is no top-level `autogenerate` shape.
-          items: [{ autogenerate: { directory: "apps" } }],
-        },
       ],
     }),
   ],

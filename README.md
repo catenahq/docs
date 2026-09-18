@@ -22,26 +22,27 @@ npm run check     # astro check + starlight-links-validator
 2. Create the FR mirror: `src/content/docs/fr/<slug>.md`. Both
    locales in the same commit (parity rule).
 3. If the page belongs to a sidebar nav group, add the slug to
-   `astro.config.mjs::sidebar` under the matching group. Pages under
-   `apps/` are auto-generated from the directory.
+   `astro.config.mjs::sidebar` under the matching group.
 4. `npm run build` validates frontmatter, internal links
    (starlight-links-validator), and missing locales.
 
-## Apps catalog
+## Sizing page
 
-The per-template pages under `src/content/docs/apps/` are
-machine-generated from the app template catalog (`source/catalog.yml`
-in the catenahq/catena-templates repo), read by the generator in
-catenahq/ops. Run the generator from `catenahq/ops`:
+`src/content/docs/{en,fr}/sizing.md` is the one generated page here.
+It is written from the app catalog's measured footprints by a generator
+in catenahq/ops, which reaches this tree through the
+`CATENAHQ_DOCS_ROOT` env var (default = sibling `docs/`):
 
 ```bash
-uv run python automation/operator-tools/generate-template-docs.py
+uv run python automation/operator-tools/generate-sizing-doc.py
 ```
 
-The generator writes into this repo's tree via the
-`CATENAHQ_DOCS_ROOT` env var (default = sibling `docs/`). Do NOT
-hand-edit the generated pages -- changes belong in the catalog file
-upstream.
+Do NOT hand-edit it; the numbers belong in the catalog upstream.
+
+Per-application documentation does not live here. Each template carries
+its own README beside its compose file, in its
+catenahq/catena-templates blueprint directory, which is also what a
+client's Portainer shows in the entry's detail panel.
 
 ## Interactive yourdomain.com placeholder
 

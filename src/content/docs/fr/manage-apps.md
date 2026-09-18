@@ -23,9 +23,9 @@ utiles pour choisir quoi auto-héberger :
   catalogue est livré avec un ensemble d'applications entièrement
   prêtes (SSO, stockage, réseau, étiquettes, SSL déjà configurés).
   Commencez par là
-  pour les applications courantes -- un clic pour déployer. Catalogue
-  complet avec notes par application :
-  **[Applications pré-configurées](/fr/apps/)**.
+  pour les applications courantes -- un clic pour déployer. Le panneau
+  de détail de chaque entrée porte sa propre description et ses notes
+  de configuration.
 - **[openalternative.co](https://openalternative.co)** -- un annuaire
   d'alternatives open-source aux SaaS populaires (p. ex.
   "alternatives à Notion", "alternatives à Slack"). Chaque
@@ -118,8 +118,9 @@ des applications prêtes à déployer, correctement câblées dès le
 départ -- authentification, SSO, stockage, réseau, étiquettes, SSL.
 Cliquez Deploy sur celles qui sont utiles, ignorez les autres.
 
-Catalogue complet avec notes par application :
-**[Applications pré-configurées](/fr/apps/)**.
+Ouvrez le panneau de détail d'une entrée avant de cliquer Deploy : il
+porte la description de l'application, ce qu'elle remplace et ses notes
+de configuration.
 
 ## Applications multi-conteneurs (exemple : Nextcloud)
 

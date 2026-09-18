@@ -22,8 +22,8 @@ browse when deciding what to self-host:
   catalog ships pre-seeded with fully-wired apps (SSO, storage,
   networking, labels, SSL already configured). Start here for common
   apps -- one click to
-  deploy. Full catalog with per-app notes:
-  **[Pre-configured templates](/en/apps/)**.
+  deploy. Each entry's detail panel carries its own description and
+  setup notes.
 - **[openalternative.co](https://openalternative.co)** -- a directory of
   open-source alternatives to popular SaaS (e.g., "Notion alternatives,"
   "Slack alternatives"). Each entry links to the project's repo + its
@@ -108,7 +108,8 @@ ready-to-deploy apps that are wired correctly from the start --
 authentication, SSO, storage, networking, labels, SSL are all
 pre-configured. Click Deploy on the useful ones, ignore the rest.
 
-Full catalog with per-app notes: **[Pre-configured templates](/en/apps/)**.
+Open an entry's detail panel before clicking Deploy: it carries that
+app's description, what it replaces, and its setup notes.
 
 ## Multi-container apps (example: Nextcloud)
 

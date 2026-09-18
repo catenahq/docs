@@ -64,10 +64,13 @@ Astro / Starlight feature question rather than guessing.
 
 - Client docs never reference operator paths, internal tooling or
   scenario names.
-- Every page is hand-written except `apps/`, which is rendered from
-  the catenahq/catena-templates catalog. Nothing here is generated
-  from the maintainers' test bench, so a claim about what is tested
-  carries no automatic anchor: make it only when the gate behind it is
-  named in catenahq/catena-ce SPEC.md.
+- Every page is hand-written except `sizing.md`, which is rendered from
+  the catenahq/catena-templates catalog by an ops generator. Per-app
+  documentation is NOT here: each template carries its own README in
+  its catena-templates blueprint directory, and this site does not
+  mirror it. Nothing here is generated from the maintainers' test
+  bench, so a claim about what is tested carries no automatic anchor:
+  make it only when the gate behind it is named in catenahq/catena-ce
+  SPEC.md.
 - No secrets in tree or history (gitleaks; history re-rooted clean at
   publication 2026-07-12 -- never push the backup-pre-reroot-* branches).
