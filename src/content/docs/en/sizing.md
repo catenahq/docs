@@ -14,6 +14,7 @@ tier that matches the intended deployment.
 | Template | RAM (idle) | RAM (peak) | CPU (idle) | CPU (peak) | Disk (baseline) |
 |---|---|---|---|---|---|
 | Nextcloud | 420 MB | 880 MB | 2% | 65% | 320 MB |
+| Immich | _n/a_ | 2800 MB | _n/a_ | _n/a_ | _n/a_ |
 | Collabora Online (CODE) | _n/a_ | 1024 MB | _n/a_ | _n/a_ | _n/a_ |
 | OnlyOffice | 380 MB | 620 MB | 1% | 80% | 90 MB |
 | Rocket.Chat | 520 MB | 720 MB | 3% | 35% | 180 MB |
@@ -69,6 +70,13 @@ Antivirus (files_antivirus, Daemon mode) is wired by ops to the
 SHARED ops-managed clamd (catena-clamav network, ~1.5 GB resident),
 NOT counted in these figures -- it is base infra shared with the
 mail server; budget it once at the VPS level.
+### Immich
+
+Not yet measured. The peak is an estimate: the machine-learning
+service loads its search and face models on first use and holds
+1.5 to 2 GB while they are resident, and unloads them after five
+idle minutes. The library grows with the photos and videos
+uploaded, plus roughly 10% for thumbnails and transcodes.
 ### Collabora Online (CODE)
 
 Stateless document editor backed by Nextcloud. Sizing is dominated

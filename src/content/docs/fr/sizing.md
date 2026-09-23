@@ -14,6 +14,7 @@ un palier de VPS adapté au déploiement prévu.
 | Application | RAM (repos) | RAM (pic) | CPU (repos) | CPU (pic) | Disque (base) |
 |---|---|---|---|---|---|
 | Nextcloud | 420 MB | 880 MB | 2% | 65% | 320 MB |
+| Immich | _n/a_ | 2800 MB | _n/a_ | _n/a_ | _n/a_ |
 | Collabora Online (CODE) | _n/a_ | 1024 MB | _n/a_ | _n/a_ | _n/a_ |
 | OnlyOffice | 380 MB | 620 MB | 1% | 80% | 90 MB |
 | Rocket.Chat | 520 MB | 720 MB | 3% | 35% | 180 MB |
@@ -69,6 +70,14 @@ grossit. L'antivirus (files_antivirus, mode Daemon) est câblé par
 l'opérateur vers le clamd PARTAGÉ (réseau catena-clamav, ~1,5 Go
 résident), NON compté ici -- c'est de l'infrastructure partagée
 avec le serveur de courriel ; à budgéter une fois au niveau du VPS.
+### Immich
+
+Pas encore mesuré. Le pic est une estimation : le service
+d'apprentissage automatique charge ses modèles de recherche et de
+visages à la première utilisation et occupe 1,5 à 2 Go tant
+qu'ils sont en mémoire, puis les décharge après cinq minutes
+d'inactivité. La bibliothèque grandit avec les photos et vidéos
+téléversées, plus environ 10 % pour les vignettes et transcodages.
 ### Collabora Online (CODE)
 
 Éditeur de documents sans état adossé à Nextcloud. Le
