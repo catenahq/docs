@@ -5,7 +5,7 @@ description: "Rule of thumb: anything the web UIs expose is a browser task. The 
 
 Rule of thumb: anything the web UIs expose is a browser task.
 Everything else goes over Tailscale SSH access to the box, or through
-the `catena` CLI from a Catena checkout. Either way it runs without
+the `catena-cli` CLI from a Catena checkout. Either way it runs without
 us -- nothing here requires anyone else.
 
 ## Browser tasks
@@ -27,7 +27,7 @@ us -- nothing here requires anyone else.
   Rocket.Chat, EspoCRM, and the rest -- each app's own admin UI covers
   its own settings.
 
-## Over the shell or the `catena` CLI
+## Over the shell or the `catena-cli` CLI
 
 These need a shell on the box (SSH in over Tailscale) or the `catena`
 CLI run from a Catena checkout:
@@ -41,8 +41,8 @@ CLI run from a Catena checkout:
 - **Migrate to a different VPS provider** -- `catena recover` at the
   new provider, with the recovery keyset.
 - **Rotate the Cloudflare tunnel or Tailscale access** -- regenerate
-  the credential in the provider console, then `catena rotate-tunnel`
-  / `catena rotate-tailscale`.
+  the credential in the provider console, then `catena-cli rotate-tunnel`
+  / `catena-cli rotate-tailscale`.
 - **Re-apply configuration** after a settings change -- `catena
   converge`.
 - Major-version upgrades of core services, custom (non-catalog)

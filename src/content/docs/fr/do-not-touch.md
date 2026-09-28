@@ -10,7 +10,7 @@ règle :
 **Rien ne se modifie à la main sur le serveur lui-même.** Toute
 modification faite directement sur la machine est écrasée au prochain
 passage de réconciliation du système (la mise à jour hebdomadaire, ou
-le prochain `catena converge`), et peut casser la reprise automatique.
+le prochain `catena-cli converge`), et peut casser la reprise automatique.
 Il existe presque certainement une façon prise en charge de rendre le
 changement durable -- une étiquette compose, un réglage dans le panneau
 catena-admin, ou une entrée dans la configuration -- et c'est celle-là

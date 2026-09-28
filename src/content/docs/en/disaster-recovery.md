@@ -31,7 +31,7 @@ detail.
 | **The provider's datacentre burns down** (or hardware failure) | Rebuild on a fresh server at any provider from the off-site backup (`catena recover`). | [Rebuilding a server from backup](/en/self-restore/) |
 | **The provider gives 48h notice / suspends the account** | Rent a VPS elsewhere and `catena recover` onto it; expect ~30-60 min of public-URL downtime during cutover. | Recovery map ("provider goes bankrupt") |
 | **Backup provider gives 48h notice** | Point backups at a new bucket in catena-admin **Settings**; server data is unaffected. | Recovery map ("backup provider goes bankrupt") |
-| **A password or API token may have leaked** | Do not wait -- rotate the credential in its console now (and `catena rotate-tunnel` / `catena rotate-tailscale` for those two). | Recovery map (per-credential rows) |
+| **A password or API token may have leaked** | Do not wait -- rotate the credential in its console now (and `catena-cli rotate-tunnel` / `catena-cli rotate-tailscale` for those two). | Recovery map (per-credential rows) |
 
 The recovery map below has the full table including infrastructure
 edges (Cloudflare token rotation, Tailscale account, and the rest) --
@@ -63,7 +63,7 @@ A few credentials do not live on the server at all -- they sit in
 other companies' admin consoles: Cloudflare (DNS + tunnel), Tailscale
 (remote access), and Portainer (container management). If one of those
 is ever lost, it is regenerated in that provider's console and
-re-installed (`catena rotate-tunnel` / `catena rotate-tailscale`, or
+re-installed (`catena-cli rotate-tunnel` / `catena-cli rotate-tailscale`, or
 by re-running the install). The recovery map below lists each.
 
 ## Recovery map -- what breaks and what to do
@@ -72,15 +72,15 @@ by re-running the install). The recovery map below lists each.
 |---|---|---|
 | **The laptop** (the device the work happens from) | The server, the apps, the backups | Nothing is lost as long as the recovery keyset is saved in a password manager, not only on the laptop. Set up a new device, restore the keyset, and carry on |
 | **SSH private key** | The server, the apps, the dashboard | Boot **Provider rescue mode** (below), mount the disk, and add a fresh public key to the `ops` account; then re-run the install so it sticks |
-| **Dashboard access (sign-in broken, sign-in service down)** | The apps (their own logins still work), the data | SSH in over Tailscale and restart the sign-in service, or re-provision it with `catena converge`. See [Regaining admin access](#regaining-admin-access) |
+| **Dashboard access (sign-in broken, sign-in service down)** | The apps (their own logins still work), the data | SSH in over Tailscale and restart the sign-in service, or re-provision it with `catena-cli converge`. See [Regaining admin access](#regaining-admin-access) |
 | **One app's data (something was deleted)** | Everything else | Try the app's own trash first; if empty, open catena-admin **Actions -> Browse past snapshots**, pick a point in time, and copy the file out of the read-only mount |
 | **Entire server disk (corruption, accidental wipe)** | Backups (in the storage bucket) | Rebuild from the backup with `catena recover` -- see [Rebuilding a server from backup](/en/self-restore/) |
 | **Cloudflare API token (accidentally rotated)** | The tunnel keeps running. Public apps stay up. **Functionality only**, not backup. | Generate a new API token at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens) and set it in catena-admin **Settings**. Apps stay reachable throughout |
-| **Cloudflare tunnel token (rotated or leaked)** | Existing tunnel keeps running until it next reconnects, then drops. Public apps go dark until rotation completes. **Functionality**, not backup. | Run `catena rotate-tunnel` -- it mints a fresh tunnel and installs it. (The token itself lives under [dash.cloudflare.com](https://dash.cloudflare.com) -> the zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> the tunnel -> **Configure**, NOT the "API Tokens" page.) Expect 5-15 minutes of public-app downtime during the swap |
-| **Tailscale OAuth client (accidentally rotated)** | The server's remote access keeps working. Remote administration stays up | Generate a new OAuth client in the Tailscale console, then `catena rotate-tailscale` to re-auth the node |
+| **Cloudflare tunnel token (rotated or leaked)** | Existing tunnel keeps running until it next reconnects, then drops. Public apps go dark until rotation completes. **Functionality**, not backup. | Run `catena-cli rotate-tunnel` -- it mints a fresh tunnel and installs it. (The token itself lives under [dash.cloudflare.com](https://dash.cloudflare.com) -> the zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> the tunnel -> **Configure**, NOT the "API Tokens" page.) Expect 5-15 minutes of public-app downtime during the swap |
+| **Tailscale OAuth client (accidentally rotated)** | The server's remote access keeps working. Remote administration stays up | Generate a new OAuth client in the Tailscale console, then `catena-cli rotate-tailscale` to re-auth the node |
 | **Portainer API key (accidentally rotated)** | Every app keeps running | Generate a new key in the Portainer UI and set it in catena-admin **Settings** (or re-run the install so the services pick it up) |
 | **Cloudflare account terminated** | The server, the apps (internally), the data | Create a new Cloudflare account, point the domain to it, and re-run the install against it; the apps are down only during DNS propagation |
-| **Tailscale account terminated** | The server, the apps, the public path (the tunnel) | Tailscale is only the admin path, not the public serving path. Re-join the node from a new tailnet (`catena rotate-tailscale`), or reach the box via **Provider rescue mode** |
+| **Tailscale account terminated** | The server, the apps, the public path (the tunnel) | Tailscale is only the admin path, not the public serving path. Re-join the node from a new tailnet (`catena-cli rotate-tailscale`), or reach the box via **Provider rescue mode** |
 | **The VPS provider goes bankrupt / shuts down** | The backup bucket (different company) | [Rebuild from the backup](/en/self-restore/) (`catena recover`) at a different provider |
 | **The provider's datacentre burns down (OVH Strasbourg 2021)** | The backup bucket (different region, different city) | Same as above -- `catena recover` on a fresh server at another provider or region |
 | **The backup provider goes bankrupt / shuts down** | The server and its data | The data is still there -- point backups at a new bucket in catena-admin **Settings** *before* the provider's deadline. With a secondary backup already set up (see [Recurring tasks](/en/disaster-prevention/)), it is already safe |
@@ -99,7 +99,7 @@ account is locked out -- the web dashboards are unreachable, but
    (`ssh ops@<the-tailnet-ip>`).
 2. That shell can restart the sign-in service (Keycloak),
    reset the admin credential, or re-provision the whole realm with
-   `catena converge` -- which re-imports users, clients, and groups.
+   `catena-cli converge` -- which re-imports users, clients, and groups.
 3. If Keycloak's database is damaged rather than just misbehaving,
    `catena restore` brings it back from the last snapshot.
 

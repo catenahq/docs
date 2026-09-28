@@ -5,7 +5,7 @@ description: "Règle empirique : tout ce que les interfaces web exposent est une
 
 Règle empirique : tout ce que les interfaces web exposent est une
 tâche de navigateur. Tout le reste passe par l'accès SSH Tailscale à
-la machine, ou par la CLI `catena` depuis un dépôt Catena. Dans les
+la machine, ou par la CLI `catena-cli` depuis un dépôt Catena. Dans les
 deux cas, cela s'exécute sans nous -- rien ici n'exige quelqu'un
 d'autre.
 
@@ -33,10 +33,10 @@ d'autre.
   Nextcloud, Rocket.Chat, EspoCRM, et le reste -- l'interface admin de
   chaque application couvre ses propres réglages.
 
-## Via la ligne de commande ou la CLI `catena`
+## Via la ligne de commande ou la CLI `catena-cli`
 
 Ceci nécessite un shell sur la machine (connexion SSH via Tailscale)
-ou la CLI `catena` lancée depuis un dépôt Catena :
+ou la CLI `catena-cli` lancée depuis un dépôt Catena :
 
 - **Reconstruire un serveur perdu** -- `catena recover` sur un serveur
   neuf, avec le jeu de clés de récupération. Voir
@@ -49,9 +49,9 @@ ou la CLI `catena` lancée depuis un dépôt Catena :
   le nouveau fournisseur, avec le jeu de clés de récupération.
 - **Régénérer le tunnel Cloudflare ou l'accès Tailscale** -- régénérer
   l'identifiant dans la console du fournisseur, puis
-  `catena rotate-tunnel` / `catena rotate-tailscale`.
+  `catena-cli rotate-tunnel` / `catena-cli rotate-tailscale`.
 - **Ré-appliquer la configuration** après un changement de réglage --
-  `catena converge`.
+  `catena-cli converge`.
 - Mises à niveau majeures des services de base, modèles personnalisés
   (hors catalogue), ou toute modification directe d'un fichier sur
   l'hôte.
