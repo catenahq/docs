@@ -4,5 +4,3 @@
 #
 # A listed file with no finding fails the gate. Delete the entry when the
 # file is fixed, or the gate stops gating that file.
-
-.github/workflows/baseline-drift.yml -- false positive: "no longer match" is a runtime condition, not this repo's history

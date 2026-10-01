@@ -3,8 +3,8 @@
 `baseline.sarif` is a committed set of security findings for THIS repo that
 are reviewed and accepted as benign. For how the mechanism works generally
 (what `baseline:`/`--dismiss-baseline` do, how to seed or regenerate a
-baseline, the drift-check pattern) see
-[catenahq/scanctl's README](https://github.com/catenahq/scanctl#baseline-gate-only-on-new-findings) --
+baseline) see
+[catenahq/scanctl's README](https://github.com/catenahq/scanctl#committed-baseline-optional) --
 this file only records what's baselined here and why.
 
 ## What is currently baselined
@@ -19,11 +19,9 @@ this file only records what's baselined here and why.
   `catenahq/scanctl:secure-base`), which sets `minimumReleaseAge: 7 days`. The
   cooldown is in effect.
 
-## Drift detection
+## Stale entries
 
-`baseline-drift.yml` re-scans WITHOUT the baseline and runs `drift-check.py`
-(repo-local copy of the comparator scanctl's README documents) weekly + on
-`workflow_dispatch`, triggered also by changes to `package-lock.json` /
-`package.json` / `renovate.json` / `.scanctl/**`. On drift, regenerate per
-scanctl's README ("Seeding or regenerating a baseline") and review the diff --
-every entry must be a finding a human has confirmed is benign here.
+scanctl fails `security.yml` when an entry here matches nothing the scan still
+produces, and lists it under "Stale baseline entries". Delete the entry, then
+review the diff: every entry must be a finding a human has confirmed is benign
+here.
