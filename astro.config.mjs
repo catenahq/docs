@@ -26,9 +26,8 @@ export default defineConfig({
       disable404Route: true,
       editLink: {
         // "Suggest edit" link in every page footer; opens the file
-        // on GitHub on the active branch (dev = default; main is the
-        // protected deploy branch).
-        baseUrl: "https://github.com/catenahq/docs/edit/dev/",
+        // on GitHub on the repo's default branch.
+        baseUrl: "https://github.com/catenahq/docs/edit/HEAD/",
       },
       plugins: [
         starlightLinksValidator({
