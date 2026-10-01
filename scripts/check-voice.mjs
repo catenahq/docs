@@ -1,14 +1,21 @@
 #!/usr/bin/env node
-// Voice gate: the client documentation does not address a reader.
+// Voice gate: the client documentation does not address a reader, and it
+// names no product version.
 //
-// The rest of the codebase already describes mechanism rather than
-// instructing a person -- comments, commit messages, role docs -- and the
-// client pages drifted into a separate voice. This gate holds the line:
-// no "you"/"your" in English, no "vous"/"votre" in French. Describe what the
-// system does and how it is used.
+// The rest of the codebase describes mechanism rather than instructing a
+// person -- comments, commit messages, role docs -- and this gate holds the
+// client pages to the same voice: no "you"/"your" in English, no
+// "vous"/"votre" in French. Describe what the system does and how it is used.
 //
 //   "The token is entered in catena-admin > Settings"
 //   not "enter your token in catena-admin > Settings"
+//
+// VERSIONS. A version number in documentation is out of date at the next
+// release. A page names the property the reader needs instead, and an
+// illustrative example uses one of the placeholders in VERSION_RULE.allow.
+// The rule matches three-part numbers (2.12.3, v2.12.3): a two-part number
+// reads the same as a decimal ("1.5 GB"), and a fourth part makes an IP
+// address. Letter forms (x.y.z, X.Y.Z) never match.
 //
 // SCOPE. Prose only. Fenced code blocks and inline code spans are skipped:
 // a placeholder like `your-domain.com` inside a command is part of an
@@ -19,16 +26,16 @@
 // Link TEXT is prose and is scanned. So are frontmatter titles and
 // descriptions.
 //
-// GENERATED PAGES ARE IN SCOPE. Several pages under apps/ come from the
-// ops generators reading catenahq/catena-templates, and trust/what-we-test.md
-// comes from the audit's public-spec writer. A generated page that addresses
-// the reader is still a page that addresses the reader; the fix lands in the
-// generator or its source data, and the entry in the debt file below says so.
+// GENERATED PAGES ARE IN SCOPE. sizing.md comes from an ops generator
+// reading catenahq/catena-templates. A generated page that fails the gate is
+// still a page that fails it; the fix lands in the generator or its source
+// data, and the entry in the debt file below says so.
 //
-// DEBT. scripts/voice-debt.txt lists the pages not yet converted, one path
-// per line with a reason. A file in the list is allowed to fail; a file NOT
-// in the list must be clean, and a listed file that is ALREADY clean fails
-// too -- a stale exemption is how a gate quietly stops gating.
+// DEBT. scripts/voice-debt.txt lists the pages not yet converted to the voice
+// rule, one path per line with a reason. A file in the list is allowed to
+// address the reader; a file NOT in the list must be clean, and a listed file
+// that is ALREADY clean fails too -- a stale exemption is how a gate quietly
+// stops gating. The version rule applies to every page, listed or not.
 //
 // Wired as `npm run check:voice` and a CI step.
 
@@ -43,6 +50,13 @@ const RULES = [
   { re: /\b(?<!rendez-)(vous|votre|vos|v[oô]tres?)\b/gi,
     lang: "fr", name: 'deuxieme personne ("vous"/"votre")' },
 ];
+
+// allow: a pinned version and its patch, minor and major bumps.
+const VERSION_RULE = {
+  re: /(?<![\d.])\d+\.\d+\.\d+(?!\.?\d)/g,
+  name: "product version",
+  allow: new Set(["1.2.3", "1.2.4", "1.2.9", "1.3.0", "1.9.0", "2.0.0"]),
+};
 
 const DEBT_FILE = "scripts/voice-debt.txt";
 const CONTENT_PREFIX = "src/content/docs/";
@@ -89,6 +103,20 @@ function readDebt() {
   return entries;
 }
 
+function finding(file, idx, rule, hits, line) {
+  const preview = line.trim().slice(0, 110);
+  return `${file}:${idx + 1}: ${rule.name}: ${[...new Set(hits)].join(", ")}\n    ${preview}`;
+}
+
+function report(title, list, hint) {
+  console.error(title);
+  console.error("");
+  for (const f of list) console.error("  " + f);
+  console.error("");
+  console.error(`Total: ${list.length} line(s).`);
+  console.error(hint);
+}
+
 const debt = readDebt();
 const files = execSync("git ls-files", { encoding: "utf-8" })
   .trim()
@@ -96,6 +124,7 @@ const files = execSync("git ls-files", { encoding: "utf-8" })
   .filter((f) => f.startsWith(CONTENT_PREFIX) && /\.mdx?$/.test(f));
 
 const findings = [];
+const versionFindings = [];
 const dirty = new Set();
 
 for (const file of files) {
@@ -111,15 +140,17 @@ for (const file of files) {
 
   const lines = stripCode(content);
   lines.forEach((line, idx) => {
+    const versions = (line.match(VERSION_RULE.re) || []).filter(
+      (v) => !VERSION_RULE.allow.has(v),
+    );
+    if (versions.length) versionFindings.push(finding(file, idx, VERSION_RULE, versions, line));
+
     rule.re.lastIndex = 0;
     const hits = line.match(rule.re);
     if (!hits) return;
     dirty.add(file);
     if (debt.has(file)) return;
-    const preview = line.trim().slice(0, 110);
-    findings.push(
-      `${file}:${idx + 1}: ${rule.name}: ${[...new Set(hits)].join(", ")}\n    ${preview}`,
-    );
+    findings.push(finding(file, idx, rule, hits, line));
   });
 }
 
@@ -127,17 +158,24 @@ for (const file of files) {
 // converted, the line stayed, and the next regression on it is silent.
 const stale = [...debt.keys()].filter((f) => !dirty.has(f));
 
-if (findings.length || stale.length) {
+if (findings.length || versionFindings.length || stale.length) {
   if (findings.length) {
-    console.error("Documentation addresses the reader (workspace voice rule):");
-    console.error("");
-    for (const f of findings) console.error("  " + f);
-    console.error("");
-    console.error(`Total: ${findings.length} line(s).`);
-    console.error(
+    report(
+      "Documentation addresses the reader (workspace voice rule):",
+      findings,
       "Describe what the system does, not what the reader should do. " +
         "A page that cannot be converted yet goes in " + DEBT_FILE +
         " with the reason.",
+    );
+  }
+  if (versionFindings.length) {
+    if (findings.length) console.error("");
+    report(
+      "Documentation names a product version:",
+      versionFindings,
+      "A version is out of date at the next release. Name the property the " +
+        "reader needs, or use a placeholder: " +
+        [...VERSION_RULE.allow].join(", ") + ".",
     );
   }
   if (stale.length) {
@@ -149,4 +187,4 @@ if (findings.length || stale.length) {
   process.exit(1);
 }
 
-console.log(`Voice: clean (${files.length} page(s) scanned).`);
+console.log(`Voice and versions: clean (${files.length} page(s) scanned).`);

@@ -52,7 +52,7 @@ jobs:
       - name: Unicode hygiene (no em dashes / smart quotes / decorative symbols)
         working-directory: ./docs
         run: npm run check:unicode
-      - name: Voice (the documentation does not address a reader)
+      - name: Voice (the documentation does not address a reader or name a product version)
         working-directory: ./docs
         run: npm run check:voice
       # Pinned in contracts/.vale-version, which check-prose.mjs also

@@ -73,7 +73,9 @@ checks out catenahq/contracts as a sibling before running npm install.
   quotes, decorative Unicode per workspace CLAUDE.md, plus a scan for
   the names of systems Catena stopped shipping)
 - voice (`npm run check:voice` -- the documentation does not address a
-  reader; `scripts/voice-debt.txt` lists the pages not yet converted)
+  reader and names no product version, with placeholder versions allowed
+  in examples; `scripts/voice-debt.txt` lists the pages not yet converted
+  to the voice rule)
 - comment prose (`npm run check:prose` -- comments describe the code as
   it stands, with its history in the commit message)
 - Astro typecheck + Starlight build (catches broken internal links)
