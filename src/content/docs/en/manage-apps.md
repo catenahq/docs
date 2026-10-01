@@ -132,7 +132,7 @@ sidecar:
 ```yaml
 services:
   app:
-    image: nextcloud:33.0.3-apache
+    image: nextcloud:1.2.3-apache
     environment:
       POSTGRES_HOST: db
       POSTGRES_DB: nextcloud
@@ -152,7 +152,7 @@ services:
       default: {}               # reach db, redis, cron via sibling names
 
   db:
-    image: postgres:16.13-alpine
+    image: postgres:1.2-alpine
     environment:
       POSTGRES_DB: nextcloud
       POSTGRES_USER: nextcloud
@@ -163,12 +163,12 @@ services:
       - default                 # NOT on catena-network -- internal only
 
   redis:
-    image: redis:7.4.9-alpine
+    image: redis:1.2.3-alpine
     networks:
       - default
 
   cron:
-    image: nextcloud:33.0.3-apache
+    image: nextcloud:1.2.3-apache
     entrypoint: /cron.sh        # runs php -f cron.php every 5 min
     volumes:
       - nc-data:/var/www/html
@@ -254,11 +254,11 @@ known-good value is worse than no auto-update.
 
 | Image tag                                    | Managed? |
 |----------------------------------------------|----------|
-| `nextcloud:30.0.2-apache`                    | ✓ yes    |
-| `nextcloud:v30.0.2` (with or without `v`)    | ✓ yes    |
-| `postgres:16.4.2-alpine`                     | ✓ yes    |
-| `redis:7.4`                                  | ✗ no (partial pin) |
-| `postgres:16-alpine`                         | ✗ no (partial pin) |
+| `nextcloud:1.2.3-apache`                     | ✓ yes    |
+| `nextcloud:v1.2.3` (with or without `v`)     | ✓ yes    |
+| `postgres:1.2.3-alpine`                      | ✓ yes    |
+| `redis:1.2`                                  | ✗ no (partial pin) |
+| `postgres:1-alpine`                          | ✗ no (partial pin) |
 | `nginx:alpine`                               | ✗ no (floating) |
 | `ubuntu:latest`                              | ✗ no (floating) |
 | `myapp` (no tag)                             | ✗ no (floating, defaults to `latest`) |
@@ -535,7 +535,7 @@ The complete Grafana compose as a reference:
 ```yaml
 services:
   app:
-    image: grafana/grafana:12.0.0
+    image: grafana/grafana:1.2.3
     labels:
       - "vps.auth.oidc=true"
       - "vps.auth.groups=staff"
@@ -657,7 +657,7 @@ is a change made on the server directly (SSH in over Tailscale).
 ## Override how an app appears on the Gatus status page
 
 By default, the Gatus card for an app shows the container image's
-short name plus its version -- e.g., `paperless-ngx 2.12.3`. When the
+short name plus its version -- e.g., `paperless-ngx 1.2.3`. When the
 image's short name doesn't reflect what the app *is*
 (common when a container wraps something else -- e.g., nginx serving a
 pre-rendered static site), set a compose label:
@@ -665,7 +665,7 @@ pre-rendered static site), set a compose label:
 ```yaml
 services:
   myapp:
-    image: nginx:1.29.8-alpine
+    image: nginx:1.2.3-alpine
     labels:
       - "vps.display-name=my-static-site"
 ```

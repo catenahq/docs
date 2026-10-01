@@ -143,7 +143,7 @@ cron :
 ```yaml
 services:
   app:
-    image: nextcloud:33.0.3-apache
+    image: nextcloud:1.2.3-apache
     environment:
       POSTGRES_HOST: db
       POSTGRES_DB: nextcloud
@@ -163,7 +163,7 @@ services:
       default: {}               # atteindre db, redis, cron via les noms voisins
 
   db:
-    image: postgres:16.13-alpine
+    image: postgres:1.2-alpine
     environment:
       POSTGRES_DB: nextcloud
       POSTGRES_USER: nextcloud
@@ -174,12 +174,12 @@ services:
       - default                 # PAS sur catena-network -- interne uniquement
 
   redis:
-    image: redis:7.4.9-alpine
+    image: redis:1.2.3-alpine
     networks:
       - default
 
   cron:
-    image: nextcloud:33.0.3-apache
+    image: nextcloud:1.2.3-apache
     entrypoint: /cron.sh        # exécute php -f cron.php toutes les 5 min
     volumes:
       - nc-data:/var/www/html
@@ -272,11 +272,11 @@ est pire que pas de mise à jour du tout.
 
 | Tag d'image                                  | Géré ?  |
 |----------------------------------------------|---------|
-| `nextcloud:30.0.2-apache`                    | ✓ oui   |
-| `nextcloud:v30.0.2` (avec ou sans `v`)       | ✓ oui   |
-| `postgres:16.4.2-alpine`                     | ✓ oui   |
-| `redis:7.4`                                  | ✗ non (épinglage partiel) |
-| `postgres:16-alpine`                         | ✗ non (épinglage partiel) |
+| `nextcloud:1.2.3-apache`                     | ✓ oui   |
+| `nextcloud:v1.2.3` (avec ou sans `v`)        | ✓ oui   |
+| `postgres:1.2.3-alpine`                      | ✓ oui   |
+| `redis:1.2`                                  | ✗ non (épinglage partiel) |
+| `postgres:1-alpine`                          | ✗ non (épinglage partiel) |
 | `nginx:alpine`                               | ✗ non (flottant) |
 | `ubuntu:latest`                              | ✗ non (flottant) |
 | `monapp` (sans tag)                          | ✗ non (flottant, implicitement `latest`) |
@@ -586,7 +586,7 @@ Voici un compose Grafana complet en référence :
 ```yaml
 services:
   app:
-    image: grafana/grafana:12.0.0
+    image: grafana/grafana:1.2.3
     labels:
       - "vps.auth.oidc=true"
       - "vps.auth.groups=staff"
@@ -720,7 +720,7 @@ visibilité par utilisateur -- se modifie directement sur le serveur
 
 Par défaut, la carte Gatus d'une application affiche le nom court
 de l'image conteneur suivi de sa version -- p. ex. `paperless-ngx
-2.12.3`. Lorsque le nom court de l'image ne reflète pas ce que
+1.2.3`. Lorsque le nom court de l'image ne reflète pas ce que
 l'application *est* (cas courant quand un conteneur enveloppe autre
 chose -- p. ex. nginx servant un site statique pré-généré), définissez
 une étiquette compose :
@@ -728,7 +728,7 @@ une étiquette compose :
 ```yaml
 services:
   myapp:
-    image: nginx:1.29.8-alpine
+    image: nginx:1.2.3-alpine
     labels:
       - "vps.display-name=my-static-site"
 ```

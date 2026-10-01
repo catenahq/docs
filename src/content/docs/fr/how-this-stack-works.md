@@ -167,8 +167,8 @@ de l'application :
 
 | Le tag ressemble à...   | Exemple              | Mise à jour auto ? |
 |---|---|---|
-| Version complète      | `paperless:2.12.3`   | **Oui** -- avec retour en arrière auto en cas d'échec. |
-| Épingle majeure seule | `postgres:16-alpine` | Non. Épinglé par le système ; ignoré par la mise à jour hebdomadaire. |
+| Version complète      | `paperless:1.2.3`    | **Oui** -- avec retour en arrière auto en cas d'échec. |
+| Épingle majeure seule | `postgres:1-alpine`  | Non. Épinglé par le système ; ignoré par la mise à jour hebdomadaire. |
 | Flottant              | `nginx:latest`       | Non. Dangereux à toucher sans surveillance. |
 
 Pour les applications épinglées à une version complète, chaque
@@ -176,9 +176,9 @@ service peut optionnellement étiqueter une politique dans son
 fichier compose :
 
 - `vps.auto-update=patch` *(défaut)* -- accepte uniquement les
-  correctifs (p. ex. 2.12.3 -> 2.12.4).
+  correctifs (p. ex. 1.2.3 -> 1.2.4).
 - `vps.auto-update=minor` -- accepte aussi les versions mineures
-  dans la même série majeure (2.12.3 -> 2.13.0).
+  dans la même série majeure (1.2.3 -> 1.3.0).
 - `vps.auto-update=major` -- accepte tout ce qui est plus récent,
   y compris les sauts de version majeure.
 - `vps.auto-update=off` -- saute complètement ce service.

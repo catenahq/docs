@@ -155,17 +155,17 @@ tag is pinned in the app's configuration:
 
 | Tag looks like...   | Example              | Gets auto-updated? |
 |---|---|---|
-| Full version      | `paperless:2.12.3`   | **Yes** -- with auto-rollback on failure. |
-| Major-only pin    | `postgres:16-alpine` | No. System-pinned; ignored by the weekly updater. |
+| Full version      | `paperless:1.2.3`    | **Yes** -- with auto-rollback on failure. |
+| Major-only pin    | `postgres:1-alpine`  | No. System-pinned; ignored by the weekly updater. |
 | Floating          | `nginx:latest`       | No. Unsafe to touch unsupervised. |
 
 For apps on a full version pin, each service can optionally tag a
 policy in its compose:
 
 - `vps.auto-update=patch` *(default)* -- accept bug-fix releases only
-  (e.g., 2.12.3 -> 2.12.4).
+  (e.g., 1.2.3 -> 1.2.4).
 - `vps.auto-update=minor` -- also accept feature releases within the
-  same major line (2.12.3 -> 2.13.0).
+  same major line (1.2.3 -> 1.3.0).
 - `vps.auto-update=major` -- accept anything newer, including major
   version jumps.
 - `vps.auto-update=off` -- skip this service entirely.
