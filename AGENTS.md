@@ -26,14 +26,14 @@ sibling layout. CI mirrors this: the docs job checks out docs into
 `$GITHUB_WORKSPACE`, then runs npm install + build with
 `working-directory: ./docs`.
 
-catenahq/contracts is public (2026-07-11): the sibling-checkout steps
-need no token (the former CONTRACTS_READ_TOKEN secret is retired).
+catenahq/contracts is public: the sibling-checkout steps need no
+token.
 
 ## Content rules
 
 - Client-facing. Never reference the internal operator documentation,
   operator-side paths, Ansible roles, or filesystem paths.
-- Standing rule (updated 2026-07-17): Catena is fully self-hosted. The
+- Standing rule: Catena is fully self-hosted. The
   READER is the admin who owns and runs the VPS; address them as "you"
   and tell them how to do the task themselves, pointing at the concrete
   tool or another doc (Tailscale SSH, the recovery keyset + self-restore,
@@ -72,5 +72,6 @@ Astro / Starlight feature question rather than guessing.
   bench, so a claim about what is tested carries no automatic anchor:
   make it only when the gate behind it is named in catenahq/catena-ce
   SPEC.md.
-- No secrets in tree or history (gitleaks; history re-rooted clean at
-  publication 2026-07-12 -- never push the backup-pre-reroot-* branches).
+- No secrets in tree or history (gitleaks). Never push the
+  backup-pre-reroot-* branches: they hold the history from before the
+  repo was published.
