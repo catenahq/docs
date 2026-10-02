@@ -1,8 +1,9 @@
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
+import { inter } from "@catenahq/contracts/brand/fonts.mjs";
 
 // docs.catena.run -- public client docs.
 //
@@ -13,7 +14,8 @@ import { fileURLToPath } from "node:url";
 // automatically.
 //
 // Styling: Starlight's theme, mapped onto the brand tokens, with Tailwind
-// CSS and the brand theme the website uses (src/styles/global.css). The
+// CSS and the brand theme the website uses (src/styles/global.css), and
+// Inter self-hosted through the Fonts API with the website's entry. The
 // header's site title and selects are restyled to match catena.run.
 //
 // Deployment: standalone Astro build (`npm run build` -> `dist/`)
@@ -22,13 +24,10 @@ import { fileURLToPath } from "node:url";
 export default defineConfig({
   site: "https://docs.catena.run",
   trailingSlash: "ignore",
+  fonts: [inter(fontProviders)],
   integrations: [
     starlight({
       title: "catena docs",
-      // We ship our own src/pages/404.astro (a language-neutral splash
-      // that links into /en/ and /fr/). Disable Starlight's built-in
-      // /404 route so the two don't collide.
-      disable404Route: true,
       editLink: {
         // "Suggest edit" link in every page footer; opens the file
         // on GitHub on the repo's default branch.
@@ -50,6 +49,7 @@ export default defineConfig({
         fr: { label: "Français", lang: "fr" },
       },
       components: {
+        Head: "./src/components/Head.astro",
         SiteTitle: "./src/components/SiteTitle.astro",
         ThemeSelect: "./src/components/ThemeSelect.astro",
         LanguageSelect: "./src/components/LanguageSelect.astro",
@@ -61,12 +61,9 @@ export default defineConfig({
       ],
       head: [
         {
-          tag: "script",
-          attrs: { src: "/domain-rewriter.js", defer: true },
-        },
-        {
           // Remember the language the visitor is reading (reads
-          // <html lang>) so the nginx redirect at / honours it later.
+          // <html lang>) so the redirect at / (src/pages/index.astro)
+          // honours it later.
           tag: "script",
           attrs: { src: "/lang-cookie.js", defer: true },
         },

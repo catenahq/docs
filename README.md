@@ -44,14 +44,10 @@ its own README beside its compose file, in its
 catenahq/catena-templates blueprint directory, which is also what a
 client's Portainer shows in the entry's detail panel.
 
-## Interactive yourdomain.com placeholder
+## The client's domain
 
-Every page references the client's domain as the literal string
-`yourdomain.com`. The `public/domain-rewriter.js` script, loaded
-via Starlight's `head` config, ships an input pill in the header
-that swaps the placeholder for the user's actual domain at read
-time (localStorage + `?domain=` URL override). Source markdown
-stays plain and grep-able.
+Every page writes the client's domain as the literal
+`yourdomain.com`.
 
 ## Adding a language
 

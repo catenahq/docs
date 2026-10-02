@@ -32,7 +32,7 @@
   --sl-color-accent: var(--catena-primary-400);
   --sl-color-accent-high: var(--catena-primary-200);
   --sl-color-text-accent: var(--catena-primary-300);
-  --sl-font: var(--catena-font-sans);
+  --sl-font: var(--font-inter), var(--catena-font-sans);
   --sl-font-mono: var(--catena-font-mono);
 }
 
@@ -55,81 +55,19 @@
   --sl-color-text-accent: var(--catena-primary-700);
 }
 
-/* Domain pill mounted at the top of the left sidebar by
-   public/domain-rewriter.js. Sized to fit inside the sidebar
-   gutter; never overflows into adjacent surfaces. */
-.catena-domain-pill {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  margin: 0 0 0.75rem;
-  padding: 0.55rem 0.65rem 0.6rem;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 0.5rem;
-  background: var(--sl-color-bg-nav, transparent);
-  font-size: 0.8rem;
-  box-sizing: border-box;
-  width: 100%;
-}
-.catena-domain-pill__label {
-  font-weight: 600;
-  color: var(--sl-color-gray-2);
-  letter-spacing: 0.01em;
-}
-.catena-domain-pill__row {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 0.35rem;
-  background: var(--sl-color-black);
-  padding: 0.2rem 0.35rem;
-}
-.catena-domain-pill__row:focus-within {
-  border-color: var(--sl-color-accent);
-}
-.catena-domain-pill__input {
-  flex: 1 1 auto;
-  min-width: 0;
-  width: 100%;
-  font: inherit;
-  font-size: 0.9em;
-  color: var(--sl-color-white);
-  background: transparent;
-  border: none;
-  outline: none;
-  padding: 0.1rem 0.2rem;
-}
-.catena-domain-pill__input::placeholder {
-  color: var(--sl-color-gray-4);
-}
-.catena-domain-pill__clear {
-  flex: none;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-  color: var(--sl-color-gray-3);
-  font-size: 1.1em;
-  line-height: 1;
-  padding: 0 0.25rem;
-  border-radius: 0.25rem;
-}
-.catena-domain-pill__clear:hover,
-.catena-domain-pill__clear:focus-visible {
-  color: var(--sl-color-white);
-  background: var(--sl-color-gray-6);
-  outline: none;
-}
-
 /* Starlight's default `.sl-markdown-content table` rule sets
-   display: block + overflow: auto, which triggers an unwanted
-   scrollbar on narrow comparison tables that already fit. Render
-   tables as real tables and let the first column wrap. */
-.sl-markdown-content table {
-  display: table;
-  width: 100%;
-  overflow: visible;
-  table-layout: auto;
+   display: block + overflow: auto, which puts a scrollbar on narrow
+   comparison tables that already fit. From the desktop breakpoint
+   tables render as real tables at full width; below it Starlight's
+   rule stands, so a table wider than a phone scrolls inside the
+   column instead of widening the page. The cells wrap at every width. */
+@media (min-width: 50rem) {
+  .sl-markdown-content table {
+    display: table;
+    width: 100%;
+    overflow: visible;
+    table-layout: auto;
+  }
 }
 .sl-markdown-content table th,
 .sl-markdown-content table td {

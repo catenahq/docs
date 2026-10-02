@@ -10,6 +10,8 @@
 // The logo + wordmark together link to the docs home; the
 // catena.run pill (the website's btn-secondary, from the shared brand
 // theme) is a sibling link to the marketing root in the matching locale.
+// The pill shows from the md breakpoint up: on a phone the header row
+// holds the logo, the wordmark, search and the menu, and nothing more.
 
 import { Image } from "astro:assets";
 import logo from "@catenahq/contracts/brand/assets/logo.svg";
@@ -19,11 +21,12 @@ const docsHomeHref = lang === "fr" ? "/fr/" : "/en/";
 const siteHomeHref = lang === "fr" ? "https://catena.run/fr/" : "https://catena.run/en/";
 const siteHomeAria = lang === "fr" ? "Aller à catena.run" : "Go to catena.run";
 ---
-<div class="flex flex-wrap items-center gap-3 min-h-10">
+<div class="flex flex-nowrap items-center gap-3 min-h-10">
   <a class="inline-flex items-center gap-2 no-underline text-(--sl-color-text)" href={docsHomeHref} aria-label="catena docs">
     <Image src={logo} alt="" class="block w-7 h-7 flex-none" loading="eager" />
     <span class="font-wordmark font-semibold text-xl lowercase leading-none whitespace-nowrap">catena docs</span>
   </a>
+  <span class="hidden md:inline-flex">
   <a class="btn-secondary py-1.5 px-3.5 md:px-3.5 text-sm gap-1 no-underline whitespace-nowrap" href={siteHomeHref} aria-label={siteHomeAria}>
     <svg class="block flex-none" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
       <path
@@ -37,4 +40,5 @@ const siteHomeAria = lang === "fr" ? "Aller à catena.run" : "Go to catena.run";
     </svg>
     <span>catena.run</span>
   </a>
+  </span>
 </div>
