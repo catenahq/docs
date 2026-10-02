@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
+import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
 
 // docs.catena.run -- public client docs.
@@ -10,6 +11,10 @@ import { fileURLToPath } from "node:url";
 // bare / request lands on src/pages/index.astro, which redirects by
 // browser language. Starlight handles the sidebar nav + EN/FR routing
 // automatically.
+//
+// Styling: Starlight's theme, mapped onto the brand tokens, with Tailwind
+// CSS and the brand theme the website uses (src/styles/global.css). The
+// header's site title and selects are restyled to match catena.run.
 //
 // Deployment: standalone Astro build (`npm run build` -> `dist/`)
 // published to GitHub Pages by .github/workflows/deploy-pages.yml on
@@ -46,8 +51,14 @@ export default defineConfig({
       },
       components: {
         SiteTitle: "./src/components/SiteTitle.astro",
+        ThemeSelect: "./src/components/ThemeSelect.astro",
+        LanguageSelect: "./src/components/LanguageSelect.astro",
       },
-      customCss: ["./src/styles/global.css"],
+      customCss: [
+        "@catenahq/contracts/brand/tokens/all.css",
+        "@catenahq/contracts/brand/wordmark/conthrax.css",
+        "./src/styles/global.css",
+      ],
       head: [
         {
           tag: "script",
@@ -115,9 +126,10 @@ export default defineConfig({
     }),
   ],
   vite: {
+    plugins: [tailwindcss()],
     // The sibling `../contracts/` checkout holds brand assets (the
-    // Conthrax .otf, logo.svg) that `@catenahq/contracts` imports via
-    // src/styles/global.css. npm symlinks it into node_modules but
+    // Conthrax .otf, logo.svg) that `@catenahq/contracts` serves through
+    // customCss and SiteTitle.astro. npm symlinks it into node_modules but
     // Vite's dev fs-allow-list resolves through the symlink to the REAL
     // path and rejects it as outside the project root, throwing "outside
     // of Vite serving allow list" for the .otf/.svg request. Allow the

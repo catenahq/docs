@@ -8,8 +8,8 @@
 //      full-fledged header member rather than a small breadcrumb.
 //
 // The logo + wordmark together link to the docs home; the
-// catena.run pill is a sibling link pointed at the marketing root
-// in the matching locale.
+// catena.run pill (the website's btn-secondary, from the shared brand
+// theme) is a sibling link to the marketing root in the matching locale.
 
 import { Image } from "astro:assets";
 import logo from "@catenahq/contracts/brand/assets/logo.svg";
@@ -19,13 +19,13 @@ const docsHomeHref = lang === "fr" ? "/fr/" : "/en/";
 const siteHomeHref = lang === "fr" ? "https://catena.run/fr/" : "https://catena.run/en/";
 const siteHomeAria = lang === "fr" ? "Aller à catena.run" : "Go to catena.run";
 ---
-<div class="catena-site-title">
-  <a class="catena-brand" href={docsHomeHref} aria-label="catena docs">
-    <Image src={logo} alt="" class="catena-brand-logo" loading="eager" />
-    <span class="catena-brand-text">catena docs</span>
+<div class="flex flex-wrap items-center gap-3 min-h-10">
+  <a class="inline-flex items-center gap-2 no-underline text-(--sl-color-text)" href={docsHomeHref} aria-label="catena docs">
+    <Image src={logo} alt="" class="block w-7 h-7 flex-none" loading="eager" />
+    <span class="font-wordmark font-semibold text-xl lowercase leading-none whitespace-nowrap">catena docs</span>
   </a>
-  <a class="catena-home-link" href={siteHomeHref} aria-label={siteHomeAria}>
-    <svg class="catena-home-arrow" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+  <a class="btn-secondary py-1.5 px-3.5 md:px-3.5 text-sm gap-1 no-underline whitespace-nowrap" href={siteHomeHref} aria-label={siteHomeAria}>
+    <svg class="block flex-none" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
       <path
         fill="none"
         stroke="currentColor"
