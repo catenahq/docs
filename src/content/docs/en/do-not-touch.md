@@ -8,8 +8,8 @@ own configuration in sync, so there is really just one rule:
 
 **Nothing on the server itself is hand-edited.** A change made
 directly on the machine is overwritten the next time the system
-reconciles itself (the weekly update run, or the next `catena
-converge`), and it can break automatic recovery. There is almost
+reconciles itself (the weekly update run, or the next **Bring this
+server up to date** or `catena-cli install`), and it can break automatic recovery. There is almost
 certainly a supported way to make the change stick -- a compose label,
 a setting in the catena-admin panel, or an entry in the
 configuration -- and that is the way to make it.

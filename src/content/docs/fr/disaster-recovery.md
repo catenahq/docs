@@ -27,12 +27,12 @@ entrée renvoie à la page ou la section qui détaille la récupération.
 | **Les données d'une application sont mauvaises** (mise à jour ratée, suppression massive, base de données dans un état que personne ne veut) | Le serveur va bien : remettre les données en place plutôt que de reconstruire, en choisissant une sauvegarde sur la page **Restauration** du panneau d'administration. | [Restaurer les données depuis le panneau d'administration](/fr/restore-data/) |
 | **Un mot de passe ou un 2FA est perdu** (une personne) | Réinitialisation libre-service depuis la page de connexion. Pour le 2FA, un autre administrateur le réinitialise dans Keycloak. | [Gérer les utilisateurs et les rôles](/fr/manage-users-and-roles/) |
 | **Tous les administrateurs sont verrouillés en même temps** (connexion cassée, personne ne peut ouvrir le tableau de bord) | L'accès Tailscale est la voie d'entrée -- se connecter en SSH à la machine et redémarrer ou reprovisionner le service de connexion. | [Reprendre l'accès administrateur](#reprendre-laccès-administrateur) plus bas |
-| **Le serveur entier est chiffré par un rançongiciel** | Reconstruire depuis le dernier instantané sain (avant le rançongiciel), avec `catena recover` sur une machine neuve. | Carte de récupération ("disque serveur entier") |
-| **Le serveur lui-même est compromis** | Effacer et reconstruire depuis un instantané pré-compromission (`catena recover --snapshot <id>`), puis faire tourner tous les identifiants externes. | Carte de récupération ("disque serveur entier") |
-| **Le centre de données du fournisseur brûle** (ou panne matérielle) | Reconstruire sur un serveur neuf chez n'importe quel fournisseur depuis la sauvegarde hors site (`catena recover`). | [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/) |
-| **Le fournisseur donne un préavis de 48 h / suspend le compte** | Louer un VPS ailleurs et `catena recover` dessus ; compter ~30-60 min d'indisponibilité publique pendant la bascule. | Carte de récupération ("le fournisseur fait faillite") |
+| **Le serveur entier est chiffré par un rançongiciel** | Reconstruire depuis le dernier instantané sain (avant le rançongiciel) sur un serveur neuf : y installer Catena, puis restaurer depuis les sauvegardes de l'ancien serveur dans le panneau d'administration du nouveau. | [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/) |
+| **Le serveur lui-même est compromis** | Effacer et reconstruire sur un serveur neuf, en restaurant un instantané pré-compromission depuis les sauvegardes de l'ancien serveur dans le panneau d'administration du nouveau, puis faire tourner tous les identifiants externes. | [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/) |
+| **Le centre de données du fournisseur brûle** (ou panne matérielle) | Reconstruire sur un serveur neuf chez n'importe quel fournisseur depuis la sauvegarde hors site, en restaurant depuis les sauvegardes de l'ancien serveur dans le panneau d'administration du nouveau. | [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/) |
+| **Le fournisseur donne un préavis de 48 h / suspend le compte** | Louer un VPS ailleurs, y installer Catena et restaurer depuis les sauvegardes de l'ancien serveur ; compter ~30-60 min d'indisponibilité publique pendant la bascule. | [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/) |
 | **Le fournisseur de sauvegarde donne un préavis de 48 h** | Pointer les sauvegardes vers un nouveau compartiment dans catena-admin **Settings** ; les données du serveur ne sont pas affectées. | Carte de récupération ("le fournisseur de sauvegarde fait faillite") |
-| **Un mot de passe ou un jeton API a peut-être fuité** | Ne pas attendre -- faire tourner l'identifiant dans sa console maintenant (et `catena-cli rotate-tunnel` / `catena-cli rotate-tailscale` pour ces deux-là). | Carte de récupération (lignes par identifiant) |
+| **Un mot de passe ou un jeton API a peut-être fuité** | Ne pas attendre -- faire tourner l'identifiant dans sa console maintenant. Pour le tunnel Cloudflare, appuyer sur **Appliquer** sous catena-admin **Settings -> Domain** ; pour Tailscale, enregistrer le nouvel identifiant dans **Settings** et appuyer sur **Rejoindre de nouveau le réseau privé**. | Carte de récupération (lignes par identifiant) |
 
 La carte de récupération ci-dessous contient le tableau complet, y
 compris les rotations d'identifiants d'infrastructure (jeton
@@ -59,18 +59,21 @@ données ; il n'y a rien à ressaisir. La page
 [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/)
 détaille à quoi ressemble une reconstruction.
 
-La reconstruction part de `catena recover` : il demande le jeu de
-clés, restaure le dernier instantané sur la nouvelle machine, et
-ramène chaque application avec ses données et ses réglages. Le seul
+La reconstruction installe Catena sur un nouveau serveur, puis restaure
+depuis les sauvegardes de l'ancien serveur dans le panneau
+d'administration du nouveau (page **Restauration**, **Les sauvegardes
+d'un autre serveur**), avec le jeu de clés. Les données, les
+applications et la configuration enregistrée reviennent. Le seul
 travail en amont est de garder le jeu de clés en sécurité.
 
 Quelques identifiants ne vivent pas du tout sur le serveur -- ils
 se trouvent dans les consoles d'administration d'autres entreprises :
 Cloudflare (DNS + tunnel), Tailscale (accès à distance) et Portainer
 (gestion des conteneurs). Si l'un d'eux est un jour perdu, il se
-régénère dans la console de ce fournisseur et se réinstalle
-(`catena-cli rotate-tunnel` / `catena-cli rotate-tailscale`, ou en relançant
-l'installation). La carte de récupération ci-dessous liste chacun.
+régénère dans la console de ce fournisseur et s'enregistre dans
+catena-admin **Settings**, ou l'installation est relancée
+(`catena-cli install` peut être relancé sans risque). La carte de
+récupération ci-dessous liste chacun.
 
 ## Carte de récupération -- ce qui casse et quoi faire
 
@@ -78,21 +81,21 @@ l'installation). La carte de récupération ci-dessous liste chacun.
 |---|---|---|
 | **Le portable** (l'appareil depuis lequel le travail se fait) | Serveur, applis, sauvegardes | Rien n'est perdu tant que le jeu de clés de récupération est enregistré dans un gestionnaire de mots de passe, et pas seulement sur le portable. Configurer un nouvel appareil, restaurer le jeu de clés et poursuivre |
 | **Clé SSH privée** | Serveur, applis, tableau de bord | Démarrer le **Mode secours du fournisseur** (plus bas), monter le disque et ajouter une nouvelle clé publique au compte `ops` ; relancer ensuite l'installation pour que ça tienne |
-| **Accès au tableau de bord (connexion cassée, service de connexion tombé)** | Les applis (leurs propres logins fonctionnent encore), les données | Se connecter en SSH via Tailscale et redémarrer le service de connexion, ou le reprovisionner avec `catena-cli converge`. Voir [Reprendre l'accès administrateur](#reprendre-laccès-administrateur) |
+| **Accès au tableau de bord (connexion cassée, service de connexion tombé)** | Les applis (leurs propres logins fonctionnent encore), les données | Se connecter en SSH via Tailscale et redémarrer le service de connexion, ou le reprovisionner avec **Remettre ce serveur à niveau** dans catena-admin **Settings**. Voir [Reprendre l'accès administrateur](#reprendre-laccès-administrateur) |
 | **Données d'une appli (quelque chose a été supprimé)** | Tout le reste | Essayer d'abord la corbeille de l'appli ; si vide, ouvrir catena-admin **Actions -> Browse past snapshots**, choisir un point dans le temps, et copier le fichier depuis le montage en lecture seule |
-| **Disque entier du serveur (corruption, effacement accidentel)** | Les sauvegardes (dans le compartiment de stockage) | Reconstruire à partir de la sauvegarde avec `catena recover` -- voir [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/) |
+| **Disque entier du serveur (corruption, effacement accidentel)** | Les sauvegardes (dans le compartiment de stockage) | Installer Catena sur un nouveau serveur et restaurer depuis les sauvegardes de l'ancien -- voir [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/) |
 | **Jeton API Cloudflare (régénéré par accident)** | Le tunnel continue à tourner. Les applis publiques restent en ligne. **Fonctionnalité seulement**, pas la sauvegarde. | Générer un nouveau jeton API à [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens) et le renseigner dans catena-admin **Settings**. Les applis restent joignables tout du long |
-| **Jeton de tunnel Cloudflare (régénéré ou fuité)** | Le tunnel existant continue à tourner jusqu'à la prochaine reconnexion, puis tombe. Les applis publiques sont coupées jusqu'à la fin de la rotation. **Fonctionnalité**, pas la sauvegarde. | Lancer `catena-cli rotate-tunnel` -- il génère un nouveau tunnel et l'installe. (Le jeton lui-même est sous [dash.cloudflare.com](https://dash.cloudflare.com) -> la zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> le tunnel -> **Configure**, PAS la page "API Tokens".) Compter 5 à 15 minutes d'arrêt des applis publiques pendant l'échange |
-| **Client OAuth Tailscale (régénéré par accident)** | L'accès à distance du serveur continue à fonctionner. L'administration à distance reste active | Générer un nouveau client OAuth dans la console Tailscale, puis `catena-cli rotate-tailscale` pour réauthentifier le noeud |
+| **Jeton de tunnel Cloudflare (régénéré ou fuité)** | Le tunnel existant continue à tourner jusqu'à la prochaine reconnexion, puis tombe. Les applis publiques sont coupées jusqu'à la fin de la rotation. **Fonctionnalité**, pas la sauvegarde. | Dans catena-admin **Settings -> Domain**, appuyer sur **Appliquer** avec le domaine déjà utilisé -- cela génère un nouveau tunnel, repointe le DNS, supprime l'ancien tunnel, puis remet le serveur à niveau. Si le jeton API Cloudflare lui-même a fuité, en créer un nouveau dans la console Cloudflare et le saisir d'abord dans la section Domain (sans jeton saisi, le jeton enregistré est utilisé). (Le jeton lui-même est sous [dash.cloudflare.com](https://dash.cloudflare.com) -> la zone -> **Zero Trust** -> **Networks** -> **Tunnels** -> le tunnel -> **Configure**, PAS la page "API Tokens".) Les adresses publiques sont injoignables pendant quelques minutes durant l'échange |
+| **Client OAuth Tailscale (régénéré par accident)** | L'accès à distance du serveur continue à fonctionner. L'administration à distance reste active | Générer un nouveau client OAuth dans la console Tailscale, l'enregistrer dans catena-admin **Settings** (section Admin access tunnel), puis appuyer sur **Rejoindre de nouveau le réseau privé** pour reconnecter le serveur avec une clé neuve |
 | **Clé API Portainer (régénérée par accident)** | Toutes les applis continuent à tourner | Générer une nouvelle clé dans l'interface Portainer et la renseigner dans catena-admin **Settings** (ou relancer l'installation pour que les services la reprennent) |
 | **Compte Cloudflare résilié** | Serveur, applis (en interne), données | Créer un nouveau compte Cloudflare, y pointer le domaine, et relancer l'installation dessus ; les applis ne sont indisponibles que pendant la propagation DNS |
-| **Compte Tailscale résilié** | Serveur, applis, voie publique (le tunnel) | Tailscale n'est que la voie d'administration, pas le chemin de service public. Rejoindre le noeud depuis un nouveau tailnet (`catena-cli rotate-tailscale`), ou atteindre la machine via le **Mode secours du fournisseur** |
-| **Le fournisseur VPS fait faillite / ferme** | Le compartiment de sauvegarde (entreprise différente) | [Reconstruire à partir de la sauvegarde](/fr/self-restore/) (`catena recover`) chez un autre fournisseur |
-| **Le centre de données du fournisseur brûle (OVH Strasbourg 2021)** | Le compartiment de sauvegarde (région et ville différentes) | Idem -- `catena recover` sur un serveur neuf chez un autre fournisseur ou une autre région |
+| **Compte Tailscale résilié** | Serveur, applis, voie publique (le tunnel) | Tailscale n'est que la voie d'administration, pas le chemin de service public. Enregistrer l'identifiant du nouveau tailnet dans catena-admin **Settings** et appuyer sur **Rejoindre de nouveau le réseau privé**, ou atteindre la machine via le **Mode secours du fournisseur** |
+| **Le fournisseur VPS fait faillite / ferme** | Le compartiment de sauvegarde (entreprise différente) | [Reconstruire à partir de la sauvegarde](/fr/self-restore/) chez un autre fournisseur |
+| **Le centre de données du fournisseur brûle (OVH Strasbourg 2021)** | Le compartiment de sauvegarde (région et ville différentes) | Idem, sur un serveur neuf chez un autre fournisseur ou une autre région |
 | **Le fournisseur de sauvegarde fait faillite / ferme** | Le serveur et ses données | Les données sont toujours là -- pointer les sauvegardes vers un nouveau compartiment dans catena-admin **Settings** *avant* la date butoir du fournisseur. Avec une sauvegarde secondaire déjà configurée (voir [Tâches récurrentes](/fr/disaster-prevention/)), elle est déjà en sécurité |
 | **Compartiment de sauvegarde supprimé par accident** | Le serveur et ses données | Idem -- recréer le compartiment et repointer les sauvegardes dans catena-admin **Settings**. Certains fournisseurs conservent les objets supprimés pendant une période de rétention, ce qui peut laisser du temps |
-| **Panne simultanée du fournisseur ET du fournisseur de sauvegarde** | Dernière copie hors site hebdomadaire (là où une a été configurée -- voir [Tâches récurrentes](/fr/disaster-prevention/)) | `catena recover` à partir de la copie hors site sur n'importe quel nouveau nuage |
-| **Le serveur est mort ET les identifiants enregistrés sont perdus** | Le compartiment de sauvegarde | Tant que le jeu de clés de récupération (emplacement du dépôt + clés de stockage + mot de passe de chiffrement) est dans un gestionnaire de mots de passe, la sauvegarde peut encore être lue et le serveur reconstruit -- `catena recover`, voir [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/) |
+| **Panne simultanée du fournisseur ET du fournisseur de sauvegarde** | Dernière copie hors site hebdomadaire (là où une a été configurée -- voir [Tâches récurrentes](/fr/disaster-prevention/)) | Installer Catena sur n'importe quel nouveau serveur infonuagique et restaurer depuis la copie hors site ([Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/)) |
+| **Le serveur est mort ET les identifiants enregistrés sont perdus** | Le compartiment de sauvegarde | Tant que le jeu de clés de récupération (emplacement du dépôt + clés de stockage + mot de passe de chiffrement) est dans un gestionnaire de mots de passe, la sauvegarde peut encore être lue et le serveur reconstruit -- voir [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/) |
 | **Le serveur est mort ET le mot de passe de chiffrement de la sauvegarde est perdu** | Le compartiment existe mais chaque octet est du texte chiffré que rien n'ouvre | **Perte de données.** C'est le seul cas irrécupérable, et précisément pourquoi [Tâches récurrentes](/fr/disaster-prevention/) dit de conserver le mot de passe de chiffrement séparément et en sécurité |
 
 ## Reprendre l'accès administrateur
@@ -106,11 +109,13 @@ C'est la voie de retour :
    machine (`ssh ops@<l-ip-tailnet>`).
 2. Depuis ce shell : redémarrer le service de connexion (Keycloak),
    réinitialiser l'identifiant administrateur, ou reprovisionner tout
-   le realm avec `catena-cli converge` -- ce qui réimporte les
-   utilisateurs, les clients et les groupes.
+   le realm avec **Remettre ce serveur à niveau** dans catena-admin
+   **Settings** -- ce qui réimporte les utilisateurs, les clients et
+   les groupes.
 3. Si la base de données de Keycloak est endommagée plutôt que
-   simplement capricieuse, `catena restore` la ramène depuis le
-   dernier instantané.
+   simplement capricieuse, la page **Restauration** du panneau
+   d'administration la ramène depuis le dernier instantané
+   ([Restaurer les données depuis le panneau d'administration](/fr/restore-data/)).
 
 Le SSH public est fermé, donc Tailscale est la seule voie distante vers
 la machine. C'est exactement pourquoi [Tâches récurrentes](/fr/disaster-prevention/)
@@ -153,7 +158,7 @@ continue à servir le trafic. La base de données va bien. Il reste
 24 à 72 heures pour gérer la récupération sans pression -- tout sauf
 le désastre total se traverse un matin de semaine avec un café.
 
-Entre l'accès Tailscale, le jeu de clés de récupération et `catena
-recover`, chaque chemin de cette page s'exécute sans nous. Une
+Entre l'accès Tailscale, le jeu de clés de récupération et la page **Restauration** du
+panneau d'administration, chaque chemin de cette page s'exécute sans aide extérieure. Une
 deuxième paire d'yeux pendant un incident en direct reste disponible
 auprès du contact Catena -- une option, pas une obligation.

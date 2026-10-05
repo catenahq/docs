@@ -34,17 +34,17 @@ token.
 - Client-facing. Never reference the internal operator documentation,
   operator-side paths, Ansible roles, or filesystem paths.
 - Standing rule: Catena is fully self-hosted. The
-  READER is the admin who owns and runs the VPS; address them as "you"
-  and tell them how to do the task themselves, pointing at the concrete
-  tool or another doc (Tailscale SSH, the recovery keyset + self-restore,
-  provider rescue mode, credential regeneration in the provider console,
-  the catena-admin panel). Do NOT write "we" / "us" / "contact us" /
-  "get in touch" / "ask us" as the primary path, and do not imply a
-  managed service performs recovery. Human help is OPTIONAL and a last
-  resort only: at most a single light fallback like "prefer a hand?
-  reach your Catena contact" AFTER the self-service steps -- never the
-  first instruction. "operator" stays banned. Use "Catena" for the
-  product/system, not as an entity that acts on the reader's behalf.
+  READER is the admin who owns and runs the VPS. Write no second person
+  ("you", "your"): describe how the task is done and point at the
+  concrete tool or another doc (Tailscale SSH, the recovery keyset +
+  self-restore, provider rescue mode, credential regeneration in the
+  provider console, the catena-admin panel). Do NOT write "we" / "us" /
+  "contact us" / "get in touch" / "ask us" as the primary path, and do
+  not imply a managed service performs recovery. Human help is OPTIONAL
+  and a last resort only: at most a single light fallback like "a hand
+  is available from the Catena contact" AFTER the self-service steps --
+  never the first instruction. "operator" stays banned. Use "Catena" for
+  the product/system, not as an entity that acts on the reader's behalf.
 - Never write "playbook" in client-facing copy. Use "automation flow"
   or "managed operation".
 - Bilingual parity is required: every page exists in EN and FR.

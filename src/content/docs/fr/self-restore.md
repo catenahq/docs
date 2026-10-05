@@ -42,20 +42,29 @@ sauvegarde, donc les seules à conserver séparément.
 
 ## Comment se déroule une reconstruction
 
-La reconstruction part d'une seule commande, et elle est rapide :
+La reconstruction se fait sur un nouveau serveur, dans le panneau
+d'administration :
 
 1. Louer un VPS neuf (n'importe quel fournisseur).
-2. Depuis un dépôt Catena, lancer `catena recover`. Il demande le jeu
-   de clés de récupération, puis prépare la machine, restaure le
-   dernier instantané, ramène les applications et valide.
-3. Les applications reviennent avec leurs données et leurs réglages
-   intacts.
+2. Y installer Catena avec `catena-cli install` (ou l'installateur
+   graphique, `uv run catena-gui`).
+3. Dans le panneau d'administration du nouveau serveur, ouvrir la page
+   **Restauration** et passer la source à **Les sauvegardes d'un autre
+   serveur**.
+4. Saisir l'emplacement du dépôt de sauvegarde du serveur perdu, ses
+   clés de stockage et le mot de passe de chiffrement de la sauvegarde,
+   tirés du jeu de clés de récupération.
+5. Choisir l'instantané. Quand le serveur a été compromis ou touché par
+   un rançongiciel, en choisir un pris avant l'incident.
+6. Confirmer et restaurer. Les données, les applications et la
+   configuration enregistrée du serveur reviennent.
 
 Le seul travail en amont est de garder le jeu de clés de récupération
 en sécurité. La reconstruction peut démarrer dès que la perte du
-serveur est constatée -- c'est une commande de routine, pas un projet
-spécial. Un coup de main pour la première exécution reste disponible
-auprès du contact Catena -- optionnel, pas obligatoire.
+serveur est constatée. Un coup de main pour la première exécution reste
+disponible auprès du contact Catena -- optionnel. La page Restauration
+elle-même est décrite dans
+[Restaurer les données depuis le panneau d'administration](/fr/restore-data/).
 
 ## Pourquoi chaque partie du jeu de clés compte
 

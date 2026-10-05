@@ -40,18 +40,25 @@ that have to be kept separately.
 
 ## How a rebuild happens
 
-The rebuild runs from a single command, and it is quick:
+The rebuild happens on a new server, in the admin panel:
 
 1. Rent a fresh VPS (any provider).
-2. From a Catena checkout, run `catena recover`. It prompts for the
-   recovery keyset, then prepares the box, restores the latest
-   snapshot, brings the apps back, and validates.
-3. The applications come back with their data and settings intact.
+2. Install Catena on it with `catena-cli install` (or the graphical
+   installer, `uv run catena-gui`).
+3. In the new server's admin panel, open the **Restore** page and
+   switch the source to **Another server's backups**.
+4. Enter the lost server's backup repository location, its storage
+   keys and the backup encryption password from the recovery keyset.
+5. Pick the snapshot. When the server was compromised or hit by
+   ransomware, pick one taken before the incident.
+6. Confirm and restore. The data, the applications and the server's
+   stored configuration come back.
 
 The only work ahead of time is keeping the recovery keyset safe. The
-rebuild can start the moment the server is known to be gone -- it is a
-routine command, not a special project. A hand on the first run is
-available from the Catena contact -- optional, not required.
+rebuild can start the moment the server is known to be gone. A hand on
+the first run is available from the Catena contact -- optional. The
+Restore page itself is described in
+[Restoring data from the admin panel](/en/restore-data/).
 
 ## Why each part of the keyset matters
 

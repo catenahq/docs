@@ -267,8 +267,9 @@ avoir besoin, pas pendant un incident :
   dans le gestionnaire de mots de passe, chacun comme sa propre
   entrée, et que chacun s'ouvre réellement.
 - Pour l'assurance la plus forte, faire un essai de restauration :
-  `catena recover` sur un VPS jetable, et confirmer que les données
-  reviennent. Voir [Reconstruire un serveur à partir de la
+  installer Catena sur un VPS jetable, restaurer depuis les
+  sauvegardes avec la vue **Les sauvegardes d'un autre serveur** de la
+  page Restauration, et confirmer que les données reviennent. Voir [Reconstruire un serveur à partir de la
   sauvegarde](/fr/self-restore/). Une fois par an, et une vraie
   reprise devient un réflexe plutôt qu'une première tentative.
 

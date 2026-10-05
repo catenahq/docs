@@ -239,8 +239,9 @@ an incident:
 - Check that all three keyset items are saved in the password
   manager, each as its own entry, and that each one actually opens.
 - For the strongest assurance, run a restore drill:
-  `catena recover` onto a throwaway VPS, and confirm the data comes
-  back. See [Rebuilding a server from backup](/en/self-restore/).
+  install Catena on a throwaway VPS, restore from the backups with the
+  Restore page's **Another server's backups** view, and confirm the
+  data comes back. See [Rebuilding a server from backup](/en/self-restore/).
   Once a year, and a real recovery is muscle memory rather than a
   first attempt.
 
