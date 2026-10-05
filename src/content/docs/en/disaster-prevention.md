@@ -139,21 +139,18 @@ fixed schedule that does not depend on whether updates fire that
 week. It is fail-soft: a misconfigured immutable bucket cannot block
 the backups -- the backup run only touches the live bucket.
 
-### 5. Optional -- add a client-owned second backup bucket
+### 5. Optional -- add a second backup bucket
 
-The immutable mirror in section 4 runs on a fixed schedule set at
-install. A second backup line owned outright by the client --
-separate billing, separate provider, credentials in client custody --
-can be added on top of it.
+The immutable mirror in section 4 runs on a fixed schedule. A second
+backup line -- separate billing, separate provider, its own
+credentials -- can be added on top of it.
 
-This is overkill for most deployments (the managed immutable mirror
-in section 4 already protects against ransomware and
+This is overkill for most deployments (the immutable mirror in
+section 4 already protects against ransomware and
 account-takeover). Worth doing when:
 
-- The encryption password and storage keys should sit entirely in
-  client custody, on a backup line nobody else has ever touched.
-- Compliance or contractual obligations require an explicitly
-  client-owned off-site copy.
+- Compliance or contractual obligations require a second off-site
+  copy at another provider.
 - Geographic redundancy beyond the mirror's provider is wanted
   (one bucket in Canada, one in the EU, one in the US, say).
 

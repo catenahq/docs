@@ -155,22 +155,18 @@ les mises à jour soient déclenchées cette semaine ou non. Il
 pas bloquer les sauvegardes -- le run de sauvegarde ne touche que le
 compartiment actif.
 
-### 5. Optionnel -- ajouter un second compartiment de sauvegarde appartenant au client
+### 5. Optionnel -- ajouter un second compartiment de sauvegarde
 
-Le miroir immuable de la section 4 tourne sur un calendrier fixe
-défini à l'installation. Une seconde voie de sauvegarde appartenant
-en propre au client -- facturation distincte, fournisseur distinct,
-identifiants entièrement sous sa garde -- peut s'ajouter par-dessus.
+Le miroir immuable de la section 4 tourne sur un calendrier fixe.
+Une seconde voie de sauvegarde -- facturation distincte, fournisseur
+distinct, identifiants propres -- peut s'ajouter par-dessus.
 
 C'est superflu pour la plupart des déploiements (le miroir immuable
-géré de la section 4 protège déjà contre les rançongiciels et la
-prise de contrôle de compte). À envisager quand :
+de la section 4 protège déjà contre les rançongiciels et la prise de
+contrôle de compte). À envisager quand :
 
-- Le mot de passe de chiffrement et les clés de stockage doivent
-  rester entièrement sous la garde du client, sur une voie de
-  sauvegarde que personne d'autre n'a jamais touchée.
-- Une obligation de conformité ou contractuelle exige une copie
-  hors-site explicitement détenue par le client.
+- Une obligation de conformité ou contractuelle exige une seconde
+  copie hors-site chez un autre fournisseur.
 - Une redondance géographique au-delà du fournisseur du miroir est
   souhaitée (par ex. un compartiment au Canada, un dans l'UE,
   un aux États-Unis).
