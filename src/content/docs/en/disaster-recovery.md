@@ -95,9 +95,12 @@ each.
 
 If sign-in breaks for everyone -- Keycloak is down, or every admin
 account is locked out -- the web dashboards are unreachable, but
-**Tailscale access is not**. That is the way back in:
+**SSH access is not**. That is the way back in:
 
-1. From a machine on the tailnet, SSH into the box
+1. SSH into the box with the key. SSH is key-only (no root login, no
+   password login). With public port 22 open (the default), connect to
+   the server's public address (`ssh ops@<the-public-ip>`). With public
+   port 22 closed, connect over the tailnet from a machine on it
    (`ssh ops@<the-tailnet-ip>`).
 2. That shell can restart the sign-in service (Keycloak),
    reset the admin credential, or re-provision the whole realm with
@@ -107,11 +110,16 @@ account is locked out -- the web dashboards are unreachable, but
    admin panel's **Restore** page brings it back from the last
    snapshot ([Restoring data from the admin panel](/en/restore-data/)).
 
-Public SSH is closed, so Tailscale is the only remote way onto the box.
-That is exactly why [Recurring tasks](/en/disaster-prevention/) calls
-for keeping Tailscale access -- and a copy of the SSH key --
-somewhere other than one laptop. If Tailscale itself is unreachable,
-**Provider rescue mode** below is the fallback.
+Public port 22 closes only when an admin ticks **Close SSH on public
+port 22** in catena-admin **Settings**, section **Admin access tunnel**,
+which is possible only while a valid tailnet connection is up. Once
+closed, the server is reachable over the tailnet only, and the port
+reopens automatically if the tailnet connection stays down for more than
+5 minutes, so the key over public SSH works again. That is exactly why
+[Recurring tasks](/en/disaster-prevention/) calls for keeping a copy of
+the SSH key -- and the tailnet access -- somewhere other than one
+laptop. If SSH itself is gone (for example a lost key), **Provider
+rescue mode** below is the fallback.
 
 ## Provider rescue mode -- when SSH is gone
 

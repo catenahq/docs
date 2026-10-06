@@ -434,6 +434,17 @@ Toutes les 5 minutes (via un timer systemd), `dashboard-sync.service` :
    Keycloak échoue, la route n'est pas écrite et l'application reste
    inaccessible (échec fermé, non ouvert).
 
+## Lire les journaux d'une application
+
+Les journaux des conteneurs d'une application se lisent dans Portainer,
+à `portainer.yourdomain.com`. Seuls les membres du groupe `admin`
+peuvent s'y connecter, avec la même connexion que les autres tableaux de
+bord.
+
+Dans Portainer, ouvrir l'application, puis le service ou le conteneur
+concerné, et ouvrir ses journaux. C'est le premier endroit où regarder
+quand une application se comporte mal.
+
 ## Modes de défaillance à connaître
 
 - **API Keycloak inaccessible pendant la synchronisation.**

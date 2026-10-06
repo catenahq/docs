@@ -102,11 +102,15 @@ récupération ci-dessous liste chacun.
 
 Si la connexion casse pour tout le monde -- Keycloak est tombé, ou tous
 les comptes administrateurs sont verrouillés -- les tableaux de bord
-web sont injoignables, mais l'**accès Tailscale, lui, ne l'est pas**.
+web sont injoignables, mais l'**accès SSH, lui, ne l'est pas**.
 C'est la voie de retour :
 
-1. Depuis une machine sur le tailnet, se connecter en SSH à la
-   machine (`ssh ops@<l-ip-tailnet>`).
+1. Se connecter en SSH à la machine avec la clé. Le SSH est par clé
+   uniquement (pas de connexion root, pas de connexion par mot de
+   passe). Avec le port public 22 ouvert (par défaut), se connecter à
+   l'adresse publique du serveur (`ssh ops@<l-ip-publique>`). Avec le
+   port public 22 fermé, se connecter par le tailnet depuis une machine
+   qui en fait partie (`ssh ops@<l-ip-tailnet>`).
 2. Depuis ce shell : redémarrer le service de connexion (Keycloak),
    réinitialiser l'identifiant administrateur, ou reprovisionner tout
    le realm avec **Remettre ce serveur à niveau** dans catena-admin
@@ -117,12 +121,17 @@ C'est la voie de retour :
    d'administration la ramène depuis le dernier instantané
    ([Restaurer les données depuis le panneau d'administration](/fr/restore-data/)).
 
-Le SSH public est fermé, donc Tailscale est la seule voie distante vers
-la machine. C'est exactement pourquoi [Tâches récurrentes](/fr/disaster-prevention/)
-demande de garder l'accès Tailscale -- et une copie de la clé SSH --
-ailleurs que sur un seul portable. Si Tailscale lui-même est
-injoignable, le **Mode secours du fournisseur** ci-dessous est le
-repli.
+Le port public 22 ne se ferme que lorsqu'un administrateur coche
+**Fermer le SSH sur le port public 22** dans catena-admin **Settings**,
+section **Tunnel d'accès administrateur**, ce qui n'est possible que
+tant qu'une connexion tailnet valide est active. Une fois fermé, le
+serveur n'est joignable que par le tailnet, et le port se rouvre
+automatiquement si la connexion tailnet reste coupée plus de 5 minutes :
+la clé par le SSH public fonctionne alors de nouveau. C'est exactement
+pourquoi [Tâches récurrentes](/fr/disaster-prevention/) demande de
+garder une copie de la clé SSH -- et l'accès au tailnet -- ailleurs que
+sur un seul portable. Si le SSH lui-même a disparu (par exemple une clé
+perdue), le **Mode secours du fournisseur** ci-dessous est le repli.
 
 ## Mode secours du fournisseur -- quand SSH a disparu
 

@@ -401,6 +401,16 @@ Every 5 minutes (via systemd timer), `dashboard-sync.service`:
    so if any Keycloak step fails, the route is not written and the app
    remains unreachable (fail-closed, not fail-open).
 
+## Reading an app's logs
+
+An app's container logs are read in Portainer at
+`portainer.yourdomain.com`. Only members of the `admin` group can sign
+in there, with the same sign-in as the other dashboards.
+
+In Portainer, open the app, then the service or container in question,
+and open its logs. This is the place to look first when an app
+misbehaves.
+
 ## Failure modes worth knowing
 
 - **Keycloak API unreachable during sync.** Dashboard-sync logs the
