@@ -92,6 +92,7 @@ export default defineConfig({
             { slug: "manage-users-and-roles" },
             { slug: "manage-apps" },
             { slug: "self-service" },
+            { slug: "subscribe-and-activate" },
           ],
         },
         {

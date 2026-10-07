@@ -8,7 +8,8 @@ change ses prix, les données doivent se trouver dans un autre pays, ou
 un serveur tourne depuis assez longtemps pour qu'un départ à neuf soit
 préférable.
 
-Le déplacement fait partie des forfaits payants, et le panneau
+Le déplacement fait partie des forfaits payants (voir
+[S'abonner et activer](/fr/subscribe-and-activate/)), et le panneau
 d'administration le fait depuis la page **Restauration**, sous
 **Déplacer un autre serveur ici**. Il se lance sur le NOUVEAU serveur.
 Celui-ci va rejoindre l'ancien, rapatrier ses données, puis reprendre

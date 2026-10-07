@@ -7,7 +7,8 @@ Servers get replaced. A machine gets outgrown, a provider changes its
 pricing, the data needs to sit in a different country, or a box has
 been running long enough that starting fresh is preferable.
 
-Moving is a paid-plan feature, and the admin panel does it from the
+Moving is a paid-plan feature (see
+[Subscribe and activate](/en/subscribe-and-activate/)), and the admin panel does it from the
 **Restore** page, under **Move another server here**. It runs on the
 NEW server. It reaches back to the old one, brings its data across, and
 takes over its web address.

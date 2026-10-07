@@ -36,6 +36,9 @@ est la visite en langage clair.
 - **[Ce que couvre le panneau d'administration](/fr/self-service/)** --
   tâches quotidiennes prises en charge entièrement depuis le panneau
   d'administration.
+- **[S'abonner et activer](/fr/subscribe-and-activate/)** -- ce que
+  débloquent Catena Pro et Catena Business, et comment la clé
+  d'abonnement est enregistrée et vérifiée.
 
 ## Tâches
 

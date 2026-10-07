@@ -32,6 +32,9 @@ is the plain-language tour.
   labels that gate access and publish the URL.
 - **[What the admin panel covers](/en/self-service/)** -- day-to-day
   tasks handled entirely from the admin panel.
+- **[Subscribe and activate](/en/subscribe-and-activate/)** -- what
+  Catena Pro and Catena Business unlock, and how the subscription key
+  is saved and checked.
 
 ## Tasks
 
