@@ -8,8 +8,10 @@ change ses prix, les données doivent se trouver dans un autre pays, ou
 un serveur tourne depuis assez longtemps pour qu'un départ à neuf soit
 préférable.
 
-Le déplacement fait partie des forfaits payants (voir
-[S'abonner et activer](/fr/subscribe-and-activate/)), et le panneau
+Le déplacement demande Catena Pro sur l'ANCIEN serveur ; le NOUVEAU
+serveur n'a besoin d'aucun abonnement propre, et la clé d'abonnement lui
+revient une fois le déplacement validé (voir
+[S'abonner et activer](/fr/subscribe-and-activate/)). Le panneau
 d'administration le fait depuis la page **Restauration**, sous
 **Déplacer un autre serveur ici**. Il se lance sur le NOUVEAU serveur.
 Celui-ci va rejoindre l'ancien, rapatrier ses données, puis reprendre

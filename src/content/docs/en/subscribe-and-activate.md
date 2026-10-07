@@ -18,7 +18,7 @@ Catena Business includes everything in Catena Pro.
 | **Managed updates** | The nightly maintenance: back up the server, check the backup, copy it offsite, then move components and applications to newer versions, putting one back if it makes the server less healthy than it was. A run can also be started on demand. | Catena Pro |
 | **Domains** | Attaches more Cloudflare domains to the server, each with its own separate sign-in, so one server can serve several organizations or brands. | Catena Pro |
 | **People** | Create, rename and delete the groups that decide which applications people reach, add people to them and disable accounts. The panel shows who would lose access before a group changes. | Catena Pro |
-| **Migration** | Moves the server's applications and data to another Catena server, or another server's onto this one. See [Moving to another server](/en/move-server/). | Catena Pro |
+| **Migration** | Moves the server's applications and data to another Catena server. The receiving server needs no subscription of its own: the key moves to it once the move is validated. See [Moving to another server](/en/move-server/). | Catena Pro |
 | **Restore report** | Proof that the backups restore: a daily restore test into a scratch area, the offsite copy verification, the recovery time, and a restore test on demand. | Catena Pro |
 | **Audit log** | Every administrative action taken on the server, kept in a chain where any later change shows, exportable to a file. | Catena Business |
 | **Compliance report** | A print-ready report on where the data lives, the subprocessors, the latest restore test and the exposed ports, with a Law 25 readiness checklist. | Catena Business |

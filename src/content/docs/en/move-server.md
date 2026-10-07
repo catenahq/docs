@@ -7,11 +7,13 @@ Servers get replaced. A machine gets outgrown, a provider changes its
 pricing, the data needs to sit in a different country, or a box has
 been running long enough that starting fresh is preferable.
 
-Moving is a paid-plan feature (see
-[Subscribe and activate](/en/subscribe-and-activate/)), and the admin panel does it from the
-**Restore** page, under **Move another server here**. It runs on the
-NEW server. It reaches back to the old one, brings its data across, and
-takes over its web address.
+Moving needs Catena Pro on the OLD server; the NEW server needs no
+subscription of its own, and the subscription key moves to it once the
+move is validated (see
+[Subscribe and activate](/en/subscribe-and-activate/)). The admin panel
+does it from the **Restore** page, under **Move another server here**.
+It runs on the NEW server. It reaches back to the old one, brings its
+data across, and takes over its web address.
 
 ## What actually happens, and when the applications are down
 
