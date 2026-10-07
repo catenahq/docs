@@ -132,6 +132,13 @@ répond encore est celle qui le remet en service.
 
 ## Après le déplacement
 
+Une fois la clé d'abonnement active sur le nouveau serveur, celui-ci se
+remet à niveau, comme le fait **Paramètres > Remettre ce serveur à
+niveau** : ses domaines supplémentaires et ses tâches planifiées se
+mettent en place, et les applications peuvent redémarrer brièvement
+pendant ce temps. L'ancien serveur ferme sa fenêtre de migration quand il
+cède la clé.
+
 L'ancien serveur est arrêté, pas effacé. Ses données sont intactes et sa
 place dans le réseau est toujours enregistrée, ce qui fait du retour en
 arrière un simple changement plutôt qu'une reconstruction. Il reste

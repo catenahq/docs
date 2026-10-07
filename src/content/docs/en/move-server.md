@@ -121,6 +121,12 @@ is the one that puts it back.
 
 ## After the move
 
+Once the subscription key is active on the new server, the new server
+brings itself up to date, as **Settings > Bring this server up to date**
+does: its extra domains and scheduled jobs come up, and applications may
+restart briefly while it runs. The old server closes its migration window
+when it hands the key on.
+
 The old server is stopped, not erased. Its data is untouched and its
 place in the network is still registered, which is what makes going
 back a single change rather than a rebuild. It stays that way until the
