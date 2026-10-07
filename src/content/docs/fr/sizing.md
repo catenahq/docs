@@ -45,16 +45,19 @@ l'assistant ERPNext, et ainsi de suite).
 
 ## Recommandations par palier
 
+Catena exige un serveur d'au moins 8 Go de mémoire et ne prend pas en
+charge un serveur plus petit : la plateforme elle-même (tableau de
+bord, authentification unique, proxy, surveillance) et l'analyseur
+antivirus partagé occupent une part fixe avant qu'aucune application
+ne démarre.
+
 Ce sont des points de départ. Les chiffres réels dépendent du nombre
 d'utilisateurs et de l'intensité de la charge.
 
-- **VPS 6 Go (palier de départ) :** confortable pour le combo
-  productivité (Nextcloud + EspoCRM + Rocket.Chat + Outline) plus une
-  application de poids moyen (Plane, Twenty, Postiz, Outline). À
-  éviter pour ERPNext.
-- **VPS 8 Go :** indispensable pour ERPNext avec une autre
-  application significative, ou pour toute combinaison qui ajoute
-  une deuxième application de poids moyen au combo productivité.
+- **VPS 8 Go (minimum) :** le combo productivité (Nextcloud +
+  EspoCRM + Rocket.Chat + Outline) plus une ou deux applications de
+  poids moyen (Plane, Twenty, Postiz), ou ERPNext avec une autre
+  application significative.
 - **VPS 12 Go ou plus :** ERPNext avec le combo productivité complet,
   ou toute combinaison de deux applications lourdes.
 
@@ -66,10 +69,10 @@ La pile app + db + redis + cron tourne à ~420 Mo au repos. Le
 service le plus lourd est `app` (PHP-FPM) à ~280 Mo au repos,
 ~600 Mo lors du premier import massif. Avec S3 en stockage
 primaire, le disque du VPS reste stable -- c'est le seau qui
-grossit. L'antivirus (files_antivirus, mode Daemon) est câblé par
-l'opérateur vers le clamd PARTAGÉ (réseau catena-clamav, ~1,5 Go
-résident), NON compté ici -- c'est de l'infrastructure partagée
-avec le serveur de courriel ; à budgéter une fois au niveau du VPS.
+grossit. L'antivirus (files_antivirus, mode Daemon) utilise le clamd
+partagé du serveur (réseau catena-clamav, ~1,5 Go résident), que ces
+chiffres ne comptent pas : il fait partie de la part fixe de la
+plateforme, partagée avec le serveur de courriel.
 ### Immich
 
 Pas encore mesuré. Le pic est une estimation : le service
@@ -95,7 +98,7 @@ directe).
 
 Le replica set MongoDB + le process Node Rocket.Chat. Le cache
 WiredTiger de MongoDB domine ; les réglages par défaut tiennent
-sans difficulté sur le palier de départ 6 Go.
+sans difficulté sur le palier minimal de 8 Go.
 ### Element / Matrix
 
 Element (Synapse + Postgres + Redis) consomme beaucoup de mémoire
@@ -158,9 +161,9 @@ et peut faire pointer RAM/CPU. Une automatisation intensive se
 dimensionne sur le pic, pas sur le repos.
 ### ERPNext
 
-~10 conteneurs. Le template le plus lourd du catalogue. Prévoyez
-un VPS dédié de 8 Go ou plus ; colocaliser ERPNext avec le combo
-productivité complet demande un palier de 12 Go.
+~10 conteneurs. Le template le plus lourd du catalogue. Le minimum de
+8 Go le tient avec une autre application significative ; avec le combo
+productivité complet, il demande un palier de 12 Go.
 ### Actual Budget
 
 Un seul conteneur Node, sqlite. Empreinte négligeable ; ajout
@@ -181,9 +184,8 @@ Trois conteneurs Apache/PHP (web + worker + cron) au-dessus de
 MariaDB. La RAM au repos est dominée par les sidecars worker et
 cron (~300 Mo chacun, même à l'arrêt). Les envois de campagne et
 reconstructions de segments poussent le pic RAM vers 3 Go et le
-CPU au-dessus de 75 % sur un vCPU. Prévoyez un palier 6 Go si
-Mautic cohabite avec Nextcloud + Rocket.Chat ; sinon un palier
-4 Go tient pour de faibles volumes d'envoi.
+CPU au-dessus de 75 % sur un vCPU. Le minimum de 8 Go tient
+Mautic aux côtés de Nextcloud et de Rocket.Chat.
 ### Kimai
 
 PHP-Apache + MariaDB. Au repos comparable à EspoCRM. Export de
@@ -208,14 +210,12 @@ ajoute ~120 Mo ; le nginx mta-sts est négligeable (~5 Mo). Le pic
 survient lors d'une synchro de boîtes + une rafale d'analyse
 antipourriel sur une fenêtre entrante chargée. Le disque de base
 exclut le courriel stocké (qui grossit avec les boîtes).
-Coût d'infrastructure NON compté ici : le ClamAV intégré est
-DÉSACTIVÉ ; l'antivirus est le clamd PARTAGÉ géré par l'opérateur
-(réseau catena-clamav), qui garde sa base de signatures en mémoire
-à ~1,5 Go. Ce clamd est un service distinct (hors de ce compose),
-donc il n'apparaît pas dans ces chiffres par modèle -- à budgéter
-une fois au niveau du VPS. Le même clamd sert aussi Nextcloud, donc
-déployer les deux ensemble est une économie nette par rapport à
-deux clamd. Estimation prudente pré-lancement, pas encore mesurée.
+Le ClamAV propre au serveur de courriel est désactivé : l'antivirus
+est le clamd partagé du serveur (réseau catena-clamav), un service
+distinct qui garde sa base de signatures en mémoire à ~1,5 Go. Il
+fait partie de la part fixe de la plateforme, donc ces chiffres par
+modèle ne le comptent pas, et le même clamd sert Nextcloud.
+Estimation prudente pré-lancement, pas encore mesurée.
 
 ---
 

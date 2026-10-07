@@ -45,16 +45,18 @@ pass on ERPNext, and so on).
 
 ## Tier guidance
 
+Catena needs a server with at least 8 GB of memory and does not
+support a smaller one: the platform itself (dashboard, sign-on, proxy,
+monitoring) and the shared antivirus scanner take a fixed share before
+any application runs.
+
 These are starting points. Real numbers depend on how many users log
 in and how heavy the workload is.
 
-- **6 GB VPS (starting tier):** comfortable for the productivity bundle
-  (Nextcloud + EspoCRM + Rocket.Chat + Outline) plus one mid-weight
-  template (Plane, Twenty, Postiz, Outline). Don't run ERPNext on
-  this tier.
-- **8 GB VPS:** required for ERPNext beside one other meaningful
-  template, or for any combination that adds a second mid-weight
-  template to the productivity bundle.
+- **8 GB VPS (minimum):** the productivity bundle (Nextcloud +
+  EspoCRM + Rocket.Chat + Outline) plus one or two mid-weight templates
+  (Plane, Twenty, Postiz), or ERPNext beside one other meaningful
+  template.
 - **12 GB+ VPS:** ERPNext alongside the full productivity bundle, or
   any combination of two heavy templates.
 
@@ -66,10 +68,10 @@ The app + db + redis + cron stack idles at ~420 MB. Heaviest single
 service is `app` (PHP-FPM) at ~280 MB idle, ~600 MB during the
 first user's mass-upload pass. With S3 primary storage configured,
 disk on the VPS stays roughly constant -- bucket grows instead.
-Antivirus (files_antivirus, Daemon mode) is wired by ops to the
-SHARED ops-managed clamd (catena-clamav network, ~1.5 GB resident),
-NOT counted in these figures -- it is base infra shared with the
-mail server; budget it once at the VPS level.
+Antivirus (files_antivirus, Daemon mode) uses the server's shared
+clamd (catena-clamav network, ~1.5 GB resident), which these figures
+do not count: it is part of the platform's fixed share, shared with
+the mail server.
 ### Immich
 
 Not yet measured. The peak is an estimate: the machine-learning
@@ -92,7 +94,7 @@ vCPU. Pair with Nextcloud (it's a backend, no direct UI).
 
 MongoDB replica set + Rocket.Chat node process. MongoDB's WiredTiger
 cache is the dominant cost; default settings fit comfortably on the
-6 GB starting tier.
+8 GB minimum tier.
 ### Element / Matrix
 
 Element (Synapse + Postgres + Redis) is memory-hungry during the
@@ -153,9 +155,9 @@ per node and can spike RAM/CPU sharply. Heavy automation users
 should size for the peak, not the idle.
 ### ERPNext
 
-~10 containers. Heaviest template in the catalog. Plan for a
-dedicated 8 GB+ VPS; co-locating ERPNext with the full productivity
-bundle wants a 12 GB tier.
+~10 containers. Heaviest template in the catalog. The 8 GB minimum
+holds it beside one other meaningful template; beside the full
+productivity bundle it wants a 12 GB tier.
 ### Actual Budget
 
 Single Node container, sqlite-backed. Negligible footprint;
@@ -174,9 +176,8 @@ value.
 Three Apache/PHP containers (web + worker + cron) on top of
 MariaDB. Idle RAM is dominated by the worker and cron sidecars
 (~300 MB each, even at rest). Campaign sends and segment rebuilds
-push peak RAM near 3 GB and CPU above 75% on one vCPU. Plan for
-a 6 GB tier if Mautic is co-located with Nextcloud + Rocket.Chat;
-otherwise a 4 GB tier holds for low-volume sending.
+push peak RAM near 3 GB and CPU above 75% on one vCPU. The 8 GB
+minimum holds Mautic beside Nextcloud and Rocket.Chat.
 ### Kimai
 
 PHP-Apache + MariaDB. Idle is comparable to EspoCRM. Bulk
@@ -199,13 +200,11 @@ of the idle footprint. Roundcube (Apache + PHP, SQLite prefs) adds
 ~120 MB; the mta-sts nginx is negligible (~5 MB). Peak is during a
 mailbox sync + spam-scan burst on a busy inbound window. Disk
 baseline excludes stored mail (grows with the mailboxes).
-IMPORTANT base-infra cost NOT counted here: the bundled ClamAV is
-OFF; antivirus is the SHARED ops-managed clamd (catena-clamav
-network), which holds the signature DB resident at ~1.5 GB. That
-clamd is a separate service (not in this compose), so it does not
-appear in these per-template figures -- budget it once at the VPS
-level. The same clamd also serves Nextcloud, so co-deploying the
-two is a net saving vs two clamds. Conservative pre-launch
+The mail server's own ClamAV is off: antivirus is the server's
+shared clamd (catena-clamav network), a separate service that holds
+its signature database in memory at ~1.5 GB. It is part of the
+platform's fixed share, so these per-template figures do not count
+it, and the same clamd serves Nextcloud. Conservative pre-launch
 estimate, not yet measured.
 
 ---
