@@ -46,8 +46,10 @@ La reconstruction se fait sur un nouveau serveur, dans le panneau
 d'administration :
 
 1. Louer un VPS neuf (n'importe quel fournisseur).
-2. Y installer Catena avec `catena-cli install` (ou l'installateur
-   graphique, `uv run catena-gui`).
+2. Y installer Catena depuis l'ordinateur : installer
+   [uv](https://docs.astral.sh/uv/), puis lancer `uvx catena-installer`
+   (une page de navigateur s'ouvre sur l'ordinateur), ou
+   `uvx catena-installer install --inventory <name>` dans une console.
 3. Dans le panneau d'administration du nouveau serveur, ouvrir la page
    **Restauration** et passer la source à **Les sauvegardes d'un autre
    serveur**.

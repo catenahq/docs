@@ -72,8 +72,8 @@ Cloudflare (DNS + tunnel), Tailscale (accès à distance) et Portainer
 (gestion des conteneurs). Si l'un d'eux est un jour perdu, il se
 régénère dans la console de ce fournisseur et s'enregistre dans
 catena-admin **Settings**, ou l'installation est relancée
-(`catena-cli install` peut être relancé sans risque). La carte de
-récupération ci-dessous liste chacun.
+(`uvx catena-installer install --inventory <name>` peut être relancé
+sans risque). La carte de récupération ci-dessous liste chacun.
 
 ## Carte de récupération -- ce qui casse et quoi faire
 

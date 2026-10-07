@@ -43,8 +43,10 @@ that have to be kept separately.
 The rebuild happens on a new server, in the admin panel:
 
 1. Rent a fresh VPS (any provider).
-2. Install Catena on it with `catena-cli install` (or the graphical
-   installer, `uv run catena-gui`).
+2. Install Catena on it from the computer: install
+   [uv](https://docs.astral.sh/uv/), then run `uvx catena-installer`
+   (a browser page opens on the computer), or
+   `uvx catena-installer install --inventory <name>` in a console.
 3. In the new server's admin panel, open the **Restore** page and
    switch the source to **Another server's backups**.
 4. Enter the lost server's backup repository location, its storage

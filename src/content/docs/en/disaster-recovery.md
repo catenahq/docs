@@ -65,8 +65,8 @@ other companies' admin consoles: Cloudflare (DNS + tunnel), Tailscale
 (remote access), and Portainer (container management). If one of those
 is ever lost, it is regenerated in that provider's console and saved
 in catena-admin **Settings**, or the install is re-run
-(`catena-cli install` is safe to rerun). The recovery map below lists
-each.
+(`uvx catena-installer install --inventory <name>` is safe to rerun).
+The recovery map below lists each.
 
 ## Recovery map -- what breaks and what to do
 

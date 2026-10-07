@@ -1,11 +1,11 @@
 ---
 title: "Libre-service -- interface web ou ligne de commande"
-description: "Règle empirique : tout ce que les interfaces web exposent est une tâche de navigateur. Le reste passe par l'accès SSH Tailscale ou catena-cli."
+description: "Règle empirique : tout ce que les interfaces web exposent est une tâche de navigateur. Le reste passe par l'accès SSH Tailscale ou l'installateur."
 ---
 
 Règle empirique : tout ce que les interfaces web exposent est une
 tâche de navigateur. Tout le reste passe par l'accès SSH Tailscale à
-la machine, ou par la CLI `catena-cli` depuis un dépôt Catena. Dans les
+la machine, ou par l'installateur (`uvx catena-installer`). Dans les
 deux cas, rien ici n'exige quelqu'un d'autre.
 
 ## Tâches de navigateur
@@ -40,24 +40,26 @@ deux cas, rien ici n'exige quelqu'un d'autre.
 - **Ré-appliquer la configuration** après un changement de réglage :
   **Remettre ce serveur à niveau** dans catena-admin **Settings**.
 
-## Via la ligne de commande ou la CLI `catena-cli`
+## Via la ligne de commande ou l'installateur
 
 Ceci nécessite un shell sur la machine (connexion SSH via Tailscale)
-ou la CLI `catena-cli` lancée depuis un dépôt Catena :
+ou l'installateur (`uvx catena-installer`, qui n'exige que uv et une
+clé SSH sur l'ordinateur) :
 
-- **Reconstruire un serveur perdu** -- `catena-cli install` sur un
-  serveur neuf, puis la vue **Les sauvegardes d'un autre serveur** de la
+- **Reconstruire un serveur perdu** -- l'installateur sur un serveur
+  neuf, puis la vue **Les sauvegardes d'un autre serveur** de la
   page Restauration, avec le jeu de clés de récupération. Voir
   [Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/).
   Remettre les données en place sur un serveur qui fonctionne encore est
   une tâche de navigateur : la page **Restauration** du panneau
   d'administration. Voir
   [Restaurer les données depuis le panneau d'administration](/fr/restore-data/).
-- **Migrer vers un autre fournisseur de VPS** -- `catena-cli install`
+- **Migrer vers un autre fournisseur de VPS** -- l'installateur
   chez le nouveau fournisseur, puis restaurer depuis les sauvegardes de
   l'ancien serveur avec le jeu de clés de récupération.
-- **Ré-appliquer toute l'installation** -- relancer `catena-cli
-  install`, qui peut être relancé sans risque.
+- **Ré-appliquer toute l'installation** -- relancer
+  `uvx catena-installer install --inventory <name>`, qui peut être
+  relancé sans risque.
 - Mises à niveau majeures des services de base, modèles personnalisés
   (hors catalogue), ou toute modification directe d'un fichier sur
   l'hôte.
