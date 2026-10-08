@@ -26,18 +26,17 @@ npm run check     # astro check + starlight-links-validator
 4. `npm run build` validates frontmatter, internal links
    (starlight-links-validator), and missing locales.
 
-## Sizing page
+## Site layout
 
-`src/content/docs/{en,fr}/sizing.md` is the one generated page here.
-It is written from the app catalog's measured footprints by a generator
-in catenahq/ops, which reaches this tree through the
-`CATENAHQ_DOCS_ROOT` env var (default = sibling `docs/`):
+The sidebar follows the panel: a home page, one page per capability
+under `features/`, `installation`, one page per panel setting under
+`configuration/`, and `configure-apps` for the labels an app carries.
+`astro.config.mjs` maps the addresses of removed pages to the page
+that covers their subject, so outside links keep resolving.
 
-```bash
-uv run python automation/operator-tools/generate-sizing-doc.py
-```
-
-Do NOT hand-edit it; the numbers belong in the catalog upstream.
+A long code example used by both locales lives once in `src/examples/`
+and is rendered with Starlight's `Code` component from an `.mdx` page,
+so the duplication gate never sees two copies.
 
 Per-application documentation does not live here. Each template carries
 its own README beside its compose file, in its

@@ -26,8 +26,7 @@
 // Link TEXT is prose and is scanned. So are frontmatter titles and
 // descriptions.
 //
-// GENERATED PAGES ARE IN SCOPE. sizing.md comes from an ops generator
-// reading catenahq/catena-templates. A generated page that fails the gate is
+// GENERATED PAGES ARE IN SCOPE. A generated page that fails the gate is
 // still a page that fails it; the fix lands in the generator or its source
 // data, and the entry in the debt file below says so.
 //

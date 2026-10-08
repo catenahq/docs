@@ -1,69 +1,54 @@
 ---
-title: Documentation de référence du VPS
-description: Documentation de référence publique pour la suite logicielle auto-hébergée catena.
+title: "Qu'est-ce que Catena?"
+description: "Catena est une suite logicielle installée sur un serveur appartenant à l'entreprise : les applications dont elle dépend, et l'environnement qui les garde accessibles, protégées par une connexion, sauvegardées, à jour et surveillées."
 ---
 
-Voici la documentation de référence publique pour la suite logicielle
-catena telle que déployée sur un VPS. Chaque page s'applique à
-**toute installation catena** ; les spécificités par-installation
-(noms de domaine, hôte d'inventaire, seau S3) sont celles avec
-lesquelles ce déploiement précis a été configuré.
+Catena est une suite logicielle installée sur un serveur appartenant à l'entreprise. Elle réunit deux choses : les applications dont une entreprise dépend (fichiers, courriel, clavardage, réservation, CRM et plus), et l'environnement qui les garde accessibles, protégées par une connexion, sauvegardées, à jour et surveillées. Tout tourne sur le serveur et les comptes du client.
 
-Pour une évaluation,
-[Comment fonctionne cette suite logicielle](/fr/how-this-stack-works/)
-est la visite en langage clair.
+## À qui elle s'adresse
+
+Aux petites et moyennes organisations qui veulent posséder les logiciels dont elles dépendent, avec une personne administratrice à l'aise avec SSH et Portainer. Catena est entièrement auto-hébergée : l'administrateur possède et exploite le serveur, et chaque tâche se fait depuis le panneau d'administration ou avec des outils standards.
+
+## Ce qui est installé
+
+| Composant | Rôle |
+|---|---|
+| Tunnel Cloudflare | Achemine tout le trafic web vers le serveur : aucun port web n'est ouvert sur la machine. |
+| Traefik | Dirige chaque adresse vers la bonne application. |
+| Keycloak | Une seule connexion pour toutes les applications, des groupes décidant qui peut ouvrir quoi. |
+| Portainer | Déploie et gère les applications. |
+| catena-admin | Le panneau d'administration : état, actions, restauration, horaires et paramètres. |
+| Sauvegardes restic | Sauvegardes chiffrées envoyées vers un stockage S3 appartenant au client. |
+| Gatus, Healthchecks, Beszel | Page d'état, alarmes de tâches manquées et graphiques de ressources du serveur. |
+| Tailnet (facultatif) | Un réseau privé pour l'administration. |
+
+## Adresses publiées par le serveur
+
+Une fois un domaine appliqué, chaque service répond sur son propre sous-domaine de `yourdomain.com` :
+
+| Sous-domaine | Service |
+|---|---|
+| `auth.yourdomain.com` | Connexion Keycloak |
+| `dash.yourdomain.com` | Le panneau d'administration |
+| `portainer.yourdomain.com` | Portainer |
+| `monitor.yourdomain.com` | Page d'état Gatus |
+| `heartbeat.yourdomain.com` | Healthchecks |
+| `hub.yourdomain.com` | Graphiques de ressources Beszel |
+| `turn.yourdomain.com` | Relais des appels audio et vidéo (pas une page web) |
+
+Chaque nom se change dans **Paramètres** > **Sous-domaines des applications d'infrastructure**. Tant qu'aucun domaine n'est appliqué, rien n'est publié et le panneau s'atteint par un transfert de port SSH (voir [Installation](/fr/installation/)).
+
+## Éditions
+
+Communauté est gratuite et pleinement fonctionnelle : applications, authentification unique, sauvegardes manuelles, restauration du serveur entier, mises à jour manuelles et surveillance. Catena Pro et Catena Business débloquent d'autres fonctions du panneau et d'automatisation, comme les horaires, les mises à jour gérées, Personnes et les copies hors site, au moyen d'une clé d'abonnement. Les applications et les données ne sont jamais verrouillées. La comparaison se trouve sur la [page des tarifs](https://catena.run/fr/#pricing).
+
+## Propriété des données
+
+Le serveur, le domaine, le compte Cloudflare, le stockage de sauvegarde et les comptes de connexion appartiennent tous au client. Les sauvegardes sont des dépôts restic standards que n'importe quel ordinateur peut lire avec le mot de passe de sauvegarde, et le panneau peut être retiré sans toucher aux applications. Voir [Sauvegarde, restauration et migration](/fr/features/backup-restore-migrate/).
 
 ## Par où commencer
 
-- **[Comment fonctionne cette suite logicielle](/fr/how-this-stack-works/)** --
-  une visite en langage clair des services et de comment ils
-  s'assemblent. Le point de départ à la première lecture.
-- **[Où vivent les données](/fr/where-is-my-data/)** -- ce qui est
-  sur le VPS, ce qui est dans le seau S3, ce qui est perdu si le
-  VPS prend feu.
-- **[Fichiers à ne pas modifier](/fr/do-not-touch/)** -- le VPS opère
-  la machine entière et gère ses propres fichiers. Une seule règle
-  suffit.
-
-## Au quotidien
-
-- **[Gérer les utilisateurs et les rôles](/fr/manage-users-and-roles/)**
-  -- créer les comptes dans Keycloak et attribuer le rôle qui décide
-  des applications accessibles à chaque personne.
-- **[Gérer les applications](/fr/manage-apps/)** -- déployer de
-  nouvelles applications et poser les étiquettes qui filtrent l'accès
-  et publient l'URL.
-- **[Ce que couvre le panneau d'administration](/fr/self-service/)** --
-  tâches quotidiennes prises en charge entièrement depuis le panneau
-  d'administration.
-- **[S'abonner et activer](/fr/subscribe-and-activate/)** -- ce que
-  débloquent Catena Pro et Catena Business, et comment la clé
-  d'abonnement est enregistrée et vérifiée.
-
-## Tâches
-
-- **[Tâches récurrentes](/fr/disaster-prevention/)** -- la courte
-  liste à faire à l'intégration, une fois par mois et une fois par
-  an pour que la reprise reste toujours possible.
-- **[Se remettre d'une panne](/fr/disaster-recovery/)** -- ce qui se
-  passe, et ce qu'il faut faire, quand le VPS est perdu.
-- **[Reconstruire un serveur à partir de la sauvegarde](/fr/self-restore/)**
-  -- le flux à un script qui démarre un remplacement.
-
-## Les sous-domaines
-
-Chaque installation catena publie le même ensemble de sous-domaines
-sous sa zone. La forme :
-
-| Service | Sous-domaine |
-|---|---|
-| Keycloak (identité + SSO) | `auth.yourdomain.com` |
-| Portainer (déploiement d'applications) | `portainer.yourdomain.com` |
-| Gatus (santé des services) | `monitor.yourdomain.com` |
-| catena-admin (tableau de bord + actions à un clic) | `dash.yourdomain.com` |
-| Healthchecks (cron / homme mort) | `heartbeat.yourdomain.com` |
-
-> **Note :** Dans toute la documentation, `yourdomain.com` représente
-> le domaine d'entreprise fourni à l'intégration -- la pastille en
-> haut de cette page réécrit chaque occurrence à la volée afin que
-> les URL affichées correspondent à l'installation décrite.
+1. [Installation](/fr/installation/) : exigences et installateur.
+2. [Vue d'ensemble de la configuration](/fr/configuration/) : l'ordre de la première configuration.
+3. Fonctions : [Connexions sécurisées](/fr/features/secure-connections/), [Sauvegarde, restauration et migration](/fr/features/backup-restore-migrate/), [Authentification unique](/fr/features/single-sign-on/), [Mises à jour sûres](/fr/features/safe-updates/), [Tableau de bord d'administration](/fr/features/admin-dashboard/), [Supervision et alertes](/fr/features/monitoring-alerts/).
+4. [Configurer une application pour Catena](/fr/configure-apps/) : routage, accès et mises à jour d'une application déployée depuis Portainer.

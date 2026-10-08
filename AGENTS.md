@@ -64,9 +64,7 @@ Astro / Starlight feature question rather than guessing.
 
 - Client docs never reference operator paths, internal tooling or
   scenario names.
-- Every page is hand-written except `sizing.md`, which is rendered from
-  the catenahq/catena-templates catalog by an ops generator. Per-app
-  documentation is NOT here: each template carries its own README in
+- Every page is hand-written. Per-app documentation is NOT here: each template carries its own README in
   its catena-templates blueprint directory, and this site does not
   mirror it. Nothing here is generated from the maintainers' test
   bench, so a claim about what is tested carries no automatic anchor:

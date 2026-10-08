@@ -1,0 +1,268 @@
+---
+title: "Configurer une application pour Catena"
+description: "Étiquettes, réseaux et règles swarm qui font d'une application un service publié, protégé, sauvegardé, mis à jour et supervisé par Catena, avec un exemple complet de Nextcloud."
+---
+
+import { Code } from "@astrojs/starlight/components";
+import nextcloudCompose from "../../../examples/nextcloud-compose.yml?raw";
+import nextcloudOidcProvider from "../../../examples/nextcloud-oidc-provider.sh?raw";
+
+Les applications d'un serveur Catena sont publiées, protégées, sauvegardées, mises à jour et supervisées à partir d'étiquettes (labels) écrites dans leur fichier compose. Cette page énumère ce dont une application a besoin, ce que fait chaque étiquette, puis déroule Nextcloud comme exemple complet.
+
+## Deux façons de déployer
+
+- **Catalogue.** La liste **App Templates** de Portainer contient des applications préconfigurées. Le panneau de détails de chaque entrée porte les notes d'installation. Les étiquettes, les réseaux, le placement et le client de connexion sont déjà en place. Les boutons de l'onglet **Actions** du panneau, comme **Câbler l'OIDC pour Nextcloud**, terminent le câblage après le premier déploiement.
+- **Le fichier compose propre à l'application**, déployé dans Portainer (menu **Stacks**, puis ajout d'un nouvel élément). Tout ce qui suit s'applique à cette voie.
+
+Les applications tournent sur Docker Swarm : un fichier compose écrit pour `docker compose` demande généralement des modifications au préalable (voir [Règles swarm](#règles-swarm)). Une entrée du catalogue reste le chemin le plus court quand elle existe pour le logiciel visé.
+
+## Liste de vérification
+
+Une application est entièrement gérée lorsque son fichier compose comporte :
+
+1. Le réseau externe `catena-network`, avec un alias sur le service public.
+2. `vps.route.host`, `vps.route.port` et `vps.route.service` sur le service public.
+3. `vps.auth.mode` et, pour une application privée, `vps.auth.groups`.
+4. `deploy.restart_policy` sur chaque service, et `node.labels.catena.role==data` sur chaque service qui monte un volume.
+5. Aucun `depends_on`, aucun `configs:` en ligne, aucun `tmpfs` en forme courte, et des ports publiés en forme longue avec `mode: host`.
+6. `vps.app` et `vps.component` sur chaque service.
+7. Une étiquette de version complète sur chaque image (`1.2.3`, pas `latest`), plus `vps.auto-update` si la valeur par défaut ne convient pas.
+8. `vps.health.path` sur une application publique.
+9. Une image de base de données reconnue pour la copie automatique, ou un plan pour les données qu'un moteur ne peut pas copier automatiquement.
+
+## Réseau et routage
+
+L'application se joint au réseau externe `catena-network` et donne au service public un alias sur ce réseau. Le mandataire inverse joint l'application par cet alias.
+
+```yaml
+services:
+  web:
+    image: example/web:1.2.3
+    networks:
+      catena-network:
+        aliases:
+          - my-app
+      default: {}
+    labels:
+      - "vps.route.host=my-app.yourdomain.com"
+      - "vps.route.port=8080"
+      - "vps.route.service=web"
+
+networks:
+  catena-network:
+    external: true
+```
+
+- `vps.route.host` est l'adresse publique. Sans elle, l'application n'est joignable que depuis l'intérieur du swarm et n'a pas de tuile dans l'onglet Applications.
+- `vps.route.port` est le port d'écoute dans le conteneur (80 si omis).
+- `vps.route.service` nomme le service compose qui reçoit le trafic. Le premier alias de ce service sur `catena-network` sert d'adresse interne. Sans alias, le nom de l'application dans Portainer, en minuscules, est utilisé.
+- Les services internes (base de données, cache) restent sur le réseau `default` uniquement : ils sont donc inaccessibles aux autres applications et au mandataire.
+
+La route apparaît en cinq minutes environ. Pour l'appliquer tout de suite, l'onglet **Actions** du panneau offre **Synchroniser tout (apps + moniteurs)**.
+
+## Accès
+
+Les étiquettes déterminent qui atteint l'application. Une barrière placée devant l'application (connexion Keycloak) ne laisse passer que les groupes autorisés.
+
+| Étiquette | Effet |
+|---|---|
+| `vps.auth.mode` | `public` : aucune barrière. `private` : membres connectés des groupes listés. `admin-only` : administrateurs seulement. |
+| `vps.auth.groups` | Groupes Keycloak séparés par des virgules. Une personne dans l'un d'eux entre (OU). Les administrateurs sont toujours admis. Le groupe `visitor` signifie public. |
+| `vps.auth.protected` | `true` marque l'application comme ne devant jamais être publique : le panneau avertit si elle se résout en public. |
+
+Règles de résolution :
+
+- `private` avec groupes : ces groupes plus les administrateurs.
+- `private` sans groupes : `admin`, `client` et `staff`.
+- Groupes sans mode : ces groupes plus les administrateurs.
+- Rien de déclaré, ou une valeur de mode inconnue : refus, donc seuls les administrateurs entrent.
+- `public` ignore `vps.auth.groups` (un avertissement est journalisé).
+
+Les groupes doivent déjà exister dans Keycloak : aucune étiquette n'en crée. Ils se gèrent dans la console d'administration de Keycloak, à `auth.yourdomain.com`, ou dans le panneau **Personnes** avec Catena Pro (voir [Connexion et personnes](/fr/configuration/sign-in-and-people/)).
+
+Ces étiquettes contrôlent qui peut atteindre l'application, pas ce qu'une personne peut y faire. Les rôles et permissions internes relèvent des réglages de l'application elle-même.
+
+## Connexion OIDC native
+
+Une application qui prend en charge OpenID Connect peut laisser les gens se connecter avec leur compte Catena plutôt qu'avec un mot de passe distinct. Les étiquettes ne provisionnent rien ici : le client se crée à la main.
+
+1. Ouvrir la console d'administration de Keycloak à `auth.yourdomain.com`, domaine (realm) `vps`, **Clients**, créer un client.
+2. Fixer un identifiant de client, activer **Client authentication**, et définir l'URI de redirection valide à l'adresse de rappel de l'application (la documentation de l'application la nomme).
+3. Copier le secret du client depuis l'onglet **Credentials**.
+4. Transmettre l'identifiant, le secret et l'émetteur `https://auth.yourdomain.com/realms/vps` à l'application par son environnement, sous les noms qu'elle attend.
+
+Le secret se saisit comme variable d'environnement dans Portainer, jamais en dur dans le fichier compose, afin de pouvoir le renouveler sans modifier le fichier. Les applications du catalogue ont déjà leur client.
+
+`vps.auth.oidc`, `vps.auth.oidc.redirect_uris` et `vps.auth.oidc.scopes` ajoutent seulement un badge OIDC à la tuile de l'application. Ils ne créent aucun client.
+
+Voir [Authentification unique](/fr/features/single-sign-on/) pour le fonctionnement de la connexion entre applications.
+
+## Règles swarm
+
+Un fichier compose est lu par Docker Swarm, qui refuse certaines clés net et en ignore d'autres sans rien dire. Le catalogue est vérifié contre ces règles; un fichier écrit à la main doit les respecter lui-même.
+
+- **Pas de `depends_on`.** Swarm n'ordonne pas les démarrages et abandonne la clé sans message. Donner au service dépendant un `deploy.restart_policy` pour que swarm le relance. Quand un plantage suivi d'un redémarrage fait des dégâts (un installateur qui s'arrête à moitié), l'entrypoint attend lui-même la base de données.
+- **`deploy.restart_policy.condition` sur chaque service**, par exemple `any`.
+- **Placement pour les volumes.** Tout service qui monte un volume nommé ou un chemin de l'hôte porte `node.labels.catena.role==data`. Un volume est local à un nœud : sur un autre nœud, swarm le crée vide, sans erreur.
+- **Ports publiés** en forme longue avec `mode: host`, chaque port étant déclaré par `vps.expose.tcp` ou `vps.expose.udp`. Le mode hôte conserve l'adresse réelle du client; le mode par défaut la remplace.
+- **Pas de `configs:` en ligne.** Une entrée `file:` ou `content:` ne peut pas être résolue quand Portainer déploie le fichier. Écrire le fichier de configuration depuis l'entrypoint du service. Seuls les `configs` `external: true` sont acceptés.
+- **`tmpfs` en forme longue** (`type: tmpfs`). La clé courte est ignorée en silence. Un montage tmpfs est `noexec` : un chemin qui doit exécuter du code doit être un volume.
+- **Clés refusées**, qui font rejeter tout le fichier par swarm : `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Les limites vont dans `deploy.resources.limits`; le nombre de répliques dans `deploy.replicas`.
+- **Clés ignorées**, sans effet : `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, `pid`, `privileged`, `security_opt`, `devices`, `shm_size`. Les images sont construites et publiées ailleurs; swarm ne fait que les télécharger.
+
+```yaml
+services:
+  relay:
+    image: example/relay:1.2.3
+    deploy:
+      restart_policy:
+        condition: any
+    ports:
+      - target: 3478
+        published: 3478
+        protocol: udp
+        mode: host
+    labels:
+      - "vps.expose.udp=3478"
+```
+
+## Stockage et sauvegardes
+
+- **Les volumes nommés** résident dans le dossier des volumes Docker et sont inclus dans chaque sauvegarde. Déclarer chaque volume explicitement : les volumes anonymes sont aussi sauvegardés, mais une restauration d'une seule application ne les atteint pas.
+- **Les montages liés (bind)** dans la zone des applications sont inclus. Un montage lié vers tout autre chemin absolu fait échouer la sauvegarde, sauf si ce dossier figure sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. Voir [Sauvegardes et stockage S3](/fr/configuration/backups/).
+- **Les bases de données sont copiées automatiquement** avant chaque sauvegarde :
+  - un conteneur en cours d'exécution dont le nom d'image contient `postgres` est copié avec `pg_dumpall`, sous l'utilisateur de `POSTGRES_USER`;
+  - un conteneur dont le nom d'image contient `mariadb` ou `mysql` est copié, et exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD` dans son environnement.
+  - Une copie qui échoue fait échouer la sauvegarde. Aucune étiquette n'agit ici : c'est le nom de l'image qui décide.
+- **Les autres moteurs** (MongoDB, SQLite et semblables) n'ont aucune copie automatique. L'application a besoin de sa propre exportation, ou d'une copie de volume cohérente en soi.
+- **Les grands ensembles de fichiers** gagnent à vivre dans un stockage S3 plutôt que dans un volume local, ce qui garde la sauvegarde légère. Le modèle Nextcloud stocke les fichiers dans un seau, et seules les données applicatives restent sur un volume local.
+
+Une sauvegarde ne met pas l'application en pause : rien n'est placé en mode maintenance autour de l'instantané.
+
+## Étiquettes d'identité
+
+`vps.app` et `vps.component` indiquent à Catena quels conteneurs appartiennent à quelle application et quel rôle chacun joue.
+
+| Étiquette | Valeur | Sert à |
+|---|---|---|
+| `vps.app` | Un nom partagé par tous les services de l'application, comme `my-app` | Appartenance à la restauration, restauration d'une seule application, repérage pour les mises à jour. Survit à un renommage dans Portainer. |
+| `vps.component` | Le nom du service, comme `web`, `db`, `redis` | Reconnaître la couche de base de données pour ne jamais la mettre en pause, et associer un service à sa copie. |
+
+Les deux devraient figurer sur chaque service. Déployer l'application dans Portainer sous un nom égal à `vps.app` aligne les noms de volumes (`<app>_<volume>`) sur la restauration d'une seule application.
+
+## Mises à jour
+
+Seules les images dotées d'une étiquette de version complète sont mises à jour automatiquement :
+
+| Forme d'étiquette | Exemple | Gérée |
+|---|---|---|
+| Version complète | `1.2.3`, `v1.2.3`, `1.2.3-alpine`, `1.2.3-apache` | Oui |
+| Version partielle | `1.2`, `1` | Non |
+| Flottante | `latest`, `stable`, `alpine`, `edge`, `main` | Non |
+
+`vps.auto-update` fixe l'amplitude permise :
+
+| Valeur | Permis |
+|---|---|
+| `patch` (défaut) | `1.2.3` vers `1.2.4` |
+| `minor` | `1.2.3` vers `1.3.0` |
+| `major` | `1.2.3` vers `2.0.0` |
+| `off` | Jamais |
+
+Une valeur absente ou invalide équivaut à `patch`. Une étiquette qui n'est pas une version complète n'est jamais modifiée, quelle que soit l'étiquette `vps.auto-update`. Les services qui partagent une même image prennent la valeur la plus restrictive. Les mises à jour elles-mêmes s'exécutent pendant l'entretien nocturne, qui exige Catena Pro ou Catena Business ([éditions](https://catena.run/fr/#pricing)); voir [Mises à jour](/fr/configuration/updates/).
+
+## Supervision et tableau de bord
+
+| Étiquette | Effet |
+|---|---|
+| `vps.health.path` | Chemin sondé par la page d'état, par exemple `/health`. La sonde attend une réponse 200. |
+| `vps.health.expect` | Texte qui doit figurer dans le corps de la réponse. |
+| `vps.display-name` | Titre de la carte de l'application sur la page d'état. |
+| `vps.homepage.name` | Titre de la tuile de l'onglet **Applications**. Par défaut, le nom de l'application dans Portainer. |
+| `vps.homepage.icon` | Icône de la tuile, comme `mdi-application` (défaut). |
+| `vps.homepage.description` | Sous-titre de la tuile. |
+| `vps.homepage.hidden` | `true` masque la tuile pour tous sauf les administrateurs. |
+
+Sans `vps.health.path`, la sonde demande l'adresse et attend la redirection vers la connexion. Une application publique n'en donne pas : sa carte devient rouge. Définir `vps.health.path` sur chaque application publique.
+
+Les tuiles de l'onglet **Applications** se composent en direct à partir de Portainer et exigent un `vps.route.host`. La synchronisation de la page d'état s'exécute environ toutes les 10 minutes, ou avec **Synchroniser tout (apps + moniteurs)** dans **Actions**. Voir [Supervision et alertes](/fr/features/monitoring-alerts/).
+
+## Référence des étiquettes
+
+| Étiquette | Valeurs | Défaut | Effet |
+|---|---|---|---|
+| `vps.route.host` | Adresse sous `yourdomain.com` | aucun (pas de route) | Publie l'application |
+| `vps.route.port` | Numéro de port | 80 | Port du conteneur derrière la route |
+| `vps.route.service` | Nom du service compose | nom Portainer de l'application, en minuscules | Service qui reçoit le trafic |
+| `vps.auth.mode` | `public`, `private`, `admin-only` | aucun (refus) | Barrière devant l'application |
+| `vps.auth.groups` | Groupes séparés par des virgules | aucun | Groupes admis (OU), plus les administrateurs |
+| `vps.auth.protected` | `true`, `false` | `false` | Avertit si l'application devient publique |
+| `vps.auth.oidc` | `true`, `false` | `false` | Badge OIDC sur la tuile seulement |
+| `vps.auth.oidc.redirect_uris` | Adresses séparées par des virgules | aucun | Donnée de badge seulement |
+| `vps.auth.oidc.scopes` | Portées séparées par des espaces | aucun | Donnée de badge seulement |
+| `vps.app` | Nom | aucun | Identité pour restauration et mises à jour |
+| `vps.component` | Nom du service | aucun | Rôle du service (détection de la couche de données) |
+| `vps.auto-update` | `off`, `patch`, `minor`, `major` | `patch` | Amplitude de version permise |
+| `vps.health.path` | Chemin d'URL | aucun | Chemin sondé par la page d'état |
+| `vps.health.expect` | Texte | aucun | Texte requis dans la réponse |
+| `vps.display-name` | Texte | nom de l'application | Titre de carte sur la page d'état |
+| `vps.homepage.name` | Texte | nom de l'application | Titre de la tuile |
+| `vps.homepage.icon` | Nom d'icône | `mdi-application` | Icône de la tuile |
+| `vps.homepage.description` | Texte | aucun | Sous-titre de la tuile |
+| `vps.homepage.hidden` | `true`, `false` | `false` | Masque la tuile aux non-administrateurs |
+| `vps.expose.tcp` | Ports ou plages (`25,465`, `7000-7010`) | aucun | Ouvre les ports TCP publiés |
+| `vps.expose.udp` | Ports ou plages | aucun | Ouvre les ports UDP publiés |
+
+Les étiquettes s'écrivent en liste (`"clé=valeur"`) ou en table. Un `${VARIABLE}` dans une valeur est remplacé par la variable d'environnement de l'application avant la lecture de l'étiquette.
+
+## Exemple complet : Nextcloud
+
+L'entrée du catalogue pour Nextcloud est la façon recommandée de l'exploiter : elle comporte plus de précautions que le fichier simplifié ci-dessous, et le client de connexion est déjà créé. Déployer l'entrée du catalogue, remplir les champs de stockage dans son environnement et lancer **Câbler l'OIDC pour Nextcloud** constitue toute la procédure. Le fichier ci-dessous montre la même conception avec les éléments dont une application écrite à la main a besoin. Les versions d'images sont des valeurs fictives.
+
+<Code code={nextcloudCompose} lang="yaml" />
+
+Les variables (`DOMAIN_HOST`, `NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, les valeurs `S3_*` et `OIDC_*`) se saisissent dans la section des variables d'environnement de Portainer au moment du déploiement. `DOMAIN_HOST` et `NEXTCLOUD_HOSTNAME` valent tous deux `nextcloud.yourdomain.com`.
+
+### Pourquoi chaque élément
+
+- **Stockage.** Les fichiers des utilisateurs vont dans un seau S3 par les variables `OBJECTSTORE_S3_*`. La sauvegarde ne contient alors que la base de données et les petits volumes locaux, et le seau est protégé par la durabilité de son propre fournisseur. `nc-data` contient encore des journaux et des données applicatives : c'est donc un volume nommé. `nc-html` contient l'arborescence du code : persistée, elle fait reconnaître un conteneur recréé comme une installation existante, qui est mise à niveau, plutôt que réinstallée par-dessus des données vivantes.
+- **Placement.** `app`, `db` et `cron` montent des volumes : les trois sont épinglés au nœud de données. `redis` ne conserve rien et n'a pas besoin d'épinglage : un cache manquant est simplement un cache raté.
+- **Attente de la base de données au lieu de `depends_on`.** Swarm abandonne `depends_on`. Une boucle de plantages et de redémarrages jusqu'à ce que la base réponde n'est pas sûre non plus pour Nextcloud : l'installateur abandonne après dix essais, mais le fichier de version est alors déjà écrit, de sorte que le démarrage suivant prend la voie de la mise à niveau et l'instance reste "non installée" jusqu'à l'effacement du volume. L'entrypoint ouvre donc une vraie connexion à la base (et non un simple test TCP, car Postgres accepte les connexions pendant son démarrage) puis seulement passe la main à l'entrypoint de l'image. Après 300 secondes, il se termine pour que swarm relance la tâche.
+- **Crochet de configuration.** L'image ne remplit son dossier de configuration que s'il est vide : un fichier de configuration écrit avant le démarrage fait échouer le premier lancement. L'entrypoint écrit donc un crochet `before-starting` que l'image exécute après avoir rempli le dossier. `$$` est l'échappement compose d'un `$` littéral.
+- **Service cron.** La même image exécute `/cron.sh` pour les tâches de fond. Il partage les quatre volumes avec `app`, atterrit donc sur le même nœud, et attend la base de la même façon.
+- **Domaines de confiance et mandataire.** Le chiffrement TLS se termine en périphérie. `OVERWRITEPROTOCOL=https`, `OVERWRITEHOST` et `OVERWRITECLIURL` font écrire des adresses https par Nextcloud, `TRUSTED_PROXIES` couvre les plages privées qu'utilise le mandataire de Catena, et `NEXTCLOUD_TRUSTED_DOMAINS` est le nom d'hôte public.
+- **Taille des morceaux.** Cloudflare plafonne le corps d'une requête à 100 Mo sur ses forfaits Free et Pro. Le morceau de téléversement par défaut de Nextcloud est de 100 Mio, ce qui échoue en périphérie et est réessayé sans fin. 80 Mio (`83886080`) laisse de la marge. La valeur 0 désactive le découpage et fait échouer tout téléversement de plus de 100 Mo.
+- **Accès.** `vps.auth.mode=public` laisse la connexion propre à Nextcloud aux commandes, ce qui garde fonctionnels les liens de partage anonymes (`/s/...`) pour les gens sans compte. La connexion par Keycloak s'ajoute dans l'application (ci-dessous).
+- **Santé.** `vps.health.path=/status.php` garde la carte verte; une application publique sans cette étiquette est sondée pour une redirection qu'elle ne donne jamais.
+- **Sauvegardes.** L'image du service `db` contient `postgres` et `POSTGRES_USER` est défini : la base est donc copiée avant chaque sauvegarde.
+
+### Connexion avec OIDC
+
+Dans l'application du catalogue, le client Keycloak et les valeurs `OIDC_*` existent déjà. Après le premier déploiement, **Actions** > **Configuration initiale** > **Câbler l'OIDC pour Nextcloud** active l'application `user_oidc` et enregistre le fournisseur. L'opération peut être relancée sans risque après un redéploiement ou un renouvellement de secret.
+
+Pour le fichier déployé à la main, le client se crée à la main (voir [Connexion OIDC native](#connexion-oidc-native)) :
+
+- Identifiant de client `nextcloud`, **Client authentication** activé.
+- URI de redirection valide `https://nextcloud.yourdomain.com/apps/user_oidc/code`.
+- Les portées par défaut `groups`, `profile` et `email` attribuées au client.
+
+L'identifiant, le secret et l'émetteur vont dans `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` (`https://auth.yourdomain.com/realms/vps`). Le fournisseur s'enregistre ensuite dans Nextcloud avec `occ`, exécuté dans le conteneur `app` (depuis l'interpréteur de commandes du serveur, ou la console du conteneur dans Portainer) :
+
+<Code code={nextcloudOidcProvider} lang="bash" />
+
+La commande crée le fournisseur ou le met à jour : elle peut être répétée. La page de connexion de Nextcloud affiche alors **Se connecter avec keycloak**. Le compte administrateur local continue de fonctionner en secours.
+
+## Dépannage
+
+| Symptôme | Cause et correction |
+|---|---|
+| 502 ou 503 sur l'adresse | Le mandataire ne joint pas l'application. Vérifier que le service public est sur `catena-network`, que son alias existe, que `vps.route.service` nomme le bon service et que `vps.route.port` correspond au port d'écoute. Les journaux se lisent dans Portainer. |
+| 403 après la connexion | La personne n'est dans aucun groupe autorisé. Vérifier `vps.auth.groups` et l'appartenance aux groupes dans **Personnes** ou Keycloak. Le groupe doit exister et correspondre exactement. |
+| Seuls les administrateurs entrent | Aucun `vps.auth.mode` ni groupe déclaré (le défaut est le refus), ou la valeur du mode n'est pas `public`, `private` ou `admin-only`. |
+| Pas de route après un déploiement | La synchronisation s'exécute toutes les 5 minutes. Lancer **Synchroniser tout (apps + moniteurs)** dans **Actions**. Un `vps.route.host` absent n'est jamais routé. |
+| Carte rouge sur la page d'état | Application publique sans `vps.health.path`, chemin qui ne répond pas 200, ou texte `vps.health.expect` absent de la réponse. |
+| Sauvegarde échouée sur un montage lié | Le montage est hors de la zone des applications. Déplacer les données vers un volume nommé, ou inscrire le dossier sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. |
+| Sauvegarde échouée sur une base de données | La copie a échoué. Un conteneur MariaDB ou MySQL exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD`; un conteneur Postgres exige un `POSTGRES_USER` valide. |
+| Mise à jour ignorée | L'étiquette n'est pas une version complète (`latest`, `1.2`), `vps.auto-update` vaut `off`, ou le saut dépasse l'étiquette (une version majeure sous `patch`). La version la plus récente peut aussi être retenue par les contrôles de vulnérabilités ou le délai d'attente. |
+| Redémarrages en boucle au premier déploiement | Aucune attente de la base de données. En ajouter une dans l'entrypoint. |
+| Données absentes après un changement de nœud | Un service avec volume n'avait pas `node.labels.catena.role==data` et a démarré sur un autre nœud avec un volume vide. |

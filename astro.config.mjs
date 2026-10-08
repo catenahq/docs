@@ -21,9 +21,35 @@ import { inter } from "@catenahq/contracts/brand/fonts.mjs";
 // Deployment: standalone Astro build (`npm run build` -> `dist/`)
 // published to GitHub Pages by .github/workflows/deploy-pages.yml on
 // push to main. No chained-build coupling with the marketing site.
+// Addresses that outside links still use, each mapped to the page that
+// covers its subject, in both locales.
+const formerPages = {
+  "how-this-stack-works": "",
+  "where-is-my-data": "features/backup-restore-migrate/",
+  "leaving": "features/backup-restore-migrate/",
+  "guides/provider-accounts": "configuration/",
+  "self-service": "features/admin-dashboard/",
+  "subscribe-and-activate": "configuration/subscription/",
+  "manage-users-and-roles": "configuration/sign-in-and-people/",
+  "manage-apps": "configure-apps/",
+  "disaster-prevention": "configuration/backups/",
+  "disaster-recovery": "configuration/restore-and-migrate/",
+  "restore-data": "configuration/restore-and-migrate/",
+  "self-restore": "configuration/restore-and-migrate/",
+  "move-server": "configuration/restore-and-migrate/",
+  "do-not-touch": "configuration/server/",
+  "sizing": "installation/",
+  "loi25-client-onboarding": "",
+};
+
 export default defineConfig({
   site: "https://docs.catena.run",
   trailingSlash: "ignore",
+  redirects: Object.fromEntries(
+    ["en", "fr"].flatMap((locale) =>
+      Object.entries(formerPages).map(([from, to]) => [`/${locale}/${from}`, `/${locale}/${to}`]),
+    ),
+  ),
   fonts: [inter(fontProviders)],
   integrations: [
     starlight({
@@ -33,15 +59,7 @@ export default defineConfig({
         // on GitHub on the repo's default branch.
         baseUrl: "https://github.com/catenahq/docs/edit/HEAD/",
       },
-      plugins: [
-        starlightLinksValidator({
-          // Provider-installation screenshots land later (see
-          // ops/BACKLOG_TECHNICAL.md, "starlight-image-zoom plugin").
-          // Until then, exclude the directory rather than maintain a
-          // file-by-file ignore list.
-          exclude: ["/img/guides/provider-accounts/**"],
-        }),
-      ],
+      plugins: [starlightLinksValidator()],
       lastUpdated: true,
       defaultLocale: "en",
       locales: {
@@ -69,55 +87,44 @@ export default defineConfig({
         },
       ],
       sidebar: [
+        { slug: "index" },
         {
-          label: "Start here",
-          translations: { fr: "Commencer ici" },
+          label: "Features",
+          translations: { fr: "Fonctionnalités" },
           items: [
-            { slug: "index" },
-            { slug: "how-this-stack-works" },
-            { slug: "where-is-my-data" },
+            { slug: "features/secure-connections" },
+            { slug: "features/backup-restore-migrate" },
+            { slug: "features/single-sign-on" },
+            { slug: "features/safe-updates" },
+            { slug: "features/admin-dashboard" },
+            { slug: "features/monitoring-alerts" },
+          ],
+        },
+        { slug: "installation" },
+        {
+          label: "Configuration",
+          translations: { fr: "Configuration" },
+          items: [
+            { slug: "configuration" },
+            { slug: "configuration/subscription" },
+            { slug: "configuration/domain" },
+            { slug: "configuration/admin-access" },
+            { slug: "configuration/backups" },
+            { slug: "configuration/schedules" },
+            { slug: "configuration/restore-and-migrate" },
+            { slug: "configuration/email" },
+            { slug: "configuration/sign-in-and-people" },
+            { slug: "configuration/alerts" },
+            { slug: "configuration/server" },
+            { slug: "configuration/updates" },
+            { slug: "configuration/vulnerabilities" },
           ],
         },
         {
-          label: "Setup guides",
-          translations: { fr: "Guides de configuration" },
+          label: "Apps",
+          translations: { fr: "Applications" },
           items: [
-            { slug: "guides/provider-accounts" },
-          ],
-        },
-        {
-          label: "Day-to-day",
-          translations: { fr: "Au quotidien" },
-          items: [
-            { slug: "manage-users-and-roles" },
-            { slug: "manage-apps" },
-            { slug: "self-service" },
-            { slug: "subscribe-and-activate" },
-          ],
-        },
-        {
-          label: "Tasks",
-          translations: { fr: "Tâches" },
-          items: [
-            { slug: "disaster-prevention" },
-            { slug: "disaster-recovery" },
-            { slug: "restore-data" },
-            { slug: "self-restore" },
-            { slug: "move-server" },
-          ],
-        },
-        {
-          label: "Trust",
-          translations: { fr: "Confiance" },
-          items: [
-            { slug: "leaving" },
-          ],
-        },
-        {
-          label: "Reference",
-          translations: { fr: "Référence" },
-          items: [
-            { slug: "do-not-touch" },
+            { slug: "configure-apps" },
           ],
         },
       ],
