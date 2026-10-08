@@ -119,7 +119,7 @@ Included:
 
 Excluded: container image layers (they are pulled again), the history kept by the status page, the heartbeat monitor and the resource monitor, antivirus signature databases, logs and temporary folders.
 
-Database dumps are automatic for every running container whose image name contains `postgres`, `mariadb` or `mysql`. PostgreSQL is dumped with `pg_dumpall`. MariaDB and MySQL need `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in the container's environment. A failed dump fails the whole backup. Other engines, such as MongoDB or SQLite, get no automatic dump. Backups do not pause applications or put them in maintenance mode.
+Database dumps are automatic for every running container whose image name contains `postgres`, `mariadb` or `mysql`. PostgreSQL is dumped with `pg_dumpall`. MariaDB and MySQL need `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in the container's environment. A failed dump fails the whole backup. Other engines, such as MongoDB or SQLite, get no automatic dump. Backups do not pause applications. In the nightly maintenance, a catalog application whose entry asks for it, such as Nextcloud, is put in maintenance mode while the backup runs and taken out of it afterwards, even when the backup fails; a backup started any other way leaves every application as it is. A restore takes the applications it puts back out of maintenance mode.
 
 After each snapshot the server checks every running container for folders mounted from outside the backup set. A backup fails when it finds one that is not listed under **Other folders to back up**; the **Check backup coverage** action runs the same check on demand.
 

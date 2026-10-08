@@ -95,7 +95,7 @@ Chaque service, service d'entrée compris, porte :
 - **Les autres moteurs** (MongoDB, SQLite et semblables) n'ont aucune copie automatique. L'application a besoin de sa propre exportation, ou d'une copie de volume cohérente en soi.
 - **Les grands ensembles de fichiers** gagnent à vivre dans un stockage S3 plutôt que dans un volume local, ce qui garde la sauvegarde légère.
 
-Une sauvegarde ne met pas l'application en pause : rien n'est placé en mode maintenance autour de l'instantané.
+Une sauvegarde ne met pas en pause une application ajoutée à la main : rien n'est placé en mode maintenance autour de l'instantané. Une entrée du catalogue peut le demander : Nextcloud, par exemple, est placé en mode maintenance pendant la sauvegarde de l'entretien nocturne et en est sorti ensuite, même quand la sauvegarde échoue.
 
 ## Étape 7 : Déployer
 

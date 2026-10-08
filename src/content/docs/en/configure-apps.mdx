@@ -95,7 +95,7 @@ Every service, the front door included, carries:
 - **Other engines** (MongoDB, SQLite and similar) get no automatic dump. The app needs its own export, or a volume copy that is consistent on its own.
 - **Large file sets** belong in S3-backed storage rather than in a local volume, which keeps the backup small.
 
-A backup does not pause the app: nothing is put in maintenance mode around the snapshot.
+A backup does not pause an app added by hand: nothing is put in maintenance mode around the snapshot. A catalog entry can ask for it instead: Nextcloud, for one, is put in maintenance mode while the nightly maintenance takes its backup, and taken out of it afterwards, even when the backup fails.
 
 ## Step 7: Deploy
 
