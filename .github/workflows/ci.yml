@@ -45,9 +45,9 @@ jobs:
       - name: Repo rules (no tracked env file; .gitignore carries the env rule)
         working-directory: ./docs
         run: node ../contracts/scripts/check-repo-rules.mjs
-      - name: Voice (the documentation does not address a reader or name a product version)
+      - name: Versions (the documentation names no product version)
         working-directory: ./docs
-        run: npm run check:voice
+        run: npm run check:versions
       # Pinned in contracts/.vale-version, which check-prose.mjs also
       # reads and enforces: the grammars decide which comments are
       # visible, so a different version is a different gate.

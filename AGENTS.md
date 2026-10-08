@@ -34,8 +34,10 @@ token.
 - Client-facing. Never reference the internal operator documentation,
   operator-side paths, Ansible roles, or filesystem paths.
 - Standing rule: Catena is fully self-hosted. The
-  READER is the admin who owns and runs the VPS. Write no second person
-  ("you", "your"): describe how the task is done and point at the
+  READER is the admin who owns and runs the VPS. Address the reader
+  ("you", "your"; "vous", "votre" in French) and give steps in the
+  imperative ("Open **System**", "Ouvrez **Système**"). What the system
+  does stays in the third person. Point at the
   concrete tool or another doc (Tailscale SSH, the recovery keyset +
   self-restore, provider rescue mode, credential regeneration in the
   provider console, the catena-admin panel). Do NOT write "we" / "us" /
