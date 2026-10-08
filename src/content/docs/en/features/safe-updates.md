@@ -19,7 +19,7 @@ On Catena Pro and Catena Business, **Schedules** > **Nightly maintenance** (off 
 - **Policy.** Client apps default to patch updates (`1.2.3` to `1.2.9`); infrastructure services default to patch and minor. The per-app label `vps.auto-update=off|patch|minor|major` overrides the default for client apps (see [Configure an app for Catena](/en/configure-apps/)). `off` leaves an app alone.
 - **Waiting period.** A new version waits 7 days after release by default before it is adopted.
 - **CVE remediation (Catena Pro).** Before an update, the candidate versions are scanned. A version that adds a new high or critical CVE is skipped in favour of a lower clean version, or the update waits. A newer version that removes a CVE from the running one is applied without the 7-day waiting period.
-- **Rollback.** After each change, the server's health is compared with its state before. On a regression the previous version is restored and the failed version is set aside, so the next run tries the next version up. An app with a database gets a dump before the update that is replayed on rollback.
+- **Rollback.** After each change, the server's health is compared with its state before. On a regression the previous version is restored and the failed version is set aside, so the next run tries the next version up. An app with a database gets a dump before the update that is replayed on rollback. An app whose new version upgrades its code, configuration and add-ons in place (Nextcloud) also gets a copy of them, put back on rollback; its users' files stay as they are.
 - **Log.** The **Log** tab records backups, updates, rollbacks, vulnerability changes and restarts.
 
 ## Panel and Docker engine

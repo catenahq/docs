@@ -91,7 +91,7 @@ Without a scanner the vulnerability check is off and the waiting period still ap
 
 ### Rollback and quarantine
 
-After each update the server compares its health with the state before. If it is worse, the previous version is put back and the failed tag is quarantined, so the next run tries the next version up instead of the same one. An application with a database gets a dump taken before the update, put back on rollback.
+After each update the server compares its health with the state before. If it is worse, the previous version is put back and the failed tag is quarantined, so the next run tries the next version up instead of the same one. An application with a database gets a dump taken before the update, put back on rollback. When the new version of an application also upgrades its code, configuration and add-ons in place, as Nextcloud does, a copy of those is taken before the update too and put back on rollback while the application is stopped; its users' files are never put back. The copies are deleted once the update is kept or the rollback completes. A rollback that cannot finish keeps them on the server.
 
 ### Managed updates panel
 

@@ -91,7 +91,7 @@ Sans analyseur, la vérification des vulnérabilités est désactivée et le dé
 
 ### Retour arrière et quarantaine
 
-Après chaque mise à jour, le serveur compare son état de santé à celui d'avant. S'il est moins bon, la version précédente est remise en place et l'étiquette fautive est mise en quarantaine : la prochaine exécution essaie la version suivante plutôt que la même. Une application dotée d'une base de données reçoit un export fait avant la mise à jour, remis en place lors du retour arrière.
+Après chaque mise à jour, le serveur compare son état de santé à celui d'avant. S'il est moins bon, la version précédente est remise en place et l'étiquette fautive est mise en quarantaine : la prochaine exécution essaie la version suivante plutôt que la même. Une application dotée d'une base de données reçoit un export fait avant la mise à jour, remis en place lors du retour arrière. Lorsque la nouvelle version d'une application met aussi à niveau sur place son code, sa configuration et ses modules complémentaires, comme Nextcloud, une copie de ceux-ci est faite avant la mise à jour et remise en place lors du retour arrière, l'application étant arrêtée; les fichiers de ses utilisateurs ne sont jamais remis en place. Les copies sont supprimées dès que la mise à jour est conservée ou que le retour arrière se termine. Un retour arrière qui ne peut aboutir les conserve sur le serveur.
 
 ### Panneau Mises à jour gérées
 
