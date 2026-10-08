@@ -38,7 +38,7 @@ The order below avoids dead ends: later steps rely on earlier ones.
 4. [Schedules](/en/configuration/schedules/): turning on the backup and maintenance schedules (Catena Pro or Catena Business).
 5. [Outgoing email](/en/configuration/email/): the mail service used for password resets, invitations and alerts.
 6. [Admin access and tailnet](/en/configuration/admin-access/): the private network, then optionally **Close SSH on public port 22**.
-7. [Alerts](/en/configuration/alerts/): watchdog addresses and notification channels.
+7. [Alerts](/en/configuration/alerts/): the off-site heartbeat address and notification channels.
 8. [Sign-in and people](/en/configuration/sign-in-and-people/): second-factor requirement and accounts.
 9. [Server settings](/en/configuration/server/): time zone, locale and the manual configuration run.
 

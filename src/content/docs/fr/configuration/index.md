@@ -38,7 +38,7 @@ L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précéd
 4. [Horaires](/fr/configuration/schedules/) : l'activation des horaires de sauvegarde et d'entretien (Catena Pro ou Catena Business).
 5. [Courriel sortant](/fr/configuration/email/) : le service de courriel utilisé pour les réinitialisations de mot de passe, les invitations et les alertes.
 6. [Accès administrateur et réseau privé](/fr/configuration/admin-access/) : le réseau privé, puis éventuellement **Fermer le SSH sur le port public 22**.
-7. [Alertes](/fr/configuration/alerts/) : les adresses de surveillance et les canaux de notification.
+7. [Alertes](/fr/configuration/alerts/) : l'adresse du signal de vie hors site et les canaux de notification.
 8. [Connexion et personnes](/fr/configuration/sign-in-and-people/) : l'exigence du deuxième facteur et les comptes.
 9. [Paramètres du serveur](/fr/configuration/server/) : fuseau horaire, paramètres régionaux et remise à niveau manuelle.
 

@@ -1,24 +1,21 @@
 ---
 title: "Alerts"
-description: "The watchdog addresses and ntfy fields of the alerts section, how missed jobs and failing services raise alerts, how alerts reach your admin email, and how you add more notification channels in Healthchecks."
+description: "The off-site heartbeat address and ntfy fields of the alerts section, how missed jobs and failing services raise alerts, how alerts reach your admin email, and how you add more notification channels in Healthchecks."
 ---
 
 Alerts come from three on-server tools: Gatus (is each service answering), Healthchecks (did each scheduled job report in) and Beszel (are CPU, memory and disk healthy). The overview is in [Monitoring and alerts](/en/features/monitoring-alerts/). This page covers the settings and the first-time wiring.
 
 ## Fields
 
-**Settings** > **Alerts and missed-job reporting** holds optional watchdog addresses. Each scheduled job pings one when it finishes, and the watchdog raises the alarm when a ping does not arrive. A blank field keeps its default.
+**Settings** > **Alerts and missed-job reporting** holds the ntfy channel and the off-site heartbeat address. Scheduled jobs report to the Healthchecks on the server, which raises the alarm when a report is late or failed.
 
 | Field | Purpose |
 |---|---|
-| **Healthchecks backup watchdog URL (success ping)** | Pinged when a backup succeeds. Defaults to the Healthchecks on this same server. |
-| **Healthchecks backup watchdog URL (attempt ping)** | Pinged when a backup is attempted, whether or not it succeeds. Defaults to the Healthchecks on this same server. |
-| **Off-site Healthchecks backup watchdog URL (client)** | A Healthchecks address on an outside service, owned by you. |
-| **Off-site Healthchecks backup watchdog URL (Catena)** | A second outside address, for a watchdog run by Catena. Leave it blank when none was issued. |
+| **Off-site heartbeat address** | The ping address of a check at an outside monitoring service, such as a free healthchecks.io check. Used by the off-site heartbeat (Catena Pro), which you turn on in [Schedules](/en/configuration/schedules/). |
 | **ntfy server** | Address of an ntfy server for push notifications. |
 | **ntfy topic** | The topic on that server. Hard to guess by design: anyone who knows it can post to it. |
 
-The two local addresses cannot report an outage that takes the whole server down, because the watchdog is on the server. The off-site pair closes that gap: when the server goes dark, silence itself raises the alert. If neither off-site address is set, the install prints a non-fatal warning that a whole-server outage would go unreported.
+A monitor on the server cannot report an outage that takes the whole server down. The off-site heartbeat closes that gap: on its schedule, the server checks that its status page, job monitor and resource monitor answer, then calls the off-site address. A plain call means all is well; a failure call names the monitors that stopped answering; no call at all means the server is down, and the outside service raises the alert. Saving the address alone sends nothing: the heartbeat runs once you turn it on in [Schedules](/en/configuration/schedules/), where its section shows the period and grace time to set on the outside check. When your subscription ends, the calls stop, so pause the outside check then.
 
 The ntfy channel is created only when both **ntfy server** and **ntfy topic** are filled. There is no default.
 
@@ -31,7 +28,7 @@ The section ends with **Save and apply**; the services that use these values res
 1. Gatus probes the shared services (the admin panel, Portainer, Healthchecks, Keycloak, Beszel, the Cloudflare tunnel and the reverse proxy), the latest backup, the container vulnerability report and every routed application on a fixed interval (about one to two minutes). After 3 consecutive failures it raises an alert, and after 2 successes it resolves it.
 2. Each Gatus alert is posted to Healthchecks as one check per service, named `gatus-<service>`, created on the first failure.
 3. Healthchecks sends each alert to your admin email, to the ntfy channel when it is set, and to the channels added in its own interface.
-4. Scheduled jobs (backup, offsite copy, nightly maintenance, restart probe) ping Healthchecks as they run. A missed ping is itself the alert.
+4. Scheduled jobs (backup, offsite copy, nightly maintenance, restart probe, off-site heartbeat) ping Healthchecks as they run. A missed ping is itself the alert. The checks of the backup, the offsite copy and the off-site heartbeat follow the schedules of the jobs that report to them; while none of those jobs is turned on, the check is paused, so it never goes late.
 5. Beszel watches the server with rules created once and never overwritten: status (agent silent) for 5 minutes, CPU at 90% for 10 minutes, memory at 90% for 10 minutes, disk at 85% for 10 minutes. Its alerts go through Healthchecks, so they reach the same channels.
 
 ## Add notification channels in Healthchecks
@@ -55,7 +52,7 @@ You can change the subdomain names in [Domain and Cloudflare](/en/configuration/
 
 ## Troubleshooting
 
-- A job shows late or down in Healthchecks: the schedule is off or the job failed. Check [Schedules](/en/configuration/schedules/) and the **Log**.
+- A job shows late or down in Healthchecks: the job failed, or did not run at its schedule. Check the **Log** and [Schedules](/en/configuration/schedules/).
 - No alert email arrived: **Outgoing mail** is set to **No outgoing mail**, your admin email channel was detached from that check in Healthchecks, or the mail went to the spam folder.
 - No notification on another channel: that channel is not attached to the check. Attach it as above.
 - ntfy messages never arrive: both ntfy fields must be set, and the topic must match on the receiving side.
