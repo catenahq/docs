@@ -96,7 +96,7 @@ Après quelques minutes, la section **Accès au serveur Catena** affiche trois s
 | Clé de vérification du journal | Prouve que le journal des actions administratives du serveur n'a pas été modifié. Affichée une seule fois, à la première installation seulement. |
 
 :::caution
-Ces valeurs ne s'affichent qu'une fois et Catena n'en garde aucune autre copie. Elles se conservent dans un gestionnaire de mots de passe avant de fermer la page.
+Ces valeurs ne s'affichent qu'une fois et Catena n'en garde aucune autre copie. Elles doivent être sauvegardées dans un gestionnaire de mots de passe avant de fermer la page.
 :::
 
 ### Mode console

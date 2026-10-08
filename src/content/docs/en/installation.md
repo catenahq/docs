@@ -96,7 +96,7 @@ A few minutes in, the **Catena server access** section shows three secrets, and 
 | Journal verification key | Proves the server's log of administrative actions was not altered. Shown once, on the first install only. |
 
 :::caution
-These values are shown once and Catena keeps no other copy. They are saved in a password manager before the page is closed.
+These values are shown once and Catena keeps no other copy. They must be saved in a password manager before the page is closed.
 :::
 
 ### Console mode
