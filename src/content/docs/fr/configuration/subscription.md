@@ -1,9 +1,9 @@
 ---
 title: "Abonnement"
-description: "Enregistrer la clé d'abonnement Polar, le sens de chaque état, le transfert d'une clé entre serveurs, et ce qui se verrouille ou continue de fonctionner à la fin d'un abonnement."
+description: "Enregistrer votre clé d'abonnement Polar, le sens de chaque état, le transfert d'une clé entre serveurs, et ce qui se verrouille ou continue de fonctionner à la fin de votre abonnement."
 ---
 
-Catena Communauté est gratuit et n'exige aucune clé. Catena Pro et Catena Business débloquent des fonctions supplémentaires du panneau d'administration grâce à une clé d'abonnement vendue par Polar. La clé s'enregistre dans **Paramètres** > **Abonnement**. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).
+Catena Communauté est gratuit et n'exige aucune clé. Catena Pro et Catena Business débloquent des fonctions supplémentaires du panneau d'administration grâce à une clé d'abonnement vendue par Polar. Vous enregistrez la clé dans **Paramètres** > **Abonnement**. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).
 
 ## Prérequis
 
@@ -12,8 +12,8 @@ Catena Communauté est gratuit et n'exige aucune clé. Catena Pro et Catena Busi
 
 ## Enregistrer la clé
 
-1. Ouvrir **Paramètres** et aller à **Abonnement**.
-2. Coller la clé dans **Clé d'abonnement** et appuyer sur **Enregistrer**.
+1. Ouvrez **Paramètres** et allez à **Abonnement**.
+2. Collez la clé dans **Clé d'abonnement** et appuyez sur **Enregistrer**.
 
 La clé est stockée sur le serveur et n'est jamais réaffichée. La section montre alors :
 
@@ -32,7 +32,7 @@ Un champ vide conserve la clé enregistrée. Une clé nouvelle ou renouvelée pr
 - "Enregistrée. La clé ne débloque aucune fonction payante sur ce serveur ; la raison figure ci-dessous."
 - "Enregistrée. La vérification auprès de Polar n'a pas abouti ; le serveur réessaie toutes les heures."
 
-La section renvoie aussi à **Gérer l'abonnement dans le portail client de Polar**, où se gèrent la clé elle-même et les activations par serveur.
+La section renvoie aussi à **Gérer l'abonnement dans le portail client de Polar**, où vous gérez la clé elle-même et les activations par serveur.
 
 ## Une clé, un serveur
 
@@ -40,8 +40,8 @@ Une clé n'est active que sur un serveur à la fois. L'activation est liée à l
 
 Pour déplacer une clé vers un autre serveur :
 
-1. Libérer la place tenue par l'ancien serveur dans le portail client.
-2. Enregistrer la clé sur le nouveau serveur, dans **Paramètres** > **Abonnement**.
+1. Libérez la place tenue par l'ancien serveur dans le portail client.
+2. Enregistrez la clé sur le nouveau serveur, dans **Paramètres** > **Abonnement**.
 
 L'ancien serveur l'apprend à sa prochaine vérification horaire : son état devient la phrase "Polar n'accorde pas cette clé" ci-dessous et ses fonctions payantes se verrouillent. Un déplacement fait avec [Restauration et migration](/fr/configuration/restore-and-migrate/) libère automatiquement l'ancienne place et active la clé sur le nouveau serveur.
 
@@ -58,15 +58,15 @@ La ligne **État** affiche l'une de ces phrases. Le texte entre accolades est re
 
 | Situation | Phrase | Que faire |
 |---|---|---|
-| Aucune clé | "Aucune clé d'abonnement n'est enregistrée. Les fonctions payantes sont désactivées." | Enregistrer une clé si les fonctions payantes sont voulues. |
-| En attente | "La clé est enregistrée et Polar n'a pas encore répondu à son sujet pour ce serveur. Les fonctions payantes restent désactivées jusqu'à sa réponse ; le serveur la demande toutes les heures, et l'enregistrement de la clé la demande aussitôt." | Attendre la prochaine vérification, ou enregistrer de nouveau la clé pour la demander aussitôt. |
+| Aucune clé | "Aucune clé d'abonnement n'est enregistrée. Les fonctions payantes sont désactivées." | Enregistrez une clé si vous voulez les fonctions payantes. |
+| En attente | "La clé est enregistrée et Polar n'a pas encore répondu à son sujet pour ce serveur. Les fonctions payantes restent désactivées jusqu'à sa réponse ; le serveur la demande toutes les heures, et l'enregistrement de la clé la demande aussitôt." | Attendez la prochaine vérification, ou enregistrez de nouveau la clé pour la demander aussitôt. |
 | Active | "Active. Polar a confirmé la clé sur ce serveur pour la dernière fois le {date}." | Rien. |
-| Délai de grâce | "Active pendant le délai de grâce : Polar est injoignable depuis le {date}. Les fonctions payantes restent activées jusqu'au {date}, et le serveur continue de vérifier toutes les heures." | Vérifier le réseau sortant et le DNS du serveur. |
-| Non accordée | "Polar n'accorde pas cette clé sur ce serveur : l'abonnement a été annulé ou n'a pas été renouvelé, la clé a été révoquée ou remplacée, ou l'activation de ce serveur a été libérée dans le portail client. Les fonctions payantes sont désactivées. Une fois l'abonnement actif, l'enregistrement de la clé l'active de nouveau ici." | Renouveler l'abonnement, ou enregistrer de nouveau la clé une fois l'abonnement actif. |
-| Refusée | "Polar a refusé d'activer cette clé sur ce serveur : elle est active sur un autre serveur (une clé n'est active que sur un serveur à la fois), ou elle est révoquée, désactivée ou expirée. Libérer l'autre activation dans le portail client de Polar, puis enregistrer de nouveau la clé ici, l'active sur ce serveur." | Libérer l'autre activation dans le portail, puis enregistrer de nouveau la clé. |
-| Aucune édition connue | "Polar accorde cette clé, mais elle n'appartient à aucune édition de Catena connue de ce panneau. Les fonctions payantes sont désactivées." | Vérifier dans le portail pour quel produit la clé a été émise. |
-| Injoignable | "Polar est injoignable depuis le {date}, au-delà du délai de grâce de 48 heures. Les fonctions payantes sont désactivées jusqu'à ce que Polar réponde de nouveau ; le serveur continue de vérifier toutes les heures." | Rétablir l'accès sortant vers Polar; les fonctions reviennent à la première vérification réussie. |
-| Horloge en retard | "L'horloge de ce serveur est en retard sur la date de sa dernière vérification de licence. Les fonctions payantes sont désactivées jusqu'à ce que l'heure soit de nouveau juste ; l'enregistrement de la clé les déverrouille alors aussitôt." | Corriger l'horloge du serveur, puis enregistrer la clé. |
+| Délai de grâce | "Active pendant le délai de grâce : Polar est injoignable depuis le {date}. Les fonctions payantes restent activées jusqu'au {date}, et le serveur continue de vérifier toutes les heures." | Vérifiez le réseau sortant et le DNS du serveur. |
+| Non accordée | "Polar n'accorde pas cette clé sur ce serveur : l'abonnement a été annulé ou n'a pas été renouvelé, la clé a été révoquée ou remplacée, ou l'activation de ce serveur a été libérée dans le portail client. Les fonctions payantes sont désactivées. Une fois l'abonnement actif, l'enregistrement de la clé l'active de nouveau ici." | Renouvelez l'abonnement, ou enregistrez de nouveau la clé une fois l'abonnement actif. |
+| Refusée | "Polar a refusé d'activer cette clé sur ce serveur : elle est active sur un autre serveur (une clé n'est active que sur un serveur à la fois), ou elle est révoquée, désactivée ou expirée. Libérer l'autre activation dans le portail client de Polar, puis enregistrer de nouveau la clé ici, l'active sur ce serveur." | Libérez l'autre activation dans le portail, puis enregistrez de nouveau la clé. |
+| Aucune édition connue | "Polar accorde cette clé, mais elle n'appartient à aucune édition de Catena connue de ce panneau. Les fonctions payantes sont désactivées." | Vérifiez dans le portail pour quel produit la clé a été émise. |
+| Injoignable | "Polar est injoignable depuis le {date}, au-delà du délai de grâce de 48 heures. Les fonctions payantes sont désactivées jusqu'à ce que Polar réponde de nouveau ; le serveur continue de vérifier toutes les heures." | Rétablissez l'accès sortant vers Polar; les fonctions reviennent à la première vérification réussie. |
+| Horloge en retard | "L'horloge de ce serveur est en retard sur la date de sa dernière vérification de licence. Les fonctions payantes sont désactivées jusqu'à ce que l'heure soit de nouveau juste ; l'enregistrement de la clé les déverrouille alors aussitôt." | Corrigez l'horloge du serveur, puis enregistrez la clé. |
 
 ## Ce qui se verrouille à la fin d'un abonnement, et ce qui ne se verrouille jamais
 
@@ -75,13 +75,13 @@ Quand Polar cesse d'accorder la clé, ou que le délai de grâce est écoulé :
 - Les panneaux payants deviennent des entrées grisées sous **Catena Pro** ou **Catena Business**. Chacune ouvre une explication de la fonction, de l'édition qui la comprend et un bouton **S'abonner**.
 - Tous les horaires sont désactivés, puisque l'activation d'un horaire exige une édition payante. Les choix enregistrés sont conservés et reviennent avec l'abonnement.
 - Les actions payantes sont refusées, et les domaines supplémentaires au-delà du domaine principal cessent d'être servis (ils restent enregistrés).
-- Une bannière sur chaque page d'administration mène à la section **Abonnement** et en donne la raison, une entrée s'ajoute au **Journal**, et un courriel part vers l'adresse de l'administrateur par le service de courriel configuré (en anglais puis en français). Sans service de courriel, la bannière et l'entrée du journal sont les seuls avis. Voir [Courriel sortant](/fr/configuration/email/).
+- Une bannière sur chaque page d'administration mène à la section **Abonnement** et en donne la raison, une entrée s'ajoute au **Journal**, et un courriel part vers votre adresse d'administrateur par le service de courriel configuré (en anglais puis en français). Sans service de courriel, la bannière et l'entrée du journal sont les seuls avis. Voir [Courriel sortant](/fr/configuration/email/).
 
 Ce qui ne se verrouille jamais : les applications et leurs données, les sauvegardes manuelles, les restaurations du serveur entier, les mises à jour lancées à la main, l'authentification unique et la supervision. Une clé absente, refusée ou non confirmée laisse le serveur sur Catena Communauté et n'empêche jamais une installation ni l'accès aux données.
 
 ## Dépannage
 
-- L'état reste "En attente" : vérifier que le serveur joint Polar en HTTPS, puis enregistrer de nouveau la clé pour la demander aussitôt.
-- "Refusée" juste après une reconstruction ou une restauration : la nouvelle machine est un autre serveur aux yeux de Polar. Libérer d'abord l'ancienne activation dans le portail client.
+- L'état reste "En attente" : vérifiez que le serveur joint Polar en HTTPS, puis enregistrez de nouveau la clé pour la demander aussitôt.
+- "Refusée" juste après une reconstruction ou une restauration : la nouvelle machine est un autre serveur aux yeux de Polar. Libérez d'abord l'ancienne activation dans le portail client.
 - Un panneau reste grisé après l'enregistrement : l'édition enregistrée ne le comprend pas. La ligne **Édition** indique ce que la clé accorde.
-- Une ligne **Activation sans réponse** s'affiche : une activation a atteint Polar mais sa réponse s'est perdue, de sorte que Polar peut tenir la place de ce serveur pour prise sans que le serveur le sache. Libérer l'activation de ce serveur, nommée d'après son domaine, dans le portail client de Polar, puis enregistrer de nouveau la clé.
+- Une ligne **Activation sans réponse** s'affiche : une activation a atteint Polar mais sa réponse s'est perdue, de sorte que Polar peut tenir la place de ce serveur pour prise sans que le serveur le sache. Libérez l'activation de ce serveur, nommée d'après son domaine, dans le portail client de Polar, puis enregistrez de nouveau la clé.

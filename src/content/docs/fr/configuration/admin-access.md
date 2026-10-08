@@ -3,9 +3,9 @@ title: "Accès administrateur et réseau privé"
 description: "Le réseau privé facultatif pour administrer le serveur, les identifiants qu'il exige, la fermeture du SSH public, la reconnexion au réseau et la connexion SSH au serveur."
 ---
 
-L'administration peut passer par un réseau privé (un tailnet) plutôt que par l'adresse publique. Le tailnet est facultatif : avec **Aucun réseau privé**, le SSH par clé sur l'adresse publique reste la voie d'accès. Le trafic web vers les applications n'a rien à voir avec cette section; il passe toujours par le tunnel Cloudflare, voir [Domaine et Cloudflare](/fr/configuration/domain/).
+Vous pouvez administrer le serveur par un réseau privé (un tailnet) plutôt que par l'adresse publique. Le tailnet est facultatif : avec **Aucun réseau privé**, le SSH par clé sur l'adresse publique reste la voie d'accès. Le trafic web vers les applications n'a rien à voir avec cette section; il passe toujours par le tunnel Cloudflare, voir [Domaine et Cloudflare](/fr/configuration/domain/).
 
-Le SSH du serveur est toujours par clé seulement, sans connexion root et sans mot de passe. Le port public 22 reste ouvert tant que **Fermer le SSH sur le port public 22** n'est pas coché, ce qui exige un tailnet fonctionnel.
+Le SSH du serveur est toujours par clé seulement, sans connexion root et sans mot de passe. Le port public 22 reste ouvert tant que vous ne cochez pas **Fermer le SSH sur le port public 22**, ce qui exige un tailnet fonctionnel.
 
 ## Choisir un plan de contrôle
 
@@ -45,7 +45,7 @@ L'une des deux clés est requise. Une clé de préauthentification statique doit
 
 ## Enregistrer et joindre
 
-Appuyer sur **Enregistrer** vérifie les réglages auprès du fournisseur avant de stocker quoi que ce soit. Un échec se lit "Réglages du réseau privé refusés, et rien n'a été enregistré : ..." suivi de la raison, par exemple que le client OAuth ne peut pas créer de clés sous les étiquettes, ne peut pas lire les appareils, ou que l'utilisateur Headscale n'existe pas. Quand la vérification passe, les valeurs sont stockées et le serveur se joint au réseau. La note indique : "Enregistré. Le serveur rejoint le réseau privé, et cette section en suit le déroulement. Le SSH public reste tel quel."
+Quand vous appuyez sur **Enregistrer**, le panneau vérifie les réglages auprès du fournisseur avant de stocker quoi que ce soit. Un échec se lit "Réglages du réseau privé refusés, et rien n'a été enregistré : ..." suivi de la raison, par exemple que le client OAuth ne peut pas créer de clés sous les étiquettes, ne peut pas lire les appareils, ou que l'utilisateur Headscale n'existe pas. Quand la vérification passe, les valeurs sont stockées et le serveur se joint au réseau. La note indique : "Enregistré. Le serveur rejoint le réseau privé, et cette section en suit le déroulement. Le SSH public reste tel quel."
 
 Un bloc d'état sous la section se rafraîchit toutes les 5 secondes :
 
@@ -54,7 +54,7 @@ Un bloc d'état sous la section se rafraîchit toutes les 5 secondes :
 - En cours : "Changement de l'accès à ce serveur en cours." La connexion de maintenance peut tomber pendant ce temps; l'opération se poursuit même si la page est fermée.
 - "Ce que le serveur a enregistré pendant cette tentative" contient le journal de la dernière tentative.
 - Après un échec : "La dernière tentative n'est pas allée au bout. Le port de maintenance a été laissé tel quel : rien n'a été fermé."
-- Si un autre changement est en cours, l'enregistrement indique que la jonction n'a pas démarré. Enregistrer de nouveau une fois l'autre changement terminé suffit.
+- Si un autre changement est en cours, l'enregistrement indique que la jonction n'a pas démarré. Vous n'avez qu'à enregistrer de nouveau une fois l'autre changement terminé.
 
 ## Fermer le SSH sur le port public 22
 
@@ -67,21 +67,21 @@ C'est le serveur, et non le panneau, qui décide si le port peut se fermer. Avan
 - la politique du tailnet permet à un tel appareil d'ouvrir le port TCP 22 sur le serveur;
 - le pare-feu du serveur laisse entrer le SSH par l'interface du tailnet.
 
-Un refus laisse le port 22 ouvert et la raison dans le journal de la tentative. En cas de succès, la note indique "Enregistré. Le SSH public se ferme une fois que le serveur a prouvé que le tailnet le joint, et cette section en suit le déroulement." Décocher la case rouvre le port ("Enregistré. Le SSH public se rouvre, et cette section en suit le déroulement.").
+Un refus laisse le port 22 ouvert et la raison dans le journal de la tentative. En cas de succès, la note indique "Enregistré. Le SSH public se ferme une fois que le serveur a prouvé que le tailnet le joint, et cette section en suit le déroulement." Si vous décochez de nouveau la case, le port se rouvre ("Enregistré. Le SSH public se rouvre, et cette section en suit le déroulement.").
 
 Si le tailnet reste inactif plus de 5 minutes après la fermeture, le serveur rouvre lui-même le port 22 pour que la clé sur le SSH public refonctionne.
 
 :::caution
-Avant de fermer, confirmer depuis un second appareil que le SSH par l'adresse du tailnet fonctionne. La nouvelle voie doit être éprouvée avant de retirer l'ancienne.
+Avant de fermer, confirmez depuis un second appareil que le SSH par l'adresse du tailnet fonctionne. Éprouvez la nouvelle voie avant de retirer l'ancienne.
 :::
 
 ## Rejoindre de nouveau le réseau privé
 
-Quand un fournisseur est défini et que le serveur a décroché du tailnet, ou que ses étiquettes ont changé, un formulaire apparaît : "Ce serveur n'est pas sur son réseau privé en ce moment. Le reconnecter avec une nouvelle clé l'y ramène, lorsqu'il en a décroché ou que ses étiquettes ont changé." Cocher "Je comprends que la connexion au réseau privé tombe un instant." puis appuyer sur **Rejoindre de nouveau le réseau privé**. Enregistrer d'abord les nouveaux identifiants du tailnet est la façon de prendre en compte un client OAuth ou une clé Headscale remplacés.
+Quand un fournisseur est défini et que le serveur a décroché du tailnet, ou que ses étiquettes ont changé, un formulaire apparaît : "Ce serveur n'est pas sur son réseau privé en ce moment. Le reconnecter avec une nouvelle clé l'y ramène, lorsqu'il en a décroché ou que ses étiquettes ont changé." Cochez "Je comprends que la connexion au réseau privé tombe un instant." puis appuyez sur **Rejoindre de nouveau le réseau privé**. Enregistrez d'abord les nouveaux identifiants du tailnet lorsque vous renouvelez ou remplacez le client OAuth ou la clé Headscale : c'est ainsi que le serveur les prend en compte.
 
 ## SSH vers le serveur en tant que ops
 
-Le compte d'administration est `ops`, atteint avec la clé SSH remise à l'installateur.
+Le compte d'administration est `ops`, que vous atteignez avec la clé SSH que vous avez remise à l'installateur.
 
 - Tant que le port public 22 est ouvert : `ssh ops@<ip-publique-du-serveur>`
 - Une fois fermé : `ssh ops@<ip-du-tailnet>`, depuis un appareil du même tailnet.
@@ -90,17 +90,17 @@ Le compte d'administration est `ops`, atteint avec la clé SSH remise à l'insta
 
 ### Ajouter une clé SSH pour ops
 
-Depuis une session existante en tant que `ops`, ajouter la nouvelle clé publique aux clés autorisées du compte :
+Depuis une session existante en tant que `ops`, ajoutez la nouvelle clé publique aux clés autorisées du compte :
 
 ```bash
 echo 'ssh-ed25519 AAAA... nom' >> ~/.ssh/authorized_keys
 ```
 
-Les lignes ajoutées à la main restent en place quand la configuration du serveur est appliquée de nouveau. Sans aucune session fonctionnelle, le mode de secours du fournisseur permet de monter le disque et d'ajouter la clé dans `/home/ops/.ssh/authorized_keys`.
+Les lignes que vous ajoutez à la main restent en place quand la configuration du serveur est appliquée de nouveau. Sans aucune session fonctionnelle, vous pouvez utiliser le mode de secours du fournisseur pour monter le disque et ajouter la clé dans `/home/ops/.ssh/authorized_keys`.
 
 ## Dépannage
 
 - "Tailscale refused the OAuth client" (message en anglais renvoyé par la vérification) : l'identifiant ou le secret du client est erroné, ou le client a été révoqué.
 - "The OAuth client cannot create keys tagged ..." : le client n'a pas la portée **Auth Keys** en écriture ou les étiquettes, ou les étiquettes ne sont pas déclarées dans la politique du tailnet.
-- La case de fermeture n'apparaît jamais : le tailnet n'est pas actif. Utiliser **Rejoindre de nouveau le réseau privé** et consulter le bloc d'état.
-- Le port public 22 s'est rouvert de lui-même : le tailnet est resté inactif plus de 5 minutes. Corriger le tailnet, puis fermer de nouveau.
+- La case de fermeture n'apparaît jamais : le tailnet n'est pas actif. Utilisez **Rejoindre de nouveau le réseau privé** et consultez le bloc d'état.
+- Le port public 22 s'est rouvert de lui-même : le tailnet est resté inactif plus de 5 minutes. Corrigez le tailnet, puis fermez de nouveau.

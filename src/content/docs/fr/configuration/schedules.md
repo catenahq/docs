@@ -3,7 +3,7 @@ title: "Horaires"
 description: "Les six tâches planifiées d'un serveur Catena, leurs heures par défaut, la syntaxe des horaires, la chaîne d'entretien nocturne et la conservation des sauvegardes."
 ---
 
-La page **Horaires** règle le moment où le serveur effectue ses tâches planifiées. Rien ne s'exécute selon un horaire tant que ce n'est pas activé ici. Chaque tâche reste aussi disponible à la main depuis la page **Actions**, dans toutes les éditions.
+La page **Horaires** règle le moment où le serveur effectue ses tâches planifiées. Rien ne s'exécute selon un horaire tant que vous ne l'activez pas ici. Vous pouvez aussi lancer chaque tâche à la main depuis la page **Actions**, dans toutes les éditions.
 
 ## Prérequis
 
@@ -14,7 +14,7 @@ Enregistrer une tâche activée sans abonnement actif est refusé avec le messag
 
 ## Les tâches
 
-Chaque tâche est livrée désactivée. L'heure indiquée est l'horaire prérempli, qui ne s'exécute qu'une fois la tâche activée.
+Chaque tâche est livrée désactivée. L'heure indiquée est l'horaire prérempli, qui ne s'exécute qu'une fois que vous avez activé la tâche.
 
 | Tâche | Horaire par défaut | Délai aléatoire | Rôle |
 |---|---|---|---|
@@ -52,7 +52,7 @@ Une sauvegarde configurée qui échoue, ou dont la vérification échoue, arrêt
 
 ## Syntaxe des horaires
 
-Un horaire est une expression de calendrier systemd, écrite dans le champ **Horaire** de chaque tâche. Formes courantes :
+Un horaire est une expression de calendrier systemd, que vous écrivez dans le champ **Horaire** de chaque tâche. Formes courantes :
 
 | Expression | Signification |
 |---|---|
@@ -66,13 +66,13 @@ La fréquence d'exécution d'une tâche n'a pas de limite. Le lien **Référence
 
 ### Outil de vérification
 
-Sous **Vérifier un horaire**, saisir une expression et appuyer sur **Vérifier**. Le panneau répond "Interprété comme : `<forme normalisée>`" et donne les trois prochaines exécutions, avant tout enregistrement. Chaque tâche a aussi son propre bouton **Vérifier** et une ligne **Prochaines exécutions** en lecture seule. Une expression invalide est refusée.
+Sous **Vérifier un horaire**, saisissez une expression et appuyez sur **Vérifier**. Le panneau répond "Interprété comme : `<forme normalisée>`" et donne les trois prochaines exécutions, avant tout enregistrement. Chaque tâche a aussi son propre bouton **Vérifier** et une ligne **Prochaines exécutions** en lecture seule. Une expression invalide est refusée.
 
 ## Activer une tâche
 
-1. Ouvrir **Horaires**.
-2. Dans la section de la tâche, modifier **Horaire** si la valeur par défaut ne convient pas, et cocher **Exécuter selon cet horaire**.
-3. Appuyer sur **Enregistrer les horaires**. La page confirme par "Horaires enregistrés et appliqués à ce serveur." Un refus affiche "Ce serveur n'a pas accepté l'horaire.", suivi de la raison.
+1. Ouvrez **Horaires**.
+2. Dans la section de la tâche, modifiez **Horaire** si la valeur par défaut ne convient pas, et cochez **Exécuter selon cet horaire**.
+3. Appuyez sur **Enregistrer les horaires**. La page confirme par "Horaires enregistrés et appliqués à ce serveur." Un refus affiche "Ce serveur n'a pas accepté l'horaire.", suivi de la raison.
 
 Lorsque rien n'est activé, la page avertit : "Aucune tâche n'est planifiée sur ce serveur, donc aucune sauvegarde ne sera faite. Activez l'horaire de sauvegarde ci-dessous."
 
@@ -98,7 +98,7 @@ Les minuteries sont désactivées et les tâches cessent de s'exécuter. Les hor
 
 | Symptôme | Cause et correctif |
 |---|---|
-| "Les horaires s'activent avec une licence Catena." | Aucun abonnement Catena Pro ou Catena Business actif. Vérifier **Paramètres** > **Abonnement**. |
-| "Ce serveur n'a pas accepté l'horaire." | La raison suit le message; le plus souvent, une expression qui ne s'interprète pas. Utiliser **Vérifier**. |
-| "Impossible de joindre ce serveur pour lire ou modifier l'horaire." | L'hôte n'a pas répondu; réessayer dans un instant. |
+| "Les horaires s'activent avec une licence Catena." | Aucun abonnement Catena Pro ou Catena Business actif. Vérifiez **Paramètres** > **Abonnement**. |
+| "Ce serveur n'a pas accepté l'horaire." | La raison suit le message; le plus souvent, une expression qui ne s'interprète pas. Utilisez **Vérifier**. |
+| "Impossible de joindre ce serveur pour lire ou modifier l'horaire." | L'hôte n'a pas répondu; réessayez dans un instant. |
 | Une tâche n'a pas démarré à l'heure réglée | Le délai aléatoire s'applique; une exécution manquée démarre au prochain démarrage. |

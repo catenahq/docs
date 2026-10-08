@@ -3,7 +3,7 @@ title: "Schedules"
 description: "The six scheduled jobs of a Catena server, their default times, the schedule syntax, the nightly maintenance chain, and backup retention."
 ---
 
-The **Schedules** page sets when the server does its scheduled work. Nothing runs on a schedule until it is turned on here. Every job also stays available by hand from the **Actions** page, in every edition.
+The **Schedules** page sets when the server does its scheduled work. Nothing runs on a schedule until you turn it on here. You can also run every job by hand from the **Actions** page, in every edition.
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ Saving an enabled job without an active subscription is refused with "scheduled 
 
 ## The jobs
 
-Every job ships switched off. The time shown is the pre-filled schedule, which runs only once the job is turned on.
+Every job ships switched off. The time shown is the pre-filled schedule, which runs only once you turn the job on.
 
 | Job | Default schedule | Randomised delay | What it does |
 |---|---|---|---|
@@ -52,7 +52,7 @@ A configured backup that fails, or fails its verification, therefore stops the c
 
 ## Schedule syntax
 
-A schedule is a systemd calendar expression, written in the **Schedule** field of each job. Common forms:
+A schedule is a systemd calendar expression, which you write in the **Schedule** field of each job. Common forms:
 
 | Expression | Meaning |
 |---|---|

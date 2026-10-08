@@ -3,9 +3,9 @@ title: "Admin access and tailnet"
 description: "The optional private network used to administer the server, the credentials it needs, closing public SSH, rejoining the network and connecting to the server over SSH."
 ---
 
-Administration can ride a private network (a tailnet) instead of the public address. The tailnet is optional: with **No private network**, key-only SSH on the public address stays the way in. Web traffic to the applications is unrelated to this section; it always uses the Cloudflare tunnel, see [Domain and Cloudflare](/en/configuration/domain/).
+You can administer the server over a private network (a tailnet) instead of the public address. The tailnet is optional: with **No private network**, key-only SSH on the public address stays the way in. Web traffic to the applications is unrelated to this section; it always uses the Cloudflare tunnel, see [Domain and Cloudflare](/en/configuration/domain/).
 
-SSH on the server is always key-only, with no root login and no passwords. Public port 22 stays open until **Close SSH on public port 22** is ticked, which needs a working tailnet.
+SSH on the server is always key-only, with no root login and no passwords. Public port 22 stays open until you tick **Close SSH on public port 22**, which needs a working tailnet.
 
 ## Choose a control plane
 
@@ -41,11 +41,11 @@ The OAuth client needs the **Auth Keys** write scope, with the tags used, and th
 | **Headscale pre-authentication key** | Optional. Used when no API key is stored; it is long-lived. |
 | **Private network tags** | Comma-separated, for example `tag:vps`. |
 
-One of the two keys is required. A static pre-authentication key has to be created with the same tags, because a node joining with a pre-authentication key takes the tags from the key. The Headscale server must be recent enough; an older one is refused with the minimum release named in the message.
+One of the two keys is required. You must create a static pre-authentication key with the same tags, because a node joining with a pre-authentication key takes the tags from the key. The Headscale server must be recent enough; an older one is refused with the minimum release named in the message.
 
 ## Save and join
 
-Pressing **Save** checks the settings with the provider before anything is stored. A failure reads "Private network settings refused, and nothing was saved: ..." followed by the reason, for example that the OAuth client cannot create keys under the tags, cannot read devices, or that the Headscale user does not exist. When the check passes, the values are stored and the server joins the network. The notice reads: "Saved. The server is joining the private network, and this section shows how it goes. Public SSH stays as it is."
+When you press **Save**, the panel checks the settings with the provider before anything is stored. A failure reads "Private network settings refused, and nothing was saved: ..." followed by the reason, for example that the OAuth client cannot create keys under the tags, cannot read devices, or that the Headscale user does not exist. When the check passes, the values are stored and the server joins the network. The notice reads: "Saved. The server is joining the private network, and this section shows how it goes. Public SSH stays as it is."
 
 A status block under the section polls every 5 seconds:
 
@@ -54,7 +54,7 @@ A status block under the section polls every 5 seconds:
 - While running: "Changing this server's access." The maintenance connection may drop meanwhile; the work continues even if the page is closed.
 - "What the server recorded during this attempt" holds the log of the last attempt.
 - After a failure: "The last attempt did not finish. The maintenance port was left as it was, so nothing was closed off."
-- If another change is running, the save reports that it did not start. Saving again once the other change finishes is enough.
+- If another change is running, the save reports that it did not start. You only need to save again once the other change finishes.
 
 ## Close SSH on public port 22
 
@@ -67,21 +67,21 @@ The server, not the panel, decides whether the port may close. Before closing it
 - the tailnet policy lets such a device open TCP port 22 on the server;
 - the server's own firewall lets SSH in over the tailnet interface.
 
-A refusal leaves port 22 open and the reason in the attempt log. On success the notice reads "Saved. Public SSH closes once the server has proven the tailnet reaches it, and this section follows it." Ticking the box off again reopens the port ("Saved. Public SSH is opening again, and this section follows it.").
+A refusal leaves port 22 open and the reason in the attempt log. On success the notice reads "Saved. Public SSH closes once the server has proven the tailnet reaches it, and this section follows it." If you untick the box again, the port reopens ("Saved. Public SSH is opening again, and this section follows it.").
 
 If the tailnet stays down for more than 5 minutes after closing, the server reopens port 22 on its own so the key over public SSH works again.
 
 :::caution
-Before closing, confirm from a second device that SSH over the tailnet address works. The tailnet should be proven before the old path is removed.
+Before you close it, confirm from a second device that SSH over the tailnet address works. Prove the tailnet before you remove the old path.
 :::
 
 ## Re-join the private network
 
-When a provider is set and the server has dropped off the tailnet, or its tags changed, a form appears: "This server is not on its private network right now. Signing it in again with a fresh key brings it back, for a server that dropped off it or whose tags changed." Tick "I understand that the private network connection drops for a moment." and press **Re-join the private network**. Saving new tailnet credentials first is how a rotated or replaced OAuth client or Headscale key is taken into use.
+When a provider is set and the server has dropped off the tailnet, or its tags changed, a form appears: "This server is not on its private network right now. Signing it in again with a fresh key brings it back, for a server that dropped off it or whose tags changed." Tick "I understand that the private network connection drops for a moment." and press **Re-join the private network**. Save new tailnet credentials first when you rotate or replace the OAuth client or Headscale key: that is how the server takes them into use.
 
 ## SSH to the server as ops
 
-The administration account is `ops`, reached with the SSH key given to the installer.
+The administration account is `ops`, which you reach with the SSH key you gave to the installer.
 
 - While public port 22 is open: `ssh ops@<server-public-ip>`
 - After it is closed: `ssh ops@<tailnet-ip>`, from a device on the same tailnet.
@@ -96,7 +96,7 @@ From an existing session as `ops`, append the new public key to the account's au
 echo 'ssh-ed25519 AAAA... name' >> ~/.ssh/authorized_keys
 ```
 
-Lines added by hand stay in place when the server's configuration is applied again. Without any working session, the provider's rescue mode can mount the disk and add the key to `/home/ops/.ssh/authorized_keys`.
+Lines you add by hand stay in place when the server's configuration is applied again. Without any working session, you can use the provider's rescue mode to mount the disk and add the key to `/home/ops/.ssh/authorized_keys`.
 
 ## Troubleshooting
 

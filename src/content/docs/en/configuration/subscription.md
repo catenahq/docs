@@ -1,9 +1,9 @@
 ---
 title: "Subscription"
-description: "Saving the Polar subscription key, what each status means, how a key moves between servers, and what locks or keeps working when a subscription lapses."
+description: "Saving your Polar subscription key, what each status means, how a key moves between servers, and what locks or keeps working when your subscription lapses."
 ---
 
-Catena Community is free and needs no key. Catena Pro and Catena Business unlock additional admin panel features with a subscription key sold through Polar. The key is saved in **Settings** > **Subscription**. The editions are compared at [catena.run](https://catena.run/en/#pricing).
+Catena Community is free and needs no key. Catena Pro and Catena Business unlock additional admin panel features with a subscription key sold through Polar. You save the key in **Settings** > **Subscription**. The editions are compared at [catena.run](https://catena.run/en/#pricing).
 
 ## Prerequisites
 
@@ -32,7 +32,7 @@ A blank field keeps the saved key. A new or renewed key takes effect as soon as 
 - "Saved. The key unlocks no paid feature on this server; the reason is below."
 - "Saved. The check with Polar did not finish; the server asks again every hour."
 
-The section also links to **Manage the subscription in Polar's customer portal**, where the key itself and the server activations are managed.
+The section also links to **Manage the subscription in Polar's customer portal**, where you manage the key itself and the server activations.
 
 ## One server per key
 
@@ -58,7 +58,7 @@ The **Status** line shows one of these. Text in braces is filled in with a date.
 
 | Situation | Sentence | What to do |
 |---|---|---|
-| No key | "No subscription key is saved. The paid features are off." | Save a key if paid features are wanted. |
+| No key | "No subscription key is saved. The paid features are off." | Save a key if you want paid features. |
 | Waiting | "The key is saved and Polar has not answered about it for this server yet. The paid features stay off until it does; the server asks every hour, and saving the key asks at once." | Wait for the next check, or save the key again to ask at once. |
 | Active | "Active. Polar last confirmed the key on this server at {date}." | Nothing. |
 | Grace | "Active within the grace period: Polar has not been reachable since {date}. The paid features stay on until {date}, and the server keeps asking every hour." | Check the server's outbound network and DNS. |
@@ -75,7 +75,7 @@ When Polar stops granting the key, or the grace period ends:
 - The paid panels turn into greyed entries under **Catena Pro** or **Catena Business**. Each opens an explanation of the feature, the edition that includes it and a **Subscribe** button.
 - Every schedule is turned off, since turning one on needs a paid edition. The saved choices are kept and return with the subscription.
 - Paid actions are refused, and extra domains beyond the primary one stop being served (they stay stored).
-- A banner on every admin page links to the **Subscription** section with the reason, one entry is added to the **Log**, and one email goes to the admin address through the configured mail service (English then French). With no mail service set, the banner and the log entry are the only notices. See [Outgoing email](/en/configuration/email/).
+- A banner on every admin page links to the **Subscription** section with the reason, one entry is added to the **Log**, and one email goes to your admin address through the mail service you configured (English then French). With no mail service set, the banner and the log entry are the only notices. See [Outgoing email](/en/configuration/email/).
 
 What never locks: applications and their data, manual backups, whole-server restores, updates started by hand, single sign-on and monitoring. A missing, refused or unconfirmed key leaves the server on Catena Community and never blocks an installation or access to data.
 
