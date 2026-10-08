@@ -56,9 +56,9 @@ The same **Apply** repairs a leaked or broken tunnel: pressing it with the domai
 | **Portainer (application manager)** | Portainer | `portainer` | `portainer.yourdomain.com` |
 | **Keycloak (sign-in)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (this panel)** | This panel | `dash` | `dash.yourdomain.com` |
-| **Gatus (status page)** | Gatus | `monitor` | `monitor.yourdomain.com` |
-| **Healthchecks (scheduled-job monitor)** | Healthchecks | `heartbeat` | `heartbeat.yourdomain.com` |
-| **Beszel (server metrics)** | Beszel | `hub` | `hub.yourdomain.com` |
+| **Gatus (status page)** | Gatus | `gatus` | `gatus.yourdomain.com` |
+| **Healthchecks (scheduled-job monitor)** | Healthchecks | `healthchecks` | `healthchecks.yourdomain.com` |
+| **Beszel (server metrics)** | Beszel | `beszel` | `beszel.yourdomain.com` |
 
 Rules:
 

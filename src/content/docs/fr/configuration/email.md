@@ -8,7 +8,9 @@ Tout ce qui, sur le serveur, envoie du courriel automatisé passe par un seul se
 ## Ce qui en dépend
 
 - Les courriels de réinitialisation de mot de passe et les invitations du service de connexion (Keycloak). Voir [Connexion et personnes](/fr/configuration/sign-in-and-people/).
-- Les courriels d'alerte, comme les alertes sur les ressources du serveur. Voir [Alertes](/fr/configuration/alerts/).
+- Les alertes de surveillance envoyées au courriel de l'administrateur : une tâche planifiée comme la sauvegarde en retard ou en échec, un service qui ne répond plus, un serveur qui manque d'espace disque, de mémoire ou de processeur. Voir [Alertes](/fr/configuration/alerts/).
+- Les alertes du moniteur de ressources envoyées aux autres adresses qui y sont ajoutées.
+- Les courriels des sites WordPress déployés depuis le catalogue, comme les formulaires de contact.
 - Le courriel unique envoyé à l'administrateur quand un abonnement payant se verrouille. Voir [Abonnement](/fr/configuration/subscription/).
 
 Une application de messagerie déployée sur le serveur (un serveur de courriel) garde ses propres réglages, distincts; cette section ne la configure pas.
@@ -24,7 +26,7 @@ Dans **Paramètres** > **Courriel sortant**, **Envoyer le courriel par** propose
 
 | Option | Sens |
 |---|---|
-| **Aucun courriel sortant** | Le courriel est désactivé. Cela désactive aussi les courriels de réinitialisation de mot de passe. |
+| **Aucun courriel sortant** | Le courriel est désactivé. Cela désactive aussi les courriels de réinitialisation de mot de passe et les courriels d'alerte. |
 | **Resend (clé d'API)** | Resend connaît son propre hôte et son port. |
 | **Brevo (clé d'API)** | Brevo connaît son propre hôte et son port. |
 | **Serveur SMTP personnalisé** | N'importe quel relais SMTP. |
@@ -40,6 +42,8 @@ Seuls les champs dont l'option choisie a besoin sont affichés :
 | **Clé d'API ou mot de passe** | oui | oui | oui |
 
 Le secret est stocké et jamais réaffiché; un champ vide le conserve. Le choix du service est la seule valeur que le panneau valide ("Choisissez l'une des options proposées."). La section se termine par **Enregistrer et appliquer** : les services qui expédient du courriel redémarrent brièvement.
+
+Cette section est le seul endroit où vivent les réglages de courriel du serveur. Les réglages de courriel propres au service de connexion (dans la console d'administration de Keycloak) sont écrasés à partir d'elle chaque fois que la configuration du serveur est appliquée : une modification faite là-bas ne dure pas.
 
 ## Étapes côté compte
 
@@ -62,7 +66,7 @@ Saisir l'hôte et le port du relais, son nom d'utilisateur et son mot de passe, 
 
 ## Vérifier le fonctionnement
 
-Après l'enregistrement, le lien de mot de passe oublié de la page de connexion, sur `auth.yourdomain.com`, envoie un courriel de réinitialisation à un compte existant. Si rien n'arrive, vérifier le dossier des pourriels, puis l'état de vérification du domaine d'envoi chez le fournisseur.
+Après l'enregistrement, le lien de mot de passe oublié de la page de connexion, sur `auth.yourdomain.com`, envoie un courriel de réinitialisation à un compte existant. Si rien n'arrive, vérifier le dossier des pourriels, puis l'état de vérification du domaine d'envoi chez le fournisseur. Le bouton **Test** de l'intégration de courriel de l'administrateur dans Healthchecks (`healthchecks.yourdomain.com` > **Integrations**) envoie une alerte d'essai.
 
 ## Dépannage
 

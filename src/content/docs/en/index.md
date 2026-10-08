@@ -31,9 +31,9 @@ Once a domain is applied, each service answers on its own subdomain of `yourdoma
 | `auth.yourdomain.com` | Keycloak sign-in |
 | `dash.yourdomain.com` | The admin panel |
 | `portainer.yourdomain.com` | Portainer |
-| `monitor.yourdomain.com` | Gatus status page |
-| `heartbeat.yourdomain.com` | Healthchecks |
-| `hub.yourdomain.com` | Beszel resource graphs |
+| `gatus.yourdomain.com` | Gatus status page |
+| `healthchecks.yourdomain.com` | Healthchecks |
+| `beszel.yourdomain.com` | Beszel resource graphs |
 | `turn.yourdomain.com` | Relay for audio and video calls (not a web page) |
 
 Each name can be changed in **Settings** > **Infrastructure app subdomains**. Until a domain is applied, nothing is published and the panel is reached through an SSH forward (see [Installation](/en/installation/)).

@@ -56,9 +56,9 @@ Le même bouton **Appliquer** répare un tunnel compromis ou défaillant : l'act
 | **Portainer (gestionnaire d'applications)** | Portainer | `portainer` | `portainer.yourdomain.com` |
 | **Keycloak (connexion)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (ce panneau)** | Ce panneau | `dash` | `dash.yourdomain.com` |
-| **Gatus (page d'état)** | Gatus | `monitor` | `monitor.yourdomain.com` |
-| **Healthchecks (moniteur de tâches planifiées)** | Healthchecks | `heartbeat` | `heartbeat.yourdomain.com` |
-| **Beszel (mesures du serveur)** | Beszel | `hub` | `hub.yourdomain.com` |
+| **Gatus (page d'état)** | Gatus | `gatus` | `gatus.yourdomain.com` |
+| **Healthchecks (moniteur de tâches planifiées)** | Healthchecks | `healthchecks` | `healthchecks.yourdomain.com` |
+| **Beszel (mesures du serveur)** | Beszel | `beszel` | `beszel.yourdomain.com` |
 
 Règles :
 

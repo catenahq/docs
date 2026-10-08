@@ -31,9 +31,9 @@ Une fois un domaine appliqué, chaque service répond sur son propre sous-domain
 | `auth.yourdomain.com` | Connexion Keycloak |
 | `dash.yourdomain.com` | Le panneau d'administration |
 | `portainer.yourdomain.com` | Portainer |
-| `monitor.yourdomain.com` | Page d'état Gatus |
-| `heartbeat.yourdomain.com` | Healthchecks |
-| `hub.yourdomain.com` | Graphiques de ressources Beszel |
+| `gatus.yourdomain.com` | Page d'état Gatus |
+| `healthchecks.yourdomain.com` | Healthchecks |
+| `beszel.yourdomain.com` | Graphiques de ressources Beszel |
 | `turn.yourdomain.com` | Relais des appels audio et vidéo (pas une page web) |
 
 Chaque nom se change dans **Paramètres** > **Sous-domaines des applications d'infrastructure**. Tant qu'aucun domaine n'est appliqué, rien n'est publié et le panneau s'atteint par un transfert de port SSH (voir [Installation](/fr/installation/)).

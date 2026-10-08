@@ -8,7 +8,9 @@ Everything on the server that sends automated email goes through one outside mai
 ## What uses it
 
 - Password-reset emails and invitations from the sign-in service (Keycloak). See [Sign-in and people](/en/configuration/sign-in-and-people/).
-- Alert emails, such as server-resource alerts. See [Alerts](/en/configuration/alerts/).
+- Monitoring alerts to the admin email: a scheduled job such as the backup late or failed, a service that stops answering, the server short of disk, memory or processor. See [Alerts](/en/configuration/alerts/).
+- Alerts from the resource monitor to other addresses added in it.
+- Email from WordPress sites deployed from the catalog, such as contact forms.
 - The one-time email sent to the admin when a paid subscription locks. See [Subscription](/en/configuration/subscription/).
 
 A mailbox application deployed on the server (a mail server app) keeps its own separate settings; this section does not configure it.
@@ -24,7 +26,7 @@ In **Settings** > **Outgoing mail**, **Send mail through** offers:
 
 | Option | Meaning |
 |---|---|
-| **No outgoing mail** | Mail is off. This also turns off password-reset email. |
+| **No outgoing mail** | Mail is off. This also turns off password-reset email and alert email. |
 | **Resend (API key)** | Resend knows its own host and port. |
 | **Brevo (API key)** | Brevo knows its own host and port. |
 | **Custom SMTP server** | Any SMTP relay. |
@@ -40,6 +42,8 @@ Only the fields the chosen option needs are shown:
 | **API key or password** | yes | yes | yes |
 
 The secret is stored and never shown again; a blank field keeps it. The provider choice is the only value the panel validates ("Choose one of the options offered."). The section ends with **Save and apply**: the services that send mail restart briefly.
+
+This section is the one place the server's mail settings live. The sign-in service's own Email settings (in the Keycloak admin console) are overwritten from it each time the server's configuration is applied, so a change made there does not last.
 
 ## Account-side steps
 
@@ -62,7 +66,7 @@ Enter the relay's host and port, its username and password, and a sender address
 
 ## Check that it works
 
-After saving, **Forgot password** on the sign-in page at `auth.yourdomain.com` sends a reset email to an existing account. If nothing arrives, check the spam folder, then the sender domain's verification state at the provider.
+After saving, **Forgot password** on the sign-in page at `auth.yourdomain.com` sends a reset email to an existing account. If nothing arrives, check the spam folder, then the sender domain's verification state at the provider. The **Test** button of the admin email integration in Healthchecks (`healthchecks.yourdomain.com` > **Integrations**) sends a test alert.
 
 ## Troubleshooting
 
