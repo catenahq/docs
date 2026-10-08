@@ -1,19 +1,19 @@
 ---
 title: "Domain and Cloudflare"
-description: "Connecting the server to a Cloudflare domain: the API token and its permissions, applying the domain, renaming the infrastructure subdomains and attaching extra domains."
+description: "Connecting your server to a Cloudflare domain: the API token and its permissions, applying the domain, renaming the infrastructure subdomains and attaching extra domains."
 ---
 
-Every public address of the server is a name under one domain, served through a Cloudflare tunnel. Until a domain is applied the server runs without public addresses, and the panel stays reachable through the SSH forward described in [Installation](/en/installation/).
+Every public address of the server is a name under one domain, served through a Cloudflare tunnel. Until you apply a domain, the server runs without public addresses, and you reach the panel through the SSH forward described in [Installation](/en/installation/).
 
 ## Prerequisites
 
-- A Cloudflare account, with the domain added to Cloudflare and using Cloudflare's name servers (the free plan is enough).
+- A Cloudflare account, with your domain added to Cloudflare and using Cloudflare's name servers (the free plan is enough).
 - A Cloudflare API token with the permissions below.
 - The panel open on **Settings** > **Domain**.
 
 ## The API token
 
-The token is created in the Cloudflare dashboard (API tokens) and must be active. The tunnel and DNS records are managed with it, so it needs, on the target zone:
+You create the token in the Cloudflare dashboard (API tokens), and it must be active. The server manages the tunnel and DNS records with it, so it needs, on the target zone:
 
 - **Zone:DNS:Edit**
 - **Account:Cloudflare Tunnel:Edit**
@@ -21,21 +21,21 @@ The token is created in the Cloudflare dashboard (API tokens) and must be active
 The panel checks the token with Cloudflare before storing anything: it must verify as active and must reach at least one domain. A domain the token cannot reach is not offered.
 
 :::note
-Community attaches a single domain. A token that reaches several domains lists them all, and one is chosen. Scoping the token to the one domain keeps its reach minimal.
+Community attaches a single domain. A token that reaches several domains lists them all, and you choose one. Scope the token to the one domain to keep its reach minimal.
 :::
 
 ## Apply a domain
 
 1. Open **Settings** > **Domain**.
-2. Paste the token in **Cloudflare API token**. As soon as it is typed, the domains it reaches fill the list. Until then the list reads "Enter a Cloudflare API token to list its domains".
+2. Paste the token in **Cloudflare API token**. As soon as you type it, the domains it reaches fill the list. Until then the list reads "Enter a Cloudflare API token to list its domains".
 3. Choose the domain in **Domain**.
 4. Read the warning, then press **Apply**.
 
-When a token is already stored, the field can stay blank: the stored token is used.
+When a token is already stored, you can leave the field blank: the stored token is used.
 
 The warning reads: "Applying replaces this server's Cloudflare tunnel with a new one: the current tunnel is dropped, and the applications are unavailable for a few minutes while the server is brought up to date under the domain." Applying stores the token and the domain, replaces the tunnel and then runs a full configuration of the server. The section follows the progress: "Applying the domain: the tunnel is being replaced, then the server is brought up to date under it. The public addresses are unreachable for a few minutes, and this section follows the progress."
 
-The same **Apply** repairs a leaked or broken tunnel: pressing it with the domain already in use creates a fresh tunnel and drops the old one.
+The same **Apply** repairs a leaked or broken tunnel: press it with the domain already in use to create a fresh tunnel and drop the old one.
 
 ### Messages
 
@@ -64,10 +64,10 @@ Rules:
 
 - One name per field, without the domain: `auth`, not `auth.yourdomain.com`. The message otherwise is "One name only, such as auth: the domain is added to it."
 - Lower-case letters, digits and hyphens; no leading or trailing hyphen; 63 characters at most.
-- A blank field keeps the name in use. To return to a default, the default name is typed.
+- A blank field keeps the name in use. To return to a default, type the default name.
 - The section ends with **Save and apply**: the server is brought up to date and the services behind the renamed addresses restart briefly.
 
-When the panel's own name changes, **Server configuration** shows "This dashboard moves to a new address once the configuration is applied. It opens there on its own as soon as the new address answers; until then, the address is:" followed by the old address. Bookmarks to the old address stop working.
+When the panel's own name changes, **Server configuration** shows "This dashboard moves to a new address once the configuration is applied. It opens there on its own as soon as the new address answers; until then, the address is:" followed by the old address. Your bookmarks to the old address stop working.
 
 ## Extra domains
 
