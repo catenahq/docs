@@ -15,7 +15,7 @@ All web traffic reaches the server through an encrypted Cloudflare tunnel, so no
 
 **Public SSH.** SSH is always key-only: no root login and no passwords. Port 22 stays open until you tick **Close SSH on public port 22**, which is offered only while the tailnet is up. If the tailnet then stays down for more than 5 minutes, the host reopens the port, so a broken tailnet cannot lock you out.
 
-**Port reconciliation.** The firewall denies everything by default. Ports are declared by the platform or by an app (the `vps.expose.*` labels, see [Configure an app for Catena](/en/configure-apps/)), and a reconciler merges them into the firewall rules every 5 minutes. Besides SSH, only the call relay (UDP) and ports that apps declare, such as mail, are open publicly. A validation pass checks that each service answers where expected, on the server and through the private network, and an external scan from the installer's computer confirms that nothing undeclared is reachable.
+**Port reconciliation.** The firewall denies everything by default. Ports are declared by the platform or by an app (the `vps.expose.*` labels, see [Configure an app for Catena](/en/configure-apps/)), and a reconciler merges them into the firewall rules every 5 minutes. Besides SSH, only the call relay (UDP) and ports that apps declare, such as mail, are open publicly. A validation pass checks that each service answers where expected, on the server and through the private network, and an external scan from your admin computer confirms that nothing undeclared is reachable.
 
 **Calls.** The relay answers on `turn.yourdomain.com`. It is a UDP relay, not a web page.
 
