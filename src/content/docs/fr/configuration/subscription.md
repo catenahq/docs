@@ -22,6 +22,7 @@ La clé est stockée sur le serveur et n'est jamais réaffichée. La section mon
 | **Clé enregistrée** | Une courte empreinte de la clé et le nom du titulaire de la licence. |
 | **Édition** | Catena Communauté, Catena Pro ou Catena Business. |
 | **État** | L'une des phrases ci-dessous. |
+| **Activation sans réponse** | Affichée seulement quand une activation envoyée à Polar est restée sans réponse : Polar peut détenir pour ce serveur une activation dont le serveur n'a jamais eu connaissance (voir [Dépannage](#dépannage)). |
 | **Dernière erreur** | La raison, quand la dernière vérification n'a obtenu aucune réponse de Polar ou que les fichiers du serveur n'ont pu être lus. |
 
 Un champ vide conserve la clé enregistrée. Une clé nouvelle ou renouvelée prend effet dès son enregistrement, sans attendre la vérification horaire. L'enregistrement interroge Polar aussitôt (la requête cesse d'attendre après 60 secondes) et donne l'un de quatre résultats :
@@ -83,3 +84,4 @@ Ce qui ne se verrouille jamais : les applications et leurs données, les sauvega
 - L'état reste "En attente" : vérifier que le serveur joint Polar en HTTPS, puis enregistrer de nouveau la clé pour la demander aussitôt.
 - "Refusée" juste après une reconstruction ou une restauration : la nouvelle machine est un autre serveur aux yeux de Polar. Libérer d'abord l'ancienne activation dans le portail client.
 - Un panneau reste grisé après l'enregistrement : l'édition enregistrée ne le comprend pas. La ligne **Édition** indique ce que la clé accorde.
+- Une ligne **Activation sans réponse** s'affiche : une activation a atteint Polar mais sa réponse s'est perdue, de sorte que Polar peut tenir la place de ce serveur pour prise sans que le serveur le sache. Libérer l'activation de ce serveur, nommée d'après son domaine, dans le portail client de Polar, puis enregistrer de nouveau la clé.

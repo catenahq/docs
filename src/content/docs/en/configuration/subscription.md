@@ -22,6 +22,7 @@ The key is stored on the server and never shown again. The section then shows:
 | **Saved key** | A short fingerprint of the key and the licensee name. |
 | **Edition** | Catena Community, Catena Pro or Catena Business. |
 | **Status** | One of the sentences below. |
+| **Unanswered activation** | Shown only when an activation sent to Polar got no answer: Polar may hold an activation for this server that the server never learned of (see [Troubleshooting](#troubleshooting)). |
 | **Last error** | The reason, when the last check got no answer from Polar or the server's own files could not be read. |
 
 A blank field keeps the saved key. A new or renewed key takes effect as soon as it is saved, without waiting for the hourly check. Saving asks Polar at once (the request stops waiting after 60 seconds) and reports one of four results:
@@ -83,3 +84,4 @@ What never locks: applications and their data, manual backups, whole-server rest
 - The status stays on "Waiting": check that the server can reach Polar over HTTPS, then save the key again to ask at once.
 - "Refused" right after a rebuild or restore: the new machine is a different server to Polar. Free the old activation in the customer portal first.
 - A panel is still greyed after saving: the saved edition does not include it. The **Edition** line shows what the key grants.
+- An **Unanswered activation** line is shown: an activation reached Polar but its answer was lost, so Polar may count this server's seat as taken while the server does not know it. Free this server's activation, labelled with its domain, in Polar's customer portal, then save the key again.
