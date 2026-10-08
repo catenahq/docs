@@ -137,3 +137,4 @@ After a completed move the old server is stopped, not erased. Its data and backu
 | "A move is already running on this server." | Wait for it, or use **Forget this move** if it is unfinished. |
 | "The move could not be started." | The request was not accepted. Check the address (an IP address, not a name) and the pairing code, and that the window is open on the old server. |
 | "The credentials were refused." | The repository details were not accepted. Check them against the recovery keyset. |
+| Log: the restore left `<app>` stopped | The backup was taken while its saved definition named an image its services did not run. Set the definition to the versions the services ran and deploy it from Portainer. |

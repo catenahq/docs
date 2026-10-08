@@ -137,3 +137,4 @@ Après un déplacement terminé, l'ancien serveur est arrêté, pas effacé. Ses
 | "Un déplacement est déjà en cours sur ce serveur." | Attendre sa fin, ou utiliser **Oublier ce déplacement** s'il est inachevé. |
 | "Le déplacement n'a pas pu être lancé." | La demande n'a pas été acceptée. Vérifier l'adresse (une adresse IP, pas un nom) et le code d'appairage, ainsi que l'ouverture de la fenêtre sur l'ancien serveur. |
 | "Les identifiants ont été refusés." | Les détails du dépôt n'ont pas été acceptés. Les comparer à la trousse de reprise. |
+| Journal : la restauration a laissé `<application>` arrêté | La sauvegarde a été prise alors que sa définition nommait une image que ses services n'exécutaient pas. Régler la définition sur les versions qu'exécutaient les services, puis la déployer depuis Portainer. |

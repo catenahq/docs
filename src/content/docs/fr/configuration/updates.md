@@ -116,6 +116,9 @@ La page **Journal** consigne chaque décision de mise à jour, notamment :
 | Redémarrage du serveur pendant la maintenance nocturne, ou redémarrage qui ne s'est pas déroulé comme prévu. |
 | Avis de sécurité signalés dans les paquets de l'hôte ou les images d'application, puis corrigés. |
 | Aucune sauvegarde n'est configurée; les mises à jour nocturnes s'appliquent sans sauvegarde. |
+| La mise à jour de `<application>` n'a pas pu être enregistrée, ou son retour arrière n'a pas pu être effacé; la remise à niveau du serveur pourrait donc en changer la version. |
+| La définition de `<application>` enregistrée dans Portainer nomme une image qu'aucun de ses services n'exécute; `<application>` ne reçoit ni mise à jour automatique, ni changement de paramètres, ni restauration à partir de cette définition tant qu'elles ne concordent pas. |
+| La mise à jour nocturne laisse `<application>` de côté : son dernier déploiement a échoué et un service ne fonctionne pas. |
 
 ## Mettre à jour une application avec Communauté
 
@@ -136,3 +139,5 @@ Une sauvegarde préalable est conseillée (**Actions** > **Sauvegardes** > **Lan
 | "La dernière tentative n'a pas abouti." sous **Version du panneau de contrôle** | La mise à jour a été remise en arrière. Lire le journal de la section, puis réessayer. |
 | La bannière de redémarrage reste affichée | Redémarrer depuis **Système** > **Redémarrage**, ou laisser l'entretien nocturne s'en charger. |
 | La liste de versions est remplacée par une zone de texte | Le registre n'a pas pu être joint; saisir la version. |
+| La définition d'une application nomme une autre image | Dans Portainer, ouvrir **Stacks**, sélectionner l'application, régler chaque `image:` sur ce qu'exécutent ses services, puis déployer. |
+| La mise à jour nocturne laisse une application de côté | Corriger le service arrêté, puis redéployer l'application depuis Portainer. |

@@ -116,6 +116,9 @@ The **Log** page records every update decision, among them:
 | Host restarted during the nightly maintenance, or the restart did not go as expected. |
 | Security advisories flagged in host packages or application images, and cleared. |
 | No backup is configured; nightly updates run without one. |
+| An update of `<app>` could not be recorded, or its rollback could not be cleared, so bringing the server up to date may change its version. |
+| Portainer's saved definition of `<app>` names an image none of its services runs; `<app>` gets no automatic update, settings change or restore from it until they agree. |
+| The nightly update leaves `<app>` alone: its last deployment failed and a service is not running. |
 
 ## Community: update an application
 
@@ -136,3 +139,5 @@ A backup beforehand is advised (**Actions** > **Backups** > **Trigger backup now
 | "The last attempt did not finish." under **Control panel version** | The update was put back. Read the log in the section, then retry. |
 | The restart banner stays | Restart from **System** > **Restart**, or let the nightly maintenance do it. |
 | The version list is replaced by a text box | The registry could not be reached; type the version. |
+| An application's saved definition names another image | In Portainer, open **Stacks**, select the application, set each `image:` to what its services run, and deploy. |
+| The nightly update leaves an application alone | Fix the service that is down, then redeploy the application from Portainer. |
