@@ -1,66 +1,54 @@
 ---
-title: Your VPS, your docs
-description: Public reference docs for the catena self-hosted software suite. Per-VPS specifics live in the client portal.
+title: "What is Catena?"
+description: "Catena is a software suite installed on a server the business owns: the apps a business runs on, plus the environment that keeps them reachable, signed-in, backed up, updated and monitored."
 ---
 
-These are the public reference docs for the catena software suite as
-deployed on your VPS. Every page applies to **every catena
-installation**; the per-installation specifics (your domain names,
-your inventory hostname, your S3 bucket) are surfaced in the
-[client portal](https://app.catena.run).
+Catena is a software suite installed on a server the business owns. It brings two things together: the apps a business runs on (files, email, chat, booking, CRM and more), and the environment that keeps those apps reachable, signed-in, backed up, updated and monitored. Everything runs on the client's own server and accounts.
 
-If you are evaluating catena, start with
-[How this software suite works](/en/how-this-stack-works/) for the
-plain-language tour. If you are an existing client, your portal
-links into these docs in context for the operational tasks that come
-up day-to-day.
+## Who it is for
+
+Small and mid-size organizations that want to own the software they depend on, with an admin who is comfortable with SSH and Portainer. Catena is fully self-hosted: the admin owns and runs the server, and every task is done from the admin panel or with standard tools.
+
+## What is installed
+
+| Component | Role |
+|---|---|
+| Cloudflare tunnel | Carries all web traffic to the server, so no web port is open on the machine. |
+| Traefik | Routes each address to the right app. |
+| Keycloak | One sign-on for every app, with groups deciding who can open what. |
+| Portainer | Deploys and manages apps. |
+| catena-admin | The admin panel: status, actions, restore, schedules and settings. |
+| restic backups | Encrypted backups sent to S3 storage the client owns. |
+| Gatus, Healthchecks, Beszel | Status page, missed-job alarms, and server resource graphs. |
+| Tailnet (optional) | A private network for administration. |
+
+## Addresses the server publishes
+
+Once a domain is applied, each service answers on its own subdomain of `yourdomain.com`:
+
+| Subdomain | Service |
+|---|---|
+| `auth.yourdomain.com` | Keycloak sign-in |
+| `dash.yourdomain.com` | The admin panel |
+| `portainer.yourdomain.com` | Portainer |
+| `monitor.yourdomain.com` | Gatus status page |
+| `heartbeat.yourdomain.com` | Healthchecks |
+| `hub.yourdomain.com` | Beszel resource graphs |
+| `turn.yourdomain.com` | Relay for audio and video calls (not a web page) |
+
+Each name can be changed in **Settings** > **Infrastructure app subdomains**. Until a domain is applied, nothing is published and the panel is reached through an SSH forward (see [Installation](/en/installation/)).
+
+## Editions
+
+Community is free and fully functional: apps, single sign-on, manual backups, whole-server restore, manual updates and monitoring. Catena Pro and Catena Business unlock more panel and automation features, such as schedules, managed updates, People and offsite copies, with a subscription key. Applications and data are never locked. The comparison is on the [pricing page](https://catena.run/en/#pricing).
+
+## Data ownership
+
+The server, the domain, the Cloudflare account, the backup storage and the sign-on accounts all belong to the client. Backups are standard restic repositories that any computer can read with the backup password, and the panel can be removed without touching the apps. See [Backup, restore, and migrate](/en/features/backup-restore-migrate/).
 
 ## Where to start
 
-- **[How this software suite works](/en/how-this-stack-works/)** -- a
-  plain-language tour of the services and how they fit together.
-  Start here if this is your first time.
-- **[Where your data lives](/en/where-is-my-data/)** -- what's on
-  the VPS, what's in your S3 backup bucket, what's lost if the VPS
-  burns down.
-- **[Files you should not touch](/en/do-not-touch/)** -- hand-edits
-  get overwritten the next time your operator pushes an update.
-  Here's what to leave alone.
-
-## Day-to-day tasks
-
-- **[Add / remove users](/en/how-to-add-users/)** -- Keycloak
-  walkthrough for staff onboarding + password resets.
-- **[Deploy apps (per-department access)](/en/how-to-deploy-apps/)**
-  -- gate new apps to specific teams using compose labels.
-- **[What you can do yourself](/en/self-service/)** -- day-to-day
-  tasks that never need your operator.
-
-## Disaster handling
-
-- **[Disaster prevention](/en/disaster-prevention/)** -- how the
-  suite reduces the blast radius of common failures.
-- **[Disaster recovery](/en/disaster-recovery/)** -- what happens
-  when the VPS is lost.
-- **[Self-restore](/en/self-restore/)** -- the one-script flow you
-  can run yourself to spin up a replacement.
-
-## Your subdomains
-
-Every catena installation publishes the same set of subdomains
-under your zone. Your portal shows the actual values for **your**
-deployment. The shape:
-
-| Service | Subdomain |
-|---|---|
-| Keycloak (identity + SSO) | `auth.yourdomain.com` |
-| Portainer (app deployment) | `portainer.yourdomain.com` |
-| Gatus (service health) | `monitor.yourdomain.com` |
-| Homepage (dashboard) | `dash.yourdomain.com` |
-| OliveTin (one-click actions) | `actions.yourdomain.com` |
-| Healthchecks (cron / dead-man) | `checks.yourdomain.com` |
-
-> **Note:** Throughout the docs, `yourdomain.com` is the business
-> domain you provided at onboarding -- the input pill at the top of
-> this page rewrites every occurrence on the fly so the URLs you
-> see match your installation.
+1. [Installation](/en/installation/): requirements and the installer.
+2. [Configuration overview](/en/configuration/): the first-time setup order.
+3. Features: [Secure connections](/en/features/secure-connections/), [Backup, restore, and migrate](/en/features/backup-restore-migrate/), [Single sign-on](/en/features/single-sign-on/), [Safe updates](/en/features/safe-updates/), [Admin dashboard](/en/features/admin-dashboard/), [Monitoring and alerts](/en/features/monitoring-alerts/).
+4. [Configure an app for Catena](/en/configure-apps/): routing, access and updates for an app deployed from Portainer.

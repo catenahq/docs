@@ -1,0 +1,9 @@
+---
+// Starlight's head plus Inter, self-hosted through the Astro Fonts API with the
+// entry the website shares (@catenahq/contracts brand/fonts.mjs, listed in
+// astro.config.mjs).
+import Default from "@astrojs/starlight/components/Head.astro";
+import { Font } from "astro:assets";
+---
+<Default />
+<Font cssVariable="--font-inter" preload />

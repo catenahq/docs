@@ -22,35 +22,31 @@ npm run check     # astro check + starlight-links-validator
 2. Create the FR mirror: `src/content/docs/fr/<slug>.md`. Both
    locales in the same commit (parity rule).
 3. If the page belongs to a sidebar nav group, add the slug to
-   `astro.config.mjs::sidebar` under the matching group. Pages under
-   `apps/` are auto-generated from the directory.
+   `astro.config.mjs::sidebar` under the matching group.
 4. `npm run build` validates frontmatter, internal links
    (starlight-links-validator), and missing locales.
 
-## Apps catalog
+## Site layout
 
-The per-template pages under `src/content/docs/apps/` are
-machine-generated from the app template catalog (`source/catalog.yml`
-in the catenahq/catena-templates repo), read by the generator in
-catenahq/ops. Run the generator from `catenahq/ops`:
+The sidebar follows the panel: a home page, one page per capability
+under `features/`, `installation`, one page per panel setting under
+`configuration/`, and `configure-apps` for the labels an app carries.
+`astro.config.mjs` maps the addresses of removed pages to the page
+that covers their subject, so outside links keep resolving.
 
-```bash
-uv run python automation/operator-tools/generate-template-docs.py
-```
+A long code example used by both locales lives once in `src/examples/`
+and is rendered with Starlight's `Code` component from an `.mdx` page,
+so the duplication gate never sees two copies.
 
-The generator writes into this repo's tree via the
-`CATENAHQ_DOCS_ROOT` env var (default = sibling `docs/`). Do NOT
-hand-edit the generated pages -- changes belong in the catalog file
-upstream.
+Per-application documentation does not live here. Each template carries
+its own README beside its compose file, in its
+catenahq/catena-templates blueprint directory, which is also what a
+client's Portainer shows in the entry's detail panel.
 
-## Interactive yourdomain.com placeholder
+## The client's domain
 
-Every page references the client's domain as the literal string
-`yourdomain.com`. The `public/domain-rewriter.js` script, loaded
-via Starlight's `head` config, ships an input pill in the header
-that swaps the placeholder for the user's actual domain at read
-time (localStorage + `?domain=` URL override). Source markdown
-stays plain and grep-able.
+Every page writes the client's domain as the literal
+`yourdomain.com`.
 
 ## Adding a language
 
@@ -69,5 +65,18 @@ checks out catenahq/contracts as a sibling before running npm install.
 ## CI gates
 
 - unicode hygiene (`npm run check:unicode` -- no em dashes, smart
-  quotes, decorative Unicode per workspace CLAUDE.md)
+  quotes, decorative Unicode per workspace CLAUDE.md, plus a scan for
+  the names of systems Catena stopped shipping)
+- voice (`npm run check:voice` -- the documentation does not address a
+  reader and names no product version, with placeholder versions allowed
+  in examples; `scripts/voice-debt.txt` lists the pages not yet converted
+  to the voice rule)
+- comment prose (`npm run check:prose` -- comments describe the code as
+  it stands, with its history in the commit message)
 - Astro typecheck + Starlight build (catches broken internal links)
+
+The first and third live in catenahq/contracts and run from the sibling
+checkout, so this repo holds no copy of either. What it owns is the debt
+lists: `.github/prose-debt.txt` here, `scripts/voice-debt.txt` for
+voice. An entry in either that has become clean FAILS the gate and must
+be deleted.

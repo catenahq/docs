@@ -9,16 +9,21 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "check:unicode": "node scripts/check-unicode.mjs",
-    "sync:brand": "node scripts/sync-brand-assets.mjs",
-    "postinstall": "node scripts/sync-brand-assets.mjs"
+    "check:unicode": "node ../contracts/scripts/check-unicode.mjs",
+    "check:prose": "node ../contracts/scripts/check-prose.mjs",
+    "check:voice": "node scripts/check-voice.mjs",
+    "sync:brand": "node ../contracts/scripts/sync-brand-assets.mjs",
+    "postinstall": "node ../contracts/scripts/sync-brand-assets.mjs"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.41.0",
+    "@astrojs/starlight": "^0.42.0",
+    "@astrojs/starlight-tailwind": "^5.0.0",
     "@catenahq/contracts": "file:../contracts",
+    "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.0.0",
     "sharp": "^0.35.0",
-    "starlight-links-validator": "^0.25.0"
+    "starlight-links-validator": "^0.26.0",
+    "tailwindcss": "^4.3.3"
   },
   "overrides": {
     "yaml": ">=2.8.3"

@@ -1,0 +1,75 @@
+# catenahq/docs -- catena client wiki
+
+Astro + Starlight. Client-facing documentation served at
+`docs.catena.run` via GitHub Pages (`.github/workflows/
+deploy-pages.yml`, deploys on push to `main`). Builds standalone
+(`npm run build` -> `dist/`).
+
+## Build flow
+
+- `npm run dev` -- Starlight dev server.
+- `npm run build` -- standalone Starlight build into `dist/`.
+- `npm run check` -- typecheck (Astro check).
+
+## Brand assets (sibling read)
+
+`@catenahq/contracts` is consumed via sibling-directory read, NOT a
+vendored tarball. `package.json` declares it as
+`"@catenahq/contracts": "file:../contracts"`, so npm symlinks
+`node_modules/@catenahq/contracts` to the sibling `catena/contracts/`
+checkout. Edits in `contracts/` are visible immediately on the next
+`npm run dev` / `npm run build`.
+
+Local dev assumes the standard `catena/docs/` + `catena/contracts/`
+sibling layout. CI mirrors this: the docs job checks out docs into
+`docs/` and catenahq/contracts into `contracts/` under
+`$GITHUB_WORKSPACE`, then runs npm install + build with
+`working-directory: ./docs`.
+
+catenahq/contracts is public: the sibling-checkout steps need no
+token.
+
+## Content rules
+
+- Client-facing. Never reference the internal operator documentation,
+  operator-side paths, Ansible roles, or filesystem paths.
+- Standing rule: Catena is fully self-hosted. The
+  READER is the admin who owns and runs the VPS. Write no second person
+  ("you", "your"): describe how the task is done and point at the
+  concrete tool or another doc (Tailscale SSH, the recovery keyset +
+  self-restore, provider rescue mode, credential regeneration in the
+  provider console, the catena-admin panel). Do NOT write "we" / "us" /
+  "contact us" / "get in touch" / "ask us" as the primary path, and do
+  not imply a managed service performs recovery. Human help is OPTIONAL
+  and a last resort only: at most a single light fallback like "a hand
+  is available from the Catena contact" AFTER the self-service steps --
+  never the first instruction. "operator" stays banned. Use "Catena" for
+  the product/system, not as an entity that acts on the reader's behalf.
+- Never write "playbook" in client-facing copy. Use "automation flow"
+  or "managed operation".
+- Bilingual parity is required: every page exists in EN and FR.
+  Canadian English + Quebec French.
+- Cross-page references must be real hyperlinks (Starlight handles
+  link validation via `starlight-links-validator`); verify targets
+  exist before linking.
+- No emojis or em-dashes in copy or code. Plain hyphens + straight
+  quotes only.
+
+## Working on Astro / Starlight
+
+Use the Astro MCP (`mcp__Astro_docs__search_astro_docs`) for any
+Astro / Starlight feature question rather than guessing.
+
+## Security invariants (machine-enforced -- do not weaken silently)
+
+- Client docs never reference operator paths, internal tooling or
+  scenario names.
+- Every page is hand-written. Per-app documentation is NOT here: each template carries its own README in
+  its catena-templates blueprint directory, and this site does not
+  mirror it. Nothing here is generated from the maintainers' test
+  bench, so a claim about what is tested carries no automatic anchor:
+  make it only when the gate behind it is named in catenahq/catena-ce
+  SPEC.md.
+- No secrets in tree or history (gitleaks). Never push the
+  backup-pre-reroot-* branches: they hold the history from before the
+  repo was published.

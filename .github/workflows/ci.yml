@@ -4,14 +4,15 @@
 # declares `"@catenahq/contracts": "file:../contracts"`, so the
 # checkout step puts contracts at $GITHUB_WORKSPACE/contracts and the
 # docs job at $GITHUB_WORKSPACE/docs. Local dev mirrors this layout.
-# catenahq/contracts is public (2026-07-11), so the checkout needs no
-# token.
+# catenahq/contracts is public, so the checkout needs no token.
 
 name: CI
 
 on:
+  # Every pushed branch. Renovate and engine-bump branches always carry a pull
+  # request, which tests each push to them.
   push:
-    branches: [main]
+    branches-ignore: ['renovate/**', 'engine-bump/**', 'scanctl/**']
   pull_request:
 
 permissions:
@@ -28,32 +29,57 @@ jobs:
           path: docs
           persist-credentials: false
       - name: Check out sibling contracts
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: catenahq/contracts/.github/actions/checkout-sibling@main
         with:
           repository: catenahq/contracts
           path: contracts
-          persist-credentials: false
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: "24"
       - name: Install
         working-directory: ./docs
         run: npm ci
-      - name: Check required runner tools
-        run: |
-          missing=''
-          for t in git; do command -v "$t" >/dev/null 2>&1 || missing="$missing $t"; done
-          if [ -n "$missing" ]; then
-            echo "::error::Required tool(s) missing on the runner:$missing"
-            echo "::error::Install on the self-hosted runner: sudo apt-get install -y git -- see catenahq/ops internal_docs/operator/ci-runner-provisioning.md"
-            exit 1
-          fi
       - name: Unicode hygiene (no em dashes / smart quotes / decorative symbols)
         working-directory: ./docs
         run: npm run check:unicode
+      - name: Repo rules (no tracked env file; .gitignore carries the env rule)
+        working-directory: ./docs
+        run: node ../contracts/scripts/check-repo-rules.mjs
+      - name: Voice (the documentation does not address a reader or name a product version)
+        working-directory: ./docs
+        run: npm run check:voice
+      # Pinned in contracts/.vale-version, which check-prose.mjs also
+      # reads and enforces: the grammars decide which comments are
+      # visible, so a different version is a different gate.
+      - name: Install vale
+        run: |
+          version="$(cat contracts/.vale-version)"
+          mkdir -p "$RUNNER_TEMP/bin"
+          curl -fsSL "https://github.com/errata-ai/vale/releases/download/v${version}/vale_${version}_Linux_64-bit.tar.gz" \
+            | tar -xz -C "$RUNNER_TEMP/bin" vale
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Prose (comments describe the code, not its history)
+        working-directory: ./docs
+        run: npm run check:prose
       - name: Typecheck
         working-directory: ./docs
         run: npm run check
       - name: Build
         working-directory: ./docs
         run: npm run build
+
+  duplication:
+    # Copy-paste ratchet: .jscpd.json carries the baseline threshold;
+    # exceeding it fails. Lower the threshold as duplication is paid
+    # down, never raise it to admit new copy-paste.
+    name: Duplication (jscpd)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: "24"
+      - name: jscpd (threshold in .jscpd.json)
+        run: npx --yes jscpd@4 --silent

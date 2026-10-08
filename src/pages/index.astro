@@ -1,8 +1,6 @@
 ---
-// Root language selector. In production nginx intercepts / with an
-// Accept-Language + `lang` cookie 302 before this file is ever served;
-// this page is the dev/preview and no-nginx fallback. It prefers the
-// `lang` cookie (a remembered manual choice), then the browser
+// Root language selector, the page GitHub Pages serves at /. It prefers
+// the `lang` cookie (a remembered manual choice), then the browser
 // language, defaulting to English. The <meta refresh> covers no-JS.
 // A real file route at / wins over Starlight's [...slug] catch-all.
 ---

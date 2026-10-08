@@ -1,5 +1,13 @@
-@import "@catenahq/contracts/brand/tokens/all.css";
-@import "@catenahq/contracts/brand/wordmark/conthrax.css";
+/* Starlight with Tailwind CSS, in the layer order @astrojs/starlight-tailwind
+   documents, and the brand theme the website shares (buttons, semantic
+   colors). The brand tokens and the Conthrax wordmark load before this file
+   (customCss in astro.config.mjs). */
+@layer base, starlight, theme, components, utilities;
+
+@import "@astrojs/starlight-tailwind";
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "@catenahq/contracts/brand/theme.css";
 
 /* Map Starlight's palette onto catena brand tokens.
    Starlight ships its own palette (and its light-mode inversion) inside
@@ -24,7 +32,7 @@
   --sl-color-accent: var(--catena-primary-400);
   --sl-color-accent-high: var(--catena-primary-200);
   --sl-color-text-accent: var(--catena-primary-300);
-  --sl-font: var(--catena-font-sans);
+  --sl-font: var(--font-inter), var(--catena-font-sans);
   --sl-font-mono: var(--catena-font-mono);
 }
 
@@ -47,147 +55,34 @@
   --sl-color-text-accent: var(--catena-primary-700);
 }
 
-/* Header brand: logo + "catena docs" wordmark + sibling
-   "catena.run" link, all aligned on the Starlight header row. The
-   wordmark itself uses Conthrax to match the marketing brand. */
-.catena-site-title {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.85rem;
-  min-height: 2.5rem;
-}
-.catena-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  color: var(--sl-color-text);
-  text-decoration: none;
-}
-.catena-brand:hover { text-decoration: none; }
-.catena-brand-logo {
-  width: 1.85rem;
-  height: 1.85rem;
-  display: block;
-  flex: none;
-}
-.catena-brand-text {
-  font-family: "Conthrax", var(--catena-font-sans, var(--sl-font));
-  font-weight: 600;
-  font-size: 1.25rem;
-  letter-spacing: 0.01em;
-  text-transform: lowercase;
-  line-height: 1;
-  white-space: nowrap;
-}
-.catena-home-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3em;
-  padding: 0.35rem 0.7rem;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 0.4rem;
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: var(--sl-color-text-accent, var(--sl-color-accent));
-  background: transparent;
-  text-decoration: none;
-  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
-  white-space: nowrap;
-}
-.catena-home-link:hover,
-.catena-home-link:focus-visible {
-  background: var(--sl-color-accent);
-  color: var(--sl-color-white);
-  border-color: var(--sl-color-accent);
-  outline: none;
-  text-decoration: none;
-}
-.catena-home-arrow {
-  display: block;
-  flex: none;
-}
-
-/* Domain pill mounted at the top of the left sidebar by
-   public/domain-rewriter.js. Sized to fit inside the sidebar
-   gutter; never overflows into adjacent surfaces. */
-.catena-domain-pill {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  margin: 0 0 0.75rem;
-  padding: 0.55rem 0.65rem 0.6rem;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 0.5rem;
-  background: var(--sl-color-bg-nav, transparent);
-  font-size: 0.8rem;
-  box-sizing: border-box;
-  width: 100%;
-}
-.catena-domain-pill__label {
-  font-weight: 600;
-  color: var(--sl-color-gray-2);
-  letter-spacing: 0.01em;
-}
-.catena-domain-pill__row {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 0.35rem;
-  background: var(--sl-color-black);
-  padding: 0.2rem 0.35rem;
-}
-.catena-domain-pill__row:focus-within {
-  border-color: var(--sl-color-accent);
-}
-.catena-domain-pill__input {
-  flex: 1 1 auto;
-  min-width: 0;
-  width: 100%;
-  font: inherit;
-  font-size: 0.9em;
-  color: var(--sl-color-white);
-  background: transparent;
-  border: none;
-  outline: none;
-  padding: 0.1rem 0.2rem;
-}
-.catena-domain-pill__input::placeholder {
-  color: var(--sl-color-gray-4);
-}
-.catena-domain-pill__clear {
-  flex: none;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-  color: var(--sl-color-gray-3);
-  font-size: 1.1em;
-  line-height: 1;
-  padding: 0 0.25rem;
-  border-radius: 0.25rem;
-}
-.catena-domain-pill__clear:hover,
-.catena-domain-pill__clear:focus-visible {
-  color: var(--sl-color-white);
-  background: var(--sl-color-gray-6);
-  outline: none;
-}
-
 /* Starlight's default `.sl-markdown-content table` rule sets
-   display: block + overflow: auto, which triggers an unwanted
-   scrollbar on narrow comparison tables that already fit. Render
-   tables as real tables and let the first column wrap. */
-.sl-markdown-content table {
-  display: table;
-  width: 100%;
-  overflow: visible;
-  table-layout: auto;
+   display: block + overflow: auto, which puts a scrollbar on narrow
+   comparison tables that already fit. From the desktop breakpoint
+   tables render as real tables at full width; below it Starlight's
+   rule stands, so a table wider than a phone scrolls inside the
+   column instead of widening the page. The cells wrap at every width. */
+@media (min-width: 50rem) {
+  .sl-markdown-content table {
+    display: table;
+    width: 100%;
+    overflow: visible;
+    table-layout: auto;
+  }
 }
 .sl-markdown-content table th,
 .sl-markdown-content table td {
   white-space: normal;
   word-break: normal;
   overflow-wrap: anywhere;
+}
+/* First column holds short labels (service names, modes, keys). The
+   `overflow-wrap: anywhere` above breaks those mid-word when the auto
+   layout starves the column. Keep first-column labels whole -- wrap
+   only at spaces -- and give the column a floor width so it isn't
+   squeezed to one character. */
+.sl-markdown-content table th:first-child,
+.sl-markdown-content table td:first-child {
+  overflow-wrap: normal;
+  word-break: keep-all;
+  min-width: 8rem;
 }

@@ -1,6 +1,7 @@
-// Remember the language the visitor is reading so the nginx redirect at
-// / can honour it on later visits. Reads the current <html lang> and
-// writes a `lang` cookie; re-fires after client-side navigations.
+// Remember the language the visitor is reading so the redirect at /
+// (src/pages/index.astro) can honour it on later visits. Reads the
+// current <html lang> and writes a `lang` cookie; re-fires after
+// client-side navigations.
 (function () {
   function setLangCookie() {
     var lang = document.documentElement.lang;

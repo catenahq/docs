@@ -1,0 +1,6 @@
+# Files exempt from the comment-prose gate in
+# contracts/scripts/check-prose.mjs.
+# Format: <path relative to the repo root> -- <reason>
+#
+# A listed file with no finding fails the gate. Delete the entry when the
+# file is fixed, or the gate stops gating that file.

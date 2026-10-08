@@ -1,0 +1,181 @@
+services:
+  app:
+    image: nextcloud:1.2.3-apache
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        cat > /docker-entrypoint-hooks.d/before-starting/zz-catena.sh <<'HOOK'
+        #!/bin/sh
+        set -e
+        php occ config:system:set --type int \
+          --value "$${NEXTCLOUD_MAX_CHUNK_SIZE}" files.chunked_upload.max_size
+        HOOK
+        chmod 0755 /docker-entrypoint-hooks.d/before-starting/zz-catena.sh
+        wait_for_db() {
+          php -r 'try { new PDO(
+            "pgsql:host=".getenv("POSTGRES_HOST").";dbname=".getenv("POSTGRES_DB"),
+            getenv("POSTGRES_USER"), getenv("POSTGRES_PASSWORD")
+          ); } catch (Throwable $$e) { exit(1); } exit(0);' 2>/dev/null
+        }
+        waited=0
+        until wait_for_db; do
+          waited=$$((waited + 2))
+          if [ "$$waited" -ge 300 ]; then
+            echo "database did not answer in $${waited}s" >&2
+            exit 1
+          fi
+          sleep 2
+        done
+        exec /entrypoint.sh "$$@"
+      - --
+    command: ["apache2-foreground"]
+    environment:
+      NEXTCLOUD_TRUSTED_DOMAINS: ${NEXTCLOUD_HOSTNAME}
+      NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
+      NEXTCLOUD_MAX_CHUNK_SIZE: ${NEXTCLOUD_MAX_CHUNK_SIZE:-83886080}
+      OVERWRITEPROTOCOL: https
+      OVERWRITEHOST: ${NEXTCLOUD_HOSTNAME}
+      OVERWRITECLIURL: https://${NEXTCLOUD_HOSTNAME}
+      TRUSTED_PROXIES: 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+      POSTGRES_HOST: db
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      OBJECTSTORE_S3_BUCKET: ${S3_BUCKET}
+      OBJECTSTORE_S3_REGION: ${S3_REGION}
+      OBJECTSTORE_S3_HOST: ${S3_HOST}
+      OBJECTSTORE_S3_PORT: ${S3_PORT:-443}
+      OBJECTSTORE_S3_SSL: ${S3_SSL:-true}
+      OBJECTSTORE_S3_USEPATH_STYLE: "true"
+      OBJECTSTORE_S3_AUTOCREATE: "false"
+      OBJECTSTORE_S3_KEY: ${S3_ACCESS_KEY}
+      OBJECTSTORE_S3_SECRET: ${S3_SECRET_KEY}
+      NEXTCLOUD_OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      NEXTCLOUD_OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      NEXTCLOUD_OIDC_ISSUER_URL: ${OIDC_ISSUER_URL}
+    volumes:
+      - nc-html:/var/www/html
+      - nc-config:/var/www/html/config
+      - nc-apps:/var/www/html/custom_apps
+      - nc-data:/var/www/html/data
+    labels:
+      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.port=80"
+      - "vps.route.service=app"
+      - "vps.auth.mode=public"
+      - "vps.health.path=/status.php"
+      - "vps.auto-update=patch"
+      - "vps.app=my-nextcloud"
+      - "vps.component=app"
+    networks:
+      catena-network:
+        aliases:
+          - my-nextcloud
+      default: {}
+
+  db:
+    image: postgres:1.2.3-alpine
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    labels:
+      - "vps.auto-update=patch"
+      - "vps.app=my-nextcloud"
+      - "vps.component=db"
+    networks:
+      - default
+
+  redis:
+    image: redis:1.2.3-alpine
+    deploy:
+      restart_policy:
+        condition: any
+    labels:
+      - "vps.auto-update=patch"
+      - "vps.app=my-nextcloud"
+      - "vps.component=redis"
+    networks:
+      - default
+
+  cron:
+    image: nextcloud:1.2.3-apache
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        wait_for_db() {
+          php -r 'try { new PDO(
+            "pgsql:host=".getenv("POSTGRES_HOST").";dbname=".getenv("POSTGRES_DB"),
+            getenv("POSTGRES_USER"), getenv("POSTGRES_PASSWORD")
+          ); } catch (Throwable $$e) { exit(1); } exit(0);' 2>/dev/null
+        }
+        waited=0
+        until wait_for_db; do
+          waited=$$((waited + 2))
+          if [ "$$waited" -ge 300 ]; then
+            echo "database did not answer in $${waited}s" >&2
+            exit 1
+          fi
+          sleep 2
+        done
+        exec /cron.sh
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      OBJECTSTORE_S3_BUCKET: ${S3_BUCKET}
+      OBJECTSTORE_S3_REGION: ${S3_REGION}
+      OBJECTSTORE_S3_HOST: ${S3_HOST}
+      OBJECTSTORE_S3_PORT: ${S3_PORT:-443}
+      OBJECTSTORE_S3_SSL: ${S3_SSL:-true}
+      OBJECTSTORE_S3_USEPATH_STYLE: "true"
+      OBJECTSTORE_S3_KEY: ${S3_ACCESS_KEY}
+      OBJECTSTORE_S3_SECRET: ${S3_SECRET_KEY}
+    volumes:
+      - nc-html:/var/www/html
+      - nc-config:/var/www/html/config
+      - nc-apps:/var/www/html/custom_apps
+      - nc-data:/var/www/html/data
+    labels:
+      - "vps.app=my-nextcloud"
+      - "vps.component=cron"
+    networks:
+      - default
+
+volumes:
+  nc-html:
+  nc-config:
+  nc-apps:
+  nc-data:
+  db-data:
+
+networks:
+  catena-network:
+    external: true
