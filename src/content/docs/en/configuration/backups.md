@@ -3,7 +3,7 @@ title: "Backups and S3 storage"
 description: "Where backups are written, how they are encrypted, what they contain, and how the recovery keyset and offsite copies protect them."
 ---
 
-Backups are encrypted on the server before they leave it and are written to an S3-compatible bucket owned by the server's admin. Catena holds no copy of the data. This page covers the storage settings, the backup password, the recovery keyset, offsite copies, and running a backup by hand. When backups run on their own, and how many are kept, is set on the [Schedules](/en/configuration/schedules/) page.
+Backups are encrypted on the server before they leave it and are written to an S3-compatible bucket that you own. Catena holds no copy of the data. This page covers the storage settings, the backup password, the recovery keyset, offsite copies, and running a backup by hand. When backups run on their own, and how many are kept, is set on the [Schedules](/en/configuration/schedules/) page.
 
 ## Prerequisites
 
@@ -30,7 +30,7 @@ For example, `s3:https://s3.bhs.io.cloud.ovh.net/acme-restic`. There is no separ
 | **Backup repository URL** | The address above. |
 | **Other folders to back up (separated by commas)** | Optional. Extra locations on the server to include (see [What a backup contains](#what-a-backup-contains)). |
 
-A blank key field keeps the current value; typing a value replaces it. **Save** stores the values on the server. No restart or reconfiguration follows: the next backup reads them.
+Leave a key field blank to keep the current value; type a value to replace it. **Save** stores the values on the server. No restart or reconfiguration follows: the next backup reads them.
 
 ### Endpoint check
 
@@ -52,12 +52,12 @@ Backups are encrypted with a password that the server generates. It is shown onc
 
 The server keeps the password to run backups, and Catena keeps no other copy. Without it, every byte in the bucket is unreadable. The password is also required to read these backups from another server (see [Restore and migrate](/en/configuration/restore-and-migrate/)).
 
-Generation is refused when a password already exists, or when the repository already holds backups under another password. The reason appears in the same section. A repository that holds another server's backups is not reused for a new server: a new, empty bucket is used instead.
+Generation is refused when a password already exists, or when the repository already holds backups under another password. The reason appears in the same section. Do not reuse a repository that holds another server's backups for a new server: use a new, empty bucket instead.
 
 Once a password exists, the section offers two tools:
 
-- **Check a password** > **Check**: tests a typed password against the repository. The replies are "That password opens the backup repository.", "That password does NOT open the backup repository." and "Could not reach the backup repository to check the password."
-- **New backup password** > **Change password**: re-keys the repository under a new password. The box "I understand this re-keys the repository: every backup becomes unreadable without the new password." must be ticked. Success reads "Backup password changed. The new password belongs in a password manager now."; a failure reads "Could not change the backup password. The repository was not re-keyed." The saved copy in the password manager is replaced the same day.
+- **Check a password** > **Check**: tests a password you type against the repository. The replies are "That password opens the backup repository.", "That password does NOT open the backup repository." and "Could not reach the backup repository to check the password."
+- **New backup password** > **Change password**: re-keys the repository under a new password. Tick the box "I understand this re-keys the repository: every backup becomes unreadable without the new password." Success reads "Backup password changed. The new password belongs in a password manager now."; a failure reads "Could not change the backup password. The repository was not re-keyed." Replace the saved copy in your password manager the same day.
 
 ## Disaster-recovery keyset
 
@@ -72,7 +72,7 @@ Everything else, including every internal setting and secret the applications us
 
 **Show the values** displays them once. The viewing is recorded in the server's administrative log with the account and the time: "Shown once, and recorded: this viewing is now a row in this server's administrative log, with the account and the time. Reloading the page hides them again." Until the backup credentials are set, the section reads "The recovery keyset appears once the backup credentials above are set."
 
-The four values belong in a password manager as separate entries, kept outside the server and outside the bucket. A server rebuilt from them is described on the [Restore and migrate](/en/configuration/restore-and-migrate/) page.
+Keep the four values in a password manager as separate entries, outside the server and outside the bucket. Rebuilding a server from them is described on the [Restore and migrate](/en/configuration/restore-and-migrate/) page.
 
 ## Offsite copies
 
@@ -96,16 +96,16 @@ An offsite copy duplicates a bucket into a locked bucket at a different provider
 | **Destination repository URL** | The locked bucket, in the same address format. |
 | **Destination S3 access key**, **Destination S3 secret key** | Keys for the destination. |
 
-3. Press **Save offsite copies**. The page replies "Offsite copies saved." A row can be removed with **Remove this copy on save (the copies already made are kept)**.
+3. Press **Save offsite copies**. The page replies "Offsite copies saved." Remove a row with **Remove this copy on save (the copies already made are kept)**.
 
-Both sets of keys are entered here even when a bucket is configured elsewhere as well: an application owns where it stores its files, and this list owns what gets copied where. Source and destination must be different buckets, and at most 32 rows are accepted. A blank secret on an existing row keeps the stored one. Until a row exists the section reads "No offsite copies are declared, so nothing is copied offsite."
+Enter both sets of keys here even when a bucket is configured elsewhere as well: an application owns where it stores its files, and this list owns what gets copied where. Source and destination must be different buckets, and you can add at most 32 rows. Leave the secret blank on an existing row to keep the stored one. Until a row exists the section reads "No offsite copies are declared, so nothing is copied offsite."
 
 The copies run on the **Offsite copy** lane of the Schedules page (and as a step of the nightly maintenance). An unreachable or unconfigured destination is recorded as skipped and does not stop backups.
 
 ### How the copy behaves
 
 - A copy only ever adds. Nothing it has written is changed or deleted afterwards. A bucket removed from the list keeps every copy already made, and the storage cost grows with churn.
-- A locked bucket cannot be restored into directly. Recovering means copying it out to a fresh, unlocked bucket first and reading from that.
+- A locked bucket cannot be restored into directly. To recover, copy it out to a fresh, unlocked bucket first and read from that.
 - A copy of an application's own file bucket is only restorable together with a same-moment copy of the database that indexes those files. That database is inside the backup snapshots, so a file bucket copied on its own is not a backup by itself.
 
 ## What a backup contains
@@ -148,11 +148,11 @@ Every admin page shows the banner "No backup is configured: updates run with not
 
 | Symptom | Cause and fix |
 |---|---|
-| Backup actions are missing from **Actions** | The repository address or a key is not stored yet. |
+| Backup actions are missing from **Actions** | You have not stored the repository address or a key yet. |
 | "Endpoint valid, but its contents could not be read." | Wrong key pair, no list right on the bucket, or a wrong bucket name in the address. Correct it and save again. |
 | **Generate backup encryption password** is refused | A password already exists, or the bucket holds backups under another password. Use an empty bucket. |
 | A backup fails on coverage | A container mounts a folder outside the backup set. List it under **Other folders to back up**. |
 | A backup fails on a database dump | A MariaDB or MySQL container without `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD`, or a database that could not be dumped. The backup log gives the reason. |
-| The saved password is lost | While the server runs, **Show the values** in **Disaster-recovery keyset** displays it again. With the server gone too, the backups cannot be read by any means. |
+| You have lost the saved password | While the server runs, **Show the values** in **Disaster-recovery keyset** displays it again. With the server gone too, the backups cannot be read by any means. |
 
 The **Log** page records each completed backup with its size; the [Updates](/en/configuration/updates/) page describes the other events recorded there.
