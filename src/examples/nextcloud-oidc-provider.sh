@@ -1,4 +1,4 @@
-CT=$(docker ps -q -f label=vps.app=my-nextcloud -f label=vps.component=app | head -1)
+CT=$(docker ps -q -f label=com.docker.swarm.service.name=my-nextcloud_app | head -1)
 
 docker exec --user 33 "$CT" php /var/www/html/occ app:enable user_oidc
 

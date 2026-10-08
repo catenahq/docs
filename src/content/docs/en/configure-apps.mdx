@@ -19,7 +19,7 @@ An app is a set of services. One of them, the **front-door service**, answers th
 
 Labels are written under each service's own `labels:` key, as a list with one `"key=value"` per line. The status page, restores, migrations and updates read them from there; labels under `deploy.labels` are not seen by them.
 
-Most labels describe the app as a whole: its address, who gets in, its health check, its tile. They go once, on the front-door service. Catena reads them from the whole file and keeps the last one it finds, so the same label on another service, or in a commented-out line, overrides the front door's. The labels that describe a single service (which app it belongs to, its role, its update policy) go on every service. The [label reference](#label-reference) says where each one goes.
+Most labels describe the app as a whole: its address, who gets in, its health check, its tile. They go once, on the front-door service. Catena reads them from the whole file and keeps the last one it finds, so the same label on another service, or in a commented-out line, overrides the front door's. Only the update policy describes a single service, and it is optional. Which app a service belongs to and what it is are read from Docker Swarm itself: the app's name in Portainer and the service's key in the file. The [label reference](#label-reference) says where each label goes.
 
 Label values are written out in full, such as the address itself, rather than as a `${VARIABLE}`.
 
@@ -29,13 +29,12 @@ The skeleton below has every piece the steps add: a front-door service `web` and
 
 ## Step 1: Choose the app's name
 
-The app gets one short name made of lower-case letters, digits and hyphens, such as `my-app`. The same name is used three times:
+The app gets one short name made of lower-case letters, digits and hyphens, such as `my-app`. The same name is used twice:
 
 - the app's name in Portainer, given at deploy time (step 7);
-- the value of `vps.app` on every service (step 5);
 - the front-door service's alias on `catena-network` (step 3).
 
-With all three equal, the route, the sign-in gate and a single-app restore all find the app. The sign-in gate always reaches the app through the alias equal to its name in Portainer.
+Restores, migrations and updates find the app by its name in Portainer, and the sign-in gate always reaches it through the alias equal to that name.
 
 ## Step 2: Make the file ready for Docker Swarm
 
@@ -76,13 +75,11 @@ A service that publishes a port for a protocol other than web traffic (mail, a T
 
 <Code code={publishedPort} lang="yaml" />
 
-## Step 5: Label every service
+## Step 5: Set the update policy (optional)
 
-Every service, the front door included, carries:
+By default an image moves to newer patch releases only. A service that should move further, or not at all, carries `vps.auto-update` (see [Updates](#updates)).
 
-- `vps.app` with the app's name from step 1. Restores, migrations and updates find the app's containers by it.
-- `vps.component` with the service's own key in the file (`web`, `db`, `redis`). A database or cache component keeps running when a migration pauses the rest of the app.
-- `vps.auto-update`, only when the default is not wanted. By default an image moves to newer patch releases only.
+Nothing else is labelled per service. A service whose image is a database or cache (PostgreSQL, PostGIS, TimescaleDB, MariaDB, MySQL, MongoDB, Redis, Valkey, KeyDB, Memcached, Elasticsearch, OpenSearch) is recognised from its image and keeps running when a migration pauses the rest of the app.
 
 ## Step 6: Plan the data
 
@@ -159,14 +156,12 @@ On the front-door service, once.
 | `vps.homepage.description` | Text | none | Tile subtitle. |
 | `vps.homepage.hidden` | `true`, `false` | `false` | Hides the tile from everyone except administrators. The app stays reachable. |
 
-### Identity and updates
+### Updates
 
-On every service.
+On any service, optional.
 
 | Label | Values | Default | Description |
 |---|---|---|---|
-| `vps.app` | The app's name | none | App the service belongs to. Restores, migrations and updates find the app's containers by it. |
-| `vps.component` | The service's key in the file | none | Role of the service. A database or cache (`db`, `database`, `postgres`, `postgresql`, `pg`, `mariadb`, `mysql`, `mongo`, `mongodb`, `redis`, `valkey`, `memcached`, `elasticsearch`, `opensearch`) keeps running when a migration pauses the rest of the app. |
 | `vps.auto-update` | `off`, `patch`, `minor`, `patch+minor`, `major` | `patch` | How far the image's version may move. `patch` keeps the major and minor numbers (`1.2.3` to `1.2.9`). `minor` and `patch+minor` keep the major number (`1.2.3` to `1.9.0`). `major` takes any newer release (`1.2.3` to `2.0.0`). `off` never moves it. An invalid value counts as `patch`. |
 
 Only images with a full version tag are updated. Services that run the same image move together, under the most restrictive of their labels; a service without the label counts as `patch`. The updates run in the nightly maintenance, which needs Catena Pro or Catena Business ([editions](https://catena.run/en/#pricing)); see [Updates](/en/configuration/updates/).

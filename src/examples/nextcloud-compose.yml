@@ -74,8 +74,6 @@ services:
       - "vps.auth.mode=public"
       - "vps.health.path=/status.php"
       - "vps.auto-update=patch"
-      - "vps.app=my-nextcloud"
-      - "vps.component=app"
     networks:
       catena-network:
         aliases:
@@ -99,8 +97,6 @@ services:
       - db-data:/var/lib/postgresql/data
     labels:
       - "vps.auto-update=patch"
-      - "vps.app=my-nextcloud"
-      - "vps.component=db"
     networks:
       - default
 
@@ -111,8 +107,6 @@ services:
         condition: any
     labels:
       - "vps.auto-update=patch"
-      - "vps.app=my-nextcloud"
-      - "vps.component=redis"
     networks:
       - default
 
@@ -163,9 +157,6 @@ services:
       - nc-config:/var/www/html/config
       - nc-apps:/var/www/html/custom_apps
       - nc-data:/var/www/html/data
-    labels:
-      - "vps.app=my-nextcloud"
-      - "vps.component=cron"
     networks:
       - default
 

@@ -11,5 +11,3 @@ services:
         mode: host
     labels:
       - "vps.expose.udp=3478"
-      - "vps.app=my-app"
-      - "vps.component=relay"

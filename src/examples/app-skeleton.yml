@@ -19,8 +19,6 @@ services:
       - "vps.route.port=8080"
       - "vps.auth.groups=staff"
       - "vps.health.path=/health"
-      - "vps.app=my-app"
-      - "vps.component=web"
 
   db:
     image: postgres:1.2.3-alpine
@@ -37,9 +35,6 @@ services:
       - db-data:/var/lib/postgresql/data
     networks:
       - default
-    labels:
-      - "vps.app=my-app"
-      - "vps.component=db"
 
 volumes:
   web-data:

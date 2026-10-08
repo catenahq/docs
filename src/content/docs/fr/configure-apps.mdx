@@ -19,7 +19,7 @@ Une application est un ensemble de services. L'un d'eux, le **service d'entrée*
 
 Les étiquettes s'écrivent sous la clé `labels:` propre à chaque service, en liste, une `"clé=valeur"` par ligne. La page d'état, les restaurations, les migrations et les mises à jour les lisent à cet endroit; les étiquettes placées sous `deploy.labels` leur échappent.
 
-La plupart des étiquettes décrivent l'application dans son ensemble : son adresse, qui peut entrer, son contrôle de santé, sa tuile. Elles figurent une seule fois, sur le service d'entrée. Catena les lit dans tout le fichier et garde la dernière trouvée : la même étiquette sur un autre service, ou dans une ligne mise en commentaire, remplace celle du service d'entrée. Les étiquettes qui décrivent un seul service (l'application à laquelle il appartient, son rôle, sa politique de mise à jour) figurent sur chaque service. La [référence des étiquettes](#référence-des-étiquettes) indique où va chacune.
+La plupart des étiquettes décrivent l'application dans son ensemble : son adresse, qui peut entrer, son contrôle de santé, sa tuile. Elles figurent une seule fois, sur le service d'entrée. Catena les lit dans tout le fichier et garde la dernière trouvée : la même étiquette sur un autre service, ou dans une ligne mise en commentaire, remplace celle du service d'entrée. Seule la politique de mise à jour décrit un service en particulier, et elle est facultative. L'application à laquelle un service appartient et ce qu'il est se lisent dans Docker Swarm lui-même : le nom de l'application dans Portainer et la clé du service dans le fichier. La [référence des étiquettes](#référence-des-étiquettes) indique où va chacune.
 
 Les valeurs des étiquettes s'écrivent en clair, comme l'adresse elle-même, plutôt que sous forme de `${VARIABLE}`.
 
@@ -29,13 +29,12 @@ Le squelette ci-dessous contient chaque élément qu'ajoutent les étapes : un s
 
 ## Étape 1 : Choisir le nom de l'application
 
-L'application reçoit un nom court fait de lettres minuscules, de chiffres et de traits d'union, comme `my-app`. Ce même nom sert trois fois :
+L'application reçoit un nom court fait de lettres minuscules, de chiffres et de traits d'union, comme `my-app`. Ce même nom sert deux fois :
 
 - le nom de l'application dans Portainer, donné au déploiement (étape 7);
-- la valeur de `vps.app` sur chaque service (étape 5);
 - l'alias du service d'entrée sur `catena-network` (étape 3).
 
-Quand les trois sont égaux, la route, la barrière de connexion et la restauration d'une seule application trouvent toutes l'application. La barrière de connexion joint toujours l'application par l'alias égal à son nom dans Portainer.
+Les restaurations, les migrations et les mises à jour trouvent l'application par son nom dans Portainer, et la barrière de connexion la joint toujours par l'alias égal à ce nom.
 
 ## Étape 2 : Préparer le fichier pour Docker Swarm
 
@@ -76,13 +75,11 @@ Un service qui publie un port pour un protocole autre que le web (courriel, rela
 
 <Code code={publishedPort} lang="yaml" />
 
-## Étape 5 : Étiqueter chaque service
+## Étape 5 : Régler la politique de mise à jour (facultatif)
 
-Chaque service, service d'entrée compris, porte :
+Par défaut, une image ne passe qu'aux nouvelles versions correctives. Un service qui doit avancer davantage, ou pas du tout, porte `vps.auto-update` (voir [Mises à jour](#mises-à-jour)).
 
-- `vps.app` avec le nom de l'application choisi à l'étape 1. Les restaurations, les migrations et les mises à jour trouvent les conteneurs de l'application par cette étiquette.
-- `vps.component` avec la clé propre au service dans le fichier (`web`, `db`, `redis`). Une base de données ou un cache continue de tourner quand une migration met en pause le reste de l'application.
-- `vps.auto-update`, seulement si la valeur par défaut ne convient pas. Par défaut, une image ne passe qu'aux nouvelles versions correctives.
+Rien d'autre ne s'étiquette par service. Un service dont l'image est une base de données ou un cache (PostgreSQL, PostGIS, TimescaleDB, MariaDB, MySQL, MongoDB, Redis, Valkey, KeyDB, Memcached, Elasticsearch, OpenSearch) est reconnu par son image et continue de tourner quand une migration met en pause le reste de l'application.
 
 ## Étape 6 : Prévoir les données
 
@@ -159,14 +156,12 @@ Sur le service d'entrée, une seule fois.
 | `vps.homepage.description` | Texte | aucun | Sous-titre de la tuile. |
 | `vps.homepage.hidden` | `true`, `false` | `false` | Masque la tuile pour tous sauf les administrateurs. L'application reste joignable. |
 
-### Identité et mises à jour
+### Mises à jour
 
-Sur chaque service.
+Sur n'importe quel service, facultatif.
 
 | Étiquette | Valeurs | Défaut | Description |
 |---|---|---|---|
-| `vps.app` | Le nom de l'application | aucun | Application à laquelle le service appartient. Les restaurations, les migrations et les mises à jour trouvent les conteneurs de l'application par cette étiquette. |
-| `vps.component` | La clé du service dans le fichier | aucun | Rôle du service. Une base de données ou un cache (`db`, `database`, `postgres`, `postgresql`, `pg`, `mariadb`, `mysql`, `mongo`, `mongodb`, `redis`, `valkey`, `memcached`, `elasticsearch`, `opensearch`) continue de tourner quand une migration met en pause le reste de l'application. |
 | `vps.auto-update` | `off`, `patch`, `minor`, `patch+minor`, `major` | `patch` | Jusqu'où la version de l'image peut avancer. `patch` garde les numéros majeur et mineur (`1.2.3` vers `1.2.9`). `minor` et `patch+minor` gardent le numéro majeur (`1.2.3` vers `1.9.0`). `major` accepte toute version plus récente (`1.2.3` vers `2.0.0`). `off` ne la change jamais. Une valeur invalide équivaut à `patch`. |
 
 Seules les images dotées d'une version complète sont mises à jour. Les services qui exécutent la même image avancent ensemble, selon la plus restrictive de leurs étiquettes; un service sans étiquette compte comme `patch`. Les mises à jour s'exécutent pendant l'entretien nocturne, qui exige Catena Pro ou Catena Business ([éditions](https://catena.run/fr/#pricing)); voir [Mises à jour](/fr/configuration/updates/).
