@@ -26,7 +26,7 @@ To restart:
 2. Tick "I understand this stops every application on this server for about a minute."
 3. Press **Restart this server**.
 
-When the nightly maintenance is on, its last step restarts the server when one is due and then checks that every service came back. The **System** page reports "Last restart by the nightly maintenance" and its outcome, and the Log records it. Restarting is otherwise left to the administrator because the downtime is a decision.
+When the nightly maintenance is on, its last step restarts the server when one is due and then checks that every service came back. The **System** page reports "Last restart by the nightly maintenance" and its outcome, and the Log records it. Restarting is otherwise left to you because the downtime is a decision.
 
 Under **Actions** > **Ops**, **Pending apt updates** lists what is waiting and **Recent auto-upgrade log** shows what the automatic updates did.
 
@@ -35,11 +35,11 @@ Under **Actions** > **Ops**, **Pending apt updates** lists what is waiting and *
 Open **Settings** > **Control panel version**.
 
 1. **Running now** shows the version the server runs.
-2. Pick the target under **Version to install**. The list holds the published versions of this same panel. When the list cannot be fetched, the field becomes a text box and the version is typed (for example `v1.2.3`); only a version of this same panel is accepted.
+2. Pick the target under **Version to install**. The list holds the published versions of this same panel. When the list cannot be fetched, the field becomes a text box and you type the version (for example `v1.2.3`); only a version of this same panel is accepted.
 3. Tick "I understand the panel restarts and is briefly unavailable."
 4. Press **Update this panel**.
 
-The section follows the update through Downloading (with a layer count), Installing, Restarting, Checking health and Applying its configuration. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if the page is closed. Everything else keeps running.
+The section follows the update through Downloading (with a layer count), Installing, Restarting, Checking health and Applying its configuration. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if you close the page. Everything else keeps running.
 
 An update that makes the server less healthy than before is put back automatically. The section then reads "The last attempt did not finish. This server put the previous version back and is running normally on it, one version behind." with the server's log of the attempt folded below.
 
@@ -47,13 +47,13 @@ The button works in every edition. The **Control panel updates** job on the [Sch
 
 ### When the panel cannot update itself
 
-If the panel is unavailable or its update cannot run, the install command is run again from the admin computer with the target release (see [Installation](/en/installation/)):
+If the panel is unavailable or its update cannot run, run the install command again from your admin computer with the target release (see [Installation](/en/installation/)):
 
 ```sh
 uvx catena-installer install --inventory <name> --release v1.2.3
 ```
 
-The server moves to that release with that release's own code, the same end state as the panel update. After public SSH has been closed, `--address <tailnet-ip>` is added for that run. Without `--release` the command re-applies the release the server already records.
+The server moves to that release with that release's own code, the same end state as the panel update. After you have closed public SSH, add `--address <tailnet-ip>` for that run. Without `--release` the command re-applies the release the server already records.
 
 ## Docker engine
 
@@ -122,14 +122,14 @@ The **Log** page records every update decision, among them:
 
 ## Community: update an application
 
-Without the nightly maintenance, an application is updated by changing its image tag:
+Without the nightly maintenance, you update an application by changing its image tag:
 
 1. Open Portainer (`https://portainer.yourdomain.com`, or through the SSH forward before a domain exists).
 2. Open **Stacks** and select the application.
 3. In the editor, change the image tag to the new full version tag.
 4. Press the update button under the editor.
 
-A backup beforehand is advised (**Actions** > **Backups** > **Trigger backup now**). The **Upgrades** category of **Actions** is empty on Community: its buttons arrive with a subscription.
+Take a backup beforehand (**Actions** > **Backups** > **Trigger backup now**). The **Upgrades** category of **Actions** is empty on Community: its buttons arrive with a subscription.
 
 ## Troubleshooting
 
