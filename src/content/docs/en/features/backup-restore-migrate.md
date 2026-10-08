@@ -28,7 +28,7 @@ A new server pulls from the old one with **Move another server here**. The old s
 
 ## What each edition adds
 
-Community has manual backups, snapshot browsing, whole-server restore and rebuild, and the receiving side of a migration. Catena Pro and Catena Business add schedules, restoring a single app, the restore report, offsite copies and the source side of a migration. See the [edition comparison](https://catena.run/en/#pricing).
+Community has manual backups, snapshot browsing, whole-server restore and rebuild, and the receiving side of a migration. Catena Pro adds schedules, restoring a single app, the restore report and the source side of a migration, and Catena Business adds offsite copies. See the [edition comparison](https://catena.run/en/#pricing).
 
 ## Limits
 

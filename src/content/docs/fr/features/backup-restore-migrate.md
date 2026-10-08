@@ -28,7 +28,7 @@ Un nouveau serveur tire depuis l'ancien avec **Déplacer un autre serveur ici**.
 
 ## Ce qu'ajoute chaque édition
 
-Communauté offre les sauvegardes manuelles, la consultation des instantanés, la restauration et la reconstruction du serveur entier, et le côté récepteur d'une migration. Catena Pro et Catena Business ajoutent les horaires, la restauration d'une seule application, le rapport de restauration, les copies hors site et le côté source d'une migration. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté offre les sauvegardes manuelles, la consultation des instantanés, la restauration et la reconstruction du serveur entier, et le côté récepteur d'une migration. Catena Pro ajoute les horaires, la restauration d'une seule application, le rapport de restauration et le côté source d'une migration, et Catena Business ajoute les copies hors site. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 

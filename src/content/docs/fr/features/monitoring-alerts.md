@@ -19,7 +19,7 @@ Le serveur héberge sa propre supervision : une page d'état, des graphiques de 
 
 ## Ce qu'ajoute chaque édition
 
-Gatus, Healthchecks, Beszel, ntfy, la page d'état, les alertes sur l'hôte et les champs de surveillance hors site fonctionnent dans toutes les éditions. Les éditions payantes ajoutent la supervision externe de la disponibilité et la supervision en tant que service, décrites dans la [comparaison des éditions](https://catena.run/fr/#pricing).
+Gatus, Healthchecks, Beszel, ntfy, la page d'état, les alertes sur l'hôte et les champs de surveillance hors site fonctionnent dans toutes les éditions. Catena Business ajoute la supervision en tant que service, décrite dans la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 

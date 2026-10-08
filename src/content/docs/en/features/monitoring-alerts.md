@@ -19,7 +19,7 @@ The server hosts its own monitoring: a status page, resource graphs and push ale
 
 ## What each edition adds
 
-Gatus, Healthchecks, Beszel, ntfy, the status page, on-host alerts and the off-site watchdog fields work on every edition. The paid editions add external uptime monitoring and monitoring-as-a-service, described in the [edition comparison](https://catena.run/en/#pricing).
+Gatus, Healthchecks, Beszel, ntfy, the status page, on-host alerts and the off-site watchdog fields work on every edition. Catena Business adds monitoring-as-a-service, described in the [edition comparison](https://catena.run/en/#pricing).
 
 ## Limits
 

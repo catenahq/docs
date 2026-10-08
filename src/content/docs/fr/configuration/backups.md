@@ -76,7 +76,7 @@ Les quatre valeurs ont leur place dans un gestionnaire de mots de passe, en entr
 
 ## Copies hors site
 
-Une copie hors site duplique un compartiment vers un compartiment verrouillé chez un autre fournisseur. Elle protège contre un serveur ou un compte compromis : la destination ne peut être ni modifiée ni supprimée, même avec des clés valides, tant que le verrou n'a pas expiré. Les copies hors site demandent Catena Pro ou Catena Business; la [comparaison des éditions](https://catena.run/fr/#pricing) donne les détails.
+Une copie hors site duplique un compartiment vers un compartiment verrouillé chez un autre fournisseur. Elle protège contre un serveur ou un compte compromis : la destination ne peut être ni modifiée ni supprimée, même avec des clés valides, tant que le verrou n'a pas expiré. Les copies hors site demandent Catena Business; la [comparaison des éditions](https://catena.run/fr/#pricing) donne les détails.
 
 ### Prérequis
 

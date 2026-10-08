@@ -20,7 +20,7 @@ Every job ships switched off. The time shown is the pre-filled schedule, which r
 |---|---|---|---|
 | **Backup** | `Sun *-*-* 03:00:00` (Sundays, 3 AM) | up to 1 hour | Takes a snapshot of the server and sends it to the configured backup storage. |
 | **Nightly maintenance** | `*-*-* 03:00:00` (every day, 3 AM) | up to 15 minutes | Backs up, checks the backup, copies it offsite, then moves the server's own components and the deployed applications to newer versions behind those checks. |
-| **Offsite copy** | `*-*-* 04:30:00` (every day, 4:30 AM) | up to 30 minutes | Copies every declared bucket to the write-once storage at the second provider (see [Offsite copies](/en/configuration/backups/#offsite-copies)). |
+| **Offsite copy** | `*-*-* 04:30:00` (every day, 4:30 AM) | up to 30 minutes | Copies every declared bucket to the write-once storage at the second provider (see [Offsite copies](/en/configuration/backups/#offsite-copies)). Needs Catena Business. |
 | **Backup integrity check** | `Sun *-*-* 04:15:00` (Sundays, 4:15 AM) | up to 1 hour | Reads a sample of the backup repository end to end, which catches silent storage corruption between snapshots. |
 | **Control panel updates** | `monthly` | up to 30 minutes | Moves the control panel to a newer version, and puts the previous one back if the new one makes the server less healthy. The panel is unavailable for about a minute. |
 | **Server configuration** | `*-*-* 04:20:00` (every day, 4:20 AM) | up to 40 minutes | Brings the server back to the configuration its control panel carries. Anything that drifted is put back, and anything already correct is left alone. |

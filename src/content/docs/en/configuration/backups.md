@@ -76,7 +76,7 @@ The four values belong in a password manager as separate entries, kept outside t
 
 ## Offsite copies
 
-An offsite copy duplicates a bucket into a locked bucket at a different provider. It protects against a compromised server or account: the destination cannot be altered or deleted by anyone holding valid keys, until the lock expires. Offsite copies need Catena Pro or Catena Business; the [edition comparison](https://catena.run/en/#pricing) has the details.
+An offsite copy duplicates a bucket into a locked bucket at a different provider. It protects against a compromised server or account: the destination cannot be altered or deleted by anyone holding valid keys, until the lock expires. Offsite copies need Catena Business; the [edition comparison](https://catena.run/en/#pricing) has the details.
 
 ### Prerequisites
 
