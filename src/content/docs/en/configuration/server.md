@@ -16,12 +16,12 @@ The section ends with **Save and apply**. A name that is not a time zone is refu
 
 ## Bulk storage share
 
-**Settings** > **Bulk storage share (Windows/CIFS)** is for a server set up at install to mount a bulk storage share from a NAS over CIFS, the Windows file-sharing protocol. It holds the account that opens the share:
+**Settings** > **Bulk storage share (Windows/CIFS)** is for a server you set up at install to mount a bulk storage share from a NAS over CIFS, the Windows file-sharing protocol. It holds the account that opens the share:
 
 - **Bulk storage username (Windows share)**
 - **Bulk storage password (Windows share)**
 
-A share mounted over NFS needs none, and a server with no share leaves both blank. The mount itself is part of the server's installation, so a change here takes effect when the installation is applied again (`uvx catena-installer install --inventory <name>`, safe to rerun). The section has a plain **Save**; nothing restarts. The password is stored and never shown again.
+A share mounted over NFS needs none, and a server with no share leaves both blank. The mount itself is part of the server's installation, so a change here takes effect when you apply the installation again (`uvx catena-installer install --inventory <name>`, safe to rerun). The section has a plain **Save**; nothing restarts. The password is stored and never shown again.
 
 ## Server configuration
 
@@ -31,7 +31,7 @@ A share mounted over NFS needs none, and a server with no share leaves both blan
 
 - **Last brought up to date**: a timestamp, or "not yet".
 - **On a schedule**: "Yes, on the schedule set in Schedules." or "No. It happens when started here."
-- While running: "Bringing this server up to date." Some services restart meanwhile, so parts of the server may be briefly unavailable. The work continues even if the page is closed.
+- While running: "Bringing this server up to date." Some services restart meanwhile, so parts of the server may be briefly unavailable. The work continues even if you close the page.
 - "This server is paused for maintenance, so it was left as it is. It resumes on its own once the maintenance ends."
 - After a failure: "The last attempt did not finish. This server is still running on the configuration it had before, and nothing was left half-applied." A log of the attempt is folded under "What the server recorded during this attempt".
 
@@ -46,13 +46,13 @@ The form is hidden while a run is in progress or when the server cannot be asked
 ### When to use it
 
 - After a section reports "Saved, but applying it did not start, most likely because the server is already updating its configuration."
-- After attaching or removing an extra domain, or after a subscription starts or lapses, so that what it unlocks is switched on or off.
+- After you attach or remove an extra domain, or after your subscription starts or lapses, so that what it unlocks is switched on or off.
 - When the People panel reports it has no directory credential yet.
 - To repair a drifted service without reinstalling.
 
 ### Files managed by Catena
 
-Files that Catena manages on the server are put back to their intended content on every run, so hand edits to them do not survive. Settings meant to be changed are changed in the panel instead, where the value is stored and survives the run. Lines added by hand to the `ops` account's authorized SSH keys are the exception: they stay. See [Admin access and tailnet](/en/configuration/admin-access/).
+Files that Catena manages on the server are put back to their intended content on every run, so hand edits to them do not survive. Change settings meant to be changed in the panel instead, where the value is stored and survives the run. Lines you add by hand to the `ops` account's authorized SSH keys are the exception: they stay. See [Admin access and tailnet](/en/configuration/admin-access/).
 
 The run is not limited to the panel: the same configuration can also run on a schedule. See [Schedules](/en/configuration/schedules/).
 

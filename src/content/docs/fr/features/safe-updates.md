@@ -7,7 +7,7 @@ Le système d'exploitation se corrige de lui-même, quelle que soit l'édition. 
 
 ## Système d'exploitation
 
-Les mises à niveau automatiques de Debian sont seules à appliquer les paquets du système : mises à jour de sécurité, mises à jour stables et versions intermédiaires. Le serveur ne redémarre jamais de sa propre initiative. Une vérification horaire lit si un redémarrage est nécessaire, et une bannière sur chaque page d'administration le signale. Le redémarrage est une décision, prise depuis **Système** > **Redémarrage** (**Redémarrer ce serveur**), ou par l'entretien nocturne, qui ne redémarre qu'à sa dernière étape, seulement si c'est dû et seulement si cet horaire est activé.
+Les mises à niveau automatiques de Debian sont seules à appliquer les paquets du système : mises à jour de sécurité, mises à jour stables et versions intermédiaires. Le serveur ne redémarre jamais de sa propre initiative. Une vérification horaire lit si un redémarrage est nécessaire, et une bannière sur chaque page d'administration le signale. Le redémarrage est votre décision, prise depuis **Système** > **Redémarrage** (**Redémarrer ce serveur**), ou par l'entretien nocturne, qui ne redémarre qu'à sa dernière étape, seulement si c'est dû et seulement si cet horaire est activé.
 
 ## Entretien nocturne
 
@@ -16,7 +16,7 @@ Sur Catena Pro et Catena Business, **Horaires** > **Entretien nocturne** (désac
 ## Mises à jour des applications
 
 - **Seules les étiquettes complètes x.y.z sont mises à jour automatiquement.** Une étiquette comme `1.2.3` est admissible; `1.2`, `latest` ou `stable` ne sont jamais touchées.
-- **Politique.** Les applications du client reçoivent par défaut les mises à jour correctives (`1.2.3` vers `1.2.9`); les services d'infrastructure, les correctives et mineures. L'étiquette `vps.auto-update=off|patch|minor|major`, propre à chaque application, remplace le défaut pour les applications du client (voir [Configurer une application pour Catena](/fr/configure-apps/)). `off` laisse l'application telle quelle.
+- **Politique.** Vos applications reçoivent par défaut les mises à jour correctives (`1.2.3` vers `1.2.9`); les services d'infrastructure, les correctives et mineures. L'étiquette `vps.auto-update=off|patch|minor|major`, propre à chaque application, remplace le défaut pour vos applications (voir [Configurer une application pour Catena](/fr/configure-apps/)). `off` laisse l'application telle quelle.
 - **Délai d'attente.** Par défaut, une nouvelle version attend 7 jours après sa publication avant d'être adoptée.
 - **Correction des CVE (Catena Pro).** Avant une mise à jour, les versions candidates sont analysées. Une version qui ajoute une nouvelle CVE élevée ou critique est écartée au profit d'une version inférieure saine, ou la mise à jour attend. Une version plus récente qui retire une CVE de la version en marche s'applique sans le délai de 7 jours.
 - **Retour en arrière.** Après chaque changement, la santé du serveur est comparée à son état d'avant. En cas de régression, la version précédente est remise en place et la version fautive est mise de côté : la prochaine exécution essaie la version suivante. Une application avec base de données reçoit avant la mise à jour un vidage rejoué lors du retour en arrière. Une application dont la nouvelle version met à niveau sur place son code, sa configuration et ses modules complémentaires (Nextcloud) en reçoit aussi une copie, remise en place lors du retour en arrière; les fichiers de ses utilisateurs restent tels quels.
@@ -28,7 +28,7 @@ Le panneau a son propre horaire **Mises à jour du panneau de contrôle** (mensu
 
 ## Ce qu'ajoute chaque édition
 
-Communauté offre les correctifs du système, le signalement des redémarrages, la visibilité des versions et les mises à jour manuelles du panneau et du moteur; la mise à jour d'une application est un changement manuel d'étiquette dans Portainer. Catena Pro et Catena Business ajoutent les horaires, l'entretien nocturne, les mises à jour gérées des applications, la correction des CVE et le retour en arrière automatique. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté offre les correctifs du système, le signalement des redémarrages, la visibilité des versions et les mises à jour manuelles du panneau et du moteur; pour les applications, vous changez l'étiquette à la main dans Portainer. Catena Pro et Catena Business ajoutent les horaires, l'entretien nocturne, les mises à jour gérées des applications, la correction des CVE et le retour en arrière automatique. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 

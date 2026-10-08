@@ -3,20 +3,20 @@ title: "Vue d'ensemble de la configuration"
 description: "Où se trouve la page Paramètres, comment fonctionne un enregistrement et dans quel ordre un nouveau serveur se configure."
 ---
 
-Un serveur fraîchement installé ne demande que la façon de l'atteindre. Le domaine, Cloudflare, les sauvegardes, le courriel, le réseau privé et le reste se règlent ensuite dans le panneau d'administration, sur la page **Paramètres**.
+Un serveur fraîchement installé ne demande que la façon de l'atteindre. Vous réglez ensuite le domaine, Cloudflare, les sauvegardes, le courriel, le réseau privé et le reste dans le panneau d'administration, sur la page **Paramètres**.
 
 ## Où se trouve Paramètres
 
-**Paramètres** figure dans le menu de gauche du panneau d'administration et n'est visible que pour les administrateurs. Le panneau s'ouvre à l'adresse :
+**Paramètres** figure dans le menu de gauche du panneau d'administration et n'est visible que pour les administrateurs. Vous ouvrez le panneau à l'adresse :
 
-- `https://dash.yourdomain.com` une fois un domaine appliqué;
+- `https://dash.yourdomain.com` une fois que vous avez appliqué un domaine;
 - `http://localhost:9010` avant cela, par le transfert de port SSH que l'installateur garde ouvert (ou rouvre avec `uvx catena-installer connect --inventory <nom>`). Sans l'installateur, le transfert se fait ainsi :
 
 ```bash
 ssh -N -L 9010:127.0.0.1:9010 -L 9000:127.0.0.1:9000 panel@<adresse-du-serveur>
 ```
 
-La connexion utilise le courriel de l'administrateur et le mot de passe administrateur affiché une seule fois à l'installation. Voir [Installation](/fr/installation/).
+Connectez-vous avec le courriel de l'administrateur et le mot de passe administrateur affiché une seule fois à l'installation. Voir [Installation](/fr/installation/).
 
 ## Comment fonctionne un enregistrement
 
@@ -26,14 +26,14 @@ La connexion utilise le courriel de l'administrateur et le mot de passe administ
 - Une valeur que la section ne peut pas accepter est refusée en bloc : "Rien n'a été enregistré. Corrigez les champs signalés ci-dessous."
 - Les sections qui se terminent par **Enregistrer et appliquer** (Sous-domaines des applications d'infrastructure, Courriel sortant, Alertes et signalement des tâches manquées, Exigences de connexion, Fuseau horaire et paramètres régionaux) remettent le serveur à niveau aussitôt. La note sous le bouton indique : "L'enregistrement applique ces réglages immédiatement : les services qui les utilisent redémarrent et sont brièvement indisponibles." Le déroulement se suit dans **Configuration du serveur**, plus bas sur la page.
 - Les autres sections ont leur propre action : **Appliquer** pour **Domaine**, la jonction pour **Tunnel d'accès administrateur**, et un simple **Enregistrer** pour le reste. Les valeurs de sauvegarde sont lues par la sauvegarde elle-même et n'exigent aucun redémarrage.
-- Si l'application ne peut pas démarrer, la section l'indique : "Enregistré, mais l'application n'a pas démarré, sans doute parce que le serveur met déjà sa configuration à niveau." Lancer **Remettre ce serveur à niveau** une fois l'autre opération terminée applique les valeurs enregistrées. Voir [Paramètres du serveur](/fr/configuration/server/).
+- Si l'application ne peut pas démarrer, la section l'indique : "Enregistré, mais l'application n'a pas démarré, sans doute parce que le serveur met déjà sa configuration à niveau." Lancez **Remettre ce serveur à niveau** une fois l'autre opération terminée pour appliquer les valeurs enregistrées. Voir [Paramètres du serveur](/fr/configuration/server/).
 
 ## Ordre de la première configuration
 
 L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précédentes.
 
-1. [Abonnement](/fr/configuration/subscription/), si une clé Catena Pro ou Catena Business a été achetée. Enregistrer la clé en premier permet aux étapes suivantes d'utiliser ce qu'elle débloque, comme les horaires et les domaines supplémentaires.
-2. [Domaine et Cloudflare](/fr/configuration/domain/) : le jeton d'API Cloudflare, le domaine, puis **Appliquer**. Tant que cette étape n'est pas faite, le serveur fonctionne sans adresses publiques.
+1. [Abonnement](/fr/configuration/subscription/), si vous avez acheté une clé Catena Pro ou Catena Business. Enregistrer la clé en premier permet aux étapes suivantes d'utiliser ce qu'elle débloque, comme les horaires et les domaines supplémentaires.
+2. [Domaine et Cloudflare](/fr/configuration/domain/) : le jeton d'API Cloudflare, le domaine, puis **Appliquer**. Tant que vous ne l'avez pas faite, le serveur fonctionne sans adresses publiques.
 3. [Sauvegardes et stockage S3](/fr/configuration/backups/) : le dépôt et ses clés, puis **Générer le mot de passe de chiffrement des sauvegardes**, puis la trousse de reprise après sinistre à conserver dans un gestionnaire de mots de passe.
 4. [Horaires](/fr/configuration/schedules/) : l'activation des horaires de sauvegarde et d'entretien (Catena Pro ou Catena Business).
 5. [Courriel sortant](/fr/configuration/email/) : le service de courriel utilisé pour les réinitialisations de mot de passe, les invitations et les alertes.
