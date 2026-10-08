@@ -140,6 +140,7 @@ Sur le service d'entrée, une seule fois.
 | `vps.route.service` | Une clé de service du fichier | le service dont l'alias est le nom de l'application | Pour une application publique, le service dont le premier alias sur `catena-network` reçoit le trafic. Une application privée est toujours jointe par l'alias égal à son nom. |
 | `vps.auth.mode` | `public`, `private`, `admin-only` | aucun | `public` : aucune barrière. `private` : les groupes de `vps.auth.groups`, ou `admin`, `client` et `staff` quand aucun n'est listé. `admin-only` : administrateurs seulement. |
 | `vps.auth.groups` | Noms de groupes Keycloak, séparés par des virgules | aucun | Groupes admis; une personne dans l'un d'eux entre. Ignorée avec `public` et `admin-only`. Le groupe `visitor` rend l'application publique. |
+| `vps.auth.protected` | `true`, `false` | `false` | `true` désigne une application qui ne doit pas être publique : si ses étiquettes la rendent publique quand même, sa tuile dans **Applications** porte le badge "devrait exiger une connexion", visible des administrateurs seulement. |
 | `vps.auth.oidc` | `true`, `false` | `false` | Affiche un badge OIDC sur la tuile de l'application. Ne crée aucun client de connexion. |
 
 Sans `vps.auth.mode` ni `vps.auth.groups`, seuls les administrateurs entrent. Les administrateurs entrent toujours dans une application privée.

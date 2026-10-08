@@ -140,6 +140,7 @@ On the front-door service, once.
 | `vps.route.service` | A service key in the file | the service whose alias is the app's name | For a public app, the service whose first `catena-network` alias receives the traffic. A private app is always reached through the alias equal to its name. |
 | `vps.auth.mode` | `public`, `private`, `admin-only` | none | `public`: no gate. `private`: the groups in `vps.auth.groups`, or `admin`, `client` and `staff` when none are listed. `admin-only`: administrators only. |
 | `vps.auth.groups` | Keycloak group names, comma-separated | none | Groups allowed in; a person in any one of them gets in. Ignored with `public` and `admin-only`. The group `visitor` makes the app public. |
+| `vps.auth.protected` | `true`, `false` | `false` | `true` marks an app that must not be public: when its labels make it public anyway, its tile on **Apps** carries the badge "should require sign-in", shown to administrators only. |
 | `vps.auth.oidc` | `true`, `false` | `false` | Shows an OIDC badge on the app's tile. Creates no sign-in client. |
 
 With neither `vps.auth.mode` nor `vps.auth.groups`, only administrators get in. Administrators always get into a private app.
