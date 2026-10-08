@@ -68,7 +68,7 @@ services:
       - nc-apps:/var/www/html/custom_apps
       - nc-data:/var/www/html/data
     labels:
-      - "vps.route.host=${DOMAIN_HOST}"
+      - "vps.route.host=nextcloud.yourdomain.com"
       - "vps.route.port=80"
       - "vps.route.service=app"
       - "vps.auth.mode=public"

@@ -76,16 +76,7 @@ Seules les images épinglées à une étiquette de version complète sont mises 
 
 ### L'étiquette vps.auto-update
 
-L'étiquette `vps.auto-update` d'une application détermine jusqu'où son numéro de version peut avancer :
-
-| Valeur | Avance vers |
-|---|---|
-| `off` | rien; l'application est laissée telle quelle |
-| `patch` | les versions plus récentes de mêmes numéros majeur et mineur |
-| `minor` | les versions plus récentes de même numéro majeur |
-| `major` | toute version plus récente |
-
-`patch+minor` est aussi accepté et, comme `minor`, garde le numéro majeur fixe. Les applications ont `patch` par défaut, tout comme une valeur absente ou invalide. Les services propres à Catena ont `patch+minor` par défaut. Des services qui partagent une même image prennent l'étiquette la plus restrictive. Les étiquettes se posent dans le fichier compose de l'application (voir [Configurer une application pour Catena](/fr/configure-apps/)).
+L'étiquette `vps.auto-update` d'une application détermine jusqu'où son numéro de version peut avancer, de `off` à `major`; ses valeurs figurent dans la [référence des étiquettes](/fr/configure-apps/#identité-et-mises-à-jour). Les applications ont `patch` par défaut, qui garde les numéros majeur et mineur; les services propres à Catena ont `patch+minor` par défaut, qui garde le numéro majeur. Des services qui partagent une même image prennent l'étiquette la plus restrictive.
 
 ### Délai d'attente et barrière de vulnérabilités
 

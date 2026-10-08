@@ -1,0 +1,50 @@
+services:
+  web:
+    image: example/web:1.2.3
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
+    volumes:
+      - web-data:/data
+    networks:
+      catena-network:
+        aliases:
+          - my-app
+      default: {}
+    labels:
+      - "vps.route.host=my-app.yourdomain.com"
+      - "vps.route.port=8080"
+      - "vps.auth.groups=staff"
+      - "vps.health.path=/health"
+      - "vps.app=my-app"
+      - "vps.component=web"
+
+  db:
+    image: postgres:1.2.3-alpine
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.labels.catena.role==data
+    environment:
+      POSTGRES_USER: my-app
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - default
+    labels:
+      - "vps.app=my-app"
+      - "vps.component=db"
+
+volumes:
+  web-data:
+  db-data:
+
+networks:
+  catena-network:
+    external: true

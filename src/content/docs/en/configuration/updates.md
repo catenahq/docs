@@ -76,16 +76,7 @@ Only images pinned to a full version tag are updated automatically: `1.2.3`, `v1
 
 ### The vps.auto-update label
 
-An application's `vps.auto-update` label sets how far its tag may move:
-
-| Value | Moves to |
-|---|---|
-| `off` | nothing; the application is left alone |
-| `patch` | newer releases with the same major and minor number |
-| `minor` | newer releases with the same major number |
-| `major` | any newer release |
-
-`patch+minor` is also accepted and, like `minor`, keeps the major number fixed. Applications default to `patch`; so does a missing or invalid value. Catena's own services default to `patch+minor`. Services that share one image take the most restrictive label. Labels are set in the application's compose file (see [Configure an app for Catena](/en/configure-apps/)).
+An application's `vps.auto-update` label sets how far its tag may move, from `off` to `major`; its values are in the [label reference](/en/configure-apps/#identity-and-updates). Applications default to `patch`, which keeps the major and minor numbers; Catena's own services default to `patch+minor`, which keeps the major number. Services that share one image take the most restrictive label.
 
 ### Waiting period and vulnerability gate
 
