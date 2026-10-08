@@ -9,7 +9,7 @@ import publishedPort from "../../../examples/published-port.yml?raw";
 import nextcloudCompose from "../../../examples/nextcloud-compose.yml?raw";
 import nextcloudOidcProvider from "../../../examples/nextcloud-oidc-provider.sh?raw";
 
-Catena manages an app from labels written in its compose file: it publishes the address, puts the sign-in gate in front, backs up the data, updates the images and watches the app on the status page. This guide prepares an app's own compose file and deploys it from Portainer. An app that goes through every step is fully managed.
+Catena manages an app from labels written in its compose file: it publishes the address, puts the sign-in gate in front, backs up the data, updates the images and watches the app on the status page. In this guide, you prepare an app's own compose file and deploy it from Portainer. An app that goes through every step is fully managed.
 
 When the software is in the catalog (Portainer, **App Templates**), the catalog entry is the shorter route: its labels, networks, placement and sign-in client are already in place, and the buttons in the panel's **Actions** tab finish the wiring after the first deploy.
 
@@ -17,11 +17,11 @@ When the software is in the catalog (Portainer, **App Templates**), the catalog 
 
 An app is a set of services. One of them, the **front-door service**, answers the web requests: the web server or the application server. The others (database, cache, background workers) are internal and stay out of reach of the internet and of other apps.
 
-Labels are written under each service's own `labels:` key, as a list with one `"key=value"` per line. The status page, restores, migrations and updates read them from there; labels under `deploy.labels` are not seen by them.
+You write labels under each service's own `labels:` key, as a list with one `"key=value"` per line. The status page, restores, migrations and updates read them from there; labels under `deploy.labels` are not seen by them.
 
 Most labels describe the app as a whole: its address, who gets in, its health check, its tile. They go once, on the front-door service. Catena reads them from the whole file and keeps the last one it finds, so the same label on another service, or in a commented-out line, overrides the front door's. Only the update policy describes a single service, and it is optional. Which app a service belongs to and what it is are read from Docker Swarm itself: the app's name in Portainer and the service's key in the file. The [label reference](#label-reference) says where each label goes.
 
-Label values are written out in full, such as the address itself, rather than as a `${VARIABLE}`.
+Write label values out in full, such as the address itself, rather than as a `${VARIABLE}`.
 
 The skeleton below has every piece the steps add: a front-door service `web` and a database `db`.
 
@@ -29,16 +29,16 @@ The skeleton below has every piece the steps add: a front-door service `web` and
 
 ## Step 1: Choose the app's name
 
-The app gets one short name made of lower-case letters, digits and hyphens, such as `my-app`. The same name is used twice:
+Give the app one short name made of lower-case letters, digits and hyphens, such as `my-app`. You use the same name twice:
 
-- the app's name in Portainer, given at deploy time (step 7);
+- the app's name in Portainer, which you give at deploy time (step 7);
 - the front-door service's alias on `catena-network` (step 3).
 
 Restores, migrations and updates find the app by its name in Portainer, and the sign-in gate always reaches it through the alias equal to that name.
 
 ## Step 2: Make the file ready for Docker Swarm
 
-Apps run on Docker Swarm, which refuses some compose keys outright and silently ignores others. The catalog is checked against these rules; a hand-written file follows them itself.
+Apps run on Docker Swarm, which refuses some compose keys outright and silently ignores others. The catalog is checked against these rules; when you write a file by hand, you follow them yourself.
 
 - **Restart policy.** Every service has `deploy.restart_policy.condition`, for example `any`.
 - **Placement for data.** Every service that mounts a named volume or a host folder has the placement constraint `node.labels.catena.role==data`. A volume is local to one server: on another, swarm creates it empty, without an error.
@@ -84,12 +84,12 @@ Nothing else is labelled per service. A service whose image is a database or cac
 ## Step 6: Plan the data
 
 - **Named volumes** live in the Docker volumes folder and are in every backup. Each volume is declared by name: anonymous volumes are backed up too, but a single-app restore cannot reach them.
-- **Bind mounts** inside the apps area are included. A bind mount to any other absolute path makes the backup fail, unless that folder is listed under **Settings** > **Backup repository** > **Other folders to back up (separated by commas)**. See [Backups and S3 storage](/en/configuration/backups/).
+- **Bind mounts** inside the apps area are included. A bind mount to any other absolute path makes the backup fail, unless you list that folder under **Settings** > **Backup repository** > **Other folders to back up (separated by commas)**. See [Backups and S3 storage](/en/configuration/backups/).
 - **Databases are dumped automatically** before each backup. The image name decides, not a label:
   - a running container whose image name contains `postgres` is dumped with `pg_dumpall`, as the user in `POSTGRES_USER`;
   - a container whose image name contains `mariadb` or `mysql` is dumped, and needs `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in its environment;
   - a dump that fails fails the backup.
-- **Other engines** (MongoDB, SQLite and similar) get no automatic dump. The app needs its own export, or a volume copy that is consistent on its own.
+- **Other engines** (MongoDB, SQLite and similar) get no automatic dump. You need the app's own export, or a volume copy that is consistent on its own.
 - **Large file sets** belong in S3-backed storage rather than in a local volume, which keeps the backup small.
 
 A backup does not pause an app added by hand: nothing is put in maintenance mode around the snapshot. A catalog entry can ask for it instead: Nextcloud, for one, is put in maintenance mode while the nightly maintenance takes its backup, and taken out of it afterwards, even when the backup fails.
@@ -99,7 +99,7 @@ A backup does not pause an app added by hand: nothing is put in maintenance mode
 1. In Portainer, open **Stacks** and add a new one.
 2. Set its name to the app's name from step 1.
 3. Paste the compose file in the web editor.
-4. Enter passwords and keys in the **Environment variables** section and refer to them in the file as `${VARIABLE}`. They stay out of the file, so they can be rotated without editing it.
+4. Enter passwords and keys in the **Environment variables** section and refer to them in the file as `${VARIABLE}`. They stay out of the file, so you can rotate them without editing it.
 5. Deploy.
 
 ## Step 8: Check
@@ -112,7 +112,7 @@ When a check fails, the [troubleshooting table](#troubleshooting) lists the usua
 
 ## Sign in with Catena accounts (optional)
 
-An app that supports OpenID Connect can let people sign in with their Catena account instead of a separate password. Labels create nothing here: the client is made by hand.
+An app that supports OpenID Connect can let people sign in with their Catena account instead of a separate password. Labels create nothing here: you make the client by hand.
 
 1. Open the Keycloak admin console at `auth.yourdomain.com`, realm `vps`, **Clients**, and create a client.
 2. Set a client ID, turn **Client authentication** on, and set the valid redirect URI to the app's callback address (the app's documentation names it).
@@ -177,11 +177,11 @@ On the service that publishes the ports.
 
 ## Worked example: Nextcloud
 
-The catalog entry for Nextcloud is the recommended way to run it: it carries more precautions than the simplified file below, and its sign-in client is already made. Deploying the catalog entry, filling the storage fields in its environment and running **Wire Nextcloud OIDC** is the whole procedure. The file below shows the same design with the pieces a hand-written app needs, deployed in Portainer under the name `my-nextcloud`. Image tags are placeholders.
+The catalog entry for Nextcloud is the recommended way to run it: it carries more precautions than the simplified file below, and its sign-in client is already made. Deploy the catalog entry, fill the storage fields in its environment and run **Wire Nextcloud OIDC**: that is the whole procedure. The file below shows the same design with the pieces a hand-written app needs, deployed in Portainer under the name `my-nextcloud`. Image tags are placeholders.
 
 <Code code={nextcloudCompose} lang="yaml" />
 
-The variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, the `S3_*` and `OIDC_*` values) are entered in Portainer's environment variables section at deploy time. `NEXTCLOUD_HOSTNAME` is `nextcloud.yourdomain.com`.
+You enter the variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, the `S3_*` and `OIDC_*` values) in Portainer's environment variables section at deploy time. `NEXTCLOUD_HOSTNAME` is `nextcloud.yourdomain.com`.
 
 ### Why each part is there
 
@@ -200,28 +200,28 @@ The variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, the `S3_*` and `OIDC_*` valu
 
 In the catalog app, the client in Keycloak and the `OIDC_*` values already exist. After the first deploy, **Actions** > **Initial apps setup** > **Wire Nextcloud OIDC** enables the `user_oidc` app and registers the provider. It is safe to run again after a redeploy or a secret rotation.
 
-For the hand-deployed file, the client is created by hand (see [Sign in with Catena accounts](#sign-in-with-catena-accounts-optional)):
+For the hand-deployed file, you create the client by hand (see [Sign in with Catena accounts](#sign-in-with-catena-accounts-optional)):
 
 - Client ID `nextcloud`, **Client authentication** on.
 - Valid redirect URI `https://nextcloud.yourdomain.com/apps/user_oidc/code`.
 - The default `groups`, `profile` and `email` scopes assigned to the client.
 
-The ID, secret and issuer go into `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` and `OIDC_ISSUER_URL` (`https://auth.yourdomain.com/realms/vps`). The provider is then registered inside Nextcloud with `occ`, run in the `app` container (from the server's shell, or the container's console in Portainer):
+The ID, secret and issuer go into `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` and `OIDC_ISSUER_URL` (`https://auth.yourdomain.com/realms/vps`). You then register the provider inside Nextcloud with `occ`, run in the `app` container (from the server's shell, or the container's console in Portainer):
 
 <Code code={nextcloudOidcProvider} lang="bash" />
 
-The command creates the provider or updates it, so it can be repeated. Nextcloud's login page then shows **Log in with keycloak**. The local admin account keeps working as a fallback.
+The command creates the provider or updates it, so you can repeat it. Nextcloud's login page then shows **Log in with keycloak**. The local admin account keeps working as a fallback.
 
 ## Troubleshooting
 
 | Symptom | Cause and fix |
 |---|---|
-| 502 or 503 on the address | The proxy cannot reach the app. The front-door service is on `catena-network` with an alias equal to the app's name in Portainer, and `vps.route.port` is the port it listens on. Logs are in Portainer. |
+| 502 or 503 on the address | The proxy cannot reach the app. The front-door service is on `catena-network` with an alias equal to the app's name in Portainer, and `vps.route.port` is the port it listens on. Read the logs in Portainer. |
 | 403 after signing in | The person is in none of the allowed groups. The group in `vps.auth.groups` exists in Keycloak, matches exactly (letter case included), and the person is a member (**People** or Keycloak). |
 | Only administrators get in | Neither `vps.auth.mode` nor `vps.auth.groups` is set, or the mode is not `public`, `private` or `admin-only` and no groups are listed. |
 | No route, or the wrong address or access | No `vps.route.host`, or a front-door label repeated on another service or in a commented-out line overrides it. The route sync runs every 5 minutes; **Sync all (apps + monitors)** in **Actions** runs it at once. |
 | Red card on the status page | A public app without `vps.health.path`, a path that does not answer 200, or a `vps.health.expect` text that is absent from the reply. |
-| Backup failed on a bind mount | The mount is outside the apps area. The data moves to a named volume, or the folder is listed under **Settings** > **Backup repository** > **Other folders to back up (separated by commas)**. |
+| Backup failed on a bind mount | The mount is outside the apps area. Move the data to a named volume, or list the folder under **Settings** > **Backup repository** > **Other folders to back up (separated by commas)**. |
 | Backup failed on a database | The dump failed. A MariaDB or MySQL container needs `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD`; a Postgres container needs a valid `POSTGRES_USER`. |
 | Update skipped | The tag is not a full version (`latest`, `1.2`), `vps.auto-update` is `off`, or the move exceeds the label (a major release under `patch`). The newest release may also be held back by the vulnerability or waiting-period checks. |
 | Service restarts in a loop at first deploy | Nothing waits for the database. The service's entrypoint waits for it, as in the Nextcloud example. |

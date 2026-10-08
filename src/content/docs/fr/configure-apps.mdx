@@ -9,7 +9,7 @@ import publishedPort from "../../../examples/published-port.yml?raw";
 import nextcloudCompose from "../../../examples/nextcloud-compose.yml?raw";
 import nextcloudOidcProvider from "../../../examples/nextcloud-oidc-provider.sh?raw";
 
-Catena gère une application à partir d'étiquettes (labels) écrites dans son fichier compose : il publie l'adresse, place la barrière de connexion devant, sauvegarde les données, met les images à jour et surveille l'application sur la page d'état. Ce guide prépare le fichier compose propre à une application et le déploie depuis Portainer. Une application qui passe par toutes les étapes est entièrement gérée.
+Catena gère une application à partir d'étiquettes (labels) écrites dans son fichier compose : il publie l'adresse, place la barrière de connexion devant, sauvegarde les données, met les images à jour et surveille l'application sur la page d'état. Dans ce guide, vous préparez le fichier compose propre à une application et le déployez depuis Portainer. Une application qui passe par toutes les étapes est entièrement gérée.
 
 Quand le logiciel figure au catalogue (Portainer, **App Templates**), l'entrée du catalogue est le chemin le plus court : ses étiquettes, ses réseaux, son placement et son client de connexion sont déjà en place, et les boutons de l'onglet **Actions** du panneau terminent le câblage après le premier déploiement.
 
@@ -17,11 +17,11 @@ Quand le logiciel figure au catalogue (Portainer, **App Templates**), l'entrée 
 
 Une application est un ensemble de services. L'un d'eux, le **service d'entrée**, répond aux requêtes web : le serveur web ou le serveur d'application. Les autres (base de données, cache, tâches de fond) sont internes et restent hors de portée d'Internet et des autres applications.
 
-Les étiquettes s'écrivent sous la clé `labels:` propre à chaque service, en liste, une `"clé=valeur"` par ligne. La page d'état, les restaurations, les migrations et les mises à jour les lisent à cet endroit; les étiquettes placées sous `deploy.labels` leur échappent.
+Vous écrivez les étiquettes sous la clé `labels:` propre à chaque service, en liste, une `"clé=valeur"` par ligne. La page d'état, les restaurations, les migrations et les mises à jour les lisent à cet endroit; les étiquettes placées sous `deploy.labels` leur échappent.
 
 La plupart des étiquettes décrivent l'application dans son ensemble : son adresse, qui peut entrer, son contrôle de santé, sa tuile. Elles figurent une seule fois, sur le service d'entrée. Catena les lit dans tout le fichier et garde la dernière trouvée : la même étiquette sur un autre service, ou dans une ligne mise en commentaire, remplace celle du service d'entrée. Seule la politique de mise à jour décrit un service en particulier, et elle est facultative. L'application à laquelle un service appartient et ce qu'il est se lisent dans Docker Swarm lui-même : le nom de l'application dans Portainer et la clé du service dans le fichier. La [référence des étiquettes](#référence-des-étiquettes) indique où va chacune.
 
-Les valeurs des étiquettes s'écrivent en clair, comme l'adresse elle-même, plutôt que sous forme de `${VARIABLE}`.
+Écrivez les valeurs des étiquettes en clair, comme l'adresse elle-même, plutôt que sous forme de `${VARIABLE}`.
 
 Le squelette ci-dessous contient chaque élément qu'ajoutent les étapes : un service d'entrée `web` et une base de données `db`.
 
@@ -29,16 +29,16 @@ Le squelette ci-dessous contient chaque élément qu'ajoutent les étapes : un s
 
 ## Étape 1 : Choisir le nom de l'application
 
-L'application reçoit un nom court fait de lettres minuscules, de chiffres et de traits d'union, comme `my-app`. Ce même nom sert deux fois :
+Donnez à l'application un nom court fait de lettres minuscules, de chiffres et de traits d'union, comme `my-app`. Vous utilisez ce même nom deux fois :
 
-- le nom de l'application dans Portainer, donné au déploiement (étape 7);
+- le nom de l'application dans Portainer, que vous donnez au déploiement (étape 7);
 - l'alias du service d'entrée sur `catena-network` (étape 3).
 
 Les restaurations, les migrations et les mises à jour trouvent l'application par son nom dans Portainer, et la barrière de connexion la joint toujours par l'alias égal à ce nom.
 
 ## Étape 2 : Préparer le fichier pour Docker Swarm
 
-Les applications tournent sur Docker Swarm, qui refuse certaines clés compose net et en ignore d'autres sans rien dire. Le catalogue est vérifié contre ces règles; un fichier écrit à la main les respecte lui-même.
+Les applications tournent sur Docker Swarm, qui refuse certaines clés compose net et en ignore d'autres sans rien dire. Le catalogue est vérifié contre ces règles; quand vous écrivez un fichier à la main, vous les respectez vous-même.
 
 - **Politique de redémarrage.** Chaque service a un `deploy.restart_policy.condition`, par exemple `any`.
 - **Placement des données.** Chaque service qui monte un volume nommé ou un dossier de l'hôte porte la contrainte de placement `node.labels.catena.role==data`. Un volume est local à un serveur : sur un autre, swarm le crée vide, sans erreur.
@@ -84,41 +84,41 @@ Rien d'autre ne s'étiquette par service. Un service dont l'image est une base d
 ## Étape 6 : Prévoir les données
 
 - **Les volumes nommés** résident dans le dossier des volumes Docker et figurent dans chaque sauvegarde. Chaque volume est déclaré par son nom : les volumes anonymes sont aussi sauvegardés, mais une restauration d'une seule application ne les atteint pas.
-- **Les montages liés (bind)** dans la zone des applications sont inclus. Un montage lié vers tout autre chemin absolu fait échouer la sauvegarde, sauf si ce dossier figure sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. Voir [Sauvegardes et stockage S3](/fr/configuration/backups/).
+- **Les montages liés (bind)** dans la zone des applications sont inclus. Un montage lié vers tout autre chemin absolu fait échouer la sauvegarde, sauf si vous inscrivez ce dossier sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. Voir [Sauvegardes et stockage S3](/fr/configuration/backups/).
 - **Les bases de données sont copiées automatiquement** avant chaque sauvegarde. C'est le nom de l'image qui décide, pas une étiquette :
   - un conteneur en cours d'exécution dont le nom d'image contient `postgres` est copié avec `pg_dumpall`, sous l'utilisateur de `POSTGRES_USER`;
   - un conteneur dont le nom d'image contient `mariadb` ou `mysql` est copié, et exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD` dans son environnement;
   - une copie qui échoue fait échouer la sauvegarde.
-- **Les autres moteurs** (MongoDB, SQLite et semblables) n'ont aucune copie automatique. L'application a besoin de sa propre exportation, ou d'une copie de volume cohérente en soi.
+- **Les autres moteurs** (MongoDB, SQLite et semblables) n'ont aucune copie automatique. Vous avez besoin de l'exportation propre à l'application, ou d'une copie de volume cohérente en soi.
 - **Les grands ensembles de fichiers** gagnent à vivre dans un stockage S3 plutôt que dans un volume local, ce qui garde la sauvegarde légère.
 
 Une sauvegarde ne met pas en pause une application ajoutée à la main : rien n'est placé en mode maintenance autour de l'instantané. Une entrée du catalogue peut le demander : Nextcloud, par exemple, est placé en mode maintenance pendant la sauvegarde de l'entretien nocturne et en est sorti ensuite, même quand la sauvegarde échoue.
 
 ## Étape 7 : Déployer
 
-1. Dans Portainer, ouvrir **Stacks** et en ajouter un nouveau.
-2. Lui donner le nom de l'application choisi à l'étape 1.
-3. Coller le fichier compose dans l'éditeur web.
-4. Saisir les mots de passe et les clés dans la section **Environment variables** et y faire référence dans le fichier sous la forme `${VARIABLE}`. Ils restent hors du fichier et peuvent être renouvelés sans le modifier.
-5. Déployer.
+1. Dans Portainer, ouvrez **Stacks** et ajoutez-en un nouveau.
+2. Donnez-lui le nom de l'application choisi à l'étape 1.
+3. Collez le fichier compose dans l'éditeur web.
+4. Saisissez les mots de passe et les clés dans la section **Environment variables** et faites-y référence dans le fichier sous la forme `${VARIABLE}`. Ils restent hors du fichier et vous pouvez les renouveler sans le modifier.
+5. Déployez.
 
 ## Étape 8 : Vérifier
 
-1. Dans l'onglet **Actions** du panneau, lancer **Synchroniser tout (apps + moniteurs)**. Sans cela, la route apparaît en cinq minutes environ et la carte de la page d'état en dix environ.
-2. Ouvrir l'adresse. Une application privée affiche d'abord la page de connexion; une application publique s'ouvre directement.
+1. Dans l'onglet **Actions** du panneau, lancez **Synchroniser tout (apps + moniteurs)**. Sans cela, la route apparaît en cinq minutes environ et la carte de la page d'état en dix environ.
+2. Ouvrez l'adresse. Une application privée affiche d'abord la page de connexion; une application publique s'ouvre directement.
 3. La tuile de l'application figure dans l'onglet **Applications**, et sa carte sur la page d'état passe au vert.
 
 Quand une vérification échoue, le [tableau de dépannage](#dépannage) énumère les causes habituelles.
 
 ## Connexion avec les comptes Catena (facultatif)
 
-Une application qui prend en charge OpenID Connect peut laisser les gens se connecter avec leur compte Catena plutôt qu'avec un mot de passe distinct. Les étiquettes ne créent rien ici : le client se crée à la main.
+Une application qui prend en charge OpenID Connect peut laisser les gens se connecter avec leur compte Catena plutôt qu'avec un mot de passe distinct. Les étiquettes ne créent rien ici : vous créez le client à la main.
 
-1. Ouvrir la console d'administration de Keycloak à `auth.yourdomain.com`, domaine (realm) `vps`, **Clients**, et créer un client.
-2. Fixer un identifiant de client, activer **Client authentication**, et définir l'URI de redirection valide à l'adresse de rappel de l'application (la documentation de l'application la nomme).
-3. Copier le secret du client depuis l'onglet **Credentials**.
-4. Transmettre l'identifiant, le secret et l'émetteur `https://auth.yourdomain.com/realms/vps` à l'application par ses variables d'environnement, sous les noms qu'elle attend.
-5. Au besoin, ajouter `vps.auth.oidc=true` au service d'entrée : la tuile affiche alors un badge OIDC.
+1. Ouvrez la console d'administration de Keycloak à `auth.yourdomain.com`, domaine (realm) `vps`, **Clients**, et créez un client.
+2. Fixez un identifiant de client, activez **Client authentication**, et définissez l'URI de redirection valide à l'adresse de rappel de l'application (la documentation de l'application la nomme).
+3. Copiez le secret du client depuis l'onglet **Credentials**.
+4. Transmettez l'identifiant, le secret et l'émetteur `https://auth.yourdomain.com/realms/vps` à l'application par ses variables d'environnement, sous les noms qu'elle attend.
+5. Au besoin, ajoutez `vps.auth.oidc=true` au service d'entrée : la tuile affiche alors un badge OIDC.
 
 Voir [Authentification unique](/fr/features/single-sign-on/) pour le fonctionnement de la connexion entre applications.
 
@@ -177,11 +177,11 @@ Sur le service qui publie les ports.
 
 ## Exemple complet : Nextcloud
 
-L'entrée du catalogue pour Nextcloud est la façon recommandée de l'exploiter : elle comporte plus de précautions que le fichier simplifié ci-dessous, et son client de connexion est déjà créé. Déployer l'entrée du catalogue, remplir les champs de stockage dans son environnement et lancer **Câbler l'OIDC pour Nextcloud** constitue toute la procédure. Le fichier ci-dessous montre la même conception avec les éléments dont une application écrite à la main a besoin, déployée dans Portainer sous le nom `my-nextcloud`. Les versions d'images sont des valeurs fictives.
+L'entrée du catalogue pour Nextcloud est la façon recommandée de l'exploiter : elle comporte plus de précautions que le fichier simplifié ci-dessous, et son client de connexion est déjà créé. Déployez l'entrée du catalogue, remplissez les champs de stockage dans son environnement et lancez **Câbler l'OIDC pour Nextcloud** : c'est toute la procédure. Le fichier ci-dessous montre la même conception avec les éléments dont une application écrite à la main a besoin, déployée dans Portainer sous le nom `my-nextcloud`. Les versions d'images sont des valeurs fictives.
 
 <Code code={nextcloudCompose} lang="yaml" />
 
-Les variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, les valeurs `S3_*` et `OIDC_*`) se saisissent dans la section des variables d'environnement de Portainer au moment du déploiement. `NEXTCLOUD_HOSTNAME` vaut `nextcloud.yourdomain.com`.
+Vous saisissez les variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, les valeurs `S3_*` et `OIDC_*`) dans la section des variables d'environnement de Portainer au moment du déploiement. `NEXTCLOUD_HOSTNAME` vaut `nextcloud.yourdomain.com`.
 
 ### Pourquoi chaque élément
 
@@ -200,28 +200,28 @@ Les variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, les valeurs `S3_*` et `OIDC_
 
 Dans l'application du catalogue, le client Keycloak et les valeurs `OIDC_*` existent déjà. Après le premier déploiement, **Actions** > **Configuration initiale** > **Câbler l'OIDC pour Nextcloud** active l'application `user_oidc` et enregistre le fournisseur. L'opération peut être relancée sans risque après un redéploiement ou un renouvellement de secret.
 
-Pour le fichier déployé à la main, le client se crée à la main (voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif)) :
+Pour le fichier déployé à la main, vous créez le client à la main (voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif)) :
 
 - Identifiant de client `nextcloud`, **Client authentication** activé.
 - URI de redirection valide `https://nextcloud.yourdomain.com/apps/user_oidc/code`.
 - Les portées par défaut `groups`, `profile` et `email` attribuées au client.
 
-L'identifiant, le secret et l'émetteur vont dans `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` (`https://auth.yourdomain.com/realms/vps`). Le fournisseur s'enregistre ensuite dans Nextcloud avec `occ`, exécuté dans le conteneur `app` (depuis l'interpréteur de commandes du serveur, ou la console du conteneur dans Portainer) :
+L'identifiant, le secret et l'émetteur vont dans `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` (`https://auth.yourdomain.com/realms/vps`). Vous enregistrez ensuite le fournisseur dans Nextcloud avec `occ`, exécuté dans le conteneur `app` (depuis l'interpréteur de commandes du serveur, ou la console du conteneur dans Portainer) :
 
 <Code code={nextcloudOidcProvider} lang="bash" />
 
-La commande crée le fournisseur ou le met à jour : elle peut être répétée. La page de connexion de Nextcloud affiche alors **Se connecter avec keycloak**. Le compte administrateur local continue de fonctionner en secours.
+La commande crée le fournisseur ou le met à jour : vous pouvez la répéter. La page de connexion de Nextcloud affiche alors **Se connecter avec keycloak**. Le compte administrateur local continue de fonctionner en secours.
 
 ## Dépannage
 
 | Symptôme | Cause et correction |
 |---|---|
-| 502 ou 503 sur l'adresse | Le mandataire ne joint pas l'application. Le service d'entrée est sur `catena-network` avec un alias égal au nom de l'application dans Portainer, et `vps.route.port` est son port d'écoute. Les journaux se lisent dans Portainer. |
+| 502 ou 503 sur l'adresse | Le mandataire ne joint pas l'application. Le service d'entrée est sur `catena-network` avec un alias égal au nom de l'application dans Portainer, et `vps.route.port` est son port d'écoute. Lisez les journaux dans Portainer. |
 | 403 après la connexion | La personne n'est dans aucun groupe autorisé. Le groupe de `vps.auth.groups` existe dans Keycloak, correspond exactement (majuscules comprises), et la personne en est membre (**Personnes** ou Keycloak). |
 | Seuls les administrateurs entrent | Ni `vps.auth.mode` ni `vps.auth.groups` n'est défini, ou le mode n'est pas `public`, `private` ou `admin-only` et aucun groupe n'est listé. |
 | Pas de route, ou une adresse ou un accès erronés | Aucun `vps.route.host`, ou une étiquette du service d'entrée répétée sur un autre service ou dans une ligne mise en commentaire la remplace. La synchronisation des routes s'exécute toutes les 5 minutes; **Synchroniser tout (apps + moniteurs)** dans **Actions** la lance tout de suite. |
 | Carte rouge sur la page d'état | Application publique sans `vps.health.path`, chemin qui ne répond pas 200, ou texte `vps.health.expect` absent de la réponse. |
-| Sauvegarde échouée sur un montage lié | Le montage est hors de la zone des applications. Les données passent à un volume nommé, ou le dossier est inscrit sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. |
+| Sauvegarde échouée sur un montage lié | Le montage est hors de la zone des applications. Déplacez les données vers un volume nommé, ou inscrivez le dossier sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. |
 | Sauvegarde échouée sur une base de données | La copie a échoué. Un conteneur MariaDB ou MySQL exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD`; un conteneur Postgres exige un `POSTGRES_USER` valide. |
 | Mise à jour ignorée | L'image n'a pas de version complète (`latest`, `1.2`), `vps.auto-update` vaut `off`, ou le saut dépasse l'étiquette (une version majeure sous `patch`). La version la plus récente peut aussi être retenue par les contrôles de vulnérabilités ou le délai d'attente. |
 | Redémarrages en boucle au premier déploiement | Rien n'attend la base de données. L'entrypoint du service l'attend, comme dans l'exemple Nextcloud. |
