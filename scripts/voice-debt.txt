@@ -1,5 +1,0 @@
-# Pages that still address the reader, with the reason each is not converted.
-# Format: <path> -- <reason>. A page absent from this list must be clean;
-# a page listed here that is ALREADY clean fails the gate too, because a
-# stale exemption is how a gate quietly stops gating.
-

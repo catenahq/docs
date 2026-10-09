@@ -8,7 +8,7 @@ Un serveur signale les vulnérabilités connues (CVE publiées) à deux endroits
 ## Prérequis
 
 - Les analyses font partie de l'entretien nocturne, qui demande Catena Pro ou Catena Business (voir [Horaires](/fr/configuration/schedules/) et la [comparaison des éditions](https://catena.run/fr/#pricing)). Tant qu'aucune analyse n'a eu lieu, les chiffres indiquent "Pas encore mesuré".
-- L'analyseur est livré avec le serveur. Si l'analyse le signale absent, **Installer les moteurs gérés sur ce serveur** (voir [Mises à jour](/fr/configuration/updates/#panneau-mises-à-jour-gérées)) le rétablit.
+- L'analyseur est livré avec le serveur. Si l'analyse le signale absent, lancez **Installer les moteurs gérés sur ce serveur** (voir [Mises à jour](/fr/configuration/updates/#panneau-mises-à-jour-gérées)) pour le rétablir.
 
 ## Où les constats s'affichent
 
@@ -51,9 +51,9 @@ Les règles sur les étiquettes, les étiquettes d'application et le retour arri
 
 ## Que faire d'un constat
 
-1. Ouvrir le **Journal** et la page **Système** pour voir de quel côté vient le constat : une image d'application ou un paquet de l'hôte.
-2. Pour une image d'application, une version plus récente l'élimine généralement. L'entretien nocturne applique une telle version de lui-même, sans le délai de 7 jours, sauf si l'application porte l'étiquette `vps.auto-update=off` ou si son étiquette d'image n'est pas une étiquette de version complète. Sinon, l'étiquette se change à la main : ouvrir Portainer, ouvrir **Stacks**, sélectionner l'application, modifier l'étiquette d'image pour la version corrigée et appuyer sur le bouton de mise à jour.
-3. Pour un paquet de l'hôte, les mises à jour de sécurité automatiques appliquent le correctif. Si la page **Système** indique un redémarrage en attente, redémarrer depuis **Système** > **Redémarrage**. **Mises à jour apt en attente**, sous **Actions** > **Opérations**, liste ce qui attend.
+1. Ouvrez le **Journal** et la page **Système** pour voir de quel côté vient le constat : une image d'application ou un paquet de l'hôte.
+2. Pour une image d'application, une version plus récente l'élimine généralement. L'entretien nocturne applique une telle version de lui-même, sans le délai de 7 jours, sauf si l'application porte l'étiquette `vps.auto-update=off` ou si son étiquette d'image n'est pas une étiquette de version complète. Sinon, changez l'étiquette à la main : ouvrez Portainer, ouvrez **Stacks**, sélectionnez l'application, modifiez l'étiquette d'image pour la version corrigée et appuyez sur le bouton de mise à jour.
+3. Pour un paquet de l'hôte, les mises à jour de sécurité automatiques appliquent le correctif. Si la page **Système** indique un redémarrage en attente, redémarrez depuis **Système** > **Redémarrage**. **Mises à jour apt en attente**, sous **Actions** > **Opérations**, liste ce qui attend.
 4. Si aucune version plus récente n'existe encore, le constat demeure jusqu'à la reconstruction de l'image en amont. L'analyse nocturne suivante le déclare corrigé dans le Journal dès qu'il a disparu.
 
 ## Vérifier l'image du panneau
@@ -68,7 +68,7 @@ Le panneau de contrôle tourne à partir d'une image publique, `ghcr.io/catenahq
 
 Le flux de publication construit aussi le binaire du panneau deux fois et échoue si les deux constructions diffèrent.
 
-Pour analyser l'image publiée avec n'importe quel analyseur, résoudre le condensat d'une étiquette de version, puis analyser le condensat :
+Pour analyser l'image publiée avec n'importe quel analyseur, résolvez le condensat d'une étiquette de version, puis analysez le condensat :
 
 ```sh
 docker buildx imagetools inspect ghcr.io/catenahq/catena-admin:<etiquette> --format '{{.Manifest.Digest}}'
@@ -93,6 +93,6 @@ Les signalements de sécurité vont à security@catena.run.
 
 | Symptôme | Cause et correctif |
 |---|---|
-| La carte indique "Pas encore mesuré" | Aucune analyse n'a eu lieu : l'entretien nocturne est désactivé ou n'a pas atteint l'étape d'analyse. Le lancer depuis **Actions** avec **Lancer la chaîne de mises à jour maintenant** une fois un abonnement actif. |
+| La carte indique "Pas encore mesuré" | Aucune analyse n'a eu lieu : l'entretien nocturne est désactivé ou n'a pas atteint l'étape d'analyse. Lancez-le depuis **Actions** avec **Lancer la chaîne de mises à jour maintenant** une fois votre abonnement actif. |
 | Un constat demeure après une mise à jour | Les responsables de l'image n'ont pas publié de reconstruction corrigée, ou l'application est retenue par son étiquette d'application ou d'image. Voir les étapes ci-dessus. |
 | Les chiffres diffèrent d'un autre analyseur | Le panneau ne compte que les constats élevés et critiques ayant un correctif publié, sur les images des conteneurs en marche. |

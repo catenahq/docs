@@ -1,9 +1,9 @@
 ---
 title: "Schedules"
-description: "The six scheduled jobs of a Catena server, their default times, the schedule syntax, the nightly maintenance chain, and backup retention."
+description: "The seven scheduled jobs of a Catena server, their default times, the schedule syntax, the nightly maintenance chain, and backup retention."
 ---
 
-The **Schedules** page sets when the server does its scheduled work. Nothing runs on a schedule until it is turned on here. Every job also stays available by hand from the **Actions** page, in every edition.
+The **Schedules** page sets when the server does its scheduled work. Nothing runs on a schedule until you turn it on here. You can also run every job by hand from the **Actions** page, in every edition.
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ Saving an enabled job without an active subscription is refused with "scheduled 
 
 ## The jobs
 
-Every job ships switched off. The time shown is the pre-filled schedule, which runs only once the job is turned on.
+Every job ships switched off. The time shown is the pre-filled schedule, which runs only once you turn the job on.
 
 | Job | Default schedule | Randomised delay | What it does |
 |---|---|---|---|
@@ -24,6 +24,7 @@ Every job ships switched off. The time shown is the pre-filled schedule, which r
 | **Backup integrity check** | `Sun *-*-* 04:15:00` (Sundays, 4:15 AM) | up to 1 hour | Reads a sample of the backup repository end to end, which catches silent storage corruption between snapshots. |
 | **Control panel updates** | `monthly` | up to 30 minutes | Moves the control panel to a newer version, and puts the previous one back if the new one makes the server less healthy. The panel is unavailable for about a minute. |
 | **Server configuration** | `*-*-* 04:20:00` (every day, 4:20 AM) | up to 40 minutes | Brings the server back to the configuration its control panel carries. Anything that drifted is put back, and anything already correct is left alone. |
+| **Off-site heartbeat** | `*:0/5` (every 5 minutes) | up to 30 seconds | Checks that the status page, job monitor and resource monitor answer, then calls the off-site heartbeat address saved in **Settings** > **Alerts and missed-job reporting** (see [Alerts](/en/configuration/alerts/)). Needs that address and Catena Pro. Its section shows the period and grace time to set on the outside check. |
 
 The randomised delay spreads the real start over a window after the set time, so a job starts a little later than the time written. A job missed because the server was off or restarting runs at the next start of the server.
 
@@ -52,7 +53,7 @@ A configured backup that fails, or fails its verification, therefore stops the c
 
 ## Schedule syntax
 
-A schedule is a systemd calendar expression, written in the **Schedule** field of each job. Common forms:
+A schedule is a systemd calendar expression, which you write in the **Schedule** field of each job. Common forms:
 
 | Expression | Meaning |
 |---|---|
@@ -73,6 +74,8 @@ Under **Check a schedule**, type an expression and press **Check**. The panel re
 1. Open **Schedules**.
 2. In the job's section, edit **Schedule** if the default does not suit, and tick **Run on this schedule**.
 3. Press **Save schedules**. The page confirms with "Schedules saved and applied to this server." A refusal reads "This server did not accept the schedule." followed by the reason.
+
+Saving also sets the Healthchecks checks of the backup, the offsite copy and the off-site heartbeat to the new schedules; a check that no turned-on job reports to is paused. When Healthchecks does not answer, the page reads "Schedules saved and applied to this server. Healthchecks did not answer, so the checks that watch these jobs take the new schedules the next time the schedules are saved or this server's configuration is brought up to date." A check turned back on shows "new" in Healthchecks until its job next runs.
 
 When nothing is turned on, the page warns "Nothing is scheduled on this server, so no backup will run. Turn on the backup schedule below."
 
@@ -102,3 +105,4 @@ The timers are switched off and the jobs stop running. The saved schedules and r
 | "This server did not accept the schedule." | The reason follows the message; most often an expression that does not parse. Use **Check**. |
 | "Could not reach this server to read or change the schedule." | The host did not answer; retry in a moment. |
 | A job did not start at the set time | The randomised delay applies; a missed run starts at the next boot. |
+| Turning on **Off-site heartbeat** is refused | The off-site heartbeat address in **Settings** > **Alerts and missed-job reporting** is empty or not a web address (`http://` or `https://`). Save it there first. |

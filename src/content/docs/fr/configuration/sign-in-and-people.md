@@ -35,12 +35,12 @@ Un changement de groupe prend effet à la prochaine connexion de la personne.
 
 ## Gérer les personnes dans Keycloak (toutes les éditions)
 
-Tout se gère en se connectant à `auth.yourdomain.com` (domaine de sécurité `vps`) avec un compte administrateur. Dans la console d'administration :
+Vous gérez tout en vous connectant à `auth.yourdomain.com` (domaine de sécurité `vps`) avec un compte administrateur. Dans la console d'administration :
 
-- **Ajouter une personne** : créer l'utilisateur avec son nom d'utilisateur et son courriel, placer le compte dans le bon groupe, puis définir un mot de passe ou le laisser vide et envoyer une invitation (cela exige [Courriel sortant](/fr/configuration/email/)).
-- **Changer l'accès** : ajouter le compte à un groupe ou l'en retirer.
-- **Retirer quelqu'un** : désactiver le compte, ce qui bloque aussitôt la connexion à toutes les applications tout en gardant son dossier, ou le supprimer.
-- **Deuxième facteur perdu** : un administrateur le réinitialise sur le compte dans Keycloak, et la personne le configure de nouveau.
+- **Ajouter une personne** : créez l'utilisateur avec son nom d'utilisateur et son courriel, placez le compte dans le bon groupe, puis définissez un mot de passe ou laissez-le vide et envoyez une invitation (cela exige [Courriel sortant](/fr/configuration/email/)).
+- **Changer l'accès** : ajoutez le compte à un groupe ou retirez-le de ce groupe.
+- **Retirer quelqu'un** : désactivez le compte, ce qui bloque aussitôt la connexion à toutes les applications tout en gardant son dossier, ou supprimez-le.
+- **Deuxième facteur perdu** : vous le réinitialisez sur le compte dans Keycloak, et la personne le configure de nouveau.
 
 Chaque personne peut réinitialiser son mot de passe depuis la page de connexion, modifier son profil et configurer sa propre application d'authentification sans demande préalable.
 
@@ -54,14 +54,14 @@ Le panneau **Personnes** du menu gère les comptes et les groupes depuis le pann
 
 Il affiche **Groupes**, avec les applications que chacun ouvre, et **Personnes**, avec le nom d'utilisateur, le courriel et la mention "désactivé" pour les comptes désactivés. Il permet de créer, renommer et supprimer des groupes, d'y ajouter des personnes et de désactiver des comptes.
 
-Avant qu'un groupe soit renommé ou supprimé, le panneau affiche "Ce que ce changement touche" : les "Applications protégées par ce groupe" et les "Personnes actuellement dans ce groupe". Les applications qui n'auraient plus de groupe ne seraient ouvertes qu'aux administrateurs : "Ces applications ne seraient plus ouvertes qu'aux administrateurs. Elles continuent de fonctionner et cessent discrètement d'admettre tout le monde." La confirmation applique exactement le changement qui a été montré; si la liste a changé entre-temps, le panneau demande de la relire.
+Avant qu'un groupe soit renommé ou supprimé, le panneau affiche "Ce que ce changement touche" : les "Applications protégées par ce groupe" et les "Personnes actuellement dans ce groupe". Les applications qui n'auraient plus de groupe ne seraient ouvertes qu'aux administrateurs : "Ces applications ne seraient plus ouvertes qu'aux administrateurs. Elles continuent de fonctionner et cessent discrètement d'admettre tout le monde." La confirmation applique exactement le changement qui a été montré; si la liste a changé entre-temps, le panneau vous demande de la relire.
 
 Chaque changement est consigné dans le journal administratif.
 
-Si le panneau indique "Ce serveur n'a pas encore d'identifiant d'annuaire, la liste des personnes ne peut donc pas être lue. Il arrive à la prochaine configuration.", lancer **Remettre ce serveur à niveau** dans [Paramètres du serveur](/fr/configuration/server/) le fournit.
+Si le panneau indique "Ce serveur n'a pas encore d'identifiant d'annuaire, la liste des personnes ne peut donc pas être lue. Il arrive à la prochaine configuration.", lancez **Remettre ce serveur à niveau** dans [Paramètres du serveur](/fr/configuration/server/) pour le fournir.
 
 ## Dépannage
 
-- Une personne accède à une application qu'elle ne devrait pas ouvrir : vérifier ses groupes dans Keycloak, puis les groupes que l'application liste.
+- Une personne accède à une application qu'elle ne devrait pas ouvrir : vérifiez ses groupes dans Keycloak, puis les groupes que l'application liste.
 - Une application n'admet que les administrateurs : son groupe a été supprimé ou renommé. L'aperçu des répercussions du panneau Personnes l'indique à l'avance.
 - Aucun courriel de réinitialisation : voir [Courriel sortant](/fr/configuration/email/).

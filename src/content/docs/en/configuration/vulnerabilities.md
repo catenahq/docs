@@ -8,7 +8,7 @@ A server reports known vulnerabilities (published CVEs) in two places: the softw
 ## Prerequisites
 
 - Scans run as part of the nightly maintenance, which needs Catena Pro or Catena Business (see [Schedules](/en/configuration/schedules/) and the [edition comparison](https://catena.run/en/#pricing)). Until a scan has run, the figures read "Not measured yet".
-- The scanner ships with the server. If the scan reports it missing, **Install managed engines on this server** (see [Updates](/en/configuration/updates/#managed-updates-panel)) restores it.
+- The scanner ships with the server. If the scan reports it missing, run **Install managed engines on this server** (see [Updates](/en/configuration/updates/#managed-updates-panel)) to restore it.
 
 ## Where findings show
 
@@ -52,7 +52,7 @@ The rules for tags, labels and rollback are on the [Updates](/en/configuration/u
 ## What to do about a finding
 
 1. Open the **Log** and the **System** page to see which side the finding is on: an application image or a host package.
-2. For an application image, a newer release usually removes it. The nightly maintenance applies such a release by itself, without the 7-day wait, unless the application is labelled `vps.auto-update=off` or its tag is not a full version tag. Otherwise the tag is changed by hand: open Portainer, open **Stacks**, select the application, edit the image tag to the fixed release and press the update button.
+2. For an application image, a newer release usually removes it. The nightly maintenance applies such a release by itself, without the 7-day wait, unless the application is labelled `vps.auto-update=off` or its tag is not a full version tag. Otherwise change the tag by hand: open Portainer, open **Stacks**, select the application, edit the image tag to the fixed release and press the update button.
 3. For a host package, the automatic security updates apply the fix. If the **System** page shows a restart is pending, restart from **System** > **Restart**. **Pending apt updates** under **Actions** > **Ops** lists what is waiting.
 4. If no newer release exists yet, the finding stays until the image is rebuilt upstream. The next nightly scan reports it as cleared in the Log once it is gone.
 
@@ -93,6 +93,6 @@ Security reports go to security@catena.run.
 
 | Symptom | Cause and fix |
 |---|---|
-| The card reads "Not measured yet" | No scan has run: the nightly maintenance is off or has not reached the scan step. Run it from **Actions** with **Run managed-update chain now** once a subscription is active. |
+| The card reads "Not measured yet" | No scan has run: the nightly maintenance is off or has not reached the scan step. Run it from **Actions** with **Run managed-update chain now** once your subscription is active. |
 | A finding stays after an update | The image maintainers have not published a fixed rebuild, or the application is held by its label or tag. See the steps above. |
 | Counts differ from another scanner | The panel counts only high and critical findings with a published fix, across the images of running containers. |

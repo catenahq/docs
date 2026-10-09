@@ -3,7 +3,7 @@ title: "Installation"
 description: "Installation de Catena sur un serveur neuf depuis Windows, macOS ou Linux, première connexion et messages de l'installateur qui demandent une intervention."
 ---
 
-Catena s'installe depuis l'ordinateur de l'administrateur, avec un petit outil, `catena-installer`, qui joint le serveur en SSH. L'installateur demande seulement comment joindre le serveur et le courriel de l'administrateur. Le domaine, Cloudflare, les sauvegardes, le courriel sortant et le réseau privé se règlent ensuite dans le panneau (voir la [Vue d'ensemble de la configuration](/fr/configuration/)).
+Vous installez Catena depuis votre ordinateur d'administration, avec un petit outil, `catena-installer`, qui joint le serveur en SSH. L'installateur demande seulement comment joindre le serveur et votre courriel d'administrateur. Vous réglez ensuite le domaine, Cloudflare, les sauvegardes, le courriel sortant et le réseau privé dans le panneau (voir la [Vue d'ensemble de la configuration](/fr/configuration/)).
 
 ## Prérequis
 
@@ -16,13 +16,13 @@ Catena s'installe depuis l'ordinateur de l'administrateur, avec un petit outil, 
 | Réseau | Une adresse IPv4 publique et un accès Internet sortant (le serveur télécharge Catena, les paquets Debian et le moteur de conteneurs en HTTPS). |
 | Accès | SSH, avec une clé ou avec le mot de passe de l'hébergeur pour la première connexion. Un utilisateur initial autre que root (`debian`, `ubuntu`, ...) doit pouvoir utiliser sudo sans mot de passe. |
 | Mémoire | 4 Go au minimum. 6 Go recommandés pour des applications légères et peu d'utilisateurs. 8 Go pour des applications plus lourdes comme Nextcloud et ERPNext avec beaucoup d'utilisateurs. Les services propres à Catena en occupent environ 2 Go. |
-| Disque | Aucun minimum fixe. Les données des applications et l'espace que les sauvegardes utilisent pendant leur préparation croissent avec la quantité de données : le disque se dimensionne selon les données, avec une marge confortable. Une exécution de la configuration refuse un disque rempli à 90 % ou plus. |
+| Disque | Aucun minimum fixe. Les données des applications et l'espace que les sauvegardes utilisent pendant leur préparation croissent avec la quantité de données : dimensionnez le disque selon les données, avec une marge confortable. Une exécution de la configuration refuse un disque rempli à 90 % ou plus. |
 
 ### Ordinateur de l'administrateur
 
 - Windows, macOS ou Linux.
 - **uv**, qui exécute l'installateur (section suivante).
-- Un client OpenSSH, qui fournit `ssh` et `ssh-keygen`. `ssh-keygen` sert à créer une paire de clés et à oublier une ancienne clé d'hôte; il est livré avec les versions courantes de Windows, macOS et Linux.
+- Un client OpenSSH, qui fournit `ssh` et `ssh-keygen`. Vous avez besoin de `ssh-keygen` pour créer une paire de clés et oublier une ancienne clé d'hôte; il est livré avec les versions courantes de Windows, macOS et Linux.
 - Une paire de clés SSH sans phrase secrète. L'installateur se connecte sans surveillance et refuse une clé protégée par une phrase secrète. Il peut créer la paire (par défaut `~/.ssh/catena_ed25519`).
 
 ### Comptes nécessaires plus tard, dans le panneau
@@ -36,7 +36,7 @@ Aucun n'est nécessaire au moment de l'installation.
 
 ## Installer uv
 
-uv s'installe une seule fois par ordinateur d'administration. D'autres options figurent dans la [documentation de uv](https://docs.astral.sh/uv/).
+Installez uv une seule fois par ordinateur d'administration. D'autres options figurent dans la [documentation de uv](https://docs.astral.sh/uv/).
 
 Linux et macOS :
 
@@ -50,7 +50,7 @@ Windows (PowerShell) :
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-Il faut ensuite ouvrir une nouvelle fenêtre de terminal pour que `uv` et `uvx` soient trouvés.
+Ouvrez ensuite une nouvelle fenêtre de terminal pour que `uv` et `uvx` soient trouvés.
 
 ## Lancer l'installateur
 
@@ -58,7 +58,7 @@ Il faut ensuite ouvrir une nouvelle fenêtre de terminal pour que `uv` et `uvx` 
 uvx catena-installer
 ```
 
-La commande sert une page sur l'ordinateur de l'administrateur et l'ouvre dans le navigateur, à l'adresse `http://127.0.0.1:8765/`. La page est en français ou en anglais selon la langue du navigateur; la sortie de la console est en anglais seulement. Fermer l'onglet du navigateur ne change rien; fermer la fenêtre du terminal arrête l'installation et la connexion au panneau.
+La commande sert une page sur votre ordinateur d'administration et l'ouvre dans votre navigateur, à l'adresse `http://127.0.0.1:8765/`. La page est en français ou en anglais selon la langue du navigateur; la sortie de la console est en anglais seulement. Si vous fermez l'onglet du navigateur, rien ne change; si vous fermez la fenêtre du terminal, l'installation et la connexion au panneau s'arrêtent.
 
 Chaque serveur a un inventaire, un dossier qui contient ses réglages non secrets. L'onglet **Inventaire** liste les inventaires et en crée un (lettres minuscules, chiffres, tirets et traits de soulignement, par exemple `prod`). L'onglet **Installation** demande ensuite :
 
@@ -72,7 +72,7 @@ Chaque serveur a un inventaire, un dossier qui contient ses réglages non secret
 | **Courriel de l'administrateur** | L'identifiant de connexion du panneau. |
 | **Fichier de clé SSH** | La clé privée (son fichier `.pub` doit se trouver à côté). La case **Créer cette paire de clés SSH maintenant** crée une paire absente. |
 
-L'utilisateur initial ne peut plus ouvrir de session SSH une fois Catena installé. Un nouvel utilisateur, `ops`, est créé pour administrer le serveur.
+L'utilisateur initial ne peut plus ouvrir de session SSH une fois Catena installé. L'installateur crée un nouvel utilisateur, `ops`, pour administrer le serveur.
 
 ### Vérifications préalables
 
@@ -80,12 +80,12 @@ Le bouton **Vérifier la configuration et lancer l'installation** exécute d'abo
 
 - un serveur SSH répond à l'adresse et au port;
 - la clé d'hôte correspond à celle déjà connue pour cette adresse;
-- la paire de clés existe sur l'ordinateur de l'administrateur;
+- la paire de clés existe sur votre ordinateur d'administration;
 - la clé ouvre déjà la connexion initiale (ou `ops`), ou le mot de passe de l'hébergeur l'ouvre.
 
 ### L'installation
 
-L'installation dure plusieurs minutes, et plusieurs dizaines de minutes sont possibles. Sa sortie s'affiche sur la page. Dans l'ordre, l'installateur se connecte, fait télécharger la version de Catena au serveur et le fait s'installer lui-même, se reconnecte en tant que `ops` avec la clé avant que quoi que ce soit soit fermé, puis vérifie le serveur depuis l'ordinateur de l'administrateur (balayage des ports publics).
+L'installation dure plusieurs minutes, et plusieurs dizaines de minutes sont possibles. Sa sortie s'affiche sur la page. Dans l'ordre, l'installateur se connecte, fait télécharger la version de Catena au serveur et le fait s'installer lui-même, se reconnecte en tant que `ops` avec la clé avant que quoi que ce soit soit fermé, puis vérifie le serveur depuis votre ordinateur d'administration (balayage des ports publics).
 
 Après quelques minutes, la section **Accès au serveur Catena** affiche trois secrets, et les affiche de nouveau à la fin de l'installation :
 
@@ -96,7 +96,7 @@ Après quelques minutes, la section **Accès au serveur Catena** affiche trois s
 | Clé de vérification du journal | Prouve que le journal des actions administratives du serveur n'a pas été modifié. Affichée une seule fois, à la première installation seulement. |
 
 :::caution
-Ces valeurs ne s'affichent qu'une fois et Catena n'en garde aucune autre copie. Elles se conservent dans un gestionnaire de mots de passe avant de fermer la page.
+Ces valeurs ne s'affichent qu'une fois et Catena n'en garde aucune autre copie. Sauvegardez-les dans un gestionnaire de mots de passe avant de fermer la page.
 :::
 
 ### Mode console
@@ -107,7 +107,7 @@ La même installation peut s'exécuter sans la page du navigateur :
 uvx catena-installer init --inventory prod
 ```
 
-Cette commande écrit l'inventaire et son fichier `.env`, chaque réglage à sa valeur par défaut et expliqué. Une fois le `.env` rempli :
+Cette commande écrit l'inventaire et son fichier `.env`, chaque réglage à sa valeur par défaut et expliqué. Une fois le `.env` rempli, exécutez :
 
 ```sh
 uvx catena-installer install --inventory prod
@@ -117,26 +117,26 @@ La console demande le mot de passe de l'hébergeur seulement quand la clé n'ouv
 
 ## Première connexion
 
-Le SSH public reste ouvert après l'installation et aucun domaine n'existe encore : le panneau et Portainer sont donc joints par une redirection SSH. La page de l'installateur la garde ouverte tant que sa fenêtre l'est. Elle se rouvre en tout temps avec :
+Le SSH public reste ouvert après l'installation et aucun domaine n'existe encore : vous joignez donc le panneau et Portainer par une redirection SSH. La page de l'installateur la garde ouverte tant que sa fenêtre l'est. Vous pouvez la rouvrir en tout temps avec :
 
 ```sh
 uvx catena-installer connect --inventory prod
 ```
 
-Depuis un ordinateur sans l'installateur, la même redirection est :
+Depuis un ordinateur sans l'installateur, ouvrez la même redirection avec :
 
 ```sh
 ssh -N -L 9010:127.0.0.1:9010 -L 9000:127.0.0.1:9000 panel@<adresse-du-serveur>
 ```
 
-Le compte `panel` ne peut rien faire d'autre que rediriger ces deux ports. L'adresse du serveur est l'adresse IP publique, ou l'adresse du tailnet une fois le SSH public fermé. Tant que la redirection est ouverte :
+Le compte `panel` ne peut rien faire d'autre que rediriger ces deux ports. L'adresse du serveur est l'adresse IP publique, ou l'adresse du tailnet une fois que vous avez fermé le SSH public. Tant que la redirection est ouverte :
 
 | Outil | Adresse | Connexion |
 |---|---|---|
-| Panneau Catena | `http://localhost:9010` | **Courriel administrateur** et **Mot de passe** : le courriel de l'administrateur saisi à l'installation et le mot de passe administrateur affiché une seule fois. |
+| Panneau Catena | `http://localhost:9010` | **Courriel administrateur** et **Mot de passe** : le courriel d'administrateur que vous avez saisi à l'installation et le mot de passe administrateur affiché une seule fois. |
 | Portainer | `http://localhost:9000` | Nom d'utilisateur `admin` (pas un courriel) et le même mot de passe administrateur. |
 
-Une fois un domaine appliqué, les mêmes outils sont à `https://dash.yourdomain.com` et `https://portainer.yourdomain.com`.
+Une fois que vous avez appliqué un domaine, les mêmes outils sont à `https://dash.yourdomain.com` et `https://portainer.yourdomain.com`.
 
 L'étape suivante est la [Vue d'ensemble de la configuration](/fr/configuration/), qui donne l'ordre de réglage du domaine, des sauvegardes, des horaires et du reste dans **Paramètres**.
 
@@ -146,26 +146,26 @@ L'installateur affiche ses messages en anglais dans les deux langues. Les messag
 
 | Message | Cause | Solution |
 |---|---|---|
-| `nothing accepted a connection. A server still being delivered is the ordinary reason, and this section is where a run waits for it` | Rien ne répond encore en SSH à cette adresse IP et à ce port. | Attendre que l'hébergeur termine la livraison du serveur, puis vérifier de nouveau. Confirmer l'adresse IP, le port et le pare-feu de l'hébergeur. |
-| `nothing answers SSH at <host>:<port>: <err>` | La connexion TCP a échoué (délai de 15 secondes). | Vérifier l'adresse IP, le port SSH et tout pare-feu chez l'hébergeur. |
-| `<host> presents another host key than the one this machine trusts for it (trusted: ...; offered: ...). A reinstalled server presents a new key; if this one was not reinstalled, another machine may be answering at this address.` | Le serveur a été reconstruit à la même adresse, ou une autre machine y répond. Rien n'est envoyé à ce serveur. | Si le serveur a été réinstallé : cocher **Ce serveur a été réinstallé : faire confiance à sa nouvelle clé d'hôte** sur la page, ou ajouter `--reinstalled` en mode console. Sinon, s'arrêter et vérifier l'adresse. |
-| `the server does not accept this key yet` | La clé n'est pas sur la connexion initiale. | Saisir le mot de passe de l'hébergeur pour l'utilisateur initial : l'installation y ajoute la clé. Autre option : fournir la clé publique à l'hébergeur et vérifier de nouveau. |
-| `the password was refused`, ou `<user>@<host> refused the password` | Mot de passe de l'hébergeur incorrect. | Le saisir de nouveau tel que fourni par l'hébergeur. |
-| `<user>@<host> refused the key <path>` | Mauvais fichier de clé ou mauvais utilisateur initial. | Vérifier les champs **Fichier de clé SSH** et **Utilisateur initial du serveur**. |
-| `<path> or its .pub is missing. Tick the box below to create the pair there, or name a pair this machine has` | La paire de clés n'existe pas. | Cocher **Créer cette paire de clés SSH maintenant**, ou indiquer une paire existante. |
-| `... is protected by a passphrase; the installer logs in unattended and needs a key without one` | La clé a une phrase secrète. | Utiliser une clé sans phrase secrète, par exemple une nouvelle paire créée par l'installateur. |
-| `ssh-keygen is not installed: it ships with OpenSSH` | Aucun client OpenSSH sur l'ordinateur de l'administrateur. | Installer le client OpenSSH du système d'exploitation, ou utiliser une paire de clés créée ailleurs. |
-| `this server is not Debian; ...` | Le serveur utilise une autre distribution (Ubuntu comprise). | Réinstaller le serveur avec la version stable courante de Debian. |
-| `no catena-admin build for a <machine> machine; pass --platform` | Le serveur n'est pas x86_64 (par exemple arm64). | Commander un serveur x86_64. |
-| `run as root` | L'utilisateur initial n'est ni root ni autorisé à utiliser sudo sans mot de passe. | Utiliser `root`, ou un utilisateur avec sudo sans mot de passe. |
-| `Disk preflight: <mount> is N% full (X GiB free), at or above the 90% converge ceiling. Free space before re-running -- a converge onto a full disk fails mid-role with no space left on device.` | Le disque est rempli à 90 % ou plus. | Libérer de l'espace ou agrandir le disque, puis relancer l'installation. |
-| `fetch-release: <url>: HTTP <code> <reason>` | Le serveur ne joint pas le registre de conteneurs qui publie les versions de Catena. | Vérifier l'accès HTTPS sortant du serveur (pare-feu de l'hébergeur, DNS), puis relancer l'installation. |
-| `apt update failed and no APT_PROXY_URL is configured, so there is nothing to bypass. Real apt-get error: ...` | Le miroir de paquets Debian est injoignable depuis le serveur. | Vérifier le réseau et le DNS du serveur, puis relancer l'installation. |
-| `catena-installer: SECURITY REGRESSION: <ip> answers on [...], which nothing declares (expected open: [...]). Check ufw, docker's iptables rules and the provider's firewall.` | Un port est ouvert sans être déclaré par Catena, souvent à cause d'une règle chez l'hébergeur. | Fermer ce port dans le pare-feu de l'hébergeur, ou retirer le service qui y écoute. |
-| `catena-installer: the panel forward did not open: <problem>` | La redirection SSH vers le panneau n'a pas pu démarrer. | Exécuter `uvx catena-installer connect --inventory prod`. Si un port local est occupé, l'installateur affiche une autre adresse. |
-| `refusing to continue: this session did not prove that ops opens with its key` | La seconde connexion n'était pas une connexion de `ops` par clé : rien n'a été fermé. | Relancer l'installation depuis l'installateur. |
-| `the passwords could not be shown; running the install again shows them` | Les mots de passe n'ont pas pu s'afficher. | Relancer l'installation (la clé de vérification du journal ne s'affiche qu'à la première installation). |
-| `The installation stopped. The output says where.` | L'installation a échoué. | Lire la sortie pour repérer l'étape en cause, corriger, puis relancer l'installation. |
+| `nothing accepted a connection. A server still being delivered is the ordinary reason, and this section is where a run waits for it` | Rien ne répond encore en SSH à cette adresse IP et à ce port. | Attendez que l'hébergeur termine la livraison du serveur, puis vérifiez de nouveau. Confirmez l'adresse IP, le port et le pare-feu de l'hébergeur. |
+| `nothing answers SSH at <host>:<port>: <err>` | La connexion TCP a échoué (délai de 15 secondes). | Vérifiez l'adresse IP, le port SSH et tout pare-feu chez l'hébergeur. |
+| `<host> presents another host key than the one this machine trusts for it (trusted: ...; offered: ...). A reinstalled server presents a new key; if this one was not reinstalled, another machine may be answering at this address.` | Le serveur a été reconstruit à la même adresse, ou une autre machine y répond. Rien n'est envoyé à ce serveur. | Si le serveur a été réinstallé : cochez **Ce serveur a été réinstallé : faire confiance à sa nouvelle clé d'hôte** sur la page, ou ajoutez `--reinstalled` en mode console. Sinon, arrêtez-vous et vérifiez l'adresse. |
+| `the server does not accept this key yet` | La clé n'est pas sur la connexion initiale. | Saisissez le mot de passe de l'hébergeur pour l'utilisateur initial : l'installation y ajoute la clé. Autre option : fournissez la clé publique à l'hébergeur et vérifiez de nouveau. |
+| `the password was refused`, ou `<user>@<host> refused the password` | Mot de passe de l'hébergeur incorrect. | Saisissez-le de nouveau tel que fourni par l'hébergeur. |
+| `<user>@<host> refused the key <path>` | Mauvais fichier de clé ou mauvais utilisateur initial. | Vérifiez les champs **Fichier de clé SSH** et **Utilisateur initial du serveur**. |
+| `<path> or its .pub is missing. Tick the box below to create the pair there, or name a pair this machine has` | La paire de clés n'existe pas. | Cochez **Créer cette paire de clés SSH maintenant**, ou indiquez une paire existante. |
+| `... is protected by a passphrase; the installer logs in unattended and needs a key without one` | La clé a une phrase secrète. | Utilisez une clé sans phrase secrète, par exemple une nouvelle paire créée par l'installateur. |
+| `ssh-keygen is not installed: it ships with OpenSSH` | Aucun client OpenSSH sur l'ordinateur de l'administrateur. | Installez le client OpenSSH de votre système d'exploitation, ou utilisez une paire de clés créée ailleurs. |
+| `this server is not Debian; ...` | Le serveur utilise une autre distribution (Ubuntu comprise). | Réinstallez le serveur avec la version stable courante de Debian. |
+| `no catena-admin build for a <machine> machine; pass --platform` | Le serveur n'est pas x86_64 (par exemple arm64). | Commandez un serveur x86_64. |
+| `run as root` | L'utilisateur initial n'est ni root ni autorisé à utiliser sudo sans mot de passe. | Utilisez `root`, ou un utilisateur avec sudo sans mot de passe. |
+| `Disk preflight: <mount> is N% full (X GiB free), at or above the 90% converge ceiling. Free space before re-running -- a converge onto a full disk fails mid-role with no space left on device.` | Le disque est rempli à 90 % ou plus. | Libérez de l'espace ou agrandissez le disque, puis relancez l'installation. |
+| `fetch-release: <url>: HTTP <code> <reason>` | Le serveur ne joint pas le registre de conteneurs qui publie les versions de Catena. | Vérifiez l'accès HTTPS sortant du serveur (pare-feu de l'hébergeur, DNS), puis relancez l'installation. |
+| `apt update failed and no APT_PROXY_URL is configured, so there is nothing to bypass. Real apt-get error: ...` | Le miroir de paquets Debian est injoignable depuis le serveur. | Vérifiez le réseau et le DNS du serveur, puis relancez l'installation. |
+| `catena-installer: SECURITY REGRESSION: <ip> answers on [...], which nothing declares (expected open: [...]). Check ufw, docker's iptables rules and the provider's firewall.` | Un port est ouvert sans être déclaré par Catena, souvent à cause d'une règle chez l'hébergeur. | Fermez ce port dans le pare-feu de l'hébergeur, ou retirez le service qui y écoute. |
+| `catena-installer: the panel forward did not open: <problem>` | La redirection SSH vers le panneau n'a pas pu démarrer. | Exécutez `uvx catena-installer connect --inventory prod`. Si un port local est occupé, l'installateur affiche une autre adresse. |
+| `refusing to continue: this session did not prove that ops opens with its key` | La seconde connexion n'était pas une connexion de `ops` par clé : rien n'a été fermé. | Relancez l'installation depuis l'installateur. |
+| `the passwords could not be shown; running the install again shows them` | Les mots de passe n'ont pas pu s'afficher. | Relancez l'installation (la clé de vérification du journal ne s'affiche qu'à la première installation). |
+| `The installation stopped. The output says where.` | L'installation a échoué. | Lisez la sortie pour repérer l'étape en cause, corrigez, puis relancez l'installation. |
 
 La console se termine avec le code 0 quand l'installation a réussi, 1 quand elle a échoué, 3 quand elle s'est terminée mais qu'une vérification a échoué, et 4 quand le serveur a refusé la seconde connexion.
 
@@ -179,19 +179,19 @@ Un balayage des ports publics signalé comme ignoré (`public port scan SKIPPED`
 uvx catena-installer install --inventory prod
 ```
 
-**Mettre à niveau.** Une version se choisit avec `--release`. Le serveur passe à cette version, avec le code de cette version, et l'enregistre. Sans `--release`, un serveur installé garde la version enregistrée et un nouveau serveur reçoit la plus récente. C'est la voie à suivre quand la mise à jour du panneau lui-même ne peut pas s'exécuter; autrement, les mises à jour se font dans le panneau.
+**Mettre à niveau.** Choisissez une version avec `--release`. Le serveur passe à cette version, avec le code de cette version, et l'enregistre. Sans `--release`, un serveur installé garde la version enregistrée et un nouveau serveur reçoit la plus récente. C'est la voie à suivre quand la mise à jour du panneau lui-même ne peut pas s'exécuter; autrement, vous faites les mises à jour dans le panneau.
 
 ```sh
 uvx catena-installer install --inventory prod --release vX.Y.Z
 ```
 
-**Après la fermeture du SSH public.** Une fois **Fermer le SSH sur le port public 22** coché dans **Paramètres** > **Tunnel d'accès administrateur**, l'installateur joint le serveur par son adresse du tailnet pour cette exécution :
+**Après la fermeture du SSH public.** Une fois que vous avez coché **Fermer le SSH sur le port public 22** dans **Paramètres** > **Tunnel d'accès administrateur**, l'installateur joint le serveur par son adresse du tailnet pour cette exécution :
 
 ```sh
 uvx catena-installer install --inventory prod --address <ip-du-tailnet>
 ```
 
-Définir `HOST_SSH_ADDRESS` dans le `.env` de l'inventaire conserve cette adresse.
+Définissez `HOST_SSH_ADDRESS` dans le `.env` de l'inventaire pour conserver cette adresse.
 
 **Désinstaller.** La commande rend les mises à jour du système d'exploitation à Debian et ne retire rien d'autre :
 
@@ -199,10 +199,10 @@ Définir `HOST_SSH_ADDRESS` dans le `.env` de l'inventaire conserve cette adress
 uvx catena-installer uninstall --inventory prod
 ```
 
-Elle démasque les minuteries de mise à jour de Debian, retire les origines de mises à jour automatiques et la politique de redémarrage ajoutées par Catena, et lève le blocage des paquets du moteur de conteneurs. Elle laisse en place, pour un retrait délibéré :
+Elle démasque les minuteries de mise à jour de Debian, retire les origines de mises à jour automatiques et la politique de redémarrage ajoutées par Catena, et lève le blocage des paquets du moteur de conteneurs. Elle laisse en place, à vous de les retirer délibérément :
 
-- les applications et leurs données, ainsi que Portainer (retirés depuis Portainer ou avec Docker);
+- les applications et leurs données, ainsi que Portainer (retirez-les depuis Portainer ou avec Docker);
 - les comptes créés sur le serveur;
-- le tunnel Cloudflare et les enregistrements DNS (supprimés dans le tableau de bord Cloudflare);
-- le nœud Tailscale (retiré dans la console d'administration de Tailscale);
-- les sauvegardes dans le stockage S3, qui restent jusqu'à la suppression du contenu du seau.
+- le tunnel Cloudflare et les enregistrements DNS (supprimez-les dans le tableau de bord Cloudflare);
+- le nœud Tailscale (retirez-le dans la console d'administration de Tailscale);
+- les sauvegardes dans le stockage S3, qui restent jusqu'à ce que vous supprimiez le contenu du seau.

@@ -10,10 +10,10 @@ Un seul compte ouvre toutes les applications. Les groupes décident qui peut ouv
 - **Keycloak** tient un seul domaine d'authentification et constitue l'unique page de connexion, à `auth.yourdomain.com`. L'inscription est désactivée, l'adresse courriel sert de nom d'utilisateur, les courriels en double et les modifications du nom d'utilisateur sont refusés, et la protection contre la force brute est active.
 - **Groupes.** `admin` est ajouté à la liste d'autorisation de chaque application protégée. `staff` contient les départements comme sous-groupes. `client` est le groupe par défaut des nouveaux comptes. `visitor` est une étiquette signifiant public et n'apparaît jamais dans un jeton de connexion. La vérification d'administrateur du panneau est le groupe `admin`.
 - **Barrière par application.** Chaque application protégée a son propre mandataire de connexion avec ses propres groupes autorisés. La session est partagée : une personne se connecte une fois et passe d'une application à l'autre. Une application sans accès déclaré est refusée à tous sauf aux administrateurs.
-- **Applications du catalogue** : leur client Keycloak est déjà créé. Une application hors catalogue qui veut une connexion OIDC native reçoit un client créé à la main dans Keycloak, et obtient son identifiant et son secret par son propre environnement. Les étiquettes `vps.auth.oidc` n'ajoutent qu'un badge OIDC à la tuile de l'application (voir [Configurer une application pour Catena](/fr/configure-apps/)).
+- **Applications du catalogue** : leur client Keycloak est déjà créé. Pour une application hors catalogue qui veut une connexion OIDC native, vous créez un client à la main dans Keycloak et donnez à l'application son identifiant et son secret par son propre environnement. Les étiquettes `vps.auth.oidc` n'ajoutent qu'un badge OIDC à la tuile de l'application (voir [Configurer une application pour Catena](/fr/configure-apps/)).
 - **Deuxième facteur.** **Paramètres** > **Exigences de connexion** bascule entre **Mot de passe seulement** et **Mot de passe et application d'authentification**. Le défaut est le mot de passe seulement, et le changement s'applique aux comptes existants à leur prochaine connexion.
 - **Courriel.** La réinitialisation de mot de passe et les invitations exigent **Paramètres** > **Courriel sortant** (Resend, Brevo ou un serveur SMTP personnalisé). Sans courriel sortant, le courriel de réinitialisation est désactivé.
-- **Connexion au panneau.** Le panneau utilise le courriel administrateur local et le mot de passe affiché une seule fois à l'installation, en plus de la barrière.
+- **Connexion au panneau.** Vous vous connectez au panneau avec le courriel administrateur local et le mot de passe affiché une seule fois à l'installation, en plus de la barrière.
 
 ## Personnes et piste d'audit
 
@@ -25,7 +25,7 @@ L'authentification unique, les groupes et l'écriture de la piste d'audit sont d
 
 ## Limites
 
-- Les utilisateurs et les groupes sont des données du client : une mise à jour de la configuration du serveur ne les réimporte jamais.
+- Les utilisateurs et les groupes sont vos données : une mise à jour de la configuration du serveur ne les réimporte jamais.
 - Renommer un groupe dans Keycloak sans le panneau **Personnes** ne donne aucun aperçu de l'impact.
 - La connexion au panneau est le compte administrateur local, pas un utilisateur Keycloak.
 

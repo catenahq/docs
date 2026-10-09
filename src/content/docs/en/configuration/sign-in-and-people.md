@@ -35,12 +35,12 @@ A change of group takes effect the next time the person signs in.
 
 ## Manage people in Keycloak (every edition)
 
-Everyone is managed by signing in to `auth.yourdomain.com` (realm `vps`) with an admin account. From the administration console:
+You manage everyone by signing in to `auth.yourdomain.com` (realm `vps`) with an admin account. From the administration console:
 
 - **Add a person**: create the user with username and email, put the account in the right group, and either set a password or leave it blank and send an invitation (this needs [Outgoing email](/en/configuration/email/)).
 - **Change access**: add or remove the account in a group.
 - **Remove someone**: disable the account to block sign-in at once across every application while keeping its record, or delete it.
-- **Lost second factor**: an admin clears it on the account in Keycloak, and the person sets it up again.
+- **Lost second factor**: you clear it on the account in Keycloak, and the person sets it up again.
 
 People can reset their own password from the sign-in page, edit their profile and set up their own authenticator app without any request.
 
@@ -54,11 +54,11 @@ The **People** panel in the menu manages accounts and groups from the admin pane
 
 It shows **Groups**, with the applications each one opens, and **People**, with username, email and a "disabled" marker for disabled accounts. It can create, rename and delete groups, add people to groups and disable accounts.
 
-Before a group is renamed or deleted, the panel shows "What this change affects": the "Applications gated on this group" and the "People currently in this group". Applications left with no group would be open to administrators only: "These applications would be left open to administrators only. They keep running, and quietly stop admitting everyone else." Confirming applies exactly the change that was shown; if the list changed in the meantime, the panel asks for it to be read again.
+Before a group is renamed or deleted, the panel shows "What this change affects": the "Applications gated on this group" and the "People currently in this group". Applications left with no group would be open to administrators only: "These applications would be left open to administrators only. They keep running, and quietly stop admitting everyone else." Confirming applies exactly the change that was shown; if the list changed in the meantime, the panel asks you to read it again.
 
 Every change is recorded in the administrative log.
 
-If the panel reports "This server has no directory credential yet, so the list of people cannot be read. It arrives with the next configuration run.", running **Bring this server up to date** in [Server settings](/en/configuration/server/) provides it.
+If the panel reports "This server has no directory credential yet, so the list of people cannot be read. It arrives with the next configuration run.", run **Bring this server up to date** in [Server settings](/en/configuration/server/) to provide it.
 
 ## Troubleshooting
 

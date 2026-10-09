@@ -16,12 +16,12 @@ La section se termine par **Enregistrer et appliquer**. Un nom qui n'est pas un 
 
 ## Partage de stockage de masse
 
-**Paramètres** > **Partage de stockage de masse (Windows/CIFS)** concerne un serveur configuré à l'installation pour monter un partage de stockage de masse depuis un NAS en CIFS, le protocole de partage de fichiers de Windows. Il contient le compte qui ouvre le partage :
+**Paramètres** > **Partage de stockage de masse (Windows/CIFS)** concerne un serveur que vous configurez à l'installation pour monter un partage de stockage de masse depuis un NAS en CIFS, le protocole de partage de fichiers de Windows. Il contient le compte qui ouvre le partage :
 
 - **Nom d'utilisateur du stockage de masse (partage Windows)**
 - **Mot de passe du stockage de masse (partage Windows)**
 
-Un partage monté en NFS n'en demande aucun, et un serveur sans partage laisse les deux champs vides. Le montage lui-même fait partie de l'installation du serveur : un changement ici prend effet lorsque l'installation est appliquée de nouveau (`uvx catena-installer install --inventory <nom>`, sans danger à relancer). La section a un simple **Enregistrer**; rien ne redémarre. Le mot de passe est stocké et jamais réaffiché.
+Un partage monté en NFS n'en demande aucun, et un serveur sans partage laisse les deux champs vides. Le montage lui-même fait partie de l'installation du serveur : un changement ici prend effet lorsque vous appliquez de nouveau l'installation (`uvx catena-installer install --inventory <nom>`, sans danger à relancer). La section a un simple **Enregistrer**; rien ne redémarre. Le mot de passe est stocké et jamais réaffiché.
 
 ## Configuration du serveur
 
@@ -31,28 +31,28 @@ Un partage monté en NFS n'en demande aucun, et un serveur sans partage laisse l
 
 - **Dernière remise à niveau** : un horodatage, ou "pas encore".
 - **Automatique** : "Oui, selon l'horaire réglé dans Horaires." ou "Non. Se déclenche uniquement depuis cette page."
-- En cours : "Remise à niveau du serveur en cours." Certains services redémarrent pendant l'opération, donc des parties du serveur peuvent être brièvement indisponibles. L'opération se poursuit même si la page est fermée.
+- En cours : "Remise à niveau du serveur en cours." Certains services redémarrent pendant l'opération, donc des parties du serveur peuvent être brièvement indisponibles. L'opération se poursuit même si vous fermez la page.
 - "Ce serveur est en pause pour maintenance : il a été laissé tel quel. L'opération reprendra d'elle-même à la fin de la maintenance."
 - Après un échec : "La dernière tentative n'a pas abouti. Ce serveur fonctionne toujours sur la configuration qu'il avait auparavant, et rien n'est resté à moitié appliqué." Un journal de la tentative est replié sous "Ce que le serveur a enregistré pendant cette tentative".
 
 ### Lancer l'opération
 
-1. Lire l'avertissement : "Les services redémarrent au fur et à mesure qu'ils retrouvent leur configuration prévue, donc des parties de ce serveur sont brièvement indisponibles. Les données ne sont pas touchées."
-2. Cocher "Je comprends que des services redémarrent et sont brièvement indisponibles."
-3. Appuyer sur **Remettre ce serveur à niveau**.
+1. Lisez l'avertissement : "Les services redémarrent au fur et à mesure qu'ils retrouvent leur configuration prévue, donc des parties de ce serveur sont brièvement indisponibles. Les données ne sont pas touchées."
+2. Cochez "Je comprends que des services redémarrent et sont brièvement indisponibles."
+3. Appuyez sur **Remettre ce serveur à niveau**.
 
 Le formulaire est masqué pendant une exécution ou quand le serveur ne peut pas être interrogé.
 
 ### Quand l'utiliser
 
 - Après qu'une section a indiqué "Enregistré, mais l'application n'a pas démarré, sans doute parce que le serveur met déjà sa configuration à niveau."
-- Après le rattachement ou le retrait d'un domaine supplémentaire, ou après le début ou la fin d'un abonnement, pour activer ou désactiver ce qu'il débloque.
+- Après que vous avez rattaché ou retiré un domaine supplémentaire, ou après le début ou la fin de votre abonnement, pour activer ou désactiver ce qu'il débloque.
 - Quand le panneau Personnes indique qu'il n'a pas encore d'identifiant d'annuaire.
 - Pour réparer un service qui a dérivé sans réinstaller.
 
 ### Fichiers gérés par Catena
 
-Les fichiers que Catena gère sur le serveur sont remis à leur contenu prévu à chaque exécution : les modifications faites à la main dans ces fichiers ne survivent donc pas. Les réglages destinés à être modifiés se changent dans le panneau, où la valeur est stockée et survit à l'exécution. Les lignes ajoutées à la main aux clés SSH autorisées du compte `ops` font exception : elles restent. Voir [Accès administrateur et réseau privé](/fr/configuration/admin-access/).
+Les fichiers que Catena gère sur le serveur sont remis à leur contenu prévu à chaque exécution : les modifications faites à la main dans ces fichiers ne survivent donc pas. Changez plutôt dans le panneau les réglages destinés à être modifiés, où la valeur est stockée et survit à l'exécution. Les lignes que vous ajoutez à la main aux clés SSH autorisées du compte `ops` font exception : elles restent. Voir [Accès administrateur et réseau privé](/fr/configuration/admin-access/).
 
 La même configuration peut aussi s'exécuter selon un horaire. Voir [Horaires](/fr/configuration/schedules/).
 
@@ -62,6 +62,6 @@ La trousse (adresse du dépôt de sauvegarde, clés de stockage et mot de passe 
 
 ## Dépannage
 
-- Une section indique que l'application n'a pas démarré : une autre exécution de configuration est en cours. Attendre sa fin, puis appuyer sur **Remettre ce serveur à niveau**.
-- La dernière tentative a échoué : lire le journal sous "Ce que le serveur a enregistré pendant cette tentative". Le serveur garde sa configuration précédente, et relancer est sans danger.
-- Un fuseau horaire est refusé : utiliser le nom exact, par exemple `America/Toronto`.
+- Une section indique que l'application n'a pas démarré : une autre exécution de configuration est en cours. Attendez sa fin, puis appuyez sur **Remettre ce serveur à niveau**.
+- La dernière tentative a échoué : lisez le journal sous "Ce que le serveur a enregistré pendant cette tentative". Le serveur garde sa configuration précédente, et relancer est sans danger.
+- Un fuseau horaire est refusé : utilisez le nom exact, par exemple `America/Toronto`.

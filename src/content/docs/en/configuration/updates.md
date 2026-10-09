@@ -26,7 +26,7 @@ To restart:
 2. Tick "I understand this stops every application on this server for about a minute."
 3. Press **Restart this server**.
 
-When the nightly maintenance is on, its last step restarts the server when one is due and then checks that every service came back. The **System** page reports "Last restart by the nightly maintenance" and its outcome, and the Log records it. Restarting is otherwise left to the administrator because the downtime is a decision.
+When the nightly maintenance is on, its last step restarts the server when one is due and then checks that every service came back. The **System** page reports "Last restart by the nightly maintenance" and its outcome, and the Log records it. Restarting is otherwise left to you because the downtime is a decision.
 
 Under **Actions** > **Ops**, **Pending apt updates** lists what is waiting and **Recent auto-upgrade log** shows what the automatic updates did.
 
@@ -35,11 +35,11 @@ Under **Actions** > **Ops**, **Pending apt updates** lists what is waiting and *
 Open **Settings** > **Control panel version**.
 
 1. **Running now** shows the version the server runs.
-2. Pick the target under **Version to install**. The list holds the published versions of this same panel. When the list cannot be fetched, the field becomes a text box and the version is typed (for example `v1.2.3`); only a version of this same panel is accepted.
+2. Pick the target under **Version to install**. The list holds the published versions of this same panel. When the list cannot be fetched, the field becomes a text box and you type the version (for example `v1.2.3`); only a version of this same panel is accepted.
 3. Tick "I understand the panel restarts and is briefly unavailable."
 4. Press **Update this panel**.
 
-The section follows the update through Downloading (with a layer count), Installing, Restarting, Checking health and Applying its configuration. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if the page is closed. Everything else keeps running.
+The section follows the update through Downloading (with a layer count), Installing, Restarting, Checking health and Applying its configuration. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if you close the page. Everything else keeps running.
 
 An update that makes the server less healthy than before is put back automatically. The section then reads "The last attempt did not finish. This server put the previous version back and is running normally on it, one version behind." with the server's log of the attempt folded below.
 
@@ -47,13 +47,13 @@ The button works in every edition. The **Control panel updates** job on the [Sch
 
 ### When the panel cannot update itself
 
-If the panel is unavailable or its update cannot run, the install command is run again from the admin computer with the target release (see [Installation](/en/installation/)):
+If the panel is unavailable or its update cannot run, run the install command again from your admin computer with the target release (see [Installation](/en/installation/)):
 
 ```sh
 uvx catena-installer install --inventory <name> --release v1.2.3
 ```
 
-The server moves to that release with that release's own code, the same end state as the panel update. After public SSH has been closed, `--address <tailnet-ip>` is added for that run. Without `--release` the command re-applies the release the server already records.
+The server moves to that release with that release's own code, the same end state as the panel update. After you have closed public SSH, add `--address <tailnet-ip>` for that run. Without `--release` the command re-applies the release the server already records.
 
 ## Docker engine
 
@@ -76,16 +76,7 @@ Only images pinned to a full version tag are updated automatically: `1.2.3`, `v1
 
 ### The vps.auto-update label
 
-An application's `vps.auto-update` label sets how far its tag may move:
-
-| Value | Moves to |
-|---|---|
-| `off` | nothing; the application is left alone |
-| `patch` | newer releases with the same major and minor number |
-| `minor` | newer releases with the same major number |
-| `major` | any newer release |
-
-`patch+minor` is also accepted and, like `minor`, keeps the major number fixed. Applications default to `patch`; so does a missing or invalid value. Catena's own services default to `patch+minor`. Services that share one image take the most restrictive label. Labels are set in the application's compose file (see [Configure an app for Catena](/en/configure-apps/)).
+An application's `vps.auto-update` label sets how far its tag may move, from `off` to `major`; its values are in the [label reference](/en/configure-apps/#updates). Applications default to `patch`, which keeps the major and minor numbers; Catena's own services default to `patch+minor`, which keeps the major number. Services that share one image take the most restrictive label.
 
 ### Waiting period and vulnerability gate
 
@@ -100,7 +91,7 @@ Without a scanner the vulnerability check is off and the waiting period still ap
 
 ### Rollback and quarantine
 
-After each update the server compares its health with the state before. If it is worse, the previous version is put back and the failed tag is quarantined, so the next run tries the next version up instead of the same one. An application with a database gets a dump taken before the update, put back on rollback.
+After each update the server compares its health with the state before. If it is worse, the previous version is put back and the failed tag is quarantined, so the next run tries the next version up instead of the same one. An application with a database gets a dump taken before the update, put back on rollback. When the new version of an application also upgrades its code, configuration and add-ons in place, as Nextcloud does, a copy of those is taken before the update too and put back on rollback while the application is stopped; its users' files are never put back. The copies are deleted once the update is kept or the rollback completes. A rollback that cannot finish keeps them on the server.
 
 ### Managed updates panel
 
@@ -125,17 +116,20 @@ The **Log** page records every update decision, among them:
 | Host restarted during the nightly maintenance, or the restart did not go as expected. |
 | Security advisories flagged in host packages or application images, and cleared. |
 | No backup is configured; nightly updates run without one. |
+| An update of `<app>` could not be recorded, or its rollback could not be cleared, so bringing the server up to date may change its version. |
+| Portainer's saved definition of `<app>` names an image none of its services runs; `<app>` gets no automatic update, settings change or restore from it until they agree. |
+| The nightly update leaves `<app>` alone: its last deployment failed and a service is not running. |
 
 ## Community: update an application
 
-Without the nightly maintenance, an application is updated by changing its image tag:
+Without the nightly maintenance, you update an application by changing its image tag:
 
 1. Open Portainer (`https://portainer.yourdomain.com`, or through the SSH forward before a domain exists).
 2. Open **Stacks** and select the application.
 3. In the editor, change the image tag to the new full version tag.
 4. Press the update button under the editor.
 
-A backup beforehand is advised (**Actions** > **Backups** > **Trigger backup now**). The **Upgrades** category of **Actions** is empty on Community: its buttons arrive with a subscription.
+Take a backup beforehand (**Actions** > **Backups** > **Trigger backup now**). The **Upgrades** category of **Actions** is empty on Community: its buttons arrive with a subscription.
 
 ## Troubleshooting
 
@@ -145,3 +139,5 @@ A backup beforehand is advised (**Actions** > **Backups** > **Trigger backup now
 | "The last attempt did not finish." under **Control panel version** | The update was put back. Read the log in the section, then retry. |
 | The restart banner stays | Restart from **System** > **Restart**, or let the nightly maintenance do it. |
 | The version list is replaced by a text box | The registry could not be reached; type the version. |
+| An application's saved definition names another image | In Portainer, open **Stacks**, select the application, set each `image:` to what its services run, and deploy. |
+| The nightly update leaves an application alone | Fix the service that is down, then redeploy the application from Portainer. |

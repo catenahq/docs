@@ -9,13 +9,13 @@ All web traffic reaches the server through an encrypted Cloudflare tunnel, so no
 
 **App tunnel.** A tunnel service on the server connects out to Cloudflare. Requests for `yourdomain.com` addresses arrive through it, pass to Traefik, and then go to the app. Apps that are not public sit behind a per-app sign-in gate (see [Single sign-on](/en/features/single-sign-on/)).
 
-**Domain changes.** Applying a domain in **Settings** > **Domain** replaces the tunnel with a new one. The applications are unavailable for a few minutes while the server is brought up to date under the domain. Until a domain is applied, nothing is published and the panel is reached over an SSH forward.
+**Domain changes.** Applying a domain in **Settings** > **Domain** replaces the tunnel with a new one. The applications are unavailable for a few minutes while the server is brought up to date under the domain. Until you apply a domain, nothing is published and you reach the panel over an SSH forward.
 
-**Admin path.** The tailnet is optional. **Settings** > **Admin access tunnel** takes either a hosted Tailscale OAuth client or a self-hosted Headscale server. The credentials are checked on the server before they are stored. Choosing no private network keeps key-only SSH on the public address as the way in.
+**Admin path.** The tailnet is optional. **Settings** > **Admin access tunnel** takes either a hosted Tailscale OAuth client or a self-hosted Headscale server. The credentials are checked on the server before they are stored. If you choose no private network, key-only SSH on the public address stays the way in.
 
-**Public SSH.** SSH is always key-only: no root login and no passwords. Port 22 stays open until the admin ticks **Close SSH on public port 22**, which is offered only while the tailnet is up. If the tailnet then stays down for more than 5 minutes, the host reopens the port, so a broken tailnet cannot lock the admin out.
+**Public SSH.** SSH is always key-only: no root login and no passwords. Port 22 stays open until you tick **Close SSH on public port 22**, which is offered only while the tailnet is up. If the tailnet then stays down for more than 5 minutes, the host reopens the port, so a broken tailnet cannot lock you out.
 
-**Port reconciliation.** The firewall denies everything by default. Ports are declared by the platform or by an app (the `vps.expose.*` labels, see [Configure an app for Catena](/en/configure-apps/)), and a reconciler merges them into the firewall rules every 5 minutes. Besides SSH, only the call relay (UDP) and ports that apps declare, such as mail, are open publicly. A validation pass checks that each service answers where expected, on the server and through the private network, and an external scan from the installer's computer confirms that nothing undeclared is reachable.
+**Port reconciliation.** The firewall denies everything by default. Ports are declared by the platform or by an app (the `vps.expose.*` labels, see [Configure an app for Catena](/en/configure-apps/)), and a reconciler merges them into the firewall rules every 5 minutes. Besides SSH, only the call relay (UDP) and ports that apps declare, such as mail, are open publicly. A validation pass checks that each service answers where expected, on the server and through the private network, and an external scan from your admin computer confirms that nothing undeclared is reachable.
 
 **Calls.** The relay answers on `turn.yourdomain.com`. It is a UDP relay, not a web page.
 
@@ -25,7 +25,7 @@ Community includes both tunnels, Cloudflare DDoS protection and one domain. Cate
 
 ## Limits
 
-- A Cloudflare account and a domain are required for public apps.
+- You need a Cloudflare account and a domain for public apps.
 - A Cloudflare token may reach several domains, but Community attaches only one.
 - A domain change or a tunnel replacement causes a few minutes of downtime on public addresses.
 
