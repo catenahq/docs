@@ -87,7 +87,7 @@ Avant une mise à jour, les versions candidates sont analysées pour les vulnér
 - Une version qui ajoute une nouvelle vulnérabilité élevée ou critique est écartée au profit d'une version inférieure propre, ou la mise à jour attend.
 - Une version plus récente qui supprime une vulnérabilité élevée ou critique présente dans la version en cours est appliquée sans le délai de 7 jours.
 
-Sans analyseur, la vérification des vulnérabilités est désactivée et le délai d'attente s'applique toujours. Voir [Vulnérabilités](/fr/configuration/vulnerabilities/).
+Sans analyseur, la vérification des vulnérabilités est désactivée et le délai d'attente s'applique toujours. Voir [Vulnérabilités](/fr/configuration/vulnerabilities/). Une vulnérabilité que trouve la veille des vulnérabilités peut aussi être corrigée à la demande, ou automatiquement lorsque la CISA la signale comme exploitée, sans le délai d'attente (voir [Corriger une vulnérabilité](/fr/configuration/vulnerabilities/#corriger-une-vulnérabilité)).
 
 ### Retour arrière et quarantaine
 

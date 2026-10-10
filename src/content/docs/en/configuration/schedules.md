@@ -1,6 +1,6 @@
 ---
 title: "Schedules"
-description: "The seven scheduled jobs of a Catena server, their default times, the schedule syntax, the nightly maintenance chain, and backup retention."
+description: "The eight scheduled jobs of a Catena server, their default times, the schedule syntax, the nightly maintenance chain, and backup retention."
 ---
 
 The **Schedules** page sets when the server does its scheduled work. Nothing runs on a schedule until you turn it on here. You can also run every job by hand from the **Actions** page, in every edition.
@@ -25,6 +25,7 @@ Every job ships switched off. The time shown is the pre-filled schedule, which r
 | **Control panel updates** | `monthly` | up to 30 minutes | Moves the control panel to a newer version, and puts the previous one back if the new one makes the server less healthy. The panel is unavailable for about a minute. |
 | **Server configuration** | `*-*-* 04:20:00` (every day, 4:20 AM) | up to 40 minutes | Brings the server back to the configuration its control panel carries. Anything that drifted is put back, and anything already correct is left alone. |
 | **Off-site heartbeat** | `*:0/5` (every 5 minutes) | up to 30 seconds | Checks that the status page, job monitor and resource monitor answer, then calls the off-site heartbeat address saved in **Settings** > **Alerts and missed-job reporting** (see [Alerts](/en/configuration/alerts/)). Needs that address and Catena Pro. Its section shows the period and grace time to set on the outside check. |
+| **Vulnerability watch** | `*-*-* 01,07,13,19:00:00` (every 6 hours, from 1 AM) | up to 10 minutes | Checks the software of every application and service against a fresh vulnerability database and CISA's list of exploited vulnerabilities, and alerts on each one that is exploited, or critical and published in the last 30 days (see [Vulnerabilities](/en/configuration/vulnerabilities/#vulnerabilities-page-catena-pro)). Needs Catena Pro. |
 
 The randomised delay spreads the real start over a window after the set time, so a job starts a little later than the time written. A job missed because the server was off or restarting runs at the next start of the server.
 

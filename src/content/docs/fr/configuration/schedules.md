@@ -1,6 +1,6 @@
 ---
 title: "Horaires"
-description: "Les sept tâches planifiées d'un serveur Catena, leurs heures par défaut, la syntaxe des horaires, la chaîne d'entretien nocturne et la conservation des sauvegardes."
+description: "Les huit tâches planifiées d'un serveur Catena, leurs heures par défaut, la syntaxe des horaires, la chaîne d'entretien nocturne et la conservation des sauvegardes."
 ---
 
 La page **Horaires** règle le moment où le serveur effectue ses tâches planifiées. Rien ne s'exécute selon un horaire tant que vous ne l'activez pas ici. Vous pouvez aussi lancer chaque tâche à la main depuis la page **Actions**, dans toutes les éditions.
@@ -25,6 +25,7 @@ Chaque tâche est livrée désactivée. L'heure indiquée est l'horaire préremp
 | **Mises à jour du panneau de contrôle** | `monthly` | jusqu'à 30 minutes | Fait passer le panneau de contrôle à une version plus récente, et remet la précédente si la nouvelle rend le serveur moins sain. Le panneau est indisponible environ une minute. |
 | **Configuration du serveur** | `*-*-* 04:20:00` (chaque jour, 4 h 20) | jusqu'à 40 minutes | Ramène le serveur à la configuration que porte son panneau de contrôle. Ce qui a dérivé est rétabli, et ce qui est déjà correct n'est pas touché. |
 | **Signal de vie hors site** | `*:0/5` (toutes les 5 minutes) | jusqu'à 30 secondes | Vérifie que la page d'état, le moniteur de tâches et le moniteur de ressources répondent, puis appelle l'adresse du signal de vie hors site enregistrée dans **Paramètres** > **Alertes et signalement des tâches manquées** (voir [Alertes](/fr/configuration/alerts/)). Demande cette adresse et Catena Pro. Sa section indique la période et le délai de grâce à régler sur la vérification externe. |
+| **Veille des vulnérabilités** | `*-*-* 01,07,13,19:00:00` (toutes les 6 heures, dès 1 h) | jusqu'à 10 minutes | Vérifie les logiciels de chaque application et service à l'aide d'une base de vulnérabilités fraîche et de la liste de la CISA des vulnérabilités exploitées, et alerte pour chacune qui est exploitée, ou critique et publiée dans les 30 derniers jours (voir [Vulnérabilités](/fr/configuration/vulnerabilities/#page-vulnérabilités-catena-pro)). Demande Catena Pro. |
 
 Le délai aléatoire étale le démarrage réel sur une fenêtre après l'heure réglée : une tâche démarre donc un peu plus tard que l'heure écrite. Une tâche manquée parce que le serveur était éteint ou en redémarrage s'exécute au prochain démarrage du serveur.
 
