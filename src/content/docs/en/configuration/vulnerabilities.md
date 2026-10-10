@@ -18,8 +18,6 @@ On the **System** page, the **Known vulnerabilities** card gives two counts, lab
 
 Each report lists at most 200 findings. On the first of each month it is archived, and the last three monthly archives are kept on the server.
 
-The status page also carries a check on these findings: it fails when a critical finding exists or when more than ten high ones do.
-
 ### Log events
 
 The **Log** page records changes in the advisories, from both scans:

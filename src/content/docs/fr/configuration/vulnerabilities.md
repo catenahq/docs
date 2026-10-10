@@ -18,8 +18,6 @@ Dans la page **Système**, la carte **Vulnérabilités connues** donne deux nomb
 
 Chaque rapport liste 200 constats au plus. Le premier de chaque mois, il est archivé, et les trois dernières archives mensuelles sont conservées sur le serveur.
 
-La page d'état porte aussi une vérification sur ces constats : elle échoue dès qu'un constat critique existe ou que plus de dix constats élevés existent.
-
 ### Événements du Journal
 
 La page **Journal** consigne les changements d'avis, pour les deux analyses :
