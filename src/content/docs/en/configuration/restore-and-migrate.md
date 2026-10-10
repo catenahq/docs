@@ -116,8 +116,8 @@ A migration copies almost everything while the old server keeps serving. Only th
 ### On the old server
 
 1. Open the **Migration** panel.
-2. Press **Allow this server to be migrated**. A migration ticket and a pairing code appear below the button, once, with the time the window closes. Neither is stored, and neither is shown again.
-3. Pass both to whoever runs the move by two different channels: copy the ticket, and read the code.
+2. Press **Allow this server to be migrated**. Three fields appear below the button, once: the **Migration ticket**, with a **Copy** button, the **Pairing code**, and **Migration window closes at**, the time the window closes in the server's time zone. Neither the ticket nor the code is stored, and neither is shown again.
+3. Pass both to whoever runs the move by two different channels: copy the ticket with **Copy**, and read the code aloud.
 
 The window closes on its own after 4 hours, five wrong codes close it too, and **Stop allowing migration** closes it at once. Replace a lost ticket or code by pressing the button again, which mints a new pair and stops the old ones. The window also closes once the move has handed the subscription key over.
 

@@ -116,8 +116,8 @@ Une migration copie presque tout pendant que l'ancien serveur continue de servir
 ### Sur l'ancien serveur
 
 1. Ouvrez le panneau **Migration**.
-2. Appuyez sur **Autoriser le déplacement de ce serveur**. Un billet de déplacement et un code d'appairage apparaissent sous le bouton, une seule fois, avec l'heure de fermeture de la fenêtre. Ni l'un ni l'autre n'est conservé, et ni l'un ni l'autre n'est réaffiché.
-3. Transmettez les deux à la personne qui effectue le déplacement par deux moyens différents : copiez-lui le billet, et lisez-lui le code.
+2. Appuyez sur **Autoriser le déplacement de ce serveur**. Trois champs apparaissent sous le bouton, une seule fois : le **Billet de déplacement**, avec un bouton **Copier**, le **Code d'appairage**, et **Fermeture de la fenêtre de déplacement**, l'heure de fermeture dans le fuseau horaire du serveur. Ni le billet ni le code n'est conservé, et ni l'un ni l'autre n'est réaffiché.
+3. Transmettez les deux à la personne qui effectue le déplacement par deux moyens différents : copiez-lui le billet avec **Copier**, et lisez-lui le code à voix haute.
 
 La fenêtre se referme d'elle-même après 4 heures; cinq codes erronés la ferment aussi, et **Ne plus autoriser le déplacement** la ferme aussitôt. Remplacez un billet ou un code perdu en appuyant de nouveau sur le bouton, ce qui produit une nouvelle paire et arrête les anciens. La fenêtre se ferme également une fois que le déplacement a transmis la clé d'abonnement.
 
