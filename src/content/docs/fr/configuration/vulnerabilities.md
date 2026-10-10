@@ -66,11 +66,11 @@ Le panneau de contrôle tourne à partir d'une image publique, `ghcr.io/catenahq
 
 Le flux de publication construit aussi le binaire du panneau deux fois et échoue si les deux constructions diffèrent.
 
-Pour analyser l'image publiée avec n'importe quel analyseur, résolvez le condensat d'une étiquette de version, puis analysez le condensat :
+Pour analyser l'image publiée avec n'importe quel analyseur, résolvez le condensat d'une étiquette de version, puis analysez le condensat. Avec Trivy, ajoutez `--skip-version-check` et `--disable-telemetry` pour que l'analyse ne fasse aucun rapport au fabricant de l'analyseur :
 
 ```sh
 docker buildx imagetools inspect ghcr.io/catenahq/catena-admin:<etiquette> --format '{{.Manifest.Digest}}'
-trivy image ghcr.io/catenahq/catena-admin@sha256:<condensat>
+trivy image --skip-version-check --disable-telemetry ghcr.io/catenahq/catena-admin@sha256:<condensat>
 ```
 
 Pour vérifier la signature et lire la SBOM avec `cosign` :

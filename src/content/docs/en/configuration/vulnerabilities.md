@@ -66,11 +66,11 @@ The control panel runs from a public image, `ghcr.io/catenahq/catena-admin`, pul
 
 The release workflow also builds the panel binary twice and fails if the two builds differ.
 
-To scan the published image with any scanner, resolve the digest of a version tag, then scan the digest:
+To scan the published image with any scanner, resolve the digest of a version tag, then scan the digest. With Trivy, add `--skip-version-check` and `--disable-telemetry` so the scan does not report to the scanner's maker:
 
 ```sh
 docker buildx imagetools inspect ghcr.io/catenahq/catena-admin:<tag> --format '{{.Manifest.Digest}}'
-trivy image ghcr.io/catenahq/catena-admin@sha256:<digest>
+trivy image --skip-version-check --disable-telemetry ghcr.io/catenahq/catena-admin@sha256:<digest>
 ```
 
 To check the signature and read the SBOM with `cosign`:
