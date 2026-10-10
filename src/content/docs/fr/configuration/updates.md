@@ -26,7 +26,7 @@ Pour redémarrer :
 2. Cochez "Je comprends que cela arrête toutes les applications de ce serveur pendant environ une minute."
 3. Appuyez sur **Redémarrer ce serveur**.
 
-Lorsque l'entretien nocturne est actif, sa dernière étape redémarre le serveur si un redémarrage est dû, puis vérifie que chaque service est revenu. La page **Système** indique "Dernier redémarrage par la maintenance nocturne" et son issue, et le Journal le consigne. Le redémarrage vous est sinon laissé, parce que l'interruption est une décision.
+Lorsque l'entretien nocturne et son étape **Redémarrage** sont actifs, sa dernière étape redémarre le serveur si un redémarrage est dû, puis vérifie que chaque service est revenu. La page **Système** indique "Dernier redémarrage par l'entretien nocturne" et son issue, et le Journal le consigne. Le redémarrage vous est sinon laissé, parce que l'interruption est une décision.
 
 Sous **Actions** > **Opérations**, **Mises à jour apt en attente** liste ce qui attend et **Journal des mises à jour auto** montre ce que les mises à jour automatiques ont fait.
 
@@ -68,7 +68,7 @@ L'entretien nocturne met Docker à niveau de la même façon au sein de la versi
 
 ## Applications (Catena Pro)
 
-L'entretien nocturne met à jour les services propres à Catena et chaque application déployée depuis Portainer. Il prend d'abord une sauvegarde et la vérifie, et s'arrête avant toute mise à jour si cela échoue (voir [Horaires](/fr/configuration/schedules/#entretien-nocturne)).
+L'entretien nocturne met à jour les services propres à Catena et chaque application déployée depuis Portainer. Il prend d'abord une sauvegarde et la vérifie, et s'arrête avant toute mise à jour si cela échoue, sauf si vous avez retiré l'étape de sauvegarde (voir [Horaires](/fr/configuration/schedules/#entretien-nocturne)). Vous pouvez retirer n'importe quelle étape, et Catena avertit lorsque la combinaison est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
 
 ### Images admissibles
 
@@ -142,9 +142,11 @@ La page **Journal** consigne chaque décision de mise à jour, notamment :
 | `<nombre>` mise(s) à jour non liée(s) à la sécurité disponible(s); prévue(s) pour la prochaine fenêtre de maintenance. |
 | `<application>` mis à jour de `<version>` à `<version>`. |
 | La mise à jour de `<application>` vers `<version>` n'a pas abouti et a été annulée. |
-| Redémarrage du serveur pendant la maintenance nocturne, ou redémarrage qui ne s'est pas déroulé comme prévu. |
+| Redémarrage du serveur pendant l'entretien nocturne, ou redémarrage qui ne s'est pas déroulé comme prévu. |
 | Avis de sécurité signalés dans les paquets de l'hôte ou les images d'application, puis corrigés. |
 | Aucune sauvegarde n'est configurée; les mises à jour nocturnes s'appliquent sans sauvegarde. |
+| L'entretien nocturne s'est terminé, ou ne s'est pas terminé correctement, avec l'étape en échec. |
+| Une combinaison d'étapes choisie sur la page Horaires est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). |
 | La mise à jour de `<application>` n'a pas pu être enregistrée, ou son retour arrière n'a pas pu être effacé; la remise à niveau du serveur pourrait donc en changer la version. |
 | La définition de `<application>` enregistrée dans Portainer nomme une image qu'aucun de ses services n'exécute; `<application>` ne reçoit ni mise à jour automatique, ni changement de paramètres, ni restauration à partir de cette définition tant qu'elles ne concordent pas. |
 | La mise à jour nocturne laisse `<application>` de côté : son dernier déploiement a échoué et un service ne fonctionne pas. |

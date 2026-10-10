@@ -37,7 +37,7 @@ La page **Journal** consigne les changements d'avis, pour les deux analyses :
 
 Deux étapes de l'entretien nocturne produisent les constats :
 
-1. **Vulnérabilités de l'hôte.** La liste des avis de sécurité qui touchent les paquets installés sur l'hôte.
+1. **Analyse des paquets du serveur.** La liste des avis de sécurité qui touchent les paquets installés sur l'hôte.
 2. **Analyse des images.** S'exécute après les mises à jour des applications, et reflète donc l'état après toute mise à jour. La base de vulnérabilités de l'analyseur est rafraîchie à chaque exécution, et la copie en cache sert si le rafraîchissement échoue.
 
 Les deux sont informatives et n'interrompent jamais la chaîne. Seul l'échec de la sauvegarde, de sa vérification ou du contrôle d'état l'arrête (voir [Horaires](/fr/configuration/schedules/#entretien-nocturne)).
@@ -66,11 +66,11 @@ La veille des vulnérabilités vérifie les logiciels de chaque application et s
 
 Pour ouvrir la page, ouvrez le panneau **Mises à jour gérées** et suivez **Vulnérabilités**. Elle exige Catena Pro et un compte administrateur. La tuile d'une application, dans l'onglet **Applications**, affiche aux administrateurs "Vulnérabilités à traiter" et, quand la CISA en signale, "Exploitées par des attaquants", et la carte **Vulnérabilités connues** de **Système** ajoute le nombre de vulnérabilités exploitées dans les logiciels en service ici.
 
-La page indique quand les résultats ont été établis, l'âge de la base de vulnérabilités et la version de la liste de la CISA en usage. Elle avertit lorsque la veille ne peut pas faire son travail : aucun analyseur installé, pas encore de base, une base de plus de 48 heures, la liste de la CISA non lue depuis plus de 7 jours, ou la liste des images en marche illisible. Des résultats non renouvelés depuis plus de 26 heures sont marqués "périmé" et n'offrent aucun correctif. Les services en marche dont l'image n'a pas encore de liste de logiciels apparaissent sous **Non vérifiés**.
+La page indique quand les résultats ont été établis, l'âge de la base de vulnérabilités et la version de la liste de la CISA en usage. Elle avertit lorsque la veille ne peut pas faire son travail : aucun analyseur installé, pas encore de base, une base de plus de 48 heures, la liste de la CISA non lue depuis plus de 7 jours, ou la liste des images en marche illisible. Des résultats non renouvelés depuis plus de 32 heures sont marqués "périmé" et n'offrent aucun correctif. Les services en marche dont l'image n'a pas encore de liste de logiciels apparaissent sous **Non vérifiés**.
 
 ### Activer la veille
 
-La veille est une tâche planifiée, **Veille des vulnérabilités**, désactivée jusqu'à ce que vous l'activiez (voir [Horaires](/fr/configuration/schedules/)). Elle exige Catena Pro. Tant qu'elle est désactivée, la page l'indique et ses résultats ne sont renouvelés que lorsque vous appuyez sur **Vérifier maintenant**.
+La veille est une tâche planifiée, **Veille des vulnérabilités**, désactivée jusqu'à ce que vous l'activiez (voir [Horaires](/fr/configuration/schedules/)). Elle exige Catena Pro. Elle s'exécute à l'un de deux endroits, jamais aux deux : selon son propre horaire, ou comme étape de l'entretien nocturne, après les mises à jour de la nuit, de sorte qu'elle n'alerte que sur ce que les mises à jour n'ont pas corrigé (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). Tant qu'elle ne s'exécute à aucun des deux, la page l'indique et ses résultats ne sont renouvelés que lorsque vous appuyez sur **Vérifier maintenant**.
 
 **Vérifier maintenant** lance la veille en arrière-plan : une base fraîche si celle en usage date de six heures, la liste de la CISA, puis la vérification de chaque application. La page en montre les résultats quelques minutes plus tard.
 

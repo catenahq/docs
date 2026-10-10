@@ -37,8 +37,8 @@ The **Log** page records changes in the advisories, from both scans:
 
 Two steps of the nightly maintenance produce the findings:
 
-1. **Host vulnerabilities.** The list of security advisories that apply to the packages installed on the host.
-2. **Image vulnerability scan.** Runs after the application updates, so it reflects the state after any update. The scanner's vulnerability database is refreshed at each run, and the cached copy is used if that fails.
+1. **Server package scan.** The list of security advisories that apply to the packages installed on the host.
+2. **Image scan.** Runs after the application updates, so it reflects the state after any update. The scanner's vulnerability database is refreshed at each run, and the cached copy is used if that fails.
 
 Both are informational and never abort the chain. Only a failing backup, backup verification or status check stops it (see [Schedules](/en/configuration/schedules/#nightly-maintenance)).
 
@@ -66,11 +66,11 @@ The vulnerability watch checks the software of every application and service on 
 
 To open the page, open the **Managed updates** panel and follow **Vulnerabilities**. It needs Catena Pro and an administrator account. An application's tile on the **Apps** tab shows administrators "Vulnerabilities to act on" and, when CISA lists some, "Exploited by attackers" counts, and the **Known vulnerabilities** card on **System** adds the count of exploited vulnerabilities in the software running there.
 
-The page shows when the findings were made, the age of the vulnerability database and the version of CISA's list in use. It warns when the watch cannot do its job: no scanner installed, no database yet, a database over 48 hours old, CISA's list not read for over 7 days, or the list of running images unreadable. Findings not renewed for over 26 hours are marked "out of date" and offer no patch. Running services whose image has no software list yet appear under **Not checked**.
+The page shows when the findings were made, the age of the vulnerability database and the version of CISA's list in use. It warns when the watch cannot do its job: no scanner installed, no database yet, a database over 48 hours old, CISA's list not read for over 7 days, or the list of running images unreadable. Findings not renewed for over 32 hours are marked "out of date" and offer no patch. Running services whose image has no software list yet appear under **Not checked**.
 
 ### Turn the watch on
 
-The watch is a scheduled job, **Vulnerability watch**, switched off until you turn it on (see [Schedules](/en/configuration/schedules/)). It needs Catena Pro. While it is off, the page says so and its findings are renewed only when you press **Check now**.
+The watch is a scheduled job, **Vulnerability watch**, switched off until you turn it on (see [Schedules](/en/configuration/schedules/)). It needs Catena Pro. It runs in one of two places, never both: on its own schedule, or as a step of the nightly maintenance, after the night's updates, so that it alerts only on what the updates did not fix (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). While it runs in neither, the page says so and its findings are renewed only when you press **Check now**.
 
 **Check now** runs the watch in the background: a fresh database when the one in use is six hours old, CISA's list, then a check of every application. The page shows the findings a few minutes later.
 

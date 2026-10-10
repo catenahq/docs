@@ -184,7 +184,7 @@ The exported archive is listed under **Available downloads** on the **Restore** 
 
 ## When no backup is configured
 
-Every admin page shows the banner "No backup is configured: updates run with nothing to return to. Configure one in Settings." The nightly maintenance still applies updates in that state, and records a Log event saying so. The banner stays until a repository is configured.
+Every admin page shows the banner "No backup is configured: updates run with nothing to return to. Configure one in Settings." The nightly maintenance still applies updates in that state, and records a Log event saying so. When the nightly maintenance changes nothing (it is off, or [Updates and Docker engine upgrade](/en/configuration/schedules/#choosing-the-steps) are both left out), the banner is shortened to "No backup is configured. Configure one in Settings." The banner stays until a repository is configured.
 
 ## Troubleshooting
 

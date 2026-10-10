@@ -184,7 +184,7 @@ L'archive exportée est listée sous **Téléchargements disponibles** dans la p
 
 ## Lorsqu'aucune sauvegarde n'est configurée
 
-Chaque page d'administration affiche la bannière "Aucune sauvegarde n'est configurée : les mises à jour s'appliquent sans rien vers quoi revenir. En configurer une dans Paramètres." L'entretien nocturne applique tout de même les mises à jour dans cet état, et consigne un événement au Journal pour le signaler. La bannière reste affichée jusqu'à la configuration d'un dépôt.
+Chaque page d'administration affiche la bannière "Aucune sauvegarde n'est configurée : les mises à jour s'appliquent sans rien vers quoi revenir. En configurer une dans Paramètres." L'entretien nocturne applique tout de même les mises à jour dans cet état, et consigne un événement au Journal pour le signaler. Lorsque l'entretien nocturne ne change rien (il est désactivé, ou [Mises à jour et Mise à niveau du moteur Docker](/fr/configuration/schedules/#choisir-les-étapes) sont toutes deux retirées), la bannière est raccourcie : "Aucune sauvegarde n'est configurée. En configurer une dans Paramètres." La bannière reste affichée jusqu'à la configuration d'un dépôt.
 
 ## Dépannage
 

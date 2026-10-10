@@ -26,7 +26,7 @@ To restart:
 2. Tick "I understand this stops every application on this server for about a minute."
 3. Press **Restart this server**.
 
-When the nightly maintenance is on, its last step restarts the server when one is due and then checks that every service came back. The **System** page reports "Last restart by the nightly maintenance" and its outcome, and the Log records it. Restarting is otherwise left to you because the downtime is a decision.
+When the nightly maintenance and its **Restart** step are on, its last step restarts the server when one is due and then checks that every service came back. The **System** page reports "Last restart by the nightly maintenance" and its outcome, and the Log records it. Restarting is otherwise left to you because the downtime is a decision.
 
 Under **Actions** > **Ops**, **Pending apt updates** lists what is waiting and **Recent auto-upgrade log** shows what the automatic updates did.
 
@@ -68,7 +68,7 @@ The nightly maintenance upgrades Docker the same way within the current major ve
 
 ## Applications (Catena Pro)
 
-The nightly maintenance updates Catena's own services and every application deployed from Portainer. It first takes a backup and verifies it, and stops before any update if that fails (see [Schedules](/en/configuration/schedules/#nightly-maintenance)).
+The nightly maintenance updates Catena's own services and every application deployed from Portainer. It first takes a backup and verifies it, and stops before any update if that fails, unless you left the backup step out (see [Schedules](/en/configuration/schedules/#nightly-maintenance)). You can leave out any step, and Catena warns when the combination is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
 
 ### Which images are eligible
 
@@ -145,6 +145,8 @@ The **Log** page records every update decision, among them:
 | Host restarted during the nightly maintenance, or the restart did not go as expected. |
 | Security advisories flagged in host packages or application images, and cleared. |
 | No backup is configured; nightly updates run without one. |
+| The nightly maintenance completed, or did not complete cleanly and the step that failed. |
+| A combination of steps chosen on the Schedules page is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). |
 | An update of `<app>` could not be recorded, or its rollback could not be cleared, so bringing the server up to date may change its version. |
 | Portainer's saved definition of `<app>` names an image none of its services runs; `<app>` gets no automatic update, settings change or restore from it until they agree. |
 | The nightly update leaves `<app>` alone: its last deployment failed and a service is not running. |
