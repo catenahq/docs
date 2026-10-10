@@ -93,10 +93,10 @@ A copy cannot go into the backup bucket itself, because backups are pruned there
    |---|---|
    | eazybackup (Canada) | Canadian-owned, S3-compatible with Object Lock and versioning, no egress fees. |
    | Backblaze B2 | Object Lock supported; US-owned; egress fees above a monthly allowance. |
-   | Cloudflare R2 | No egress fees; US-owned. |
    | AWS S3 | Compliance mode is enforced strictly; US-owned. |
+   | OVHcloud Object Storage | Object Lock is turned on when the bucket is created, which also turns on versioning. Not available on the Cold Archive storage class. |
 
-   Some providers' standard object storage has no Object Lock (OVH Standard, for example) and cannot hold a destination. It is fine for the source.
+   Cloudflare R2 cannot hold a destination: it offers neither Object Lock nor versioning. Its bucket locks stop objects from being deleted or overwritten, but keep no earlier version to put back.
 2. Create a new bucket, one per source bucket. Do not share a destination bucket between copies.
 3. Enable **versioning**. It keeps the earlier version of an object that is overwritten or deleted.
 4. Enable **Object Lock** at creation, with a default retention of at least 30 days (90 days recommended). Choose **Compliance** mode when the provider offers it: nobody, not even the bucket owner, can shorten it. **Governance** mode is the fallback when Compliance is not available to you.

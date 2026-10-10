@@ -93,10 +93,10 @@ Une copie ne peut pas aller dans le compartiment de sauvegarde lui-même, car le
    |---|---|
    | eazybackup (Canada) | Propriété canadienne, compatible S3 avec Object Lock et versionnage, sans frais de sortie de données. |
    | Backblaze B2 | Object Lock pris en charge; propriété américaine; frais de sortie de données au-delà d'une allocation mensuelle. |
-   | Cloudflare R2 | Sans frais de sortie de données; propriété américaine. |
    | AWS S3 | Le mode Conformité est appliqué strictement; propriété américaine. |
+   | OVHcloud Object Storage | Object Lock s'active à la création du compartiment, ce qui active aussi le versionnage. Non offert pour la classe de stockage Cold Archive. |
 
-   Le stockage standard de certains fournisseurs n'a pas d'Object Lock (OVH Standard, par exemple) et ne peut pas héberger une destination. Il convient pour la source.
+   Cloudflare R2 ne peut pas héberger une destination : il n'offre ni Object Lock ni versionnage. Ses verrous de compartiment (bucket locks) empêchent la suppression et l'écrasement des objets, mais ne gardent aucune version antérieure à remettre en place.
 2. Créez un compartiment neuf, un par compartiment source. Ne partagez pas un compartiment de destination entre deux copies.
 3. Activez le **versionnage**. Il conserve la version précédente d'un objet écrasé ou supprimé.
 4. Activez **Object Lock** à la création, avec une rétention par défaut d'au moins 30 jours (90 jours recommandés). Choisissez le mode **Conformité** (Compliance) lorsque le fournisseur l'offre : personne, pas même le propriétaire du compartiment, ne peut le raccourcir. Le mode **Gouvernance** (Governance) est le recours lorsque la Conformité ne vous est pas accessible.
