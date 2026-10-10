@@ -111,7 +111,7 @@ Make one key pair per destination bucket, so a leak of one cannot reach another 
 | Key | Rights | Where it lives |
 |---|---|---|
 | Copy key | Write and read, never delete: `s3:PutObject`, `s3:GetObject`, `s3:GetObjectVersion`, `s3:ListBucket`, `s3:GetBucketLocation`, `s3:AbortMultipartUpload`, `s3:ListMultipartUploadParts`. Leave out `s3:DeleteObject`, `s3:DeleteObjectVersion`, `s3:PutObjectRetention` and `s3:BypassGovernanceRetention`. | In the **Destination S3 access key** and **Destination S3 secret key** fields of the row. |
-| Restore key | Read only: list the bucket, read objects (earlier versions too, to restore a past moment), and find the bucket's location (`s3:ListBucket`, `s3:GetObject`, `s3:GetObjectVersion`, `s3:GetBucketLocation`). | In a password manager. You type it on the **Restore** page when you need it (see [Restore from the offsite copy](/en/configuration/restore-and-migrate/#restore-from-the-offsite-copy)); it is not stored on the server. |
+| Restore key | Read only: list the bucket, read objects (earlier versions too, to restore a past moment), and find the bucket's location (`s3:ListBucket`, `s3:GetObject`, `s3:GetObjectVersion`, `s3:GetBucketLocation`). | In a password manager. You type it on the **Restore** page when you need it (see [Restore from another backup repository](/en/configuration/restore-and-migrate/#restore-from-another-backup-repository)); it is not stored on the server. |
 | Prune key | The copy key's rights plus `s3:DeleteObject` and `s3:DeleteObjectVersion`. | Never on the server. In a password manager, used from your own computer only when the provider has no lifecycle rule and you must delete old versions by hand. |
 
 A copy key without delete rights means no delete request from the server can ever reach the destination, and any delete in the provider's access log is not from Catena. Some providers also need the delete right to clean up unfinished uploads; add it only if copies fail on that.
@@ -147,7 +147,7 @@ The copies run on the **Offsite copy** job of the [Schedules](/en/configuration/
 ### How the copy behaves
 
 - A copy only ever adds. Nothing it has written is changed or deleted afterwards. A bucket removed from the list keeps every copy already made, and the storage cost grows with churn.
-- A locked copy is read where it is. The **Restore** page restores the server from the offsite copy of its backup repository and puts any declared bucket back from its copy (see [Restore from the offsite copy](/en/configuration/restore-and-migrate/#restore-from-the-offsite-copy) and [Put a bucket back from its offsite copy](/en/configuration/restore-and-migrate/#put-a-bucket-back-from-its-offsite-copy)).
+- A locked copy is read where it is. The **Restore** page restores the server from the offsite copy of its backup repository and puts any declared bucket back from its copy (see [Restore from another backup repository](/en/configuration/restore-and-migrate/#restore-from-another-backup-repository) and [Put a bucket back from its offsite copy](/en/configuration/restore-and-migrate/#put-a-bucket-back-from-its-offsite-copy)).
 - A copy of an application's own file bucket is only restorable together with a same-moment copy of the database that indexes those files. That database is inside the backup snapshots, so a file bucket copied on its own is not a backup by itself.
 
 ## What a backup contains

@@ -16,7 +16,7 @@ You handle three situations from the **Restore** page of the panel: your server 
 The restore replaces data and nothing else. Applications are stopped while their data is put back, then started again with it. The panel, the sign-in and the connection carrying the page stay up throughout, so you can follow the restore from start to finish. There is no rebuild and nothing for you to reconfigure afterwards.
 
 1. Open **Restore**.
-2. Under **Which backups to restore from**, keep **This server's own backups** and press **Show the backups**.
+2. Under **Which backups to restore from**, keep **This server's backups** and press **Show the backups**.
 3. Under **Choose a backup**, select one row. Columns are **Taken**, **Server**, **Size** and **Labels**. Each row is a complete restore point; pick the most recent one taken before the problem started. When the repository holds backups from more than one server, the page warns that selecting by timestamp alone can restore another server's data over this one: the **Server** column says which server wrote each snapshot.
 4. Under **How much to put back**, choose the scope:
    - **Everything on this server** returns every application to the selected backup.
@@ -51,49 +51,30 @@ Each backup records the Catena version that made it. The restore compares it wit
 
 A refusal happens in the first step, before anything is touched.
 
-## Rebuild a lost server on a new machine
+## Restore from another backup repository
 
-When your original server is gone, a new server restores from the old server's backups. You need only the recovery keyset (see [Backups and S3 storage](/en/configuration/backups/#disaster-recovery-keyset)).
+Restore from a backup repository other than the one this server backs up to: the old server's repository when a new machine replaces one that is gone, or a copy of this server's backups, such as its [offsite copy](/en/configuration/backups/#offsite-copies), when the backup repository itself is damaged, encrypted or gone. The repository is read where it is: reading it writes nothing to it, so a locked copy stays locked and a key that can only read is enough. An offsite copy keeps every backup ever copied to it, and a backup older than the copy's lock period may be incomplete.
 
-1. Install Catena on the new server (see [Installation](/en/installation/)). The installer takes the newest release.
-2. Open the new server's panel and go to **Restore**.
-3. Under **Which backups to restore from**, choose **Another server's backups**.
-4. Under **Another server's backup repository**, fill in:
+You need the repository's address, its password (the backup encryption password), and an access key and secret key that can read its bucket. To rebuild a lost server, all four are in the recovery keyset (see [Backups and S3 storage](/en/configuration/backups/#disaster-recovery-keyset)): first install Catena on the new server (see [Installation](/en/installation/)). The installer takes the newest release.
 
-   | Field | Value from the recovery keyset |
+1. Open **Restore**.
+2. Under **Which backups to restore from**, choose **Another backup repository**. The choice is offered once the server's installed components support it (see Troubleshooting).
+3. Under **Another backup repository**, fill in:
+
+   | Field | Value |
    |---|---|
-   | **Repository address** | The repository address, `s3:https://<endpoint>/<bucket>` |
+   | **Repository address** | The repository address, `s3:https://<endpoint>/<bucket>`. The addresses of this server's offsite copies are suggested. |
    | **Repository password** | The backup encryption password |
    | **Storage access key** | The S3 access key |
    | **Storage secret key** | The S3 secret key |
 
    Only the fields the storage provider issued need values, but the address and the password are always required ("Both a repository address and its password are needed.").
-5. Press **Save these credentials**. They are held in memory only: the address and keys are gone after the server restarts, and **Forget the saved credentials** erases them at once. The backups of that repository are then listed under **Choose a backup**.
-6. Select the backup (for ransomware or a compromise, one taken before the incident), then continue with steps 4 to 6 of the previous section.
+4. Press **Save these credentials**. They are held in memory only, and removed when a restore from that repository finishes, after 24 hours, or when the server restarts. A restore that stops part-way keeps them so you can start it again. A move to this server that has not finished 24 hours after you saved them needs them saved again. **Forget the saved credentials** erases them at once. The backups of that repository are then listed under **Choose a backup**.
+5. Select the backup (after ransomware or a compromise, one taken before the incident), then continue with steps 4 to 6 of [Restore on a running server](#restore-on-a-running-server). The [version rule](#version-rule) applies.
 
-When the restore finishes, the new server has the old one's data and stored configuration.
+When the restore finishes, the server has the data and stored configuration of the selected backup.
 
-## Restore from the offsite copy
-
-When the backup repository itself is damaged, encrypted or gone, restore from its [offsite copy](/en/configuration/backups/#offsite-copies) instead. The copy is read where it is: reading it writes nothing to it, and it stays locked. It keeps every backup ever copied to it, and a backup older than the copy's lock period may be incomplete.
-
-You need the offsite copy's address, the backup encryption password (see [Backups and S3 storage](/en/configuration/backups/#disaster-recovery-keyset)), and an access key and secret key that can read the copy's bucket.
-
-1. Open **Restore**.
-2. Under **Which backups to restore from**, choose **This server's offsite copy**. The choice is offered once the server's installed components support it (see Troubleshooting).
-3. Under **This server's offsite copy**, fill in:
-
-   | Field | Value |
-   |---|---|
-   | **Offsite copy address** | The address of the copy's bucket. It is filled in from the offsite copy of the backup repository declared under **Offsite copies** in **Settings**; on a new machine, enter it. |
-   | **Backup encryption password** | The password of the backup repository |
-   | **Access key that reads the offsite copy** | The access key |
-   | **Secret key that reads the offsite copy** | The secret key |
-
-4. Press **Save these keys**. They are held in memory only and removed when a restore from the copy finishes, or after 24 hours, whichever comes first. A restore that stops part-way keeps them so you can start it again. **Forget these keys now** erases them at once. The backups of the copy are then listed under **Choose a backup**.
-5. Select the backup, then continue with steps 4 to 6 of [Restore on a running server](#restore-on-a-running-server). The [version rule](#version-rule) applies.
-
-When the restore finishes, the server has the data and stored configuration of the selected backup. Backups stop until a backup repository exists at the destination: a backup never creates one. Save a backup destination in **Settings**, under **Backup**, preferably a new bucket with new keys, since the old one may be in an attacker's hands; saving it creates a new repository there.
+After a restore from a copy of this server's backups, backups stop until a backup repository exists at the destination: a backup never creates one. Save a backup destination in **Settings**, under **Backup**, preferably a new bucket with new keys, since the old one may be in an attacker's hands; saving it creates a new repository there.
 
 ## Put a bucket back from its offsite copy
 
@@ -114,7 +95,7 @@ If the repair stops, the section reads "Putting the bucket back stopped at:" fol
 
 ### Order after a restore from the offsite copy
 
-After a restore from the offsite copy, backups wait for a backup destination saved in **Settings** (see [Restore from the offsite copy](#restore-from-the-offsite-copy)). The offsite copy then stops rather than mix the new repository into the locked bucket that holds the old one: declare a new locked bucket for it under **Offsite copies**. A repair and a restore do not run together: each is refused while the other runs.
+After a restore from the offsite copy, backups wait for a backup destination saved in **Settings** (see [Restore from another backup repository](#restore-from-another-backup-repository)). The offsite copy then stops rather than mix the new repository into the locked bucket that holds the old one: declare a new locked bucket for it under **Offsite copies**. A repair and a restore do not run together: each is refused while the other runs.
 
 ## Restore report
 
@@ -129,7 +110,7 @@ A migration copies almost everything while the old server keeps serving. Only th
 - The old server has Catena Pro or Catena Business. The new server needs no subscription of its own: the subscription key moves with the data.
 - Both servers are on the same Catena version. A move between different versions is refused before anything is touched.
 - The new server reaches the old one's SSH port 22: on its public address, or on its private network once its public SSH is closed (see [Admin access and tailnet](/en/configuration/admin-access/#close-ssh-on-public-port-22)).
-- The old server's backup repository is saved on the new server (steps 3 to 5 of the previous section).
+- The old server's backup repository is saved on the new server (steps 2 to 4 of [Restore from another backup repository](#restore-from-another-backup-repository)).
 - You have not entered a Cloudflare token on the new server. The move brings the old server's token, and a token entered first would take the old server's web address before the move starts.
 
 ### On the old server
@@ -184,5 +165,5 @@ After a completed move the old server is stopped, not erased. Its data and backu
 | The server at that address is not the one that minted the ticket | The address reaches another server, or the old server's SSH host key changed after a reinstall or a restore. Check the address; after a reinstall or a restore, open a new window on the old server and use its new ticket. |
 | "The credentials were refused." | The repository details were not accepted. Check them against the recovery keyset. |
 | "A bucket is being put back from its offsite copy. Wait for it to finish before starting a restore." | A bucket repair is running. A restore starts only after it finishes, and a repair is refused the same way while a restore runs ("A restore is running on this server. Wait for it to finish before putting a bucket back."). |
-| "Restoring from the offsite copy is not available on this server yet: its installed components are older than this panel." or "Putting a bucket back is not available on this server yet: its installed components are older than this panel." | The server's installed components predate the feature. Open **Settings**, go to **Server configuration**, press **Bring this server up to date**, and try again once it finishes. |
+| "Restoring from another backup repository is not available on this server yet: its installed components are older than this panel. Bring this server up to date in Settings, under Server configuration, then try again." or "Putting a bucket back is not available on this server yet: its installed components are older than this panel." | The server's installed components predate the feature. Open **Settings**, go to **Server configuration**, press **Bring this server up to date**, and try again once it finishes. |
 | Log: the restore left `<app>` stopped | The backup was taken while its saved definition named an image its services did not run. Set the definition to the versions the services ran and deploy it from Portainer. |

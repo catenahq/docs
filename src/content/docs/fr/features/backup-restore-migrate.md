@@ -16,7 +16,7 @@ Des copies chiffrées de toutes les données des applications et de la configura
 
 ## Restauration
 
-La page **Restauration** restaure tout à partir des sauvegardes du serveur, ou des sauvegardes d'un autre serveur lorsqu'une machine en remplace une qui n'existe plus (adresse du dépôt, mot de passe de sauvegarde et clés de stockage, conservés en mémoire seulement). Le panneau, la connexion et l'authentification restent accessibles pendant le remplacement des applications. Vous pouvez reprendre une restauration interrompue avec la même sauvegarde. Une sauvegarde plus récente que la version en marche est refusée. Après une reconstruction ou un déplacement, la piste d'audit du serveur précédent est conservée à côté de celle du nouveau, et chaque exportation la contient. Voir [Restauration et migration](/fr/configuration/restore-and-migrate/).
+La page **Restauration** restaure tout à partir des sauvegardes de ce serveur, ou d'un autre dépôt de sauvegarde (celui d'un autre serveur, ou une copie comme la copie hors site), à partir de son adresse, du mot de passe de sauvegarde et des clés de stockage, conservés en mémoire seulement. Le panneau, la connexion et l'authentification restent accessibles pendant le remplacement des applications. Vous pouvez reprendre une restauration interrompue avec la même sauvegarde. Une sauvegarde plus récente que la version en marche est refusée. Après une reconstruction ou un déplacement, la piste d'audit du serveur précédent est conservée à côté de celle du nouveau, et chaque exportation la contient. Voir [Restauration et migration](/fr/configuration/restore-and-migrate/).
 
 ## Migration
 
@@ -24,7 +24,7 @@ Un nouveau serveur tire depuis l'ancien avec **Déplacer un autre serveur ici**.
 
 ## Copies hors site
 
-**Copies hors site** copie chaque seau déclaré vers un seau verrouillé (Object Lock) chez un autre fournisseur, en ajout seulement : rien n'est jamais supprimé. Pour restaurer depuis cette copie, recopiez d'abord le seau verrouillé vers un seau neuf.
+**Copies hors site** copie chaque seau déclaré vers un seau verrouillé (Object Lock) chez un autre fournisseur, en ajout seulement : rien n'est jamais supprimé. Vous pouvez restaurer depuis une copie sur place, ou remettre un seau en place depuis elle.
 
 ## Ce qu'ajoute chaque édition
 

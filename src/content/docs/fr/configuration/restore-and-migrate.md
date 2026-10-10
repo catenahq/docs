@@ -51,49 +51,30 @@ Chaque sauvegarde enregistre la version de Catena qui l'a produite. La restaurat
 
 Le refus survient à la première étape, avant que quoi que ce soit soit touché.
 
-## Reconstruire un serveur perdu sur une nouvelle machine
+## Restaurer depuis un autre dépôt de sauvegarde
 
-Lorsque votre serveur d'origine n'existe plus, un nouveau serveur restaure depuis les sauvegardes de l'ancien. Vous n'avez besoin que de la trousse de reprise (voir [Sauvegardes et stockage S3](/fr/configuration/backups/#trousse-de-reprise-après-sinistre)).
+Restaurez depuis un dépôt de sauvegarde autre que celui où ce serveur sauvegarde : le dépôt de l'ancien serveur lorsqu'une nouvelle machine en remplace une qui n'existe plus, ou une copie des sauvegardes de ce serveur, comme sa [copie hors site](/fr/configuration/backups/#copies-hors-site), lorsque le dépôt de sauvegarde lui-même est endommagé, chiffré ou perdu. Le dépôt est lu sur place : le lire n'y écrit rien, une copie verrouillée reste donc verrouillée et une clé qui ne fait que lire suffit. Une copie hors site garde toutes les sauvegardes qui y ont été copiées, et une sauvegarde plus ancienne que la durée de verrouillage de la copie peut être incomplète.
 
-1. Installez Catena sur le nouveau serveur (voir [Installation](/fr/installation/)). L'installateur prend la version la plus récente.
-2. Ouvrez le panneau du nouveau serveur et allez à **Restauration**.
-3. Sous **Quelles sauvegardes restaurer**, choisissez **Les sauvegardes d'un autre serveur**.
-4. Sous **Dépôt de sauvegarde d'un autre serveur**, remplissez :
+Il vous faut l'adresse du dépôt, son mot de passe (le mot de passe de chiffrement des sauvegardes), et une clé d'accès et une clé secrète qui peuvent lire son compartiment. Pour reconstruire un serveur perdu, les quatre se trouvent dans la trousse de reprise (voir [Sauvegardes et stockage S3](/fr/configuration/backups/#trousse-de-reprise-après-sinistre)) : installez d'abord Catena sur le nouveau serveur (voir [Installation](/fr/installation/)). L'installateur prend la version la plus récente.
 
-   | Champ | Valeur tirée de la trousse de reprise |
+1. Ouvrez **Restauration**.
+2. Sous **Quelles sauvegardes restaurer**, choisissez **Un autre dépôt de sauvegarde**. Ce choix est offert lorsque les composants installés du serveur le prennent en charge (voir Dépannage).
+3. Sous **Un autre dépôt de sauvegarde**, remplissez :
+
+   | Champ | Valeur |
    |---|---|
-   | **Adresse du dépôt** | L'adresse du dépôt, `s3:https://<point-d-acces>/<compartiment>` |
+   | **Adresse du dépôt** | L'adresse du dépôt, `s3:https://<point-d-acces>/<compartiment>`. Les adresses des copies hors site de ce serveur sont proposées. |
    | **Mot de passe du dépôt** | Le mot de passe de chiffrement des sauvegardes |
    | **Clé d'accès du stockage** | La clé d'accès S3 |
    | **Clé secrète du stockage** | La clé secrète S3 |
 
    Seuls les champs émis par le fournisseur de stockage exigent une valeur, mais l'adresse et le mot de passe sont toujours requis ("L'adresse du dépôt et son mot de passe sont tous deux requis.").
-5. Appuyez sur **Enregistrer ces identifiants**. Ils sont conservés en mémoire seulement : l'adresse et les clés disparaissent au redémarrage du serveur, et **Oublier les identifiants enregistrés** les efface immédiatement. Les sauvegardes de ce dépôt sont alors listées sous **Choisir une sauvegarde**.
-6. Sélectionnez la sauvegarde (en cas de rançongiciel ou de compromission, une sauvegarde antérieure à l'incident), puis poursuivez avec les étapes 4 à 6 de la section précédente.
+4. Appuyez sur **Enregistrer ces identifiants**. Ils sont conservés en mémoire seulement, et effacés lorsqu'une restauration depuis ce dépôt se termine, au bout de 24 heures ou au redémarrage du serveur. Une restauration qui s'arrête en cours de route les garde pour que vous puissiez la relancer. Un déplacement vers ce serveur qui n'est pas terminé 24 heures après leur enregistrement exige de les enregistrer de nouveau. **Oublier les identifiants enregistrés** les efface immédiatement. Les sauvegardes de ce dépôt sont alors listées sous **Choisir une sauvegarde**.
+5. Sélectionnez la sauvegarde (en cas de rançongiciel ou de compromission, une sauvegarde antérieure à l'incident), puis poursuivez avec les étapes 4 à 6 de [Restaurer sur un serveur en marche](#restaurer-sur-un-serveur-en-marche). La [règle de version](#règle-de-version) s'applique.
 
-Une fois la restauration terminée, le nouveau serveur possède les données et la configuration enregistrée de l'ancien.
+Une fois la restauration terminée, le serveur possède les données et la configuration enregistrée de la sauvegarde choisie.
 
-## Restaurer depuis la copie hors site
-
-Lorsque le dépôt de sauvegarde lui-même est endommagé, chiffré ou perdu, restaurez plutôt depuis sa [copie hors site](/fr/configuration/backups/#copies-hors-site). La copie est lue sur place : la lire n'y écrit rien, et elle reste verrouillée. Elle garde toutes les sauvegardes qui y ont été copiées, et une sauvegarde plus ancienne que la durée de verrouillage de la copie peut être incomplète.
-
-Il vous faut l'adresse de la copie hors site, le mot de passe de chiffrement des sauvegardes (voir [Sauvegardes et stockage S3](/fr/configuration/backups/#trousse-de-reprise-après-sinistre)), et une clé d'accès et une clé secrète qui peuvent lire le compartiment de la copie.
-
-1. Ouvrez **Restauration**.
-2. Sous **Quelles sauvegardes restaurer**, choisissez **La copie hors site de ce serveur**. Ce choix est offert lorsque les composants installés du serveur le prennent en charge (voir Dépannage).
-3. Sous **Copie hors site de ce serveur**, remplissez :
-
-   | Champ | Valeur |
-   |---|---|
-   | **Adresse de la copie hors site** | L'adresse du compartiment de la copie. Elle est remplie d'après la copie hors site du dépôt de sauvegarde déclarée sous **Copies hors site** dans **Paramètres**; sur une nouvelle machine, saisissez-la. |
-   | **Mot de passe de chiffrement des sauvegardes** | Le mot de passe du dépôt de sauvegarde |
-   | **Clé d'accès qui lit la copie hors site** | La clé d'accès |
-   | **Clé secrète qui lit la copie hors site** | La clé secrète |
-
-4. Appuyez sur **Enregistrer ces clés**. Elles sont conservées en mémoire seulement et effacées lorsqu'une restauration depuis la copie se termine, ou au bout de 24 heures, selon la première éventualité. Une restauration qui s'arrête en cours de route les garde pour que vous puissiez la relancer. **Oublier ces clés maintenant** les efface immédiatement. Les sauvegardes de la copie sont alors listées sous **Choisir une sauvegarde**.
-5. Sélectionnez la sauvegarde, puis poursuivez avec les étapes 4 à 6 de [Restaurer sur un serveur en marche](#restaurer-sur-un-serveur-en-marche). La [règle de version](#règle-de-version) s'applique.
-
-Une fois la restauration terminée, le serveur possède les données et la configuration enregistrée de la sauvegarde choisie. Les sauvegardes s'arrêtent jusqu'à ce qu'un dépôt de sauvegarde existe à la destination : une sauvegarde n'en crée jamais. Enregistrez une destination de sauvegarde dans **Paramètres**, sous **Sauvegarde**, de préférence un nouveau compartiment avec de nouvelles clés, puisque l'ancien est peut-être entre les mains d'un attaquant; l'enregistrer y crée un nouveau dépôt.
+Après une restauration depuis une copie des sauvegardes de ce serveur, les sauvegardes s'arrêtent jusqu'à ce qu'un dépôt de sauvegarde existe à la destination : une sauvegarde n'en crée jamais. Enregistrez une destination de sauvegarde dans **Paramètres**, sous **Sauvegarde**, de préférence un nouveau compartiment avec de nouvelles clés, puisque l'ancien est peut-être entre les mains d'un attaquant; l'enregistrer y crée un nouveau dépôt.
 
 ## Remettre un compartiment en place depuis sa copie hors site
 
@@ -114,7 +95,7 @@ Si l'opération s'arrête, la section indique "La remise en place du seau s'est 
 
 ### Ordre après une restauration depuis la copie hors site
 
-Après une restauration depuis la copie hors site, les sauvegardes attendent une destination de sauvegarde enregistrée dans **Paramètres** (voir [Restaurer depuis la copie hors site](#restaurer-depuis-la-copie-hors-site)). La copie hors site s'arrête alors plutôt que de mêler le nouveau dépôt au compartiment verrouillé qui contient l'ancien : déclarez pour elle un nouveau compartiment verrouillé sous **Copies hors site**. Une remise en place et une restauration ne s'exécutent pas ensemble : chacune est refusée pendant que l'autre est en cours.
+Après une restauration depuis la copie hors site, les sauvegardes attendent une destination de sauvegarde enregistrée dans **Paramètres** (voir [Restaurer depuis un autre dépôt de sauvegarde](#restaurer-depuis-un-autre-dépôt-de-sauvegarde)). La copie hors site s'arrête alors plutôt que de mêler le nouveau dépôt au compartiment verrouillé qui contient l'ancien : déclarez pour elle un nouveau compartiment verrouillé sous **Copies hors site**. Une remise en place et une restauration ne s'exécutent pas ensemble : chacune est refusée pendant que l'autre est en cours.
 
 ## Rapport de restauration
 
@@ -129,7 +110,7 @@ Une migration copie presque tout pendant que l'ancien serveur continue de servir
 - L'ancien serveur a Catena Pro ou Catena Business. Le nouveau serveur n'a besoin d'aucun abonnement à lui : la clé d'abonnement suit les données.
 - Les deux serveurs tournent sur la même version de Catena. Un déplacement entre versions différentes est refusé avant que quoi que ce soit soit touché.
 - Le nouveau serveur joint le port SSH 22 de l'ancien : par son adresse publique, ou par son réseau privé une fois son SSH public fermé (voir [Accès administrateur et réseau privé](/fr/configuration/admin-access/#fermer-le-ssh-sur-le-port-public-22)).
-- Le dépôt de sauvegarde de l'ancien serveur est enregistré sur le nouveau (étapes 3 à 5 de la section précédente).
+- Le dépôt de sauvegarde de l'ancien serveur est enregistré sur le nouveau (étapes 2 à 4 de [Restaurer depuis un autre dépôt de sauvegarde](#restaurer-depuis-un-autre-dépôt-de-sauvegarde)).
 - Vous n'avez saisi aucun jeton Cloudflare sur le nouveau serveur. Le déplacement apporte celui de l'ancien serveur, et un jeton saisi d'abord prendrait l'adresse web de l'ancien serveur avant le début du déplacement.
 
 ### Sur l'ancien serveur
@@ -184,5 +165,5 @@ Après un déplacement terminé, l'ancien serveur est arrêté, pas effacé. Ses
 | Le serveur à cette adresse n'est pas celui qui a produit le billet | L'adresse joint un autre serveur, ou la clé d'hôte SSH de l'ancien serveur a changé après une réinstallation ou une restauration. Vérifiez l'adresse; après une réinstallation ou une restauration, ouvrez une nouvelle fenêtre de déplacement sur l'ancien serveur et utilisez son nouveau billet. |
 | "Les identifiants ont été refusés." | Les détails du dépôt n'ont pas été acceptés. Comparez-les à la trousse de reprise. |
 | "Un seau est en cours de remise en place depuis sa copie hors site. Attendez que l'opération se termine avant de lancer une restauration." | Une remise en place de compartiment est en cours. Une restauration ne démarre qu'après sa fin, et une remise en place est refusée de la même façon pendant une restauration ("Une restauration est en cours sur ce serveur. Attendez qu'elle se termine avant de remettre un seau en place."). |
-| "La restauration depuis la copie hors site n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau." ou "La remise en place d'un seau n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau." | Les composants installés du serveur sont antérieurs à cette fonction. Ouvrez **Paramètres**, allez à **Configuration du serveur**, appuyez sur **Remettre ce serveur à niveau**, puis réessayez une fois l'opération terminée. |
+| "La restauration depuis un autre dépôt de sauvegarde n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau. Remettez ce serveur à niveau dans Paramètres, sous Configuration du serveur, puis réessayez." ou "La remise en place d'un seau n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau." | Les composants installés du serveur sont antérieurs à cette fonction. Ouvrez **Paramètres**, allez à **Configuration du serveur**, appuyez sur **Remettre ce serveur à niveau**, puis réessayez une fois l'opération terminée. |
 | Journal : la restauration a laissé `<application>` arrêté | La sauvegarde a été prise alors que sa définition nommait une image que ses services n'exécutaient pas. Réglez la définition sur les versions qu'exécutaient les services, puis déployez-la depuis Portainer. |

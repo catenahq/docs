@@ -16,7 +16,7 @@ Encrypted copies of all app data and of the server's own configuration go to S3 
 
 ## Restore
 
-The **Restore** page restores everything from the server's own backups, or from another server's backups when a machine replaces one that is gone (repository address, backup password and storage keys, held in memory only). The panel, sign-in and the connection stay up while applications are replaced. You can resume an interrupted restore with the same backup. A backup newer than the running version is refused. After a rebuild or a move, the previous server's audit trail is kept beside the new one, and every export carries it. See [Restore and migrate](/en/configuration/restore-and-migrate/).
+The **Restore** page restores everything from this server's backups, or from another backup repository (another server's, or a copy such as the offsite copy), given its address, backup password and storage keys, held in memory only. The panel, sign-in and the connection stay up while applications are replaced. You can resume an interrupted restore with the same backup. A backup newer than the running version is refused. After a rebuild or a move, the previous server's audit trail is kept beside the new one, and every export carries it. See [Restore and migrate](/en/configuration/restore-and-migrate/).
 
 ## Migration
 
@@ -24,7 +24,7 @@ A new server pulls from the old one with **Move another server here**. The old s
 
 ## Offsite copies
 
-**Offsite copies** copies each declared bucket to a locked bucket (Object Lock) at a different provider, additively: nothing is ever deleted. To recover from it, first copy the locked bucket out to a fresh bucket.
+**Offsite copies** copies each declared bucket to a locked bucket (Object Lock) at a different provider, additively: nothing is ever deleted. You can restore from a copy where it is, or put a bucket back from it.
 
 ## What each edition adds
 
