@@ -80,8 +80,50 @@ An offsite copy duplicates a bucket into a locked bucket at a different provider
 
 ### Prerequisites
 
-- A destination bucket at a provider other than the one holding the source, created with **Object Lock** and **versioning** enabled. Most providers allow Object Lock only at bucket creation.
-- An access key pair for the destination and, if the source is not the main backup bucket, for the source.
+- A destination bucket at a provider other than the one holding the source, created with **Object Lock** and **versioning** enabled (see [Create the destination bucket](#create-the-destination-bucket)).
+- An access key pair for the destination (see [Keys for the destination](#keys-for-the-destination)) and, for the source, the keys of the bucket being copied.
+
+### Create the destination bucket
+
+A copy cannot go into the backup bucket itself, because backups are pruned there and a lock would block the pruning. Each source bucket gets its own destination bucket.
+
+1. Choose a provider that supports Object Lock and is not the one holding the source:
+
+   | Provider | Notes |
+   |---|---|
+   | eazybackup (Canada) | Canadian-owned, S3-compatible with Object Lock and versioning, no egress fees. |
+   | Backblaze B2 | Object Lock supported; US-owned; egress fees above a monthly allowance. |
+   | Cloudflare R2 | No egress fees; US-owned. |
+   | AWS S3 | Compliance mode is enforced strictly; US-owned. |
+
+   Some providers' standard object storage has no Object Lock (OVH Standard, for example) and cannot hold a destination. It is fine for the source.
+2. Create a new bucket, one per source bucket. Do not share a destination bucket between copies.
+3. Enable **versioning**. It keeps the earlier version of an object that is overwritten or deleted.
+4. Enable **Object Lock** at creation, with a default retention of at least 30 days (90 days recommended). Choose **Compliance** mode when the provider offers it: nobody, not even the bucket owner, can shorten it. **Governance** mode is the fallback when Compliance is not available to you.
+5. Note the endpoint and the bucket name. The panel takes them as one address, `s3:https://<endpoint>/<bucket>`.
+
+Versions that are no longer current keep using storage until the lock expires. For a bucket with much change, such as an application's files, plan for two to five times the size of the source in the first year, and set a lifecycle rule at the provider that expires non-current versions after the retention period. A lifecycle rule runs at the provider and needs no delete right on the key you give Catena.
+
+### Keys for the destination
+
+Make one key pair per destination bucket, so a leak of one cannot reach another bucket. Keep three roles apart:
+
+| Key | Rights | Where it lives |
+|---|---|---|
+| Copy key | Write and read, never delete: `s3:PutObject`, `s3:GetObject`, `s3:GetObjectVersion`, `s3:ListBucket`, `s3:GetBucketLocation`, `s3:AbortMultipartUpload`, `s3:ListMultipartUploadParts`. Leave out `s3:DeleteObject`, `s3:DeleteObjectVersion`, `s3:PutObjectRetention` and `s3:BypassGovernanceRetention`. | In the **Destination S3 access key** and **Destination S3 secret key** fields of the row. |
+| Restore key | Read only: list the bucket, read objects (earlier versions too, to restore a past moment), and find the bucket's location (`s3:ListBucket`, `s3:GetObject`, `s3:GetObjectVersion`, `s3:GetBucketLocation`). | In a password manager. You type it on the **Restore** page when you need it (see [Restore from the offsite copy](/en/configuration/restore-and-migrate/#restore-from-the-offsite-copy)); it is not stored on the server. |
+| Prune key | The copy key's rights plus `s3:DeleteObject` and `s3:DeleteObjectVersion`. | Never on the server. In a password manager, used from your own computer only when the provider has no lifecycle rule and you must delete old versions by hand. |
+
+A copy key without delete rights means no delete request from the server can ever reach the destination, and any delete in the provider's access log is not from Catena. Some providers also need the delete right to clean up unfinished uploads; add it only if copies fail on that.
+
+How each provider expresses "no delete":
+
+- **eazybackup and other MinIO-compatible providers:** attach a policy that allows the actions above to the key's user.
+- **AWS S3:** attach the same policy, with the bucket's ARN, to an IAM user.
+- **Backblaze B2:** when creating the application key, tick `listBuckets`, `listFiles`, `readFiles` and `writeFiles`, and leave `deleteFiles` unticked.
+- **OVH Object Storage:** give the key the read and write role, not the administrator role.
+
+To replace a key: enter the new one in the row, wait for one scheduled run to succeed, then delete the old key at the provider. No other step is needed.
 
 ### Steps
 
@@ -100,7 +142,7 @@ An offsite copy duplicates a bucket into a locked bucket at a different provider
 
 Enter both sets of keys here even when a bucket is configured elsewhere as well: an application owns where it stores its files, and this list owns what gets copied where. Source and destination must be different buckets, and you can add at most 32 rows. Leave the secret blank on an existing row to keep the stored one. Until a row exists the section reads "No offsite copies are declared, so nothing is copied offsite."
 
-The copies run on the **Offsite copy** lane of the Schedules page (and as a step of the nightly maintenance). An unreachable or unconfigured destination is recorded as skipped and does not stop backups.
+The copies run on the **Offsite copy** job of the [Schedules](/en/configuration/schedules/) page, which ships switched off: turn it on there once the row is saved. They also run as a step of the nightly maintenance. An unreachable or unconfigured destination is recorded as skipped and does not stop backups.
 
 ### How the copy behaves
 

@@ -80,8 +80,50 @@ Une copie hors site duplique un compartiment vers un compartiment verrouillé ch
 
 ### Prérequis
 
-- Un compartiment de destination chez un fournisseur autre que celui de la source, créé avec **Object Lock** et le **versionnage** activés. La plupart des fournisseurs n'autorisent Object Lock qu'à la création du compartiment.
-- Une paire de clés d'accès pour la destination et, si la source n'est pas le compartiment principal de sauvegarde, pour la source.
+- Un compartiment de destination chez un fournisseur autre que celui de la source, créé avec **Object Lock** et le **versionnage** activés (voir [Créer le compartiment de destination](#créer-le-compartiment-de-destination)).
+- Une paire de clés pour la destination (voir [Clés de la destination](#clés-de-la-destination)) et, pour la source, les clés du compartiment copié.
+
+### Créer le compartiment de destination
+
+Une copie ne peut pas aller dans le compartiment de sauvegarde lui-même, car les sauvegardes y sont élaguées et un verrou bloquerait l'élagage. Chaque compartiment source a son propre compartiment de destination.
+
+1. Choisissez un fournisseur qui prend en charge Object Lock et qui n'est pas celui de la source :
+
+   | Fournisseur | Remarques |
+   |---|---|
+   | eazybackup (Canada) | Propriété canadienne, compatible S3 avec Object Lock et versionnage, sans frais de sortie de données. |
+   | Backblaze B2 | Object Lock pris en charge; propriété américaine; frais de sortie de données au-delà d'une allocation mensuelle. |
+   | Cloudflare R2 | Sans frais de sortie de données; propriété américaine. |
+   | AWS S3 | Le mode Conformité est appliqué strictement; propriété américaine. |
+
+   Le stockage standard de certains fournisseurs n'a pas d'Object Lock (OVH Standard, par exemple) et ne peut pas héberger une destination. Il convient pour la source.
+2. Créez un compartiment neuf, un par compartiment source. Ne partagez pas un compartiment de destination entre deux copies.
+3. Activez le **versionnage**. Il conserve la version précédente d'un objet écrasé ou supprimé.
+4. Activez **Object Lock** à la création, avec une rétention par défaut d'au moins 30 jours (90 jours recommandés). Choisissez le mode **Conformité** (Compliance) lorsque le fournisseur l'offre : personne, pas même le propriétaire du compartiment, ne peut le raccourcir. Le mode **Gouvernance** (Governance) est le recours lorsque la Conformité ne vous est pas accessible.
+5. Notez le point d'accès et le nom du compartiment. Le panneau les prend en une seule adresse, `s3:https://<point-d-acces>/<compartiment>`.
+
+Les versions qui ne sont plus courantes occupent de l'espace jusqu'à l'expiration du verrou. Pour un compartiment qui change beaucoup, comme les fichiers d'une application, prévoyez de deux à cinq fois la taille de la source la première année, et créez chez le fournisseur une règle de cycle de vie qui fait expirer les versions non courantes après la période de rétention. Une règle de cycle de vie s'exécute chez le fournisseur et n'exige aucun droit de suppression sur la clé confiée à Catena.
+
+### Clés de la destination
+
+Créez une paire de clés par compartiment de destination, pour que la fuite d'une paire n'atteigne pas un autre compartiment. Gardez trois rôles distincts :
+
+| Clé | Droits | Où elle se trouve |
+|---|---|---|
+| Clé de copie | Écriture et lecture, jamais de suppression : `s3:PutObject`, `s3:GetObject`, `s3:GetObjectVersion`, `s3:ListBucket`, `s3:GetBucketLocation`, `s3:AbortMultipartUpload`, `s3:ListMultipartUploadParts`. Omettez `s3:DeleteObject`, `s3:DeleteObjectVersion`, `s3:PutObjectRetention` et `s3:BypassGovernanceRetention`. | Dans les champs **Clé d'accès S3 de la destination** et **Clé secrète S3 de la destination** de la ligne. |
+| Clé de restauration | Lecture seule : lister le compartiment, lire les objets (les versions antérieures aussi, pour restaurer un moment passé) et trouver l'emplacement du compartiment (`s3:ListBucket`, `s3:GetObject`, `s3:GetObjectVersion`, `s3:GetBucketLocation`). | Dans un gestionnaire de mots de passe. Vous la saisissez dans la page **Restauration** au besoin (voir [Restaurer depuis la copie hors site](/fr/configuration/restore-and-migrate/#restaurer-depuis-la-copie-hors-site)); elle n'est pas conservée sur le serveur. |
+| Clé d'élagage | Les droits de la clé de copie, plus `s3:DeleteObject` et `s3:DeleteObjectVersion`. | Jamais sur le serveur. Dans un gestionnaire de mots de passe, utilisée depuis votre propre ordinateur seulement lorsque le fournisseur n'a pas de règle de cycle de vie et que vous devez supprimer d'anciennes versions à la main. |
+
+Une clé de copie sans droit de suppression garantit qu'aucune demande de suppression venant du serveur n'atteint la destination, et toute suppression visible dans le journal d'accès du fournisseur ne vient pas de Catena. Certains fournisseurs exigent aussi le droit de suppression pour nettoyer les téléversements inachevés; ajoutez-le seulement si les copies échouent pour cette raison.
+
+Comment chaque fournisseur exprime l'absence de suppression :
+
+- **eazybackup et autres fournisseurs compatibles MinIO :** associez à l'utilisateur de la clé une politique qui autorise les actions ci-dessus.
+- **AWS S3 :** associez la même politique, avec l'ARN du compartiment, à un utilisateur IAM.
+- **Backblaze B2 :** à la création de la clé d'application, cochez `listBuckets`, `listFiles`, `readFiles` et `writeFiles`, et laissez `deleteFiles` décoché.
+- **OVH Object Storage :** donnez à la clé le rôle de lecture et d'écriture, pas celui d'administrateur.
+
+Pour remplacer une clé : saisissez la nouvelle dans la ligne, attendez qu'une exécution planifiée réussisse, puis supprimez l'ancienne clé chez le fournisseur. Aucune autre étape n'est nécessaire.
 
 ### Étapes
 
@@ -100,7 +142,7 @@ Une copie hors site duplique un compartiment vers un compartiment verrouillé ch
 
 Saisissez ici les deux jeux de clés même lorsqu'un compartiment est aussi configuré ailleurs : l'application décide où elle range ses fichiers, et cette liste décide de ce qui est copié où. La source et la destination doivent être des compartiments différents, et vous pouvez ajouter 32 lignes au plus. Laissez le secret vide sur une ligne existante pour conserver celui qui est stocké. Tant qu'aucune ligne n'existe, la section indique "Aucune copie hors site n'est déclarée, donc rien n'est copié hors site."
 
-Les copies s'exécutent selon l'horaire **Copie hors site** de la page Horaires (et comme étape de l'entretien nocturne). Une destination injoignable ou non configurée est consignée comme sautée et n'arrête pas les sauvegardes.
+Les copies s'exécutent selon la tâche **Copie hors site** de la page [Horaires](/fr/configuration/schedules/), livrée désactivée : activez-la là une fois la ligne enregistrée. Elles s'exécutent aussi comme étape de l'entretien nocturne. Une destination injoignable ou non configurée est consignée comme sautée et n'arrête pas les sauvegardes.
 
 ### Comportement d'une copie
 
