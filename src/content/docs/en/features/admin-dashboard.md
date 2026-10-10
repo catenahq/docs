@@ -7,10 +7,11 @@ The admin dashboard is one panel for status, apps, backups, restores, schedules 
 
 ## How it works
 
-**Tabs by role.** Non-admins see only **Apps**, with tiles filtered to their groups. You also get **System**, **Actions**, **Restore**, **Schedules**, **Log** and **Settings**, plus the paid panels your subscription unlocks.
+**Tabs by role.** Non-admins see only **Apps**, with tiles filtered to their groups. You also get **System**, **App check**, **Actions**, **Restore**, **Schedules**, **Log** and **Settings**, plus the paid panels your subscription unlocks.
 
 - **System.** Gauges for backup, disk, CPU, RAM and Healthchecks, active alerts, the status of the core services, the restart control and the Docker engine control. Proof tiles show whether a restore was tested, whether the offsite copy was verified, whether the backups pass an integrity check, the health of single sign-on, unexpected exposed ports, monitoring status, and critical and high vulnerabilities in running apps.
 - **Apps.** One tile per routed app deployed in Portainer, with a status dot and badges such as **admin-only** or **public**. As an administrator, you also see, on the tile of each app that signs in by itself, a badge saying whether its sign-in is ready, waiting or failed, with the reason when it is not ready. Staff do not see it. You also see the version each app runs and, when a newer one exists, "Update available" with that version; the **System** tab shows the same for the server's own components and says when versions were last checked. See [Sign in with Catena accounts](/en/configure-apps/#sign-in-with-catena-accounts-optional).
+- **App check.** Paste an app's compose file to see its errors and warnings and get a corrected file before you deploy it; the **Apps** tab links each app's own findings here. See [Check an app with the panel](/en/configure-apps/#check-an-app-with-the-panel).
 - **Actions.** Buttons that run named operations on the server (backup now, list or browse snapshots, wiring for the catalog apps, restart the tunnel service or Portainer, disk breakdown, a full sync) with output streamed into a console.
 - **Restore, Schedules, Log, Settings.** Restore from a backup, set when scheduled work runs, read the maintenance log, and edit every setting.
 
@@ -24,7 +25,7 @@ The admin dashboard is one panel for status, apps, backups, restores, schedules 
 
 ## What each edition adds
 
-Community has Apps, System, Actions, Restore, Schedules, Log and Settings. Catena Pro adds **Managed updates**, **Domains**, **People**, **Migration** and **Restore report**. Catena Business adds **Audit log** and **Compliance report**. See the [edition comparison](https://catena.run/en/#pricing).
+Community has Apps, System, App check, Actions, Restore, Schedules, Log and Settings. Catena Pro adds **Managed updates**, **Domains**, **People**, **Migration** and **Restore report**. Catena Business adds **Audit log**, **Compliance report** and **Monthly report**. See the [edition comparison](https://catena.run/en/#pricing).
 
 ## Limits
 

@@ -7,10 +7,11 @@ Le tableau de bord d'administration est un panneau unique pour l'état, les appl
 
 ## Fonctionnement
 
-**Onglets selon le rôle.** Les non-administrateurs ne voient que **Applications**, avec des tuiles filtrées selon leurs groupes. Vous avez aussi **Système**, **Actions**, **Restauration**, **Horaires**, **Journal** et **Paramètres**, plus les panneaux payants que votre abonnement débloque.
+**Onglets selon le rôle.** Les non-administrateurs ne voient que **Applications**, avec des tuiles filtrées selon leurs groupes. Vous avez aussi **Système**, **Vérification d'application**, **Actions**, **Restauration**, **Horaires**, **Journal** et **Paramètres**, plus les panneaux payants que votre abonnement débloque.
 
 - **Système.** Jauges de sauvegarde, de disque, de CPU, de RAM et de Healthchecks, alertes actives, état des services de base, commande de redémarrage et commande du moteur Docker. Des tuiles de preuve indiquent si une restauration a été testée, si la copie hors site a été vérifiée, si les sauvegardes passent un contrôle d'intégrité, la santé de l'authentification unique, les ports exposés inattendus, l'état de la surveillance, et les vulnérabilités critiques et élevées des applications en cours.
 - **Applications.** Une tuile par application routée déployée dans Portainer, avec un point d'état et des badges comme **admin seulement** ou **public**. En tant qu'administrateur, vous voyez aussi, sur la tuile de chaque application qui se connecte d'elle-même, un badge indiquant si sa connexion est prête, en attente ou en échec, avec la raison quand elle n'est pas prête. Le personnel ne le voit pas. Vous voyez aussi la version que chaque application exécute et, quand une plus récente existe, "Mise à jour disponible" avec cette version; l'onglet **Système** montre la même chose pour les composants du serveur et indique quand les versions ont été vérifiées pour la dernière fois. Voir [Connexion avec les comptes Catena](/fr/configure-apps/#connexion-avec-les-comptes-catena-facultatif).
+- **Vérification d'application.** Collez le fichier compose d'une application pour voir ses erreurs et ses avertissements et obtenir un fichier corrigé avant de la déployer; l'onglet **Applications** y renvoie les constats de chaque application. Voir [Vérifier une application avec le panneau](/fr/configure-apps/#vérifier-une-application-avec-le-panneau).
 - **Actions.** Des boutons qui lancent des opérations nommées sur le serveur (sauvegarder maintenant, lister ou parcourir les instantanés, câblage des applications du catalogue, redémarrer le service de tunnel ou Portainer, répartition du disque, synchronisation complète), avec la sortie diffusée dans une console.
 - **Restauration, Horaires, Journal, Paramètres.** Restaurer depuis une sauvegarde, régler le moment des tâches planifiées, lire le journal de maintenance et modifier chaque réglage.
 
@@ -24,7 +25,7 @@ Le tableau de bord d'administration est un panneau unique pour l'état, les appl
 
 ## Ce qu'ajoute chaque édition
 
-Communauté offre Applications, Système, Actions, Restauration, Horaires, Journal et Paramètres. Catena Pro ajoute **Mises à jour gérées**, **Domaines**, **Personnes**, **Migration** et **Rapport de restauration**. Catena Business ajoute **Journal d'audit** et **Rapport de conformité**. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté offre Applications, Système, Vérification d'application, Actions, Restauration, Horaires, Journal et Paramètres. Catena Pro ajoute **Mises à jour gérées**, **Domaines**, **Personnes**, **Migration** et **Rapport de restauration**. Catena Business ajoute **Journal d'audit**, **Rapport de conformité** et **Rapport mensuel**. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 

@@ -45,7 +45,8 @@ Les applications tournent sur Docker Swarm, qui refuse certaines clés compose n
 - **`tmpfs` en forme longue** (`type: tmpfs`). La clé courte est ignorée en silence. Un montage tmpfs est `noexec`; un chemin qui doit exécuter du code est un volume.
 - **Ports publiés en forme longue** avec `mode: host`, qui conserve l'adresse réelle du client (le mode par défaut la remplace). L'[étape 4](#étape-4--étiqueter-le-service-dentrée) donne l'étiquette qui les ouvre dans le coupe-feu.
 - **Clés refusées**, qui font rejeter tout le fichier par swarm : `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Les limites vont dans `deploy.resources.limits`, le nombre de répliques dans `deploy.replicas`.
-- **Clés ignorées**, sans effet : `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, `pid`, `privileged`, `security_opt`, `devices`, `shm_size`. Les images sont construites et publiées ailleurs; swarm ne fait que les télécharger.
+- **Clés ignorées**, sans effet : `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, `security_opt`, `shm_size`. Les images sont construites et publiées ailleurs; swarm ne fait que les télécharger.
+- **Clés d'accès au serveur.** Swarm abandonne aussi `privileged`, `pid` et `devices` : l'application tourne sans ce qu'elle demandait. La vérification d'application du panneau signale `privileged: true`, `pid: host` et `devices` comme des erreurs ([X1](#x1), [X3](#x3), [X5](#x5)) : le fichier demande le contrôle du serveur. Le fichier corrigé garde la clé : vous décidez.
 - **Versions complètes.** Chaque image porte une version complète, comme `1.2.3` ou `1.2.3-alpine`. Seules celles-là sont mises à jour automatiquement : `latest`, `stable`, `1.2` ou `1` ne sont jamais modifiées.
 
 ## Étape 3 : Raccorder le service d'entrée
@@ -119,7 +120,7 @@ Une sauvegarde ne met pas en pause une application ajoutée à la main : rien n'
 2. Ouvrez l'adresse. Une application privée affiche d'abord la page de connexion; une application publique s'ouvre directement.
 3. La tuile de l'application figure dans l'onglet **Applications**, et sa carte sur la page d'état passe au vert.
 
-Quand une vérification échoue, le [tableau de dépannage](#dépannage) énumère les causes habituelles.
+Quand une vérification échoue, le [tableau de dépannage](#dépannage) énumère les causes habituelles. Pour repérer la plupart des erreurs avant de déployer, [vérifiez le fichier avec le panneau](#vérifier-une-application-avec-le-panneau).
 
 ## Connexion avec les comptes Catena (facultatif)
 
@@ -230,6 +231,68 @@ Pour le fichier déployé à la main, les deux étiquettes `vps.auth.oidc` sur `
 <Code code={nextcloudOidcProvider} lang="bash" />
 
 La commande crée le fournisseur ou le met à jour : vous pouvez la répéter. La page de connexion de Nextcloud affiche alors **Se connecter avec keycloak**. Le compte administrateur local continue de fonctionner en secours.
+
+## Vérifier une application avec le panneau
+
+L'onglet **Vérification d'application** lit un fichier compose comme le liront Docker Swarm et votre serveur, avant que vous le déployiez. Seuls les administrateurs voient l'onglet; le personnel ne le voit pas.
+
+1. Ouvrez **Vérification d'application**.
+2. Dans **Nom dans Portainer**, saisissez le nom que vous donnerez à l'application (étape 1). Son adresse et ses ports ne comptent alors pas comme déjà pris par une autre application.
+3. Collez le fichier compose dans **Fichier compose** et sélectionnez **Vérifier**.
+4. Lisez les constats. Chacun porte son niveau (**erreur**, **avertissement** ou **note**), sa règle, le service concerné et ce qu'il faut changer. **Ce que cela signifie** ouvre la règle dans les listes ci-dessous.
+5. Quand des corrections automatiques s'appliquent, la page affiche le **Fichier corrigé** et les changements par rapport à votre fichier. Copiez-le, collez-le dans l'éditeur de l'application dans Portainer et déployez-le là. Un constat marqué **corrigé ci-dessous** est déjà réglé dans ce fichier; tout autre est un choix que vous faites dans votre fichier.
+
+Rien n'est déployé depuis cet onglet. La vérification compare votre fichier à ce que votre serveur détient : les adresses et les ports de ses autres applications, les domaines qu'il sert, les groupes avec lesquels on se connecte et les dossiers ajoutés à la sauvegarde. Une partie que le serveur ne peut pas lire est nommée sous les totaux, et les vérifications qui en dépendent sont omises.
+
+Votre serveur vérifie aussi le fichier de chaque application déployée dans Portainer toutes les heures et après chaque déploiement. Dans l'onglet **Applications**, un administrateur voit sur une tuile qui compte au moins une erreur ou un avertissement un lien comme **Vérification : erreurs 1, avertissements 2**. Les notes ne sont pas comptées. Le lien ouvre **Vérification d'application** avec les constats de cette application. Le serveur n'affiche pas le fichier déployé : collez-le depuis l'éditeur de l'application dans Portainer pour voir le fichier corrigé. La tuile n'a pas de lien quand rien n'a été trouvé.
+
+Un constat est une **erreur** quand le déploiement échoue, que des données sont perdues, que l'application est inaccessible ou qu'elle prend le contrôle du serveur. C'est un **avertissement** quand un réglage ne fait pas ce que dit le fichier. Une **note** est bonne à savoir.
+
+### Ce que Docker Swarm refuse ou ignore
+
+| Règle | Niveau | Ce qu'elle signale |
+|---|---|---|
+| <a id="s0"></a>S0 | erreur | Le fichier n'est pas un YAML valide, n'est pas un fichier compose, n'a aucun service, ou a un service qui n'est pas une suite de clés. |
+| <a id="s1"></a>S1 | erreur | Une clé qui fait refuser tout le fichier par Swarm : `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Les limites vont dans `deploy.resources.limits` et le nombre de répliques dans `deploy.replicas`. |
+| <a id="s2"></a>S2 | avertissement | Une clé que Swarm ignore, comme `depends_on`, `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, la forme courte de `tmpfs` ou quelques autres sans équivalent dans Swarm. |
+| <a id="s3"></a>S3 | erreur | Un port publié par le maillage de routage, qui remplace l'adresse de chaque visiteur par une adresse interne. Utilisez la forme longue avec `mode: host`. |
+| <a id="s4"></a>S4 | erreur | Une entrée `configs` dont le contenu vient d'un fichier ou d'un texte en ligne. Seuls les `configs` `external: true` sont acceptés. |
+
+### Ce que Catena lit dans le fichier
+
+| Règle | Niveau | Ce qu'elle signale |
+|---|---|---|
+| <a id="k1"></a>K1 | erreur | Un service qui a une adresse n'est pas sur `catena-network`, ou le fichier ne déclare pas ce réseau avec `external: true` : le mandataire ne peut pas le joindre. |
+| <a id="k2"></a>K2 | erreur | Un service qui stocke des données dans un volume n'est pas épinglé au nœud de données. S'applique dès deux nœuds. |
+| <a id="k3"></a>K3 | erreur | Plusieurs adresses sans exactement un `vps.route.main=true`, ou deux services avec la même adresse. |
+| <a id="k4"></a>K4 | avertissement | Une étiquette de l'application entière sur un autre service que l'adresse principale, ou une étiquette d'adresse sur un service sans adresse : elle est ignorée. |
+| <a id="k5"></a>K5 | avertissement | Une étiquette `vps.*` sous `deploy.labels`, où Catena ne la lit pas. |
+| <a id="k6"></a>K6 | note | Une adresse publique sans `vps.health.path`. |
+| <a id="k7"></a>K7 | avertissement | Une étiquette d'accès sans effet : un `vps.auth.mode` inconnu, `vps.auth.groups` sur une adresse publique ou réservée aux administrateurs, `visitor` à côté d'autres groupes, ou un groupe qui n'existe pas dans Keycloak. |
+| <a id="k8"></a>K8 | note | Une étiquette d'image sans version complète, ou une valeur de `vps.auto-update` non valide. |
+| <a id="k9"></a>K9 | erreur | Un montage de dossier hors de la zone des applications, absent de **Autres dossiers à sauvegarder** : la sauvegarde de nuit échoue. |
+| <a id="k10"></a>K10 | avertissement | Le fichier correspond à une application du catalogue mais est déployé sous un autre nom : les actions du catalogue et les restaurations ne la trouvent pas. |
+| <a id="k11"></a>K11 | note | Une étiquette `vps.*` que Catena ne lit pas, comme une qui nomme l'application ou le service. |
+| <a id="k12"></a>K12 | avertissement | Un port publié qu'aucune étiquette `vps.expose.tcp` ou `vps.expose.udp` ne déclare (ouvert sur Internet), ou un port déclaré que le service ne publie pas avec `mode: host`. |
+| <a id="k13"></a>K13 | note | Une base de données qui n'est pas exportée avant chaque sauvegarde : son volume est copié pendant qu'elle tourne. |
+| <a id="k14"></a>K14 | erreur | Une adresse qu'une autre application détient déjà. |
+| <a id="k15"></a>K15 | erreur | Une adresse qui n'est pas sous un domaine que sert votre serveur. |
+| <a id="k16"></a>K16 | erreur | Un port qu'une autre application ouvre déjà sur votre serveur. |
+
+### Ce qui atteint le serveur
+
+| Règle | Niveau | Ce qu'elle signale |
+|---|---|---|
+| <a id="x1"></a>X1 | erreur | `privileged: true`. |
+| <a id="x2"></a>X2 | erreur | Le réseau propre du serveur (`network_mode: host`, ou le réseau externe `host`). |
+| <a id="x3"></a>X3 | erreur | `pid: host`, qui montre chaque processus du serveur. |
+| <a id="x4"></a>X4 | erreur | `ipc: host`, qui atteint la mémoire partagée d'autres processus. |
+| <a id="x5"></a>X5 | erreur | `devices`, qui atteint le matériel du serveur. |
+| <a id="x6"></a>X6 | erreur | Le socket Docker monté dans le service, qui contrôle chaque conteneur. |
+| <a id="x7"></a>X7 | avertissement | `cap_add` : des capacités ajoutées. Ne gardez chacune que si l'application en a besoin. |
+| <a id="x8"></a>X8 | avertissement | Un dossier du serveur monté hors de la zone des applications : l'application lit les fichiers du serveur. |
+| <a id="x9"></a>X9 | avertissement | Un port publié sur le serveur, joignable depuis Internet sans connexion. |
+| <a id="x10"></a>X10 | erreur | Des étiquettes Traefik, qui n'acheminent rien. Utilisez `vps.route.host` et `vps.auth.mode` ou `vps.auth.groups`. |
 
 ## Dépannage
 

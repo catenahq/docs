@@ -45,7 +45,8 @@ Apps run on Docker Swarm, which refuses some compose keys outright and silently 
 - **`tmpfs` in long form** (`type: tmpfs`). The short key is dropped silently. A tmpfs mount is `noexec`; a path that needs execution is a volume.
 - **Published ports in long form** with `mode: host`, which keeps the real client address (the default mode replaces it). See [step 4](#step-4-label-the-front-door) for the label that opens them in the firewall.
 - **Refused keys**, which make swarm reject the whole file: `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Limits go in `deploy.resources.limits`, the replica count in `deploy.replicas`.
-- **Dropped keys**, with no effect: `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, `pid`, `privileged`, `security_opt`, `devices`, `shm_size`. Images are built and published elsewhere; swarm only pulls them.
+- **Dropped keys**, with no effect: `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, `security_opt`, `shm_size`. Images are built and published elsewhere; swarm only pulls them.
+- **Server access keys.** Swarm also drops `privileged`, `pid` and `devices`, so the app runs without what it asked for. The panel's App check reports `privileged: true`, `pid: host` and `devices` as errors ([X1](#x1), [X3](#x3), [X5](#x5)): the file asks for control of the server. The corrected file keeps the key, so you decide.
 - **Full version tags.** Every image carries a full version tag, such as `1.2.3` or `1.2.3-alpine`. Only those are updated automatically: `latest`, `stable`, `1.2` or `1` are never touched.
 
 ## Step 3: Connect the front door
@@ -119,7 +120,7 @@ A backup does not pause an app added by hand: nothing is put in maintenance mode
 2. Open the address. A private app shows the sign-in page first; a public app opens directly.
 3. The app's tile is on the **Apps** tab, and its card on the status page turns green.
 
-When a check fails, the [troubleshooting table](#troubleshooting) lists the usual causes.
+When a check fails, the [troubleshooting table](#troubleshooting) lists the usual causes. To catch most mistakes before you deploy, [check the file with the panel](#check-an-app-with-the-panel).
 
 ## Sign in with Catena accounts (optional)
 
@@ -230,6 +231,68 @@ For the hand-deployed file, the two `vps.auth.oidc` labels on `app` make Catena 
 <Code code={nextcloudOidcProvider} lang="bash" />
 
 The command creates the provider or updates it, so you can repeat it. Nextcloud's login page then shows **Log in with keycloak**. The local admin account keeps working as a fallback.
+
+## Check an app with the panel
+
+The **App check** tab reads a compose file the way Docker Swarm and your server will, before you deploy it. Only administrators see the tab; staff do not.
+
+1. Open **App check**.
+2. In **Name in Portainer**, enter the name you will give the app (step 1). Its own address and ports then do not count as taken by another app.
+3. Paste the compose file in **Compose file** and select **Check**.
+4. Read the findings. Each one carries its level (**error**, **warning** or **note**), its rule, the service it concerns and what to change. **What this means** opens the rule in the lists below.
+5. When automatic corrections apply, the page shows the **Corrected file** and the changes from your file. Copy it, paste it in the app's editor in Portainer and deploy it there. A finding marked **corrected below** is already fixed in that file; any other is a choice you make in your file.
+
+Nothing is deployed from this tab. The check compares your file with what your server holds: its other apps' addresses and ports, the domains it serves, the groups you sign in with and the folders added to the backup. A part the server cannot read is named under the counts, and the checks that depend on it are left out.
+
+Your server also checks the file of each app deployed in Portainer every hour and after each deploy. On the **Apps** tab, an administrator sees on a tile with at least one error or warning a link such as **App check: errors 1, warnings 2**. Notes are not counted. The link opens **App check** with that app's findings. The server does not show the deployed file: paste it from the app's editor in Portainer to see the corrected file. The tile has no link when nothing was found.
+
+A finding is an **error** when the deploy fails, data is lost, the app cannot be reached or it gets control of the server. It is a **warning** when a setting does not do what the file says. A **note** is worth knowing.
+
+### What Docker Swarm refuses or ignores
+
+| Rule | Level | What it reports |
+|---|---|---|
+| <a id="s0"></a>S0 | error | The file is not valid YAML, is not a compose file, has no services, or has a service that is not a set of keys. |
+| <a id="s1"></a>S1 | error | A key that makes Swarm refuse the whole file: `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Limits move to `deploy.resources.limits` and the replica count to `deploy.replicas`. |
+| <a id="s2"></a>S2 | warning | A key that Swarm ignores, such as `depends_on`, `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, the short `tmpfs` or a few others with no Swarm equivalent. |
+| <a id="s3"></a>S3 | error | A port published through the routing mesh, which replaces each visitor's address with an internal one. Use the long form with `mode: host`. |
+| <a id="s4"></a>S4 | error | A `configs` entry that takes its content from a file or inline text. Only `external: true` configs are accepted. |
+
+### What Catena reads from the file
+
+| Rule | Level | What it reports |
+|---|---|---|
+| <a id="k1"></a>K1 | error | A service with an address is not on `catena-network`, or the file does not declare that network with `external: true`: the proxy cannot reach it. |
+| <a id="k2"></a>K2 | error | A service that stores data in a volume is not pinned to the data node. Applies from two nodes. |
+| <a id="k3"></a>K3 | error | Several addresses and not exactly one `vps.route.main=true`, or two services with the same address. |
+| <a id="k4"></a>K4 | warning | An app-wide label on a service other than the main address, or an address label on a service with no address: it is ignored. |
+| <a id="k5"></a>K5 | warning | A `vps.*` label under `deploy.labels`, where Catena does not read it. |
+| <a id="k6"></a>K6 | note | A public address with no `vps.health.path`. |
+| <a id="k7"></a>K7 | warning | An access label that has no effect: an unknown `vps.auth.mode`, `vps.auth.groups` on a public or admin-only address, `visitor` beside other groups, or a group that does not exist in Keycloak. |
+| <a id="k8"></a>K8 | note | An image tag with no full version, or a `vps.auto-update` value that is not valid. |
+| <a id="k9"></a>K9 | error | A bind mount outside the apps area that is not listed under **Other folders to back up**: the nightly backup fails. |
+| <a id="k10"></a>K10 | warning | The file matches a catalog app but is deployed under another name: catalog actions and restores do not find it. |
+| <a id="k11"></a>K11 | note | A `vps.*` label Catena does not read, such as one that names the app or the service. |
+| <a id="k12"></a>K12 | warning | A published port that no `vps.expose.tcp` or `vps.expose.udp` label declares (open to the internet), or a declared port the service does not publish with `mode: host`. |
+| <a id="k13"></a>K13 | note | A database that is not exported before each backup: its volume is copied while it runs. |
+| <a id="k14"></a>K14 | error | An address another app already holds. |
+| <a id="k15"></a>K15 | error | An address that is not under a domain your server serves. |
+| <a id="k16"></a>K16 | error | A port that another app already opens on your server. |
+
+### What reaches the server
+
+| Rule | Level | What it reports |
+|---|---|---|
+| <a id="x1"></a>X1 | error | `privileged: true`. |
+| <a id="x2"></a>X2 | error | The server's own network (`network_mode: host`, or the external `host` network). |
+| <a id="x3"></a>X3 | error | `pid: host`, which shows every process of the server. |
+| <a id="x4"></a>X4 | error | `ipc: host`, which reaches the shared memory of other processes. |
+| <a id="x5"></a>X5 | error | `devices`, which reaches the server's hardware. |
+| <a id="x6"></a>X6 | error | The Docker socket mounted in the service, which controls every container. |
+| <a id="x7"></a>X7 | warning | `cap_add`: added capabilities. Keep each only if the app needs it. |
+| <a id="x8"></a>X8 | warning | A server folder mounted outside the apps area: the app reads the server's files. |
+| <a id="x9"></a>X9 | warning | A port published on the server, reachable from the internet without signing in. |
+| <a id="x10"></a>X10 | error | Traefik labels, which route nothing. Use `vps.route.host` and `vps.auth.mode` or `vps.auth.groups`. |
 
 ## Troubleshooting
 
