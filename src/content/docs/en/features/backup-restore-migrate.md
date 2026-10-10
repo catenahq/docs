@@ -16,11 +16,11 @@ Encrypted copies of all app data and of the server's own configuration go to S3 
 
 ## Restore
 
-The **Restore** page restores everything from the server's own backups, or from another server's backups when a machine replaces one that is gone (repository address, backup password and storage keys, held in memory only). The panel, sign-in and the connection stay up while applications are replaced. You can resume an interrupted restore with the same backup. A backup newer than the running version is refused. See [Restore and migrate](/en/configuration/restore-and-migrate/).
+The **Restore** page restores everything from the server's own backups, or from another server's backups when a machine replaces one that is gone (repository address, backup password and storage keys, held in memory only). The panel, sign-in and the connection stay up while applications are replaced. You can resume an interrupted restore with the same backup. A backup newer than the running version is refused. After a rebuild or a move, the previous server's audit trail is kept beside the new one, and every export carries it. See [Restore and migrate](/en/configuration/restore-and-migrate/).
 
 ## Migration
 
-A new server pulls from the old one with **Move another server here**. The old server's **Migration** panel opens a 4-hour window and shows a one-time pairing code, and the traffic uses the tailnet only. Most data is copied while the old server keeps serving. Up to the final backup check you can call off the move and the old server puts itself back in service. Both servers must run the same version. The subscription key moves with the data.
+A new server pulls from the old one with **Move another server here**. The old server's **Migration** panel opens a 4-hour window and shows a one-time migration ticket and pairing code, and the new server reaches the old one over SSH with them. Most data is copied while the old server keeps serving. Up to the final backup check you can call off the move and the old server puts itself back in service. Both servers must run the same version. The subscription key moves with the data.
 
 ## Offsite copies
 

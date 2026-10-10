@@ -128,25 +128,26 @@ Une migration copie presque tout pendant que l'ancien serveur continue de servir
 
 - L'ancien serveur a Catena Pro ou Catena Business. Le nouveau serveur n'a besoin d'aucun abonnement à lui : la clé d'abonnement suit les données.
 - Les deux serveurs tournent sur la même version de Catena. Un déplacement entre versions différentes est refusé avant que quoi que ce soit soit touché.
-- Les deux serveurs sont sur le même réseau privé (voir [Accès administrateur et réseau privé](/fr/configuration/admin-access/)). Le déplacement ne passe que par lui.
+- Le nouveau serveur joint le port SSH 22 de l'ancien : par son adresse publique, ou par son réseau privé une fois son SSH public fermé (voir [Accès administrateur et réseau privé](/fr/configuration/admin-access/#fermer-le-ssh-sur-le-port-public-22)).
 - Le dépôt de sauvegarde de l'ancien serveur est enregistré sur le nouveau (étapes 3 à 5 de la section précédente).
 - Vous n'avez saisi aucun jeton Cloudflare sur le nouveau serveur. Le déplacement apporte celui de l'ancien serveur, et un jeton saisi d'abord prendrait l'adresse web de l'ancien serveur avant le début du déplacement.
 
 ### Sur l'ancien serveur
 
 1. Ouvrez le panneau **Migration**.
-2. Appuyez sur **Autoriser le déplacement de ce serveur**. Un code à usage unique apparaît sous le bouton, une seule fois. Il n'est conservé nulle part et ne peut pas être réaffiché.
-3. Transmettez le code à la personne qui effectue le déplacement.
+2. Appuyez sur **Autoriser le déplacement de ce serveur**. Un billet de déplacement et un code d'appairage apparaissent sous le bouton, une seule fois, avec l'heure de fermeture de la fenêtre. Ni l'un ni l'autre n'est conservé, et ni l'un ni l'autre n'est réaffiché.
+3. Transmettez les deux à la personne qui effectue le déplacement par deux moyens différents : copiez-lui le billet, et lisez-lui le code.
 
-La fenêtre se referme d'elle-même après 4 heures; cinq codes erronés la ferment aussi, et **Ne plus autoriser le déplacement** la ferme aussitôt. Remplacez un code perdu en appuyant de nouveau sur le bouton, ce qui invalide aussi l'ancien code. La fenêtre se ferme également une fois que le déplacement a transmis la clé d'abonnement.
+La fenêtre se referme d'elle-même après 4 heures; cinq codes erronés la ferment aussi, et **Ne plus autoriser le déplacement** la ferme aussitôt. Remplacez un billet ou un code perdu en appuyant de nouveau sur le bouton, ce qui produit une nouvelle paire et arrête les anciens. La fenêtre se ferme également une fois que le déplacement a transmis la clé d'abonnement.
 
 ### Sur le nouveau serveur
 
 1. Ouvrez **Restauration** et allez à **Déplacer un autre serveur ici**.
-2. Saisissez **Adresse de l'autre serveur sur le réseau privé** : son adresse sur le réseau privé (une adresse IP), pas son adresse web. L'adresse web est ce qui migre à la fin, elle ne peut donc pas servir à joindre l'ancien serveur pendant le déplacement.
+2. Collez le **Billet de déplacement**.
 3. Saisissez le **Code d'appairage**.
-4. Réglez **Passes de préparation** (de 1 à 5, 1 par défaut). Chaque passe supplémentaire ne copie que ce qui a changé depuis la précédente, ce qui raccourcit la période d'indisponibilité finale. Une seule suffit, sauf si vous prévoyez un long délai avant la bascule.
-5. Cochez "Je comprends que l'autre serveur sera retiré du service et que celui-ci reprendra son adresse web." et appuyez sur **Lancer le déplacement**.
+4. Laissez **Adresse de l'autre serveur (facultative)** vide pour utiliser l'adresse du billet, ou saisissez une autre adresse IP, par exemple l'adresse de l'ancien serveur sur le réseau privé une fois son SSH public fermé. N'utilisez jamais son adresse web : elle migre à la fin, elle ne peut donc pas servir à joindre l'ancien serveur pendant le déplacement.
+5. Réglez **Passes de préparation** (de 1 à 5, 1 par défaut). Chaque passe supplémentaire ne copie que ce qui a changé depuis la précédente, ce qui raccourcit la période d'indisponibilité finale. Une seule suffit, sauf si vous prévoyez un long délai avant la bascule.
+6. Cochez "Je comprends que l'autre serveur sera retiré du service et que celui-ci reprendra son adresse web." et appuyez sur **Lancer le déplacement**.
 
 ### Déroulement
 
@@ -164,7 +165,7 @@ Après les vérifications finales, l'ancien serveur libère son activation de la
 
 - Jusqu'à "Vérification de cette sauvegarde" inclusivement, l'arrêt du déplacement remet l'ancien serveur en service de lui-même. Rien n'a démarré sur le nouveau serveur et l'adresse web pointe toujours vers l'ancien.
 - Après "Retrait de l'autre serveur du service", ce n'est plus automatique, parce que le nouveau serveur peut déjà détenir une partie des données et que démarrer les deux ferait écrire deux serveurs dans le même stockage. La page indique que l'ancien serveur est retiré du service et propose deux voies : corriger ce qui a échoué et relancer le déplacement (il reprend sans tout recopier), ou remettre l'ancien serveur en service.
-- Pour remettre l'ancien serveur en service, utilisez **Le remettre en service** sous **Remettre l'autre serveur en service** dans la page Restauration du nouveau serveur (saisissez de nouveau l'adresse et le code d'appairage), ou **Remettre ce serveur en service** dans le panneau **Migration** de l'ancien serveur. Son adresse web pointe toujours vers lui, il sert donc de nouveau dès qu'il redémarre.
+- Pour remettre l'ancien serveur en service, utilisez **Le remettre en service** sous **Remettre l'autre serveur en service** dans la page Restauration du nouveau serveur (saisissez de nouveau le billet, le code d'appairage et, au besoin, l'adresse), ou **Remettre ce serveur en service** dans le panneau **Migration** de l'ancien serveur. Son adresse web pointe toujours vers lui, il sert donc de nouveau dès qu'il redémarre.
 - **Oublier ce déplacement** efface la trace d'un déplacement inachevé et ne modifie rien sur l'un ou l'autre serveur.
 
 Après un déplacement terminé, l'ancien serveur est arrêté, pas effacé. Ses données et ses sauvegardes sont intactes : vous pouvez le garder jusqu'à ce que le nouveau serveur ait fait ses preuves. Le retirer est une étape distincte que rien dans le déplacement n'exécute.
@@ -178,7 +179,9 @@ Après un déplacement terminé, l'ancien serveur est arrêté, pas effacé. Ses
 | "Sélectionnez au moins une application, ou choisissez de tout restaurer." | La portée est limitée aux applications et vous n'en avez coché aucune. |
 | "Une restauration est en cours sur ce serveur. Attendez qu'elle se termine avant d'y déplacer un autre serveur." | Une migration ne peut pas démarrer pendant une restauration. |
 | "Un déplacement est déjà en cours sur ce serveur." | Attendez sa fin, ou utilisez **Oublier ce déplacement** s'il est inachevé. |
-| "Le déplacement n'a pas pu être lancé." | La demande n'a pas été acceptée. Vérifiez l'adresse (une adresse IP, pas un nom) et le code d'appairage, ainsi que l'ouverture de la fenêtre sur l'ancien serveur. |
+| "Le déplacement n'a pas pu être lancé." | La demande n'a pas été acceptée. Vérifiez le billet, le code d'appairage et l'adresse (une adresse IP, pas un nom), ainsi que l'ouverture de la fenêtre sur l'ancien serveur. |
+| La source a refusé le billet : sa fenêtre est fermée, elle a été ouverte de nouveau depuis, ou le billet n'est pas celui de ce serveur | L'ancien serveur n'a pas accepté le billet. Ouvrez une nouvelle fenêtre de déplacement sur l'ancien serveur, puis utilisez son nouveau billet et son nouveau code. |
+| Le serveur à cette adresse n'est pas celui qui a produit le billet | L'adresse joint un autre serveur, ou la clé d'hôte SSH de l'ancien serveur a changé après une réinstallation ou une restauration. Vérifiez l'adresse; après une réinstallation ou une restauration, ouvrez une nouvelle fenêtre de déplacement sur l'ancien serveur et utilisez son nouveau billet. |
 | "Les identifiants ont été refusés." | Les détails du dépôt n'ont pas été acceptés. Comparez-les à la trousse de reprise. |
 | "Un seau est en cours de remise en place depuis sa copie hors site. Attendez que l'opération se termine avant de lancer une restauration." | Une remise en place de compartiment est en cours. Une restauration ne démarre qu'après sa fin, et une remise en place est refusée de la même façon pendant une restauration ("Une restauration est en cours sur ce serveur. Attendez qu'elle se termine avant de remettre un seau en place."). |
 | "La restauration depuis la copie hors site n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau." ou "La remise en place d'un seau n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau." | Les composants installés du serveur sont antérieurs à cette fonction. Ouvrez **Paramètres**, allez à **Configuration du serveur**, appuyez sur **Remettre ce serveur à niveau**, puis réessayez une fois l'opération terminée. |

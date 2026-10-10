@@ -40,6 +40,24 @@ Every figure is read on the server, and nothing is sent elsewhere. All times are
 
 A figure the server does not record is never estimated. It appears under **Not shown for this period** as not shown, with the reason (for example, "The maintenance log on this server goes back to `<date>`, so the backups, updates and warnings before that date are not shown."). The section **What this server does not record** lists what is never part of the report, such as operating-system updates and the result of each night's restore test.
 
+## Compliance report (Catena Business)
+
+The **Compliance report** maps your server's security and privacy controls to ISO/IEC 27001:2022, Quebec's Law 25, PIPEDA, the GDPR and SOC 2. SOC 2 is shown as a self-assessment: only an independent auditor issues a SOC 2 report. Pick a framework under **Frameworks** to see only its controls, with a **Summary** of the clauses they cover and how many you have attested.
+
+Each control shows what the server measures for it as you open the page: the latest restore test, the backups kept, vulnerability counts, who can reach each application, whether a second factor is required at sign-in. A measurement older than its limit is marked out of date. For a control you own or share, press **Record the state of this control** and choose its state (**Met**, **In progress**, **Not met** or **Not applicable**), with a note, evidence files and an optional review date. A control Catena operates carries Catena's statement.
+
+You can add your own controls under **Add a control**, mapped to the clauses they help satisfy, and keep evidence files under **Add a file**: PDF, PNG, JPEG, text, CSV, Office or OpenDocument, up to 10 MiB each, 500 files and 200 MiB in all. If your server runs the virus scanner that comes with the mail server or Nextcloud, each file is scanned before it is kept; otherwise the list says it was not scanned.
+
+Nothing is edited or deleted: each change is one more record carrying the hash of the one before it, and a withdrawn file still downloads.
+
+**Review timings.** An attestation is due for review 12 months after you record it, the latest backup is out of date after 7 days, and the drills and checks after 8 days. Press **Change the timings** to change them; the change is recorded like any other.
+
+**Where the data is kept.** The page lists the storage your backups and offsite copies go to, read from your settings, and Catena's own subprocessors.
+
+**Export.** **Download the records** saves every record and evidence file as one archive, on every edition. If your subscription ends, open **Compliance report** in the navigation to download them.
+
+The page documents the infrastructure side. It does not replace your organization's privacy officer.
+
 ## Limits
 
 - The panel is a closed-source image, published publicly; removing it leaves your apps and backups untouched.

@@ -40,6 +40,24 @@ Chaque chiffre est lu sur le serveur, et rien n'est envoyé ailleurs. Toutes les
 
 Un chiffre que le serveur ne consigne pas n'est jamais estimé. Il apparaît sous **Non présenté pour cette période**, indiqué comme non présenté, avec la raison (par exemple, "Le journal d'entretien de ce serveur remonte au `<date>` : les sauvegardes, les mises à jour et les avertissements antérieurs ne sont donc pas présentés."). La section **Ce que ce serveur ne consigne pas** liste ce qui ne fait jamais partie du rapport, comme les mises à jour du système d'exploitation et le résultat du test de restauration de chaque nuit.
 
+## Rapport de conformité (Catena Business)
+
+Le **Rapport de conformité** met en correspondance les mesures de sécurité et de confidentialité de votre serveur avec ISO/IEC 27001:2022, la Loi 25 du Québec, la LPRPDE, le RGPD et SOC 2. SOC 2 est présenté comme une autoévaluation : seul un auditeur indépendant émet un rapport SOC 2. Choisissez un référentiel sous **Référentiels** pour n'en voir que les mesures, avec un **Sommaire** des clauses qu'elles couvrent et du nombre de mesures que vous avez attestées.
+
+Chaque mesure montre ce que le serveur mesure pour elle à l'ouverture de la page : le dernier test de restauration, les sauvegardes conservées, le nombre de vulnérabilités, qui peut accéder à chaque application, et si un second facteur est exigé à la connexion. Une mesure plus ancienne que sa limite est marquée comme périmée. Pour une mesure qui vous revient ou que vous partagez, appuyez sur **Consigner l'état de cette mesure** et choisissez son état (**Respectée**, **En cours**, **Non respectée** ou **Sans objet**), avec une note, des pièces justificatives et une date de révision facultative. Une mesure qu'assure Catena porte la déclaration de Catena.
+
+Vous pouvez ajouter vos propres mesures sous **Ajouter une mesure**, mises en correspondance avec les clauses qu'elles aident à respecter, et conserver des pièces justificatives sous **Ajouter un fichier** : PDF, PNG, JPEG, texte, CSV, Office ou OpenDocument, jusqu'à 10 Mio chacune, 500 fichiers et 200 Mio au total. Si votre serveur fait tourner l'antivirus fourni avec le serveur de courriel ou Nextcloud, chaque fichier est analysé avant d'être conservé; sinon la liste indique qu'il n'a pas été analysé.
+
+Rien n'est modifié ni supprimé : chaque changement est un enregistrement de plus qui porte l'empreinte du précédent, et un fichier retiré se télécharge toujours.
+
+**Délais de révision.** Une attestation est à réviser 12 mois après son enregistrement, la dernière sauvegarde est périmée après 7 jours, et les tests et vérifications après 8 jours. Appuyez sur **Modifier les délais** pour les changer; le changement est consigné comme tout autre.
+
+**Où sont conservées les données.** La page liste le stockage où vont vos sauvegardes et vos copies hors site, d'après vos paramètres, ainsi que les sous-traitants de Catena.
+
+**Exportation.** **Télécharger les registres** enregistre tous les enregistrements et toutes les pièces en une seule archive, quelle que soit l'édition. Si votre abonnement prend fin, ouvrez **Rapport de conformité** dans la navigation pour les télécharger.
+
+La page documente le volet infrastructure. Elle ne remplace pas le responsable de la protection des renseignements personnels de votre organisation.
+
 ## Limites
 
 - Le panneau est une image à code source fermé, publiée publiquement; le retirer ne touche ni à vos applications ni à vos sauvegardes.

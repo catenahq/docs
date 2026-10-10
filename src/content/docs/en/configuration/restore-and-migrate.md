@@ -128,25 +128,26 @@ A migration copies almost everything while the old server keeps serving. Only th
 
 - The old server has Catena Pro or Catena Business. The new server needs no subscription of its own: the subscription key moves with the data.
 - Both servers are on the same Catena version. A move between different versions is refused before anything is touched.
-- Both servers are on the same private network (see [Admin access and tailnet](/en/configuration/admin-access/)). The move travels over it only.
+- The new server reaches the old one's SSH port 22: on its public address, or on its private network once its public SSH is closed (see [Admin access and tailnet](/en/configuration/admin-access/#close-ssh-on-public-port-22)).
 - The old server's backup repository is saved on the new server (steps 3 to 5 of the previous section).
 - You have not entered a Cloudflare token on the new server. The move brings the old server's token, and a token entered first would take the old server's web address before the move starts.
 
 ### On the old server
 
 1. Open the **Migration** panel.
-2. Press **Allow this server to be migrated**. A one-time code appears below the button, once. It is not stored and cannot be shown again.
-3. Pass the code to whoever runs the move.
+2. Press **Allow this server to be migrated**. A migration ticket and a pairing code appear below the button, once, with the time the window closes. Neither is stored, and neither is shown again.
+3. Pass both to whoever runs the move by two different channels: copy the ticket, and read the code.
 
-The window closes on its own after 4 hours, five wrong codes close it too, and **Stop allowing migration** closes it at once. Replace a lost code by pressing the button again, which also invalidates the old code. The window also closes once the move has handed the subscription key over.
+The window closes on its own after 4 hours, five wrong codes close it too, and **Stop allowing migration** closes it at once. Replace a lost ticket or code by pressing the button again, which mints a new pair and stops the old ones. The window also closes once the move has handed the subscription key over.
 
 ### On the new server
 
 1. Open **Restore** and go to **Move another server here**.
-2. Enter **The other server's private-network address**: its address on the private network (an IP address), not its web address. The web address is what moves at the end, so it cannot reach the old server during the move.
+2. Paste the **Migration ticket**.
 3. Enter the **Pairing code**.
-4. Set **Preparation passes** (1 to 5, default 1). Each extra pass copies only what changed since the previous one, which shortens the final unavailable period. One pass is enough unless you expect a long delay before the cut-over.
-5. Tick "I understand the other server will be taken out of service and that this one will take over its web address." and press **Start the move**.
+4. Leave **The other server's address (optional)** empty to use the address in the ticket, or enter another IP address, for example the old server's private-network address once its public SSH is closed. Never use its web address: that is what moves at the end, so it cannot reach the old server during the move.
+5. Set **Preparation passes** (1 to 5, default 1). Each extra pass copies only what changed since the previous one, which shortens the final unavailable period. One pass is enough unless you expect a long delay before the cut-over.
+6. Tick "I understand the other server will be taken out of service and that this one will take over its web address." and press **Start the move**.
 
 ### What happens
 
@@ -164,7 +165,7 @@ After the final checks the old server frees its activation of the subscription k
 
 - Up to and including "Checking that backup", stopping the move puts the old server back into service by itself. Nothing has started on the new server and the web address still points at the old one.
 - After "Taking the other server out of service", that no longer happens on its own, because the new server may already hold part of the data and starting both would have two servers writing to the same storage. The page reports that the old server is out of service and offers two ways: fix what failed and start the move again (it continues without copying everything a second time), or put the old server back.
-- To put the old server back, use **Put it back into service** under **Put the other server back into service** on the new server's Restore page (enter the address and the pairing code again), or **Put this server back into service** in the old server's own **Migration** panel. Its web address still points there, so it serves again as soon as it comes up.
+- To put the old server back, use **Put it back into service** under **Put the other server back into service** on the new server's Restore page (enter the ticket, the pairing code and, if needed, the address again), or **Put this server back into service** in the old server's own **Migration** panel. Its web address still points there, so it serves again as soon as it comes up.
 - **Forget this move** clears the record of an unfinished move and changes nothing on either server.
 
 After a completed move the old server is stopped, not erased. Its data and backups are untouched, so you can keep it until the new server has proven itself. Retiring it is a separate step that nothing in the move performs.
@@ -178,7 +179,9 @@ After a completed move the old server is stopped, not erased. Its data and backu
 | "Select at least one application, or choose to restore everything." | The scope is limited to applications and you have ticked none. |
 | "A restore is running on this server. Wait for it to finish before moving another server here." | A migration cannot start during a restore. |
 | "A move is already running on this server." | Wait for it, or use **Forget this move** if it is unfinished. |
-| "The move could not be started." | The request was not accepted. Check the address (an IP address, not a name) and the pairing code, and that the window is open on the old server. |
+| "The move could not be started." | The request was not accepted. Check the ticket, the pairing code and the address (an IP address, not a name), and that the window is open on the old server. |
+| The source refused the ticket: its window is closed, it was armed again since, or the ticket is not this server's | The old server did not accept the ticket. Open a new window on the old server, then use its new ticket and code. |
+| The server at that address is not the one that minted the ticket | The address reaches another server, or the old server's SSH host key changed after a reinstall or a restore. Check the address; after a reinstall or a restore, open a new window on the old server and use its new ticket. |
 | "The credentials were refused." | The repository details were not accepted. Check them against the recovery keyset. |
 | "A bucket is being put back from its offsite copy. Wait for it to finish before starting a restore." | A bucket repair is running. A restore starts only after it finishes, and a repair is refused the same way while a restore runs ("A restore is running on this server. Wait for it to finish before putting a bucket back."). |
 | "Restoring from the offsite copy is not available on this server yet: its installed components are older than this panel." or "Putting a bucket back is not available on this server yet: its installed components are older than this panel." | The server's installed components predate the feature. Open **Settings**, go to **Server configuration**, press **Bring this server up to date**, and try again once it finishes. |
