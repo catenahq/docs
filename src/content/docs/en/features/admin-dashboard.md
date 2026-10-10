@@ -10,7 +10,7 @@ The admin dashboard is one panel for status, apps, backups, restores, schedules 
 **Tabs by role.** Non-admins see only **Apps**, with tiles filtered to their groups. You also get **System**, **Actions**, **Restore**, **Schedules**, **Log** and **Settings**, plus the paid panels your subscription unlocks.
 
 - **System.** Gauges for backup, disk, CPU, RAM and Healthchecks, active alerts, the status of the core services, the restart control and the Docker engine control. Proof tiles show whether a restore was tested, whether the offsite copy was verified, whether the backups pass an integrity check, the health of single sign-on, unexpected exposed ports, monitoring status, and critical and high vulnerabilities in running apps.
-- **Apps.** One tile per routed app deployed in Portainer, with a status dot and badges such as **admin-only** or **public**. As an administrator, you also see, on the tile of each app that signs in by itself, a badge saying whether its sign-in is ready, waiting or failed, with the reason when it is not ready. Staff do not see it. See [Sign in with Catena accounts](/en/configure-apps/#sign-in-with-catena-accounts-optional).
+- **Apps.** One tile per routed app deployed in Portainer, with a status dot and badges such as **admin-only** or **public**. As an administrator, you also see, on the tile of each app that signs in by itself, a badge saying whether its sign-in is ready, waiting or failed, with the reason when it is not ready. Staff do not see it. You also see the version each app runs and, when a newer one exists, "Update available" with that version; the **System** tab shows the same for the server's own components and says when versions were last checked. See [Sign in with Catena accounts](/en/configure-apps/#sign-in-with-catena-accounts-optional).
 - **Actions.** Buttons that run named operations on the server (backup now, list or browse snapshots, wiring for the catalog apps, restart the tunnel service or Portainer, disk breakdown, a full sync) with output streamed into a console.
 - **Restore, Schedules, Log, Settings.** Restore from a backup, set when scheduled work runs, read the maintenance log, and edit every setting.
 
@@ -30,7 +30,7 @@ Community has Apps, System, Actions, Restore, Schedules, Log and Settings. Caten
 
 - The panel is a closed-source image, published publicly; removing it leaves your apps and backups untouched.
 - Renaming the panel's own subdomain moves it to a new address; the page opens there once the new address answers.
-- Nothing in the panel shows an installed version next to an available one for every app; update results are in the **Log** tab.
+- Versions come from a periodic check. When it has not reported recently, no version is shown and the **System** tab says so. Update results are in the **Log** tab.
 
 ## Configuration
 
