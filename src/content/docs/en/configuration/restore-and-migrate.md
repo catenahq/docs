@@ -93,7 +93,7 @@ You need the offsite copy's address, the backup encryption password (see [Backup
 4. Press **Save these keys**. They are held in memory only and removed when a restore from the copy finishes, or after 24 hours, whichever comes first. A restore that stops part-way keeps them so you can start it again. **Forget these keys now** erases them at once. The backups of the copy are then listed under **Choose a backup**.
 5. Select the backup, then continue with steps 4 to 6 of [Restore on a running server](#restore-on-a-running-server). The [version rule](#version-rule) applies.
 
-When the restore finishes, the server has the data and stored configuration of the selected backup. Put the backup repository back from the copy before the next nightly backup (see the next section).
+When the restore finishes, the server has the data and stored configuration of the selected backup. Backups stop until a backup repository exists at the destination: a backup never creates one. Save a backup destination in **Settings**, under **Backup**, preferably a new bucket with new keys, since the old one may be in an attacker's hands; saving it creates a new repository there.
 
 ## Put a bucket back from its offsite copy
 
@@ -114,7 +114,7 @@ If the repair stops, the section reads "Putting the bucket back stopped at:" fol
 
 ### Order after a restore from the offsite copy
 
-After a restore from the offsite copy, put the backup repository back with this section before the next nightly backup. The backups then carry on in the repository the offsite copy holds. Until it is back, the offsite copy stops rather than mix a new repository into the copy. A repair and a restore do not run together: each is refused while the other runs.
+After a restore from the offsite copy, backups wait for a backup destination saved in **Settings** (see [Restore from the offsite copy](#restore-from-the-offsite-copy)). The offsite copy then stops rather than mix the new repository into the locked bucket that holds the old one: declare a new locked bucket for it under **Offsite copies**. A repair and a restore do not run together: each is refused while the other runs.
 
 ## Restore report
 

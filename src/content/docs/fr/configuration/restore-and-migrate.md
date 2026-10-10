@@ -93,7 +93,7 @@ Il vous faut l'adresse de la copie hors site, le mot de passe de chiffrement des
 4. Appuyez sur **Enregistrer ces clés**. Elles sont conservées en mémoire seulement et effacées lorsqu'une restauration depuis la copie se termine, ou au bout de 24 heures, selon la première éventualité. Une restauration qui s'arrête en cours de route les garde pour que vous puissiez la relancer. **Oublier ces clés maintenant** les efface immédiatement. Les sauvegardes de la copie sont alors listées sous **Choisir une sauvegarde**.
 5. Sélectionnez la sauvegarde, puis poursuivez avec les étapes 4 à 6 de [Restaurer sur un serveur en marche](#restaurer-sur-un-serveur-en-marche). La [règle de version](#règle-de-version) s'applique.
 
-Une fois la restauration terminée, le serveur possède les données et la configuration enregistrée de la sauvegarde choisie. Remettez le dépôt de sauvegarde en place depuis la copie avant la prochaine sauvegarde nocturne (voir la section suivante).
+Une fois la restauration terminée, le serveur possède les données et la configuration enregistrée de la sauvegarde choisie. Les sauvegardes s'arrêtent jusqu'à ce qu'un dépôt de sauvegarde existe à la destination : une sauvegarde n'en crée jamais. Enregistrez une destination de sauvegarde dans **Paramètres**, sous **Sauvegarde**, de préférence un nouveau compartiment avec de nouvelles clés, puisque l'ancien est peut-être entre les mains d'un attaquant; l'enregistrer y crée un nouveau dépôt.
 
 ## Remettre un compartiment en place depuis sa copie hors site
 
@@ -114,7 +114,7 @@ Si l'opération s'arrête, la section indique "La remise en place du seau s'est 
 
 ### Ordre après une restauration depuis la copie hors site
 
-Après une restauration depuis la copie hors site, remettez le dépôt de sauvegarde en place avec cette section avant la prochaine sauvegarde nocturne. Les sauvegardes reprennent alors dans le dépôt que contient la copie hors site. Tant qu'il n'est pas remis en place, la copie hors site s'arrête plutôt que d'y mêler un nouveau dépôt. Une remise en place et une restauration ne s'exécutent pas ensemble : chacune est refusée pendant que l'autre est en cours.
+Après une restauration depuis la copie hors site, les sauvegardes attendent une destination de sauvegarde enregistrée dans **Paramètres** (voir [Restaurer depuis la copie hors site](#restaurer-depuis-la-copie-hors-site)). La copie hors site s'arrête alors plutôt que de mêler le nouveau dépôt au compartiment verrouillé qui contient l'ancien : déclarez pour elle un nouveau compartiment verrouillé sous **Copies hors site**. Une remise en place et une restauration ne s'exécutent pas ensemble : chacune est refusée pendant que l'autre est en cours.
 
 ## Rapport de restauration
 
