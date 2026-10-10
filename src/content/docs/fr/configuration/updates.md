@@ -93,6 +93,35 @@ Sans analyseur, la vérification des vulnérabilités est désactivée et le dé
 
 Après chaque mise à jour, le serveur compare son état de santé à celui d'avant. S'il est moins bon, la version précédente est remise en place et l'étiquette fautive est mise en quarantaine : la prochaine exécution essaie la version suivante plutôt que la même. Une application dotée d'une base de données reçoit un export fait avant la mise à jour, remis en place lors du retour arrière. Lorsque la nouvelle version d'une application met aussi à niveau sur place son code, sa configuration et ses modules complémentaires, comme Nextcloud, une copie de ceux-ci est faite avant la mise à jour et remise en place lors du retour arrière, l'application étant arrêtée; les fichiers de ses utilisateurs ne sont jamais remis en place. Les copies sont supprimées dès que la mise à jour est conservée ou que le retour arrière se termine. Un retour arrière qui ne peut aboutir les conserve sur le serveur.
 
+### Services exclus des mises à jour automatiques
+
+Le modèle d'une application du catalogue peut poser `vps.auto-update=off` sur un service dont une nouvelle version risque de réécrire ses fichiers au-delà de ce que la version précédente sait lire. L'entretien nocturne ne fait jamais avancer un tel service. Deux services du catalogue sont ainsi exclus : le stockage d'objets de Plane et l'index de recherche de Zammad (Elasticsearch).
+
+Avec Catena Pro, l'entretien nocturne cherche une version plus récente pour chacun de ces services. S'il en trouve une, la tuile de l'application, dans l'onglet **Applications**, affiche un avis que seuls les administrateurs voient :
+
+- "`<service>` est exclu des mises à jour automatiques. La version `<nouvelle>` est disponible ; la version en service est `<actuelle>`." nomme le service, la version qu'il exécute et la version trouvée.
+- Une seconde ligne indique ce qu'on sait des vulnérabilités. Elle affiche "Pas vérifié pour les vulnérabilités connues." quand l'analyseur est désactivé ou n'a pas pu lire la version en service, et "La version en service n'a aucune vulnérabilité élevée ou critique connue qui ait un correctif." quand elle est propre. Sinon, elle compte les vulnérabilités élevées ou critiques de la version en service qui ont un correctif. Une version plus récente n'est vérifiée qu'une fois sur le serveur ; d'ici là, la ligne ajoute "On ne sait pas si `<nouvelle>` les corrige". Une fois sur le serveur, la ligne indique "`<nouvelle>` corrige `<n>` des `<m>` vulnérabilités élevées ou critiques connues de la version en service et en apporte `<k>` nouvelles.", et la page de confirmation les liste sous **Corrigées :** et **Nouvelles :**.
+
+L'avis disparaît quand la vérification nocturne n'a rien signalé depuis deux jours, pour ne jamais nommer une version que rien n'a vérifiée depuis.
+
+Pour appliquer la mise à jour :
+
+1. Dans l'onglet **Applications**, appuyez sur **Mettre à jour `<service>`** dans l'avis.
+2. Lisez la page **Mettre à jour un service exclu des mises à jour automatiques**. Elle nomme le service, la version qu'il exécute et la version proposée.
+3. Cochez "Je comprends que `<service>` est suspendu pendant la copie de ses données puis redémarre sur la nouvelle version, et que l'application s'arrête quelques minutes si la mise à jour doit être annulée."
+4. Appuyez sur **Mettre à jour `<service>` vers `<nouvelle>`**.
+
+La page indique alors "Mise à jour lancée. Elle se poursuit sur le serveur même si cette page se ferme ; cette page et l'onglet Applications indiquent où elle en est." La mise à jour :
+
+1. Copie les données du service, en le suspendant pendant la copie.
+2. Fait passer le service à la nouvelle version.
+3. Vérifie que le serveur est en aussi bonne santé qu'avant.
+4. Sinon, remet le service sur sa version précédente avec ses données d'origine, et ne propose plus la version fautive.
+
+Le service reste ensuite exclu des mises à jour automatiques, et sa version suivante est proposée de la même façon. Une seule de ces mises à jour s'exécute à la fois ("Une mise à jour d'un service exclu des mises à jour automatiques est déjà en cours."). Si une autre vérification nocturne a remplacé la version proposée pendant que la page était ouverte, rien ne démarre et la page affiche la version actuelle.
+
+La tuile et la page indiquent où en est la mise à jour : "Mise à jour de `<service>` vers `<nouvelle>` en cours.", "`<service>` a été mis à jour vers `<nouvelle>`.", ou, si elle n'a pas tenu, "La mise à jour de `<service>` vers `<nouvelle>` n'a pas tenu et a été annulée" avec la raison. Un retour arrière qui n'a pas pu se terminer proprement demande votre intervention ; l'onglet **Journal** et le journal de mise à jour du serveur indiquent jusqu'où il est allé.
+
 ### Panneau Mises à jour gérées
 
 Le panneau **Mises à jour gérées** (Catena Pro) affiche "État actuel :" (IDLE lorsque rien ne s'exécute) et un tableau des 14 dernières exécutions avec **Heure**, **État terminal** et **Résultat**. Il indique "Aucune exécution de mise à jour gérée enregistrée pour l'instant." tant qu'aucune n'a eu lieu. Trois actions le pilotent :
@@ -135,7 +164,7 @@ Faites une sauvegarde préalable (**Actions** > **Sauvegardes** > **Lancer une s
 
 | Symptôme | Cause et correctif |
 |---|---|
-| Une application ne se met jamais à jour | Son étiquette est partielle ou flottante, son étiquette d'application est `off`, ou sa version la plus récente a moins de 7 jours ou ajoute une vulnérabilité. |
+| Une application ne se met jamais à jour | Son étiquette est partielle ou flottante, son étiquette d'application est `off` (voir [Services exclus des mises à jour automatiques](#services-exclus-des-mises-à-jour-automatiques)), ou sa version la plus récente a moins de 7 jours ou ajoute une vulnérabilité. |
 | "La dernière tentative n'a pas abouti." sous **Version du panneau de contrôle** | La mise à jour a été remise en arrière. Lisez le journal de la section, puis réessayez. |
 | La bannière de redémarrage reste affichée | Redémarrez depuis **Système** > **Redémarrage**, ou laissez l'entretien nocturne s'en charger. |
 | La liste de versions est remplacée par une zone de texte | Le registre n'a pas pu être joint; saisissez la version. |

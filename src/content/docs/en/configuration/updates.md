@@ -93,6 +93,35 @@ Without a scanner the vulnerability check is off and the waiting period still ap
 
 After each update the server compares its health with the state before. If it is worse, the previous version is put back and the failed tag is quarantined, so the next run tries the next version up instead of the same one. An application with a database gets a dump taken before the update, put back on rollback. When the new version of an application also upgrades its code, configuration and add-ons in place, as Nextcloud does, a copy of those is taken before the update too and put back on rollback while the application is stopped; its users' files are never put back. The copies are deleted once the update is kept or the rollback completes. A rollback that cannot finish keeps them on the server.
 
+### Services kept off the automatic updates
+
+A catalog app's template can set `vps.auto-update=off` on a service whose files a new version may rewrite past what the version before it reads. The nightly maintenance never moves such a service. Two catalog services are kept off this way: Plane's object storage and Zammad's search index (Elasticsearch).
+
+On Catena Pro, the nightly maintenance checks each of these services for a newer version. When it finds one, the app's tile on the **Apps** tab shows a notice that only administrators see:
+
+- "`<service>` is kept off the automatic updates. Version `<new>` is available; it runs `<current>`." names the service, the version it runs and the version found.
+- A second line says what is known of the vulnerabilities. It reads "Not checked for known vulnerabilities." when the scanner is off or could not read the running version, and "The running version has no known high or critical vulnerability with a fix." when it is clean. Otherwise it counts the high or critical vulnerabilities of the running version that have a fix. A newer version is checked only once it is on the server, so until then the line adds "Whether `<new>` fixes them is not known". Once it is on the server, the line reads "`<new>` fixes `<n>` of the `<m>` known high or critical vulnerabilities of the running version and brings `<k>` new ones.", and the confirmation page lists them under **Fixed:** and **New:**.
+
+The notice disappears when the nightly check has not reported for two days, so it never names a version nothing has checked since.
+
+To apply the update:
+
+1. On the **Apps** tab, press **Update `<service>`** on the notice.
+2. Read the page **Update a service kept off the automatic updates**. It names the service, the version it runs and the version offered.
+3. Tick "I understand that `<service>` pauses while its data is copied, then restarts on the new version, and that the application stops for a few minutes if the update has to be rolled back."
+4. Press **Update `<service>` to `<new>`**.
+
+The page then reads "Update started. It continues on the server even if this page closes; this page and the Apps tab say where it got to." The update:
+
+1. Copies the data of the service, pausing the service for the copy.
+2. Moves the service to the new version.
+3. Checks that the server is as healthy as before.
+4. If it is not, puts the service back on its previous version with its data as it was, and does not offer the failed version again.
+
+The service stays off the automatic updates afterwards, and its next version is offered the same way. Only one such update runs at a time ("An update of a service kept off the automatic updates is already running."). If another night's check has replaced the offered version while the page was open, nothing starts and the page shows the current one.
+
+The tile and the page report where the update got to: "Updating `<service>` to `<new>`.", "`<service>` was updated to `<new>`.", or, when it did not hold, "The update of `<service>` to `<new>` did not hold and was rolled back" with the reason. A rollback that could not finish cleanly needs your attention; the **Log** tab and the server's update log say how far it got.
+
 ### Managed updates panel
 
 The **Managed updates** panel (Catena Pro) shows "Current state:" (IDLE when nothing runs) and a table of the last 14 runs with **Time**, **Terminal state** and **Result**. It reads "No managed-update runs recorded yet." until one has run. Three actions drive it:
@@ -135,7 +164,7 @@ Take a backup beforehand (**Actions** > **Backups** > **Trigger backup now**). T
 
 | Symptom | Cause and fix |
 |---|---|
-| An application never updates | Its tag is partial or floating, its label is `off`, or its newest release is younger than 7 days or adds a vulnerability. |
+| An application never updates | Its tag is partial or floating, its label is `off` (see [Services kept off the automatic updates](#services-kept-off-the-automatic-updates)), or its newest release is younger than 7 days or adds a vulnerability. |
 | "The last attempt did not finish." under **Control panel version** | The update was put back. Read the log in the section, then retry. |
 | The restart banner stays | Restart from **System** > **Restart**, or let the nightly maintenance do it. |
 | The version list is replaced by a text box | The registry could not be reached; type the version. |
