@@ -12,6 +12,7 @@ One account signs in to every app. Groups decide who can open what, and the chec
 - **Per-app gate.** Each gated app gets its own sign-in proxy with its own allowed groups. One session is shared, so a person signs in once and moves between apps. An app with no declared access is denied to everyone except administrators.
 - **Catalog apps** come with their Keycloak client already made. For an app outside the catalog that needs native OIDC login, you create a client by hand in Keycloak and give the app its id and secret through its own environment. The `vps.auth.oidc` labels only add an OIDC badge to the app's tile (see [Configure an app for Catena](/en/configure-apps/)).
 - **Second factor.** **Settings** > **Sign-in requirements** switches between **Password only** and **Password and an authenticator app**. The default is password only, and the change applies to existing accounts at their next sign-in.
+- **Keycloak's own console.** The admin of `auth.yourdomain.com/admin` sets up a one-time code at first sign-in and enters it every time after; repeated wrong passwords lock the account for up to 15 minutes. A `vps` realm you switch off stays off across updates. See [Sign-in and people](/en/configuration/sign-in-and-people/).
 - **Email.** Password reset and invitations need **Settings** > **Outgoing mail** (Resend, Brevo or a custom SMTP server). With no outgoing mail, password-reset email is off.
 - **Panel sign-in.** You sign in to the panel with the local admin email and the admin password shown once at install, in addition to the gate.
 

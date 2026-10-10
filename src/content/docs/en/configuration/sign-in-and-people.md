@@ -48,6 +48,21 @@ People can reset their own password from the sign-in page, edit their profile an
 Password reset and invitations send email. With **No outgoing mail** selected, neither works.
 :::
 
+## Keycloak's own administration console
+
+The top-level console at `auth.yourdomain.com/admin` (the master realm) has its own admin account, separate from the people above.
+
+- At your first sign-in there, Keycloak asks you to set up a one-time code in an authenticator app. It asks for that code at every sign-in after.
+- After repeated wrong passwords the account locks for a pause that grows with each failure, up to 15 minutes.
+
+## Switching off the sign-in service
+
+If you switch the `vps` realm off in Keycloak, it stays off. Updates and configuration runs never switch it back on, and apps that sign in through it show as waiting on the **Apps** tab until you switch it on again.
+
+## The sign-in page name
+
+The name on the sign-in page follows the server's domain: after a [domain change](/en/configuration/domain/) it takes the new domain. A name you set yourself in the realm settings stays.
+
 ## People panel (Catena Pro)
 
 The **People** panel in the menu manages accounts and groups from the admin panel. The editions are compared at [catena.run](https://catena.run/en/#pricing).

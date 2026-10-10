@@ -48,6 +48,21 @@ Chaque personne peut réinitialiser son mot de passe depuis la page de connexion
 La réinitialisation de mot de passe et les invitations envoient du courriel. Avec **Aucun courriel sortant**, ni l'une ni l'autre ne fonctionne.
 :::
 
+## La console d'administration propre à Keycloak
+
+La console de premier niveau à `auth.yourdomain.com/admin` (le domaine de sécurité master) a son propre compte administrateur, distinct des personnes ci-dessus.
+
+- À votre première connexion, Keycloak vous demande de configurer un code à usage unique dans une application d'authentification. Il vous le demande ensuite à chaque connexion.
+- Après plusieurs mots de passe erronés, le compte est verrouillé pour une pause qui s'allonge à chaque échec, jusqu'à 15 minutes.
+
+## Désactiver le service de connexion
+
+Si vous désactivez le domaine de sécurité `vps` dans Keycloak, il reste désactivé. Les mises à jour et les configurations ne le réactivent jamais, et les applications qui se connectent par lui apparaissent en attente dans l'onglet **Applications** jusqu'à ce que vous le réactiviez.
+
+## Le nom de la page de connexion
+
+Le nom de la page de connexion suit le domaine du serveur : après un [changement de domaine](/fr/configuration/domain/), il prend le nouveau domaine. Un nom que vous avez défini vous-même dans les paramètres du domaine de sécurité reste.
+
 ## Panneau Personnes (Catena Pro)
 
 Le panneau **Personnes** du menu gère les comptes et les groupes depuis le panneau d'administration. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).

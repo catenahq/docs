@@ -47,6 +47,10 @@ Le même bouton **Appliquer** répare un tunnel compromis ou défaillant : appuy
 | "Le jeton Cloudflare n'atteint pas ce domaine. Choisissez-en un dans la liste." | Le domaine sélectionné ne fait pas partie de ceux que le jeton atteint. |
 | "Un nom de domaine, par exemple example.com." | Le domaine n'est pas un nom valide. |
 
+### Le nom de la page de connexion
+
+Après un changement de domaine, le nom affiché sur la page de connexion à `auth.yourdomain.com` suit le nouveau domaine. Si vous avez renommé la page de connexion à la main dans les paramètres du domaine de sécurité de Keycloak, votre nom reste et n'est jamais remplacé. Voir [Connexion et personnes](/fr/configuration/sign-in-and-people/).
+
 ## Sous-domaines des applications d'infrastructure
 
 **Paramètres** > **Sous-domaines des applications d'infrastructure** fixe le nom sur lequel répond chacun des services propres au serveur, sous le domaine. Chaque champ affiche le nom en usage.

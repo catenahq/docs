@@ -47,6 +47,10 @@ The same **Apply** repairs a leaked or broken tunnel: press it with the domain a
 | "The Cloudflare token cannot reach that domain. Choose one from the list." | The selected domain is not among the domains the token reaches. |
 | "A domain name such as example.com." | The domain is not a valid name. |
 
+### The sign-in page name
+
+After a domain change, the name shown on the sign-in page at `auth.yourdomain.com` follows the new domain. If you renamed the sign-in page by hand in Keycloak's realm settings, your name stays and is never replaced. See [Sign-in and people](/en/configuration/sign-in-and-people/).
+
 ## Infrastructure app subdomains
 
 **Settings** > **Infrastructure app subdomains** sets the name each of the server's own services answers on, under the domain. Each field shows the name in use.
