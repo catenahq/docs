@@ -19,9 +19,9 @@ Une application est un ensemble de services. L'un d'eux, le **service d'entrée*
 
 Vous écrivez les étiquettes sous la clé `labels:` propre à chaque service, en liste, une `"clé=valeur"` par ligne. La page d'état, les restaurations, les migrations et les mises à jour les lisent à cet endroit; les étiquettes placées sous `deploy.labels` leur échappent.
 
-La plupart des étiquettes décrivent l'application dans son ensemble : son adresse, qui peut entrer, son contrôle de santé, sa tuile. Elles figurent une seule fois, sur le service d'entrée. Catena les lit dans tout le fichier et garde la dernière trouvée : la même étiquette sur un autre service, ou dans une ligne mise en commentaire, remplace celle du service d'entrée. Seule la politique de mise à jour décrit un service en particulier, et elle est facultative. L'application à laquelle un service appartient et ce qu'il est se lisent dans Docker Swarm lui-même : le nom de l'application dans Portainer et la clé du service dans le fichier. La [référence des étiquettes](#référence-des-étiquettes) indique où va chacune.
+La plupart des étiquettes décrivent l'application dans son ensemble : son adresse, qui peut entrer, son contrôle de santé, sa tuile. Elles figurent une seule fois, sur le service d'entrée, et le service d'entrée est celui qui porte `vps.route.host`. Catena lit ces étiquettes sur ce service seulement, telles que l'application en cours d'exécution les a. Quand deux services portent `vps.route.host`, l'application n'a aucune route. La même étiquette sur tout autre service est ignorée. La politique de mise à jour et les ports publiés décrivent un service en particulier, et chacun est facultatif. L'application à laquelle un service appartient est le nom de l'application dans Portainer, et le service est sa clé dans le fichier; Catena lit les deux dans Docker Swarm lui-même, aucune étiquette ne les nomme. La [référence des étiquettes](#référence-des-étiquettes) indique où va chacune.
 
-Écrivez les valeurs des étiquettes en clair, comme l'adresse elle-même, plutôt que sous forme de `${VARIABLE}`.
+La valeur d'une étiquette peut être une `${VARIABLE}` des variables d'environnement de Portainer : Catena lit la valeur qu'a reçue le service déployé. Une étiquette `vps.*` que Catena ne reconnaît pas reste sans effet.
 
 Le squelette ci-dessous contient chaque élément qu'ajoutent les étapes : un service d'entrée `web` et une base de données `db`.
 
@@ -29,20 +29,15 @@ Le squelette ci-dessous contient chaque élément qu'ajoutent les étapes : un s
 
 ## Étape 1 : Choisir le nom de l'application
 
-Donnez à l'application un nom court fait de lettres minuscules, de chiffres et de traits d'union, comme `my-app`. Vous utilisez ce même nom deux fois :
-
-- le nom de l'application dans Portainer, que vous donnez au déploiement (étape 7);
-- l'alias du service d'entrée sur `catena-network` (étape 3).
-
-Les restaurations, les migrations et les mises à jour trouvent l'application par son nom dans Portainer, et la barrière de connexion la joint toujours par l'alias égal à ce nom.
+Donnez à l'application un nom court fait de lettres minuscules, de chiffres et de traits d'union, comme `my-app`. C'est le nom de l'application dans Portainer, que vous donnez au déploiement (étape 7). Les restaurations, les migrations et les mises à jour trouvent l'application par ce nom, et le mandataire joint le service d'entrée à `my-app_web` : le nom de l'application, un trait de soulignement et la clé du service dans le fichier.
 
 ## Étape 2 : Préparer le fichier pour Docker Swarm
 
 Les applications tournent sur Docker Swarm, qui refuse certaines clés compose net et en ignore d'autres sans rien dire. Le catalogue est vérifié contre ces règles; quand vous écrivez un fichier à la main, vous les respectez vous-même.
 
-- **Politique de redémarrage.** Chaque service a un `deploy.restart_policy.condition`, par exemple `any`.
+- **Politique de redémarrage.** Swarm relance par défaut un service arrêté. N'écrivez `deploy.restart_policy` que pour un service qui ne doit pas être relancé (`condition: none`) ou seulement après un échec (`condition: on-failure`), comme une tâche d'initialisation.
 - **Placement des données.** Chaque service qui monte un volume nommé ou un dossier de l'hôte porte la contrainte de placement `node.labels.catena.role==data`. Un volume est local à un serveur : sur un autre, swarm le crée vide, sans erreur.
-- **Pas de `depends_on`.** Swarm n'ordonne pas les démarrages et abandonne la clé sans message. La politique de redémarrage fait relancer par swarm un service parti trop tôt. Quand un plantage suivi d'un redémarrage fait des dégâts (un installateur qui s'arrête à moitié), l'entrypoint attend lui-même la base de données.
+- **Pas de `depends_on`.** Swarm n'ordonne pas les démarrages et abandonne la clé sans message. Swarm relance un service parti trop tôt. Quand un plantage suivi d'un redémarrage fait des dégâts (un installateur qui s'arrête à moitié), l'entrypoint attend lui-même la base de données.
 - **Pas de `configs:` en ligne.** Une entrée `file:` ou `content:` ne peut pas être résolue quand Portainer déploie le fichier. L'entrypoint du service écrit plutôt le fichier de configuration. Seuls les `configs` `external: true` sont acceptés.
 - **`tmpfs` en forme longue** (`type: tmpfs`). La clé courte est ignorée en silence. Un montage tmpfs est `noexec`; un chemin qui doit exécuter du code est un volume.
 - **Ports publiés en forme longue** avec `mode: host`, qui conserve l'adresse réelle du client (le mode par défaut la remplace). L'[étape 4](#étape-4--étiqueter-le-service-dentrée) donne l'étiquette qui les ouvre dans le coupe-feu.
@@ -52,15 +47,15 @@ Les applications tournent sur Docker Swarm, qui refuse certaines clés compose n
 
 ## Étape 3 : Raccorder le service d'entrée
 
-Le service d'entrée se joint au réseau externe `catena-network`, avec le nom de l'application comme alias, et garde le réseau `default` de l'application pour joindre les services internes. Les services internes restent sur `default` seulement. Le fichier déclare `catena-network` comme `external: true` (voir le squelette ci-dessus).
+Le service d'entrée se joint au réseau externe `catena-network` et garde le réseau `default` de l'application pour joindre les services internes. Aucun alias n'est nécessaire. Les services internes restent sur `default` seulement. Le fichier déclare `catena-network` comme `external: true` (voir le squelette ci-dessus).
 
-Le mandataire inverse joint l'application par cet alias. Un service interne sans entrée `catena-network` est inaccessible au mandataire et aux autres applications.
+Le mandataire inverse joint le service d'entrée par ce réseau. Un service d'entrée qui n'est pas sur `catena-network` n'a aucune route. Un service interne sans entrée `catena-network` est inaccessible au mandataire et aux autres applications.
 
 ## Étape 4 : Étiqueter le service d'entrée
 
 Ces étiquettes vont sur le service d'entrée, et nulle part ailleurs dans le fichier :
 
-1. `vps.route.host` avec l'adresse publique, comme `my-app.yourdomain.com`. Sans elle, l'application n'a ni route, ni tuile, ni carte sur la page d'état.
+1. `vps.route.host` avec l'adresse publique, comme `my-app.yourdomain.com`, sur ce service seulement. Sans elle, l'application n'a ni route, ni tuile, ni carte sur la page d'état.
 2. `vps.route.port` avec le port d'écoute de l'application dans son conteneur, s'il n'est pas 80.
 3. Qui peut entrer :
    - `vps.auth.mode=public` pour une application ouverte à tous. La connexion propre à l'application, s'il y en a une, reste aux commandes.
@@ -104,7 +99,7 @@ Une sauvegarde ne met pas en pause une application ajoutée à la main : rien n'
 
 ## Étape 8 : Vérifier
 
-1. Dans l'onglet **Actions** du panneau, lancez **Synchroniser tout (apps + moniteurs)**. Sans cela, la route apparaît quelques secondes après le déploiement et la carte de la page d'état en dix minutes environ.
+1. Patientez quelques secondes : Catena prend le déploiement en compte d'elle-même. Pour le faire tout de suite, ouvrez l'onglet **Actions** du panneau et lancez **Synchroniser tout (apps + moniteurs)**.
 2. Ouvrez l'adresse. Une application privée affiche d'abord la page de connexion; une application publique s'ouvre directement.
 3. La tuile de l'application figure dans l'onglet **Applications**, et sa carte sur la page d'état passe au vert.
 
@@ -144,9 +139,8 @@ Sur le service d'entrée, une seule fois.
 
 | Étiquette | Valeurs | Défaut | Description |
 |---|---|---|---|
-| `vps.route.host` | Une adresse sous `yourdomain.com` | aucun | Adresse publique de l'application. Sans elle, l'application n'a ni route, ni tuile, ni carte sur la page d'état. |
+| `vps.route.host` | Une adresse sous `yourdomain.com` | aucun | Adresse publique de l'application. Le service qui la porte est le service d'entrée. Sans elle, l'application n'a ni route, ni tuile, ni carte sur la page d'état; sur deux services, l'application n'a aucune route. |
 | `vps.route.port` | Un numéro de port | `80` | Port d'écoute de l'application dans son conteneur. |
-| `vps.route.service` | Une clé de service du fichier | le service dont l'alias est le nom de l'application | Pour une application publique, le service dont le premier alias sur `catena-network` reçoit le trafic. Une application privée est toujours jointe par l'alias égal à son nom. |
 | `vps.auth.mode` | `public`, `private`, `admin-only` | aucun | `public` : aucune barrière. `private` : les groupes de `vps.auth.groups`, ou `admin`, `client` et `staff` quand aucun n'est listé. `admin-only` : administrateurs seulement. |
 | `vps.auth.groups` | Noms de groupes Keycloak, séparés par des virgules | aucun | Groupes admis; une personne dans l'un d'eux entre. Ignorée avec `public` et `admin-only`. Le groupe `visitor` rend l'application publique. |
 | `vps.auth.protected` | `true`, `false` | `false` | `true` désigne une application qui ne doit pas être publique : si ses étiquettes la rendent publique quand même, sa tuile dans **Applications** porte le badge "devrait exiger une connexion", visible des administrateurs seulement. |
@@ -172,7 +166,7 @@ Sur le service d'entrée, une seule fois.
 
 ### Mises à jour
 
-Sur n'importe quel service, facultatif.
+Sur n'importe quel service, facultatif, et lue sur le service qui la porte.
 
 | Étiquette | Valeurs | Défaut | Description |
 |---|---|---|---|
@@ -191,7 +185,7 @@ Sur le service qui publie les ports.
 
 ## Exemple complet : Nextcloud
 
-L'entrée du catalogue pour Nextcloud est la façon recommandée de l'exploiter : elle comporte plus de précautions que le fichier simplifié ci-dessous, et son client de connexion est déjà créé. Déployez l'entrée du catalogue, remplissez les champs de stockage dans son environnement et lancez **Câbler l'OIDC pour Nextcloud** : c'est toute la procédure. Le fichier ci-dessous montre la même conception avec les éléments dont une application écrite à la main a besoin, déployée dans Portainer sous le nom `my-nextcloud`. Les versions d'images sont des valeurs fictives.
+L'entrée du catalogue pour Nextcloud est la façon recommandée de l'exploiter : elle comporte plus de précautions que le fichier simplifié ci-dessous, et son client de connexion est déjà créé. Déployez l'entrée du catalogue, remplissez les champs de stockage dans son environnement et lancez **Câbler l'OIDC pour Nextcloud** : c'est toute la procédure. Le fichier ci-dessous montre la même conception avec les éléments dont une application écrite à la main a besoin, déployée dans Portainer sous le nom `my-nextcloud`; le mandataire joint `app` à `my-nextcloud_app`. Les versions d'images sont des valeurs fictives.
 
 <Code code={nextcloudCompose} lang="yaml" />
 
@@ -224,10 +218,10 @@ La commande crée le fournisseur ou le met à jour : vous pouvez la répéter. L
 
 | Symptôme | Cause et correction |
 |---|---|
-| 502 ou 503 sur l'adresse | Le mandataire ne joint pas l'application. Le service d'entrée est sur `catena-network` avec un alias égal au nom de l'application dans Portainer, et `vps.route.port` est son port d'écoute. Lisez les journaux dans Portainer. |
+| 502 ou 503 sur l'adresse | Le mandataire ne joint pas l'application. Le service d'entrée est sur `catena-network`, et `vps.route.port` est son port d'écoute. Lisez les journaux dans Portainer. |
 | 403 après la connexion | La personne n'est dans aucun groupe autorisé. Le groupe de `vps.auth.groups` existe dans Keycloak, correspond exactement (majuscules comprises), et la personne en est membre (**Personnes** ou Keycloak). |
 | Seuls les administrateurs entrent | Ni `vps.auth.mode` ni `vps.auth.groups` n'est défini, ou le mode n'est pas `public`, `private` ou `admin-only` et aucun groupe n'est listé. |
-| Pas de route, ou une adresse ou un accès erronés | Aucun `vps.route.host`, ou une étiquette du service d'entrée répétée sur un autre service ou dans une ligne mise en commentaire la remplace. La synchronisation des routes s'exécute quelques secondes après un déploiement et toutes les heures; **Synchroniser tout (apps + moniteurs)** dans **Actions** la lance tout de suite. |
+| Pas de route, ou une adresse ou un accès erronés | Aucun `vps.route.host`, `vps.route.host` sur plus d'un service, ou service d'entrée qui n'est pas sur `catena-network`. Une étiquette du service d'entrée sur un autre service est ignorée. La synchronisation des routes s'exécute quelques secondes après un déploiement et toutes les heures; **Synchroniser tout (apps + moniteurs)** dans **Actions** la lance tout de suite. |
 | Carte rouge sur la page d'état | Application publique dont la page d'accueil répond une erreur, application derrière la connexion qui ne renvoie pas les visiteurs vers la connexion, `vps.health.path` qui ne répond pas 200, ou texte `vps.health.expect` absent de la réponse. |
 | La tuile indique **connexion en échec** ou **connexion en attente** | Lisez la raison sur la tuile. Une adresse de retour de `vps.auth.oidc.redirect_uris` doit être en `https://` sur un domaine que ce serveur sert, sans `*` ni `#`. Corrigez l'étiquette, redéployez l'application et lancez **Synchroniser tout (apps + moniteurs)**. |
 | Sauvegarde échouée sur un montage lié | Le montage est hors de la zone des applications. Déplacez les données vers un volume nommé, ou inscrivez le dossier sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. |
