@@ -13,7 +13,7 @@ Vous traitez trois situations depuis la page **Restauration** du panneau : votre
 
 ## Restaurer sur un serveur en marche
 
-La restauration remplace les données et rien d'autre. Les applications sont arrêtées pendant que leurs données sont remises en place, puis redémarrées avec elles. Le panneau, l'authentification et la connexion qui sert la page restent accessibles tout du long : vous pouvez donc suivre la restauration du début à la fin. Il n'y a ni reconstruction ni reconfiguration à faire ensuite.
+La restauration remplace les données et rien d'autre. Les applications sont arrêtées pendant que leurs données sont remises en place, et elles reviennent à l'arrêt : vous les démarrez vous-même une fois qu'elles sont vérifiées (voir [Démarrer les applications après une restauration](#démarrer-les-applications-après-une-restauration)). La restauration d'une seule application laisse aussi cette application à l'arrêt. Un [déplacement vers un autre serveur](#migrer-vers-un-autre-serveur) fait exception : ses applications démarrent avec le serveur. Le panneau, l'authentification et la connexion qui sert la page restent accessibles tout du long : vous pouvez donc suivre la restauration du début à la fin. Il n'y a ni reconstruction ni reconfiguration à faire ensuite.
 
 1. Ouvrez **Restauration**.
 2. Sous **Quelles sauvegardes restaurer**, gardez **Les sauvegardes de ce serveur** et appuyez sur **Afficher les sauvegardes**.
@@ -30,7 +30,9 @@ L'option "Copier les données seulement, sans rien démarrer. Sert à préparer 
 
 ### Progression
 
-La section **Restauration en cours** nomme l'étape en cours, dans cet ordre : Vérifications avant toute action (elles comprennent la règle de version ci-dessous), Enregistrement de ce qui fonctionne actuellement, Arrêt des applications, Copie des données, Récupération des images des applications, Reprise de la configuration sauvegardée, Démarrage des services de base, Application de la configuration sauvegardée à ce serveur, Remise en service des applications, Restauration des bases de données, Mise à jour des applications, Vérification des fichiers stockés, Vérifications finales, et Terminé.
+La section **Restauration en cours** nomme l'étape en cours, dans cet ordre : Vérifications avant toute action (elles comprennent la règle de version ci-dessous), Enregistrement de ce qui fonctionne actuellement, Arrêt des applications, Copie des données, Récupération des images des applications, Reprise de la configuration sauvegardée, Démarrage des services de base, Maintien des applications à l'arrêt, Application de la configuration sauvegardée à ce serveur, Remise en service des applications, Restauration des bases de données, Mise à jour des applications, Vérification des fichiers stockés, Vérifications finales, et Terminé.
+
+Une restauration terminée affiche un lien vers la section ci-dessous : "Les applications que cette restauration a ramenées restent à l'arrêt jusqu'à ce qu'elles soient démarrées ci-dessous."
 
 ### Restauration interrompue
 
@@ -50,6 +52,25 @@ Chaque sauvegarde enregistre la version de Catena qui l'a produite. La restaurat
 - Deux versions impossibles à ordonner sont refusées.
 
 Le refus survient à la première étape, avant que quoi que ce soit soit touché.
+
+## Démarrer les applications après une restauration
+
+Une restauration ne peut pas savoir si les données d'une application étaient compromises avant la sauvegarde; les applications clientes qu'elle a ramenées restent donc à l'arrêt jusqu'à ce que vous les démarriez. Une restauration du serveur entier laisse toutes les applications clientes à l'arrêt, et la restauration d'une seule application laisse cette application à l'arrêt. Les services propres à Catena (le panneau, l'authentification et la connexion) démarrent comme avant. Le démarrage des applications est offert dans toutes les éditions. Tant que vous n'avez pas démarré une application, elle reste à l'arrêt malgré les mises à jour et les redémarrages.
+
+Tant que des applications sont laissées à l'arrêt, chaque page du panneau affiche une bannière : "Applications laissées à l'arrêt par la restauration de ce serveur : {apps}. Les démarrer depuis la page Restauration une fois vérifiées." Elle renvoie à la section **Applications laissées à l'arrêt après la restauration** de la page **Restauration**.
+
+1. Décidez si chaque application est digne de confiance, par exemple si sa sauvegarde est antérieure à l'incident.
+2. Ouvrez **Restauration** et allez à **Applications laissées à l'arrêt après la restauration**. Chaque application a une case, cochée par défaut, qui indique "À l'arrêt depuis le" et la date. Décochez une application pour la laisser à l'arrêt.
+3. Cochez "J'ai vérifié ces applications, ou j'accepte le risque de les démarrer".
+4. Appuyez sur **Démarrer les applications sélectionnées**.
+
+Démarrer une application rétablit ses bases de données depuis la sauvegarde là où elles n'ont pas survécu, la sort du mode dans lequel la sauvegarde l'a placée, vérifie ses fichiers stockés, puis remet ce serveur à niveau, ce qui redémarre certains services. La section suit le démarrage étape par étape : Attente de la fin de la sauvegarde, de la copie hors site ou d'une mise à jour, Démarrage des applications, Restauration des bases de données, Mise à jour des applications, Vérification des fichiers stockés, Vérifications finales, Lancement de la remise à niveau de ce serveur, et Terminé. Pendant l'opération, la section indique "Démarrage des applications en cours :" suivi de l'étape, et à la fin, "Le dernier démarrage est terminé."
+
+Une application démarrée quitte la liste. Une application qui n'a pas démarré est de nouveau arrêtée et reste listée avec "Son dernier démarrage n'a pas abouti :" suivi de la raison, par exemple "no container of it came up: ...", "it did not start: ..." ou "its stored definition names `<image>`, which none of its services ran when the backup was taken (...)". Les raisons s'affichent en anglais. Corrigez la cause, puis démarrez de nouveau l'application depuis la même section. Si le démarrage s'arrête en entier, la section indique "Le démarrage des applications s'est arrêté à :" suivi de l'étape. Les démarrer de nouveau reprend chaque étape, et une application déjà démarrée ne l'est pas une seconde fois.
+
+Démarrez ces applications depuis la page **Restauration**, pas depuis Portainer. En démarrer une dans Portainer, ou y enregistrer sa définition, la démarre sans la vérification de ses bases de données ni sa sortie du mode sauvegarde, et le panneau avertit : "Démarrées hors de ce panneau depuis la restauration, sans la vérification de leurs bases de données ni leur sortie du mode sauvegarde : {apps}. Les démarrer depuis la page Restauration exécute les deux." Cette application reste listée. La démarrer depuis la page **Restauration** exécute ce qu'elle a sauté, sans la démarrer une seconde fois.
+
+Vous pouvez aussi démarrer une application laissée à l'arrêt sans le panneau (voir [Quitter Catena](/fr/features/backup-restore-migrate/#quitter-catena)).
 
 ## Restaurer depuis un autre dépôt de sauvegarde
 
@@ -72,7 +93,7 @@ Il vous faut l'adresse du dépôt, son mot de passe (le mot de passe de chiffrem
 4. Appuyez sur **Enregistrer ces identifiants**. Ils sont conservés en mémoire seulement, et effacés lorsqu'une restauration depuis ce dépôt se termine, au bout de 24 heures ou au redémarrage du serveur. Une restauration qui s'arrête en cours de route les garde pour que vous puissiez la relancer. Un déplacement vers ce serveur qui n'est pas terminé 24 heures après leur enregistrement exige de les enregistrer de nouveau. **Oublier les identifiants enregistrés** les efface immédiatement. Les sauvegardes de ce dépôt sont alors listées sous **Choisir une sauvegarde**.
 5. Sélectionnez la sauvegarde (en cas de rançongiciel ou de compromission, une sauvegarde antérieure à l'incident), puis poursuivez avec les étapes 4 à 6 de [Restaurer sur un serveur en marche](#restaurer-sur-un-serveur-en-marche). La [règle de version](#règle-de-version) s'applique.
 
-Une fois la restauration terminée, le serveur possède les données et la configuration enregistrée de la sauvegarde choisie.
+Une fois la restauration terminée, le serveur possède les données et la configuration enregistrée de la sauvegarde choisie. Ses applications restent à l'arrêt jusqu'à ce que vous les démarriez (voir [Démarrer les applications après une restauration](#démarrer-les-applications-après-une-restauration)).
 
 Après une restauration depuis une copie des sauvegardes de ce serveur, les sauvegardes s'arrêtent jusqu'à ce qu'un dépôt de sauvegarde existe à la destination : une sauvegarde n'en crée jamais. Enregistrez une destination de sauvegarde dans **Paramètres**, sous **Sauvegarde**, de préférence un nouveau compartiment avec de nouvelles clés, puisque l'ancien est peut-être entre les mains d'un attaquant; l'enregistrer y crée un nouveau dépôt.
 
@@ -140,6 +161,8 @@ La fenêtre se referme d'elle-même après 4 heures; cinq codes erronés la ferm
 6. Mise en place des données ici, puis Bascule de l'adresse web vers ce serveur.
 7. Vérifications finales.
 
+Un déplacement démarre les applications avec le serveur : rien n'est laissé à l'arrêt.
+
 Après les vérifications finales, l'ancien serveur libère son activation de la clé d'abonnement, et le nouveau serveur l'active puis se remet à niveau, ce qui active ce que la clé débloque (domaines supplémentaires, horaires). Certains services redémarrent pendant l'opération. **Paramètres** > **Abonnement** en indique le résultat. Si la libération de l'ancienne activation échoue, libérez-la dans le portail client de Polar et enregistrez de nouveau la clé sur le nouveau serveur.
 
 ### Annuler le déplacement
@@ -165,5 +188,12 @@ Après un déplacement terminé, l'ancien serveur est arrêté, pas effacé. Ses
 | Le serveur à cette adresse n'est pas celui qui a produit le billet | L'adresse joint un autre serveur, ou la clé d'hôte SSH de l'ancien serveur a changé après une réinstallation ou une restauration. Vérifiez l'adresse; après une réinstallation ou une restauration, ouvrez une nouvelle fenêtre de déplacement sur l'ancien serveur et utilisez son nouveau billet. |
 | "Les identifiants ont été refusés." | Les détails du dépôt n'ont pas été acceptés. Comparez-les à la trousse de reprise. |
 | "Un seau est en cours de remise en place depuis sa copie hors site. Attendez que l'opération se termine avant de lancer une restauration." | Une remise en place de compartiment est en cours. Une restauration ne démarre qu'après sa fin, et une remise en place est refusée de la même façon pendant une restauration ("Une restauration est en cours sur ce serveur. Attendez qu'elle se termine avant de remettre un seau en place."). |
-| "La restauration depuis un autre dépôt de sauvegarde n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau. Remettez ce serveur à niveau dans Paramètres, sous Configuration du serveur, puis réessayez." ou "La remise en place d'un seau n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau." | Les composants installés du serveur sont antérieurs à cette fonction. Ouvrez **Paramètres**, allez à **Configuration du serveur**, appuyez sur **Remettre ce serveur à niveau**, puis réessayez une fois l'opération terminée. |
+| "La restauration depuis un autre dépôt de sauvegarde n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau. Remettez ce serveur à niveau dans Paramètres, sous Configuration du serveur, puis réessayez.", "La remise en place d'un seau n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau." ou "Le démarrage des applications depuis cette page n'est pas encore offert sur ce serveur : ses composants installés sont plus anciens que ce panneau. Remettez ce serveur à niveau dans Paramètres, sous Configuration du serveur, puis réessayez." | Les composants installés du serveur sont antérieurs à cette fonction. Ouvrez **Paramètres**, allez à **Configuration du serveur**, appuyez sur **Remettre ce serveur à niveau**, puis réessayez une fois l'opération terminée. |
+| "Confirmez que ces applications ont été vérifiées, ou que le risque de les démarrer est accepté, avant de les démarrer." | Vous n'avez pas coché la case de confirmation de **Applications laissées à l'arrêt après la restauration**. |
+| "Une restauration est en cours sur ce serveur. Attendez qu'elle se termine avant de démarrer les applications." | Les applications ne peuvent pas être démarrées pendant une restauration. |
+| "Un seau est en cours de remise en place depuis sa copie hors site. Attendez que l'opération se termine avant de démarrer les applications." | Une remise en place de compartiment est en cours. Démarrez les applications après sa fin. |
+| "Les applications sont déjà en cours de démarrage sur ce serveur." | Un démarrage est en cours. Attendez qu'il se termine. |
+| "Les applications n'ont pas pu être démarrées." | La demande a été refusée. La raison du serveur suit, par exemple "choose at least one application to start" ou une application qui n'est plus laissée à l'arrêt. |
+| "Son dernier démarrage n'a pas abouti :" | La raison suit. L'application a été de nouveau arrêtée et reste listée. Corrigez la cause, puis redémarrez-la depuis **Applications laissées à l'arrêt après la restauration**. |
+| "Démarrées hors de ce panneau depuis la restauration, sans la vérification de leurs bases de données ni leur sortie du mode sauvegarde : ..." | Les applications listées ont été démarrées dans Portainer. Démarrez-les depuis la page **Restauration** pour exécuter la vérification des bases de données et la sortie du mode sauvegarde qu'elles ont sautées. |
 | Journal : la restauration a laissé `<application>` arrêté | La sauvegarde a été prise alors que sa définition nommait une image que ses services n'exécutaient pas. Réglez la définition sur les versions qu'exécutaient les services, puis déployez-la depuis Portainer. |

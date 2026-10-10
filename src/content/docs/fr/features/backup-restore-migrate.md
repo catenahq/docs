@@ -16,7 +16,7 @@ Des copies chiffrées de toutes les données des applications et de la configura
 
 ## Restauration
 
-La page **Restauration** restaure tout à partir des sauvegardes de ce serveur, ou d'un autre dépôt de sauvegarde (celui d'un autre serveur, ou une copie comme la copie hors site), à partir de son adresse, du mot de passe de sauvegarde et des clés de stockage, conservés en mémoire seulement. Le panneau, la connexion et l'authentification restent accessibles pendant le remplacement des applications. Vous pouvez reprendre une restauration interrompue avec la même sauvegarde. Une sauvegarde plus récente que la version en marche est refusée. Après une reconstruction ou un déplacement, la piste d'audit du serveur précédent est conservée à côté de celle du nouveau, et chaque exportation la contient. Voir [Restauration et migration](/fr/configuration/restore-and-migrate/).
+La page **Restauration** restaure tout à partir des sauvegardes de ce serveur, ou d'un autre dépôt de sauvegarde (celui d'un autre serveur, ou une copie comme la copie hors site), à partir de son adresse, du mot de passe de sauvegarde et des clés de stockage, conservés en mémoire seulement. Le panneau, la connexion et l'authentification restent accessibles pendant le remplacement des applications. Vous pouvez reprendre une restauration interrompue avec la même sauvegarde. Une sauvegarde plus récente que la version en marche est refusée. Les applications qu'une restauration ramène restent à l'arrêt jusqu'à ce que vous les démarriez depuis la page **Restauration**, et un déplacement les démarre avec le serveur. Après une reconstruction ou un déplacement, la piste d'audit du serveur précédent est conservée à côté de celle du nouveau, et chaque exportation la contient. Voir [Restauration et migration](/fr/configuration/restore-and-migrate/).
 
 ## Migration
 
@@ -74,6 +74,12 @@ sudo bash -c 'set -a; . /etc/catena/backup.env; set +a; \
   restic restore latest --target / --include /chemin/a/restaurer'
 ```
 
+Après une restauration, les applications qu'elle a ramenées restent à l'arrêt. Démarrez-les sans le panneau avec la commande ci-dessous, en répétant `-app` pour chaque application. Le nom est celui que Docker donne à l'application, comme `catena-nextcloud`. Un nom que la restauration n'a pas laissé à l'arrêt est refusé, et le refus liste ceux qu'elle a laissés. La commande exécute le même démarrage que la page **Restauration** : la vérification des bases de données, la sortie du mode sauvegarde, puis la remise à niveau du serveur.
+
+```sh
+sudo catena-recovery start-apps -app <nom>
+```
+
 Les applications tournent sous l'orchestrateur de Docker : les commandes Docker standards vous permettent de les lister et d'arrêter ou de démarrer n'importe laquelle :
 
 ```sh
@@ -82,7 +88,7 @@ docker service scale <nom>=0
 docker service scale <nom>=1
 ```
 
-Passer à zéro, c'est l'arrêt; revenir à un, c'est le démarrage. Vous reconstruisez un serveur entier à partir de la trousse en suivant [Restauration et migration](/fr/configuration/restore-and-migrate/), ce qui fonctionne sans le panneau d'administration.
+Passer à zéro, c'est l'arrêt; revenir à un, c'est le démarrage. Une application qu'une restauration a laissée à l'arrêt n'a aucun service tant qu'elle n'est pas démarrée : `docker service scale` ne la démarre donc pas. Vous reconstruisez un serveur entier à partir de la trousse en suivant [Restauration et migration](/fr/configuration/restore-and-migrate/), ce qui fonctionne sans le panneau d'administration.
 
 Pour partir complètement :
 

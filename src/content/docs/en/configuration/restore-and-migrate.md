@@ -13,7 +13,7 @@ You handle three situations from the **Restore** page of the panel: your server 
 
 ## Restore on a running server
 
-The restore replaces data and nothing else. Applications are stopped while their data is put back, then started again with it. The panel, the sign-in and the connection carrying the page stay up throughout, so you can follow the restore from start to finish. There is no rebuild and nothing for you to reconfigure afterwards.
+The restore replaces data and nothing else. Applications are stopped while their data is put back, and they come back stopped: you start them yourself once you have checked them (see [Start the applications after a restore](#start-the-applications-after-a-restore)). The restore of a single application leaves that application stopped too. A [move to another server](#migrate-to-another-server) is the exception: its applications start with the server. The panel, the sign-in and the connection carrying the page stay up throughout, so you can follow the restore from start to finish. There is no rebuild and nothing for you to reconfigure afterwards.
 
 1. Open **Restore**.
 2. Under **Which backups to restore from**, keep **This server's backups** and press **Show the backups**.
@@ -30,7 +30,9 @@ The option "Copy the data only, without starting anything. Used to prepare a mov
 
 ### Progress
 
-The **Current restore** section names the step in progress, in this order: Checks before anything is touched (this includes the version rule below), Recording what is running now, Stopping the applications, Copying data back, Fetching application images, Adopting the saved configuration, Starting the core services, Applying the saved configuration to this server, Bringing the applications back, Restoring the databases, Bringing the applications up to date, Checking the stored files, Final checks, and Finished.
+The **Current restore** section names the step in progress, in this order: Checks before anything is touched (this includes the version rule below), Recording what is running now, Stopping the applications, Copying data back, Fetching application images, Adopting the saved configuration, Starting the core services, Leaving the applications stopped, Applying the saved configuration to this server, Bringing the applications back, Restoring the databases, Bringing the applications up to date, Checking the stored files, Final checks, and Finished.
+
+A finished restore shows a link to the section below: "The applications this restore brought back stay stopped until they are started below."
 
 ### A restore that stops part-way
 
@@ -50,6 +52,25 @@ Each backup records the Catena version that made it. The restore compares it wit
 - Two versions that cannot be put in order are refused.
 
 A refusal happens in the first step, before anything is touched.
+
+## Start the applications after a restore
+
+A restore cannot tell whether an application's data was compromised before the backup was taken, so the client applications it brought back stay stopped until you start them. A whole-server restore leaves every client application stopped, and a restore of a single application leaves that application stopped. Catena's own services (the panel, the sign-in and the connection) start as before. Starting the applications works in every edition. Until you start an application, it stays stopped through updates and restarts.
+
+While applications are left stopped, every panel page shows a banner: "Applications the restore of this server left stopped: {apps}. Start them on the Restore page once they are checked." It links to the **Applications left stopped after the restore** section of the **Restore** page.
+
+1. Decide whether each application can be trusted, for example that its backup predates the incident.
+2. Open **Restore** and go to **Applications left stopped after the restore**. Each application has a checkbox, ticked by default, reading "Stopped since" and the date. Untick an application to leave it stopped.
+3. Tick "I have checked these applications, or accept the risk of starting them".
+4. Press **Start the selected applications**.
+
+Starting an application brings its databases back from the backup where they did not survive, takes it out of the mode the backup put it in, checks its stored files, then brings this server up to date, during which some services restart. The section follows the start step by step: Waiting for the backup, the offsite copy or an update to finish, Starting the applications, Restoring the databases, Bringing the applications up to date, Checking the stored files, Final checks, Starting to bring this server up to date, and Finished. While it runs the section reads "Starting the applications:" followed by the step, and when it ends, "The last start finished."
+
+An application that started leaves the list. One that did not come up is stopped again and stays listed with "Its last start did not finish:" followed by the reason, such as "no container of it came up: ...", "it did not start: ..." or "its stored definition names `<image>`, which none of its services ran when the backup was taken (...)". The reasons are shown in English. Fix the cause, then start the application again from the same section. If the whole start stops, the section reads "Starting the applications stopped at:" followed by the step. Starting the applications again runs every step again, and an application already up is not started a second time.
+
+Start these applications from the **Restore** page, not from Portainer. Starting one in Portainer, or saving its definition there, starts it without its database check or its release from backup mode, and the panel warns: "Started outside this panel since the restore, without their database check or their release from backup mode: {apps}. Starting them on the Restore page runs both." That application stays listed. Starting it from the **Restore** page runs what it skipped, without starting it a second time.
+
+You can also start an application left stopped without the panel (see [Leaving Catena](/en/features/backup-restore-migrate/#leaving-catena)).
 
 ## Restore from another backup repository
 
@@ -72,7 +93,7 @@ You need the repository's address, its password (the backup encryption password)
 4. Press **Save these credentials**. They are held in memory only, and removed when a restore from that repository finishes, after 24 hours, or when the server restarts. A restore that stops part-way keeps them so you can start it again. A move to this server that has not finished 24 hours after you saved them needs them saved again. **Forget the saved credentials** erases them at once. The backups of that repository are then listed under **Choose a backup**.
 5. Select the backup (after ransomware or a compromise, one taken before the incident), then continue with steps 4 to 6 of [Restore on a running server](#restore-on-a-running-server). The [version rule](#version-rule) applies.
 
-When the restore finishes, the server has the data and stored configuration of the selected backup.
+When the restore finishes, the server has the data and stored configuration of the selected backup. Its applications stay stopped until you start them (see [Start the applications after a restore](#start-the-applications-after-a-restore)).
 
 After a restore from a copy of this server's backups, backups stop until a backup repository exists at the destination: a backup never creates one. Save a backup destination in **Settings**, under **Backup**, preferably a new bucket with new keys, since the old one may be in an attacker's hands; saving it creates a new repository there.
 
@@ -140,6 +161,8 @@ The window closes on its own after 4 hours, five wrong codes close it too, and *
 6. Putting the data in place here, then Moving the web address here (the cut-over).
 7. Final checks.
 
+A move starts the applications with the server: nothing is left stopped.
+
 After the final checks the old server frees its activation of the subscription key, the new server activates it and then brings itself up to date, which turns on what the key unlocks (extra domains, schedules). Some services restart during that. **Settings** > **Subscription** shows the result. If freeing the old activation fails, free it in Polar's customer portal and save the key again on the new server.
 
 ### Calling it off
@@ -165,5 +188,12 @@ After a completed move the old server is stopped, not erased. Its data and backu
 | The server at that address is not the one that minted the ticket | The address reaches another server, or the old server's SSH host key changed after a reinstall or a restore. Check the address; after a reinstall or a restore, open a new window on the old server and use its new ticket. |
 | "The credentials were refused." | The repository details were not accepted. Check them against the recovery keyset. |
 | "A bucket is being put back from its offsite copy. Wait for it to finish before starting a restore." | A bucket repair is running. A restore starts only after it finishes, and a repair is refused the same way while a restore runs ("A restore is running on this server. Wait for it to finish before putting a bucket back."). |
-| "Restoring from another backup repository is not available on this server yet: its installed components are older than this panel. Bring this server up to date in Settings, under Server configuration, then try again." or "Putting a bucket back is not available on this server yet: its installed components are older than this panel." | The server's installed components predate the feature. Open **Settings**, go to **Server configuration**, press **Bring this server up to date**, and try again once it finishes. |
+| "Restoring from another backup repository is not available on this server yet: its installed components are older than this panel. Bring this server up to date in Settings, under Server configuration, then try again.", "Putting a bucket back is not available on this server yet: its installed components are older than this panel." or "Starting the applications from this page is not available on this server yet: its installed components are older than this panel. Bring this server up to date in Settings, under Server configuration, then try again." | The server's installed components predate the feature. Open **Settings**, go to **Server configuration**, press **Bring this server up to date**, and try again once it finishes. |
+| "Confirm that these applications were checked, or that the risk of starting them is accepted, before starting them." | You have not ticked the confirmation box in **Applications left stopped after the restore**. |
+| "A restore is running on this server. Wait for it to finish before starting the applications." | Applications cannot be started during a restore. |
+| "A bucket is being put back from its offsite copy. Wait for it to finish before starting the applications." | A bucket repair is running. Start the applications after it finishes. |
+| "The applications are already being started on this server." | A start is in progress. Wait for it to finish. |
+| "The applications could not be started." | The request was refused. The server's reason follows, such as "choose at least one application to start" or an application that is no longer left stopped. |
+| "Its last start did not finish:" | The reason follows. The application was stopped again and stays listed. Fix the cause, then start it again from **Applications left stopped after the restore**. |
+| "Started outside this panel since the restore, without their database check or their release from backup mode: ..." | The listed applications were started in Portainer. Start them from the **Restore** page to run the database check and the release from backup mode they skipped. |
 | Log: the restore left `<app>` stopped | The backup was taken while its saved definition named an image its services did not run. Set the definition to the versions the services ran and deploy it from Portainer. |

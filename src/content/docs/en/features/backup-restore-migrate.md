@@ -16,7 +16,7 @@ Encrypted copies of all app data and of the server's own configuration go to S3 
 
 ## Restore
 
-The **Restore** page restores everything from this server's backups, or from another backup repository (another server's, or a copy such as the offsite copy), given its address, backup password and storage keys, held in memory only. The panel, sign-in and the connection stay up while applications are replaced. You can resume an interrupted restore with the same backup. A backup newer than the running version is refused. After a rebuild or a move, the previous server's audit trail is kept beside the new one, and every export carries it. See [Restore and migrate](/en/configuration/restore-and-migrate/).
+The **Restore** page restores everything from this server's backups, or from another backup repository (another server's, or a copy such as the offsite copy), given its address, backup password and storage keys, held in memory only. The panel, sign-in and the connection stay up while applications are replaced. You can resume an interrupted restore with the same backup. A backup newer than the running version is refused. The applications a restore brings back stay stopped until you start them from the **Restore** page, and a move starts them with the server. After a rebuild or a move, the previous server's audit trail is kept beside the new one, and every export carries it. See [Restore and migrate](/en/configuration/restore-and-migrate/).
 
 ## Migration
 
@@ -74,6 +74,12 @@ sudo bash -c 'set -a; . /etc/catena/backup.env; set +a; \
   restic restore latest --target / --include /path/to/restore'
 ```
 
+After a restore, the applications it brought back stay stopped. Start them without the panel with the command below, repeating `-app` for each application. The name is the application's name as Docker lists it, such as `catena-nextcloud`. A name the restore did not leave stopped is refused, and the refusal lists the ones it did. It runs the same start as the **Restore** page: the database check, the release from backup mode, then bringing the server up to date.
+
+```sh
+sudo catena-recovery start-apps -app <name>
+```
+
 Apps run under Docker's own orchestrator, so standard Docker commands let you list them and stop or start any one of them:
 
 ```sh
@@ -82,7 +88,7 @@ docker service scale <name>=0
 docker service scale <name>=1
 ```
 
-Scaling to zero is the stop, and back to one is the start. You rebuild a whole server from the keyset by following [Restore and migrate](/en/configuration/restore-and-migrate/), which works without the admin panel.
+Scaling to zero is the stop, and back to one is the start. An application a restore left stopped has no service until it is started, so `docker service scale` does not start it. You rebuild a whole server from the keyset by following [Restore and migrate](/en/configuration/restore-and-migrate/), which works without the admin panel.
 
 To move away entirely:
 
