@@ -33,7 +33,7 @@ Le délai aléatoire étale le démarrage réel sur une fenêtre après l'heure 
 L'entretien nocturne est une chaîne ordonnée. Elle reprend d'elle-même si un redémarrage l'interrompt.
 
 1. **Vérifications préalables.** Contrôle qu'au moins 5 Gio de disque sont libres.
-2. **Scripts avant et après la sauvegarde.** Exécutent des scripts facultatifs lorsqu'il en existe sur le serveur. Rien n'est mis en pause sauf si un script le fait, et un script en échec ne produit qu'un avertissement.
+2. **Mode maintenance et scripts autour de la sauvegarde.** Une application du catalogue dont l'entrée le demande, comme Nextcloud, est placée en mode maintenance le temps de la sauvegarde et en est sortie ensuite, même quand la sauvegarde échoue. Des scripts facultatifs s'exécutent avant et après la sauvegarde lorsqu'il en existe sur le serveur. Rien d'autre n'est mis en pause sauf si un script le fait, et un script en échec ne produit qu'un avertissement.
 3. **Sauvegarde.**
 4. **Vérification à chaud.** Restaure le dernier instantané dans une zone temporaire et le contrôle.
 5. **Contrôle du dépôt.** Vérifie les métadonnées du dépôt.
@@ -45,7 +45,7 @@ L'entretien nocturne est une chaîne ordonnée. Elle reprend d'elle-même si un 
 11. **Analyse des images.** Analyse les images en cours d'exécution (à titre informatif; voir [Vulnérabilités](/fr/configuration/vulnerabilities/)).
 12. **Mise à niveau du moteur Docker.** Au sein de la version majeure en cours; la version précédente est remise en place si le serveur ne revient pas en bonne santé.
 13. **Nettoyage.** Supprime les couches d'images inutilisées de plus d'une semaine.
-14. **Redémarrage.** Ne redémarre le serveur que si une mise à jour de sécurité l'exige, puis vérifie que chaque service est revenu.
+14. **Redémarrage.** Ne redémarre le serveur que si une mise à jour de sécurité l'exige, puis vérifie que chaque service est revenu. Le redémarrage attend d'abord que les autres travaux sur le serveur, comme une sauvegarde ou une mise à jour, se terminent; des travaux encore en cours après une heure reportent le redémarrage à la nuit suivante, et la page **Système** l'indique comme reporté.
 
 Ces étapes arrêtent la chaîne, afin qu'aucune mise à jour ne s'applique par-dessus une défaillance : les vérifications préalables, la sauvegarde, la vérification à chaud, le contrôle du dépôt, la barrière avant mise à jour (tout point de contrôle en échec dans la page d'état) et la vérification de la copie hors site (exigée par défaut). Les autres étapes consignent leur résultat et laissent la chaîne se poursuivre.
 

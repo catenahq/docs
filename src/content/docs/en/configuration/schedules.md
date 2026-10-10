@@ -33,7 +33,7 @@ The randomised delay spreads the real start over a window after the set time, so
 The nightly maintenance is one ordered chain. It resumes by itself if a restart interrupts it.
 
 1. **Preflight.** Checks that at least 5 GiB of disk is free.
-2. **Hooks before and after the backup.** Run optional pre- and post-backup scripts when such scripts exist on the server. Nothing is paused unless a script does it, and a failing script only logs a warning.
+2. **Maintenance mode and scripts around the backup.** A catalog application whose entry asks for it, such as Nextcloud, is put in maintenance mode while the backup runs and taken out of it afterwards, even when the backup fails. Optional pre- and post-backup scripts run when such scripts exist on the server. Nothing else is paused unless a script does it, and a failing script only logs a warning.
 3. **Backup.**
 4. **Hot verification.** Restores the latest snapshot into a scratch area and checks it.
 5. **Repository check.** Verifies the repository's metadata.
@@ -45,7 +45,7 @@ The nightly maintenance is one ordered chain. It resumes by itself if a restart 
 11. **Image vulnerability scan.** Scans the running images (informational; see [Vulnerabilities](/en/configuration/vulnerabilities/)).
 12. **Docker engine upgrade.** Within the current major version; the previous version is put back if the server does not come back healthy.
 13. **Cleanup.** Removes unused image layers older than a week.
-14. **Restart.** Restarts the server only when a security update needs it, then checks that every service came back.
+14. **Restart.** Restarts the server only when a security update needs it, then checks that every service came back. The restart first waits for other work on the server, such as a backup or an update, to finish; work still running after an hour moves the restart to the next night, and the **System** page shows it as postponed.
 
 These steps stop the chain, so that no update is applied on top of a failure: the preflight, the backup, the hot verification, the repository check, the pre-update gate (any failing endpoint on the status page), and the offsite verification (which is required by default). The other steps log their result and let the chain continue.
 
