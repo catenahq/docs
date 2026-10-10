@@ -66,7 +66,7 @@ Ces étiquettes vont sur le service d'entrée, et nulle part ailleurs dans le fi
    - `vps.auth.mode=public` pour une application ouverte à tous. La connexion propre à l'application, s'il y en a une, reste aux commandes.
    - `vps.auth.groups` avec les groupes Keycloak admis, pour une application privée. Une personne dans l'un d'eux entre.
    - Aucune des deux : seuls les administrateurs entrent.
-4. `vps.health.path` avec une adresse de l'application qui répond 200 quand l'application fonctionne, comme `/health`. Une application publique en a besoin : sans elle, la page d'état attend la redirection vers la connexion, qu'une application publique n'envoie jamais, et affiche l'application comme en panne.
+4. `vps.health.path` avec une adresse de l'application qui répond 200 quand l'application fonctionne, comme `/health`. Sans elle, la page d'état vérifie la page d'accueil de l'application : une application publique est en marche quand la page répond sans erreur, et une application derrière la connexion quand elle renvoie les visiteurs vers la connexion.
 5. Au besoin, le nom, l'icône et la description de la tuile dans l'onglet **Applications**, et le titre de la carte sur la page d'état.
 
 Les administrateurs entrent toujours. Aucune étiquette ne crée de groupe : les groupes existent déjà dans Keycloak, gérés dans sa console d'administration à `auth.yourdomain.com` ou dans le panneau **Personnes** avec Catena Pro (voir [Connexion et personnes](/fr/configuration/sign-in-and-people/)). La barrière décide qui atteint l'application, pas ce qu'une personne peut y faire : les rôles et permissions internes relèvent des réglages de l'application elle-même.
@@ -104,7 +104,7 @@ Une sauvegarde ne met pas en pause une application ajoutée à la main : rien n'
 
 ## Étape 8 : Vérifier
 
-1. Dans l'onglet **Actions** du panneau, lancez **Synchroniser tout (apps + moniteurs)**. Sans cela, la route apparaît en cinq minutes environ et la carte de la page d'état en dix environ.
+1. Dans l'onglet **Actions** du panneau, lancez **Synchroniser tout (apps + moniteurs)**. Sans cela, la route apparaît quelques secondes après le déploiement et la carte de la page d'état en dix minutes environ.
 2. Ouvrez l'adresse. Une application privée affiche d'abord la page de connexion; une application publique s'ouvre directement.
 3. La tuile de l'application figure dans l'onglet **Applications**, et sa carte sur la page d'état passe au vert.
 
@@ -112,13 +112,25 @@ Quand une vérification échoue, le [tableau de dépannage](#dépannage) énumè
 
 ## Connexion avec les comptes Catena (facultatif)
 
-Une application qui prend en charge OpenID Connect peut laisser les gens se connecter avec leur compte Catena plutôt qu'avec un mot de passe distinct. Les étiquettes ne créent rien ici : vous créez le client à la main.
+Une application qui prend en charge OpenID Connect peut laisser les gens se connecter avec leur compte Catena plutôt qu'avec un mot de passe distinct. Les étiquettes font créer à Catena l'entrée de connexion propre à l'application dans Keycloak et lui remettent son identifiant, son secret et son émetteur.
 
-1. Ouvrez la console d'administration de Keycloak à `auth.yourdomain.com`, domaine (realm) `vps`, **Clients**, et créez un client.
-2. Fixez un identifiant de client, activez **Client authentication**, et définissez l'URI de redirection valide à l'adresse de rappel de l'application (la documentation de l'application la nomme).
-3. Copiez le secret du client depuis l'onglet **Credentials**.
-4. Transmettez l'identifiant, le secret et l'émetteur `https://auth.yourdomain.com/realms/vps` à l'application par ses variables d'environnement, sous les noms qu'elle attend.
-5. Au besoin, ajoutez `vps.auth.oidc=true` au service d'entrée : la tuile affiche alors un badge OIDC.
+1. Ajoutez ces étiquettes au service d'entrée :
+   - `vps.auth.oidc=true`.
+   - `vps.auth.oidc.redirect_uris` avec l'adresse de rappel de l'application (sa documentation la nomme), comme `https://my-app.yourdomain.com/auth/callback`. Séparez plusieurs adresses par des virgules.
+   - `vps.auth.oidc.public=true` seulement pour une application qui ne peut pas garder de secret, comme une application de téléphone. L'entrée n'a alors aucun secret et exige PKCE.
+2. Dans le fichier compose, transmettez les trois valeurs à l'application sous les noms qu'elle attend, avec une valeur par défaut vide pour que le premier déploiement fonctionne : `${OIDC_CLIENT_ID:-}`, `${OIDC_CLIENT_SECRET:-}` (absente pour une application publique) et `${OIDC_ISSUER_URL:-}`.
+3. Déployez l'application, puis lancez **Synchroniser tout (apps + moniteurs)** dans l'onglet **Actions**. Catena crée l'entrée, écrit les trois valeurs dans l'environnement de l'application dans Portainer et redéploie l'application quand elles changent. Keycloak génère le secret; Catena le copie.
+
+Chaque adresse de retour est en `https://` sur un domaine que ce serveur sert, ou le schéma propre d'une application de téléphone, comme `app.immich:///oauth-callback`. Un `*`, un `http://` simple ou un `#` est refusé. Quand une étiquette est erronée, Catena ne crée ni ne modifie rien pour cette application.
+
+Les personnes qui peuvent se connecter par le bouton propre à l'application suivent les groupes de l'application : les administrateurs seulement pour une application que seuls eux peuvent ouvrir, le personnel et les administrateurs quand les groupes dépassent `admin`, et tous les comptes quand `client` en fait partie. Une application publique sans `vps.auth.groups` admet le personnel et les administrateurs.
+
+Catena ne modifie que les entrées qu'elle a créées. Une entrée de même nom que vous avez créée à la main n'est jamais reprise. Retirer les étiquettes, ou l'application, supprime l'entrée créée par Catena.
+
+Pour vérifier que cela a fonctionné :
+
+- Dans l'onglet **Applications**, un administrateur voit sur la tuile de l'application **connexion prête**, **connexion en attente** ou **connexion en échec**, avec la raison, à la place du badge OIDC. Le personnel voit le badge OIDC.
+- En attente signifie que Catena réessaie d'elle-même. En échec signifie que quelque chose est à corriger, et la tuile dit quoi. L'onglet **Journal** nomme aussi l'application et la raison.
 
 Voir [Authentification unique](/fr/features/single-sign-on/) pour le fonctionnement de la connexion entre applications.
 
@@ -138,7 +150,9 @@ Sur le service d'entrée, une seule fois.
 | `vps.auth.mode` | `public`, `private`, `admin-only` | aucun | `public` : aucune barrière. `private` : les groupes de `vps.auth.groups`, ou `admin`, `client` et `staff` quand aucun n'est listé. `admin-only` : administrateurs seulement. |
 | `vps.auth.groups` | Noms de groupes Keycloak, séparés par des virgules | aucun | Groupes admis; une personne dans l'un d'eux entre. Ignorée avec `public` et `admin-only`. Le groupe `visitor` rend l'application publique. |
 | `vps.auth.protected` | `true`, `false` | `false` | `true` désigne une application qui ne doit pas être publique : si ses étiquettes la rendent publique quand même, sa tuile dans **Applications** porte le badge "devrait exiger une connexion", visible des administrateurs seulement. |
-| `vps.auth.oidc` | `true`, `false` | `false` | Affiche un badge OIDC sur la tuile de l'application. Ne crée aucun client de connexion. |
+| `vps.auth.oidc` | `true`, `false` | `false` | Catena crée l'entrée de connexion propre à l'application dans Keycloak et place `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` dans l'environnement de l'application. Le personnel voit un badge OIDC sur la tuile; les administrateurs voient l'état de la connexion. |
+| `vps.auth.oidc.redirect_uris` | Adresses, séparées par des virgules | aucun | Adresses de retour de l'entrée de connexion. Obligatoire avec `vps.auth.oidc`. Voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif). |
+| `vps.auth.oidc.public` | `true`, `false` | `false` | `true` pour une application qui n'envoie aucun secret : l'entrée n'a aucun secret et exige PKCE. |
 
 Sans `vps.auth.mode` ni `vps.auth.groups`, seuls les administrateurs entrent. Les administrateurs entrent toujours dans une application privée.
 
@@ -148,7 +162,7 @@ Sur le service d'entrée, une seule fois.
 
 | Étiquette | Valeurs | Défaut | Description |
 |---|---|---|---|
-| `vps.health.path` | Un chemin d'URL | aucun | Adresse que la page d'état vérifie toutes les 2 minutes; l'application est en marche quand elle répond 200. Sans elle, la vérification attend la redirection vers la connexion. |
+| `vps.health.path` | Un chemin d'URL | aucun | Adresse que la page d'état vérifie toutes les 2 minutes; l'application est en marche quand elle répond 200. Sans elle, la vérification lit la page d'accueil : une application publique est en marche quand elle répond sans erreur, une application derrière la connexion quand elle renvoie les visiteurs vers la connexion. |
 | `vps.health.expect` | Texte | aucun | Texte que la réponse doit contenir. Sert seulement avec `vps.health.path`. |
 | `vps.display-name` | Texte | l'adresse de l'application | Titre de la carte de l'application sur la page d'état. |
 | `vps.homepage.name` | Texte | le nom de l'application dans Portainer | Titre de la tuile dans l'onglet **Applications**. |
@@ -181,7 +195,7 @@ L'entrée du catalogue pour Nextcloud est la façon recommandée de l'exploiter 
 
 <Code code={nextcloudCompose} lang="yaml" />
 
-Vous saisissez les variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, les valeurs `S3_*` et `OIDC_*`) dans la section des variables d'environnement de Portainer au moment du déploiement. `NEXTCLOUD_HOSTNAME` vaut `nextcloud.yourdomain.com`.
+Vous saisissez les variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD` et les valeurs `S3_*`) dans la section des variables d'environnement de Portainer au moment du déploiement. `NEXTCLOUD_HOSTNAME` vaut `nextcloud.yourdomain.com`. Catena remplit elle-même les valeurs `OIDC_*` (voir ci-dessous).
 
 ### Pourquoi chaque élément
 
@@ -193,20 +207,14 @@ Vous saisissez les variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, les valeurs `
 - **Domaines de confiance et mandataire.** Le chiffrement TLS se termine en périphérie. `OVERWRITEPROTOCOL=https`, `OVERWRITEHOST` et `OVERWRITECLIURL` font écrire des adresses https par Nextcloud, `TRUSTED_PROXIES` couvre les plages privées qu'utilise le mandataire de Catena, et `NEXTCLOUD_TRUSTED_DOMAINS` est le nom d'hôte public.
 - **Taille des morceaux.** Cloudflare plafonne le corps d'une requête à 100 Mo sur ses forfaits Free et Pro. Le morceau de téléversement par défaut de Nextcloud est de 100 Mio, ce qui échoue en périphérie et est réessayé sans fin. 80 Mio (`83886080`) laisse de la marge. La valeur 0 désactive le découpage et fait échouer tout téléversement de plus de 100 Mo.
 - **Accès.** `vps.auth.mode=public` laisse la connexion propre à Nextcloud aux commandes, ce qui garde fonctionnels les liens de partage anonymes (`/s/...`) pour les gens sans compte. La connexion par Keycloak s'ajoute dans l'application (ci-dessous).
-- **Santé.** `vps.health.path=/status.php` garde la carte verte; une application publique sans cette étiquette est vérifiée pour une redirection qu'elle ne donne jamais.
+- **Santé.** `vps.health.path=/status.php` vérifie la page qui dit que Nextcloud lui-même est en marche, au-delà de sa page d'accueil.
 - **Sauvegardes.** L'image du service `db` contient `postgres` et `POSTGRES_USER` est défini : la base est donc copiée avant chaque sauvegarde.
 
 ### Connexion avec OIDC
 
 Dans l'application du catalogue, le client Keycloak et les valeurs `OIDC_*` existent déjà. Après le premier déploiement, **Actions** > **Configuration initiale** > **Câbler l'OIDC pour Nextcloud** active l'application `user_oidc` et enregistre le fournisseur. L'opération peut être relancée sans risque après un redéploiement ou un renouvellement de secret.
 
-Pour le fichier déployé à la main, vous créez le client à la main (voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif)) :
-
-- Identifiant de client `nextcloud`, **Client authentication** activé.
-- URI de redirection valide `https://nextcloud.yourdomain.com/apps/user_oidc/code`.
-- Les portées par défaut `groups`, `profile` et `email` attribuées au client.
-
-L'identifiant, le secret et l'émetteur vont dans `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` (`https://auth.yourdomain.com/realms/vps`). Vous enregistrez ensuite le fournisseur dans Nextcloud avec `occ`, exécuté dans le conteneur `app` (depuis l'interpréteur de commandes du serveur, ou la console du conteneur dans Portainer) :
+Pour le fichier déployé à la main, les deux étiquettes `vps.auth.oidc` sur `app` font créer l'entrée de connexion à Catena et écrire `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` dans l'environnement de la pile (voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif)). L'adresse de retour des étiquettes est l'adresse de rappel de Nextcloud, `https://nextcloud.yourdomain.com/apps/user_oidc/code`. Quand la tuile de l'application affiche **connexion prête**, vous lisez les trois valeurs sous **Environment variables** de la pile dans Portainer, puis vous enregistrez le fournisseur dans Nextcloud avec `occ`, exécuté dans le conteneur `app` (depuis l'interpréteur de commandes du serveur, ou la console du conteneur dans Portainer), l'identifiant et le secret remplaçant les deux valeurs fictives :
 
 <Code code={nextcloudOidcProvider} lang="bash" />
 
@@ -219,8 +227,9 @@ La commande crée le fournisseur ou le met à jour : vous pouvez la répéter. L
 | 502 ou 503 sur l'adresse | Le mandataire ne joint pas l'application. Le service d'entrée est sur `catena-network` avec un alias égal au nom de l'application dans Portainer, et `vps.route.port` est son port d'écoute. Lisez les journaux dans Portainer. |
 | 403 après la connexion | La personne n'est dans aucun groupe autorisé. Le groupe de `vps.auth.groups` existe dans Keycloak, correspond exactement (majuscules comprises), et la personne en est membre (**Personnes** ou Keycloak). |
 | Seuls les administrateurs entrent | Ni `vps.auth.mode` ni `vps.auth.groups` n'est défini, ou le mode n'est pas `public`, `private` ou `admin-only` et aucun groupe n'est listé. |
-| Pas de route, ou une adresse ou un accès erronés | Aucun `vps.route.host`, ou une étiquette du service d'entrée répétée sur un autre service ou dans une ligne mise en commentaire la remplace. La synchronisation des routes s'exécute toutes les 5 minutes; **Synchroniser tout (apps + moniteurs)** dans **Actions** la lance tout de suite. |
-| Carte rouge sur la page d'état | Application publique sans `vps.health.path`, chemin qui ne répond pas 200, ou texte `vps.health.expect` absent de la réponse. |
+| Pas de route, ou une adresse ou un accès erronés | Aucun `vps.route.host`, ou une étiquette du service d'entrée répétée sur un autre service ou dans une ligne mise en commentaire la remplace. La synchronisation des routes s'exécute quelques secondes après un déploiement et toutes les heures; **Synchroniser tout (apps + moniteurs)** dans **Actions** la lance tout de suite. |
+| Carte rouge sur la page d'état | Application publique dont la page d'accueil répond une erreur, application derrière la connexion qui ne renvoie pas les visiteurs vers la connexion, `vps.health.path` qui ne répond pas 200, ou texte `vps.health.expect` absent de la réponse. |
+| La tuile indique **connexion en échec** ou **connexion en attente** | Lisez la raison sur la tuile. Une adresse de retour de `vps.auth.oidc.redirect_uris` doit être en `https://` sur un domaine que ce serveur sert, sans `*` ni `#`. Corrigez l'étiquette, redéployez l'application et lancez **Synchroniser tout (apps + moniteurs)**. |
 | Sauvegarde échouée sur un montage lié | Le montage est hors de la zone des applications. Déplacez les données vers un volume nommé, ou inscrivez le dossier sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. |
 | Sauvegarde échouée sur une base de données | La copie a échoué. Un conteneur MariaDB ou MySQL exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD`; un conteneur Postgres exige un `POSTGRES_USER` valide. |
 | Mise à jour ignorée | L'image n'a pas de version complète (`latest`, `1.2`), `vps.auto-update` vaut `off`, ou le saut dépasse l'étiquette (une version majeure sous `patch`). La version la plus récente peut aussi être retenue par les contrôles de vulnérabilités ou le délai d'attente. |

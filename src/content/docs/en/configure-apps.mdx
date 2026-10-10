@@ -66,7 +66,7 @@ These labels go on the front-door service, and nowhere else in the file:
    - `vps.auth.mode=public` for an app open to everyone. The app's own login, if it has one, stays in charge.
    - `vps.auth.groups` with the Keycloak groups allowed in, for a private app. A person in any one of them gets in.
    - Neither label: only administrators get in.
-4. `vps.health.path` with an address of the app that answers 200 when the app works, such as `/health`. A public app needs it: without it, the status page expects the sign-in redirect, which a public app never sends, and shows the app as down.
+4. `vps.health.path` with an address of the app that answers 200 when the app works, such as `/health`. Without it, the status page checks the app's front page: a public app is up when the page answers without an error, and an app behind sign-in when it sends visitors to sign in.
 5. Optionally, the tile's name, icon and description on the **Apps** tab, and the title of the status-page card.
 
 Administrators always get in. Groups are not created by a label: they already exist in Keycloak, managed in its admin console at `auth.yourdomain.com` or in the **People** panel with Catena Pro (see [Sign-in and people](/en/configuration/sign-in-and-people/)). The gate decides who reaches the app, not what a person can do inside it: roles and permissions inside the app are the app's own settings.
@@ -104,7 +104,7 @@ A backup does not pause an app added by hand: nothing is put in maintenance mode
 
 ## Step 8: Check
 
-1. In the panel's **Actions** tab, run **Sync all (apps + monitors)**. Without it, the route appears within about 5 minutes and the status-page card within about 10.
+1. In the panel's **Actions** tab, run **Sync all (apps + monitors)**. Without it, the route appears seconds after the deploy and the status-page card within about 10 minutes.
 2. Open the address. A private app shows the sign-in page first; a public app opens directly.
 3. The app's tile is on the **Apps** tab, and its card on the status page turns green.
 
@@ -112,13 +112,25 @@ When a check fails, the [troubleshooting table](#troubleshooting) lists the usua
 
 ## Sign in with Catena accounts (optional)
 
-An app that supports OpenID Connect can let people sign in with their Catena account instead of a separate password. Labels create nothing here: you make the client by hand.
+An app that supports OpenID Connect can let people sign in with their Catena account instead of a separate password. Labels make Catena create the app's own sign-in entry in Keycloak and hand the app its id, secret and issuer.
 
-1. Open the Keycloak admin console at `auth.yourdomain.com`, realm `vps`, **Clients**, and create a client.
-2. Set a client ID, turn **Client authentication** on, and set the valid redirect URI to the app's callback address (the app's documentation names it).
-3. Copy the client secret from the **Credentials** tab.
-4. Give the client ID, the secret and the issuer `https://auth.yourdomain.com/realms/vps` to the app through its environment variables, in the names the app expects.
-5. Optionally, add `vps.auth.oidc=true` to the front-door service: the tile then shows an OIDC badge.
+1. Add these labels to the front-door service:
+   - `vps.auth.oidc=true`.
+   - `vps.auth.oidc.redirect_uris` with the app's callback address (the app's documentation names it), such as `https://my-app.yourdomain.com/auth/callback`. Separate several addresses with commas.
+   - `vps.auth.oidc.public=true` only for an app that cannot keep a secret, such as a phone app. The entry then has no secret and requires PKCE.
+2. In the compose file, pass the three values to the app under the names it expects, with an empty default so that the first deploy works: `${OIDC_CLIENT_ID:-}`, `${OIDC_CLIENT_SECRET:-}` (absent for a public app) and `${OIDC_ISSUER_URL:-}`.
+3. Deploy the app, then run **Sync all (apps + monitors)** in the **Actions** tab. Catena creates the entry, writes the three values into the app's environment in Portainer and redeploys the app when they change. Keycloak generates the secret; Catena copies it.
+
+Each return address is `https://` on a domain this server serves, or a phone app's own scheme such as `app.immich:///oauth-callback`. A `*`, plain `http://` or a `#` is refused. When a label is wrong, Catena makes and changes nothing for that app.
+
+Who can sign in through the app's own button follows the app's groups: only administrators for an app only they can open, staff and administrators when the groups go beyond `admin`, and every account when `client` is among them. A public app with no `vps.auth.groups` admits staff and administrators.
+
+Catena only changes entries it made. An entry with the same name that you made by hand is never taken over. Removing the labels, or the app, deletes the entry Catena made.
+
+To check that it worked:
+
+- On the **Apps** tab, an administrator sees on the app's tile **sign-in ready**, **sign-in waiting** or **sign-in failed**, with the reason, in place of the OIDC badge. Staff see the OIDC badge.
+- Waiting means Catena tries again on its own. Failed means something needs fixing, and the tile says what. The **Log** tab also names the app and the reason.
 
 See [Single sign-on](/en/features/single-sign-on/) for how sign-in works across apps.
 
@@ -138,7 +150,9 @@ On the front-door service, once.
 | `vps.auth.mode` | `public`, `private`, `admin-only` | none | `public`: no gate. `private`: the groups in `vps.auth.groups`, or `admin`, `client` and `staff` when none are listed. `admin-only`: administrators only. |
 | `vps.auth.groups` | Keycloak group names, comma-separated | none | Groups allowed in; a person in any one of them gets in. Ignored with `public` and `admin-only`. The group `visitor` makes the app public. |
 | `vps.auth.protected` | `true`, `false` | `false` | `true` marks an app that must not be public: when its labels make it public anyway, its tile on **Apps** carries the badge "should require sign-in", shown to administrators only. |
-| `vps.auth.oidc` | `true`, `false` | `false` | Shows an OIDC badge on the app's tile. Creates no sign-in client. |
+| `vps.auth.oidc` | `true`, `false` | `false` | Catena creates the app's own sign-in entry in Keycloak and puts `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` and `OIDC_ISSUER_URL` in the app's environment. Staff see an OIDC badge on the tile; administrators see the state of the sign-in. |
+| `vps.auth.oidc.redirect_uris` | Addresses, comma-separated | none | Return addresses of the sign-in entry. Required with `vps.auth.oidc`. See [Sign in with Catena accounts](#sign-in-with-catena-accounts-optional). |
+| `vps.auth.oidc.public` | `true`, `false` | `false` | `true` for an app that sends no secret: the entry has no secret and requires PKCE. |
 
 With neither `vps.auth.mode` nor `vps.auth.groups`, only administrators get in. Administrators always get into a private app.
 
@@ -148,7 +162,7 @@ On the front-door service, once.
 
 | Label | Values | Default | Description |
 |---|---|---|---|
-| `vps.health.path` | A URL path | none | Address the status page checks every 2 minutes; the app is up when it answers 200. Without it, the check expects the sign-in redirect. |
+| `vps.health.path` | A URL path | none | Address the status page checks every 2 minutes; the app is up when it answers 200. Without it, the check reads the front page: a public app is up when it answers without an error, an app behind sign-in when it sends visitors to sign in. |
 | `vps.health.expect` | Text | none | Text the reply must contain. Used only with `vps.health.path`. |
 | `vps.display-name` | Text | the app's address | Title of the app's card on the status page. |
 | `vps.homepage.name` | Text | the app's name in Portainer | Title of the tile on the **Apps** tab. |
@@ -181,7 +195,7 @@ The catalog entry for Nextcloud is the recommended way to run it: it carries mor
 
 <Code code={nextcloudCompose} lang="yaml" />
 
-You enter the variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, the `S3_*` and `OIDC_*` values) in Portainer's environment variables section at deploy time. `NEXTCLOUD_HOSTNAME` is `nextcloud.yourdomain.com`.
+You enter the variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD` and the `S3_*` values) in Portainer's environment variables section at deploy time. `NEXTCLOUD_HOSTNAME` is `nextcloud.yourdomain.com`. Catena fills the `OIDC_*` values itself (see below).
 
 ### Why each part is there
 
@@ -193,20 +207,14 @@ You enter the variables (`NEXTCLOUD_HOSTNAME`, `DB_PASSWORD`, the `S3_*` and `OI
 - **Trusted domains and proxy.** TLS ends at the edge. `OVERWRITEPROTOCOL=https`, `OVERWRITEHOST` and `OVERWRITECLIURL` make Nextcloud write https addresses, `TRUSTED_PROXIES` covers the private ranges that Catena's proxy uses, and `NEXTCLOUD_TRUSTED_DOMAINS` is the public hostname.
 - **Chunk size.** Cloudflare caps a request body at 100 MB on its Free and Pro plans. Nextcloud's default upload chunk is 100 MiB, which fails at the edge and is retried without end. 80 MiB (`83886080`) leaves headroom. Setting it to 0 disables chunking and breaks every upload over 100 MB.
 - **Access.** `vps.auth.mode=public` leaves Nextcloud's own login in charge, which keeps anonymous share links (`/s/...`) working for people with no account. Sign-in through Keycloak is added inside the app (below).
-- **Health.** `vps.health.path=/status.php` keeps the status card green; a public app without it is checked for a redirect it never gives.
+- **Health.** `vps.health.path=/status.php` checks the page that says Nextcloud itself is up, beyond its front page.
 - **Backups.** The `db` service image contains `postgres` and has `POSTGRES_USER` set, so it is dumped before each backup.
 
 ### Sign-in with OIDC
 
 In the catalog app, the client in Keycloak and the `OIDC_*` values already exist. After the first deploy, **Actions** > **Initial apps setup** > **Wire Nextcloud OIDC** enables the `user_oidc` app and registers the provider. It is safe to run again after a redeploy or a secret rotation.
 
-For the hand-deployed file, you create the client by hand (see [Sign in with Catena accounts](#sign-in-with-catena-accounts-optional)):
-
-- Client ID `nextcloud`, **Client authentication** on.
-- Valid redirect URI `https://nextcloud.yourdomain.com/apps/user_oidc/code`.
-- The default `groups`, `profile` and `email` scopes assigned to the client.
-
-The ID, secret and issuer go into `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` and `OIDC_ISSUER_URL` (`https://auth.yourdomain.com/realms/vps`). You then register the provider inside Nextcloud with `occ`, run in the `app` container (from the server's shell, or the container's console in Portainer):
+For the hand-deployed file, the two `vps.auth.oidc` labels on `app` make Catena create the sign-in entry and write `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` and `OIDC_ISSUER_URL` into the stack's environment (see [Sign in with Catena accounts](#sign-in-with-catena-accounts-optional)). The labels' return address is Nextcloud's callback, `https://nextcloud.yourdomain.com/apps/user_oidc/code`. Once the app's tile shows **sign-in ready**, you read the three values under the stack's **Environment variables** in Portainer, and register the provider inside Nextcloud with `occ`, run in the `app` container (from the server's shell, or the container's console in Portainer), with the id and secret in place of the two placeholders:
 
 <Code code={nextcloudOidcProvider} lang="bash" />
 
@@ -219,8 +227,9 @@ The command creates the provider or updates it, so you can repeat it. Nextcloud'
 | 502 or 503 on the address | The proxy cannot reach the app. The front-door service is on `catena-network` with an alias equal to the app's name in Portainer, and `vps.route.port` is the port it listens on. Read the logs in Portainer. |
 | 403 after signing in | The person is in none of the allowed groups. The group in `vps.auth.groups` exists in Keycloak, matches exactly (letter case included), and the person is a member (**People** or Keycloak). |
 | Only administrators get in | Neither `vps.auth.mode` nor `vps.auth.groups` is set, or the mode is not `public`, `private` or `admin-only` and no groups are listed. |
-| No route, or the wrong address or access | No `vps.route.host`, or a front-door label repeated on another service or in a commented-out line overrides it. The route sync runs every 5 minutes; **Sync all (apps + monitors)** in **Actions** runs it at once. |
-| Red card on the status page | A public app without `vps.health.path`, a path that does not answer 200, or a `vps.health.expect` text that is absent from the reply. |
+| No route, or the wrong address or access | No `vps.route.host`, or a front-door label repeated on another service or in a commented-out line overrides it. The route sync runs seconds after a deploy and every hour; **Sync all (apps + monitors)** in **Actions** runs it at once. |
+| Red card on the status page | A public app whose front page answers an error, an app behind sign-in that does not send visitors to sign in, a `vps.health.path` that does not answer 200, or a `vps.health.expect` text that is absent from the reply. |
+| The tile says **sign-in failed** or **sign-in waiting** | Read the reason on the tile. A return address in `vps.auth.oidc.redirect_uris` must be `https://` on a domain this server serves, with no `*` and no `#`. Fix the label, deploy the app again and run **Sync all (apps + monitors)**. |
 | Backup failed on a bind mount | The mount is outside the apps area. Move the data to a named volume, or list the folder under **Settings** > **Backup repository** > **Other folders to back up (separated by commas)**. |
 | Backup failed on a database | The dump failed. A MariaDB or MySQL container needs `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD`; a Postgres container needs a valid `POSTGRES_USER`. |
 | Update skipped | The tag is not a full version (`latest`, `1.2`), `vps.auto-update` is `off`, or the move exceeds the label (a major release under `patch`). The newest release may also be held back by the vulnerability or waiting-period checks. |
