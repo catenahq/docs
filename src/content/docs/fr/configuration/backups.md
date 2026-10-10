@@ -105,7 +105,7 @@ Les copies s'exécutent selon l'horaire **Copie hors site** de la page Horaires 
 ### Comportement d'une copie
 
 - Une copie ne fait qu'ajouter. Rien de ce qu'elle a écrit n'est ensuite modifié ni supprimé. Un compartiment retiré de la liste conserve toutes les copies déjà faites, et le coût de stockage croît avec le volume de changements.
-- Un compartiment verrouillé ne peut pas être restauré sur place. Pour restaurer, recopiez-le d'abord vers un compartiment neuf et non verrouillé, puis lisez-en les données.
+- Une copie verrouillée est lue sur place. La page **Restauration** restaure le serveur depuis la copie hors site de son dépôt de sauvegarde et remet en place tout compartiment déclaré depuis sa copie (voir [Restaurer depuis la copie hors site](/fr/configuration/restore-and-migrate/#restaurer-depuis-la-copie-hors-site) et [Remettre un compartiment en place depuis sa copie hors site](/fr/configuration/restore-and-migrate/#remettre-un-compartiment-en-place-depuis-sa-copie-hors-site)).
 - La copie du compartiment de fichiers d'une application n'est restaurable qu'accompagnée d'une copie du même instant de la base de données qui indexe ces fichiers. Cette base se trouve dans les instantanés de sauvegarde : un compartiment de fichiers copié seul ne constitue donc pas une sauvegarde.
 
 ## Ce que contient une sauvegarde

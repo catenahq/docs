@@ -73,6 +73,49 @@ Lorsque votre serveur d'origine n'existe plus, un nouveau serveur restaure depui
 
 Une fois la restauration terminée, le nouveau serveur possède les données et la configuration enregistrée de l'ancien.
 
+## Restaurer depuis la copie hors site
+
+Lorsque le dépôt de sauvegarde lui-même est endommagé, chiffré ou perdu, restaurez plutôt depuis sa [copie hors site](/fr/configuration/backups/#copies-hors-site). La copie est lue sur place : la lire n'y écrit rien, et elle reste verrouillée. Elle garde toutes les sauvegardes qui y ont été copiées, et une sauvegarde plus ancienne que la durée de verrouillage de la copie peut être incomplète.
+
+Il vous faut l'adresse de la copie hors site, le mot de passe de chiffrement des sauvegardes (voir [Sauvegardes et stockage S3](/fr/configuration/backups/#trousse-de-reprise-après-sinistre)), et une clé d'accès et une clé secrète qui peuvent lire le compartiment de la copie.
+
+1. Ouvrez **Restauration**.
+2. Sous **Quelles sauvegardes restaurer**, choisissez **La copie hors site de ce serveur**. Ce choix est offert lorsque les composants installés du serveur le prennent en charge (voir Dépannage).
+3. Sous **Copie hors site de ce serveur**, remplissez :
+
+   | Champ | Valeur |
+   |---|---|
+   | **Adresse de la copie hors site** | L'adresse du compartiment de la copie. Elle est remplie d'après la copie hors site du dépôt de sauvegarde déclarée sous **Copies hors site** dans **Paramètres**; sur une nouvelle machine, saisissez-la. |
+   | **Mot de passe de chiffrement des sauvegardes** | Le mot de passe du dépôt de sauvegarde |
+   | **Clé d'accès qui lit la copie hors site** | La clé d'accès |
+   | **Clé secrète qui lit la copie hors site** | La clé secrète |
+
+4. Appuyez sur **Enregistrer ces clés**. Elles sont conservées en mémoire seulement et effacées lorsqu'une restauration depuis la copie se termine, ou au bout de 24 heures, selon la première éventualité. Une restauration qui s'arrête en cours de route les garde pour que vous puissiez la relancer. **Oublier ces clés maintenant** les efface immédiatement. Les sauvegardes de la copie sont alors listées sous **Choisir une sauvegarde**.
+5. Sélectionnez la sauvegarde, puis poursuivez avec les étapes 4 à 6 de [Restaurer sur un serveur en marche](#restaurer-sur-un-serveur-en-marche). La [règle de version](#règle-de-version) s'applique.
+
+Une fois la restauration terminée, le serveur possède les données et la configuration enregistrée de la sauvegarde choisie. Remettez le dépôt de sauvegarde en place depuis la copie avant la prochaine sauvegarde nocturne (voir la section suivante).
+
+## Remettre un compartiment en place depuis sa copie hors site
+
+Cette opération recopie la copie hors site d'un compartiment dans le compartiment dont elle provient. Elle vaut pour le dépôt de sauvegarde et pour tout autre compartiment déclaré sous **Copies hors site**, dans toutes les éditions. L'opération ne fait qu'ajouter : ce qui manque ou diffère est recopié, et rien n'est supprimé, d'un côté comme de l'autre. La copie hors site n'est que lue.
+
+1. Ouvrez **Restauration** et allez à **Remettre un seau en place depuis sa copie hors site**. La section est affichée lorsque les composants installés du serveur la prennent en charge (voir Dépannage). Sans copie déclarée, elle indique "Aucune copie hors site n'est déclarée sur ce serveur. Les copies hors site se déclarent dans Paramètres, sous Copies hors site."
+2. Sous **Copie hors site à remettre en place**, choisissez la copie. Chaque entrée indique son nom et l'adresse du compartiment qu'elle remet en place.
+3. Saisissez **Clé d'accès qui lit la copie hors site** et **Clé secrète qui lit la copie hors site**. Elles servent à cette opération seulement et ne sont conservées nulle part.
+4. Facultatif : sous **Application qui range ses fichiers dans ce seau**, choisissez l'application lorsque le compartiment contient ses fichiers, comme Nextcloud. Elle est mise en mode sauvegarde pendant que ses fichiers sont recopiés, puis ses fichiers stockés sont comparés à sa base de données. Gardez **Aucune, comme pour le dépôt de sauvegarde** pour tout autre compartiment.
+5. Facultatif : sous **Tel qu'il était le (UTC, facultatif)**, saisissez une date et une heure pour remettre les fichiers tels que la copie hors site les contenait à ce moment, par exemple avant qu'ils soient chiffrés ou écrasés. La clé d'accès doit alors avoir le droit de lire les versions antérieures. Laissé vide, les versions les plus récentes sont remises en place.
+6. Cochez "Je comprends que le seau est modifié pendant sa remise en place." et appuyez sur **Remettre le seau en place**.
+
+La section suit l'opération étape par étape : Attente de la fin de la sauvegarde, de la copie hors site ou d'une mise à jour, Prise de contact avec les deux seaux, Vérification que le seau peut reprendre la copie, Mise en mode sauvegarde de l'application, Recopie des fichiers, Sortie de l'application du mode sauvegarde, Vérification des fichiers stockés, et Terminé. Lorsque vous n'avez choisi aucune application, les trois étapes qui la concernent (entrée en mode sauvegarde, sortie du mode sauvegarde, vérification des fichiers stockés) passent sans rien faire.
+
+La copie écrit dans le compartiment pendant qu'elle s'exécute. Un gros compartiment prend des heures, et le fournisseur de stockage peut facturer les données lues.
+
+Si l'opération s'arrête, la section indique "La remise en place du seau s'est arrêtée à :" suivi de l'étape. Appuyez de nouveau sur **Remettre le seau en place** avec les mêmes valeurs : relancer ne recopie que ce qui manque encore. L'opération qui remet en place le dépôt de sauvegarde est refusée à l'étape de vérification lorsque le compartiment contient déjà un autre dépôt de sauvegarde, par exemple un dépôt créé à la place de celui qui a été perdu, car la copie mélangerait les deux. Rien n'est copié. Videz le compartiment, puis relancez.
+
+### Ordre après une restauration depuis la copie hors site
+
+Après une restauration depuis la copie hors site, remettez le dépôt de sauvegarde en place avec cette section avant la prochaine sauvegarde nocturne. Les sauvegardes reprennent alors dans le dépôt que contient la copie hors site. Tant qu'il n'est pas remis en place, la copie hors site s'arrête plutôt que d'y mêler un nouveau dépôt. Une remise en place et une restauration ne s'exécutent pas ensemble : chacune est refusée pendant que l'autre est en cours.
+
 ## Rapport de restauration
 
 Le panneau **Rapport de restauration** (Catena Pro) montre la preuve que les sauvegardes se restaurent : un test de restauration local avec son temps de récupération, et l'état de la copie hors site. L'entretien nocturne exécute le test local chaque nuit où il est actif; **Vérifier que ma sauvegarde est restaurable**, dans **Actions**, l'exécute sur demande. Un lien vers le rapport figure dans la section Restauration en cours.
@@ -137,4 +180,6 @@ Après un déplacement terminé, l'ancien serveur est arrêté, pas effacé. Ses
 | "Un déplacement est déjà en cours sur ce serveur." | Attendez sa fin, ou utilisez **Oublier ce déplacement** s'il est inachevé. |
 | "Le déplacement n'a pas pu être lancé." | La demande n'a pas été acceptée. Vérifiez l'adresse (une adresse IP, pas un nom) et le code d'appairage, ainsi que l'ouverture de la fenêtre sur l'ancien serveur. |
 | "Les identifiants ont été refusés." | Les détails du dépôt n'ont pas été acceptés. Comparez-les à la trousse de reprise. |
+| "Un seau est en cours de remise en place depuis sa copie hors site. Attendez que l'opération se termine avant de lancer une restauration." | Une remise en place de compartiment est en cours. Une restauration ne démarre qu'après sa fin, et une remise en place est refusée de la même façon pendant une restauration ("Une restauration est en cours sur ce serveur. Attendez qu'elle se termine avant de remettre un seau en place."). |
+| "La restauration depuis la copie hors site n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau." ou "La remise en place d'un seau n'est pas encore offerte sur ce serveur : ses composants installés sont plus anciens que ce panneau." | Les composants installés du serveur sont antérieurs à cette fonction. Ouvrez **Paramètres**, allez à **Configuration du serveur**, appuyez sur **Remettre ce serveur à niveau**, puis réessayez une fois l'opération terminée. |
 | Journal : la restauration a laissé `<application>` arrêté | La sauvegarde a été prise alors que sa définition nommait une image que ses services n'exécutaient pas. Réglez la définition sur les versions qu'exécutaient les services, puis déployez-la depuis Portainer. |

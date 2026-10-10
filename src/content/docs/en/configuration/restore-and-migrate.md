@@ -73,6 +73,49 @@ When your original server is gone, a new server restores from the old server's b
 
 When the restore finishes, the new server has the old one's data and stored configuration.
 
+## Restore from the offsite copy
+
+When the backup repository itself is damaged, encrypted or gone, restore from its [offsite copy](/en/configuration/backups/#offsite-copies) instead. The copy is read where it is: reading it writes nothing to it, and it stays locked. It keeps every backup ever copied to it, and a backup older than the copy's lock period may be incomplete.
+
+You need the offsite copy's address, the backup encryption password (see [Backups and S3 storage](/en/configuration/backups/#disaster-recovery-keyset)), and an access key and secret key that can read the copy's bucket.
+
+1. Open **Restore**.
+2. Under **Which backups to restore from**, choose **This server's offsite copy**. The choice is offered once the server's installed components support it (see Troubleshooting).
+3. Under **This server's offsite copy**, fill in:
+
+   | Field | Value |
+   |---|---|
+   | **Offsite copy address** | The address of the copy's bucket. It is filled in from the offsite copy of the backup repository declared under **Offsite copies** in **Settings**; on a new machine, enter it. |
+   | **Backup encryption password** | The password of the backup repository |
+   | **Access key that reads the offsite copy** | The access key |
+   | **Secret key that reads the offsite copy** | The secret key |
+
+4. Press **Save these keys**. They are held in memory only and removed when a restore from the copy finishes, or after 24 hours, whichever comes first. A restore that stops part-way keeps them so you can start it again. **Forget these keys now** erases them at once. The backups of the copy are then listed under **Choose a backup**.
+5. Select the backup, then continue with steps 4 to 6 of [Restore on a running server](#restore-on-a-running-server). The [version rule](#version-rule) applies.
+
+When the restore finishes, the server has the data and stored configuration of the selected backup. Put the backup repository back from the copy before the next nightly backup (see the next section).
+
+## Put a bucket back from its offsite copy
+
+This copies a bucket's offsite copy back into the bucket it was copied from. It works for the backup repository and for any other bucket declared under **Offsite copies**, in every edition. The repair only adds: whatever is missing or different is copied back, and nothing is deleted on either side. The offsite copy is only read.
+
+1. Open **Restore** and go to **Put a bucket back from its offsite copy**. The section is shown once the server's installed components support it (see Troubleshooting). Without a declared copy it reads "No offsite copy is declared on this server. Offsite copies are declared in Settings, under Offsite copies."
+2. Under **Offsite copy to put back**, choose the copy. Each entry shows its name and the address of the bucket it puts back.
+3. Enter **Access key that reads the offsite copy** and **Secret key that reads the offsite copy**. They are used for this run only and kept nowhere.
+4. Optional: under **Application that keeps its files in this bucket**, choose the application when the bucket holds its files, such as Nextcloud. It is put in its backup mode while its files are copied back, then its stored files are checked against its database. Keep **None, as for the backup repository** for any other bucket.
+5. Optional: under **As it was at (UTC, optional)**, enter a date and time to put back the files as the offsite copy held them at that moment, such as before they were encrypted or overwritten. The access key then needs the right to read earlier versions. Left blank, the latest versions are put back.
+6. Tick "I understand the bucket is written to while it is put back." and press **Put the bucket back**.
+
+The section follows the repair step by step: Waiting for the backup, the offsite copy or an update to finish, Reaching both buckets, Checking the bucket can take the copy back, Putting the application in its backup mode, Copying the files back, Taking the application out of its backup mode, Checking the stored files, and Finished. When you chose no application, the three steps that involve one (backup mode in, backup mode out, checking the stored files) pass without doing anything.
+
+The copy writes into the bucket while it runs. A large bucket takes hours, and the storage provider may charge for the data read.
+
+If the repair stops, the section reads "Putting the bucket back stopped at:" followed by the step. Press **Put the bucket back** again with the same entries: starting again copies only what is still missing. A repair that puts the backup repository back is refused at the check step when the bucket already holds a different backup repository, such as one created in place of the lost one, because copying would mix the two. Nothing is copied. Empty the bucket, then start again.
+
+### Order after a restore from the offsite copy
+
+After a restore from the offsite copy, put the backup repository back with this section before the next nightly backup. The backups then carry on in the repository the offsite copy holds. Until it is back, the offsite copy stops rather than mix a new repository into the copy. A repair and a restore do not run together: each is refused while the other runs.
+
 ## Restore report
 
 The **Restore report** panel (Catena Pro) shows evidence that backups restore: a local restore test with its recovery time, and the state of the offsite copy. The nightly maintenance runs the local test each night it is on; **Verify my backup can be restored** under **Actions** runs it on demand. A link to the report appears in the Current restore section.
@@ -137,4 +180,6 @@ After a completed move the old server is stopped, not erased. Its data and backu
 | "A move is already running on this server." | Wait for it, or use **Forget this move** if it is unfinished. |
 | "The move could not be started." | The request was not accepted. Check the address (an IP address, not a name) and the pairing code, and that the window is open on the old server. |
 | "The credentials were refused." | The repository details were not accepted. Check them against the recovery keyset. |
+| "A bucket is being put back from its offsite copy. Wait for it to finish before starting a restore." | A bucket repair is running. A restore starts only after it finishes, and a repair is refused the same way while a restore runs ("A restore is running on this server. Wait for it to finish before putting a bucket back."). |
+| "Restoring from the offsite copy is not available on this server yet: its installed components are older than this panel." or "Putting a bucket back is not available on this server yet: its installed components are older than this panel." | The server's installed components predate the feature. Open **Settings**, go to **Server configuration**, press **Bring this server up to date**, and try again once it finishes. |
 | Log: the restore left `<app>` stopped | The backup was taken while its saved definition named an image its services did not run. Set the definition to the versions the services ran and deploy it from Portainer. |

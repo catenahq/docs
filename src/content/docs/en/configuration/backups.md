@@ -105,7 +105,7 @@ The copies run on the **Offsite copy** lane of the Schedules page (and as a step
 ### How the copy behaves
 
 - A copy only ever adds. Nothing it has written is changed or deleted afterwards. A bucket removed from the list keeps every copy already made, and the storage cost grows with churn.
-- A locked bucket cannot be restored into directly. To recover, copy it out to a fresh, unlocked bucket first and read from that.
+- A locked copy is read where it is. The **Restore** page restores the server from the offsite copy of its backup repository and puts any declared bucket back from its copy (see [Restore from the offsite copy](/en/configuration/restore-and-migrate/#restore-from-the-offsite-copy) and [Put a bucket back from its offsite copy](/en/configuration/restore-and-migrate/#put-a-bucket-back-from-its-offsite-copy)).
 - A copy of an application's own file bucket is only restorable together with a same-moment copy of the database that indexes those files. That database is inside the backup snapshots, so a file bucket copied on its own is not a backup by itself.
 
 ## What a backup contains
