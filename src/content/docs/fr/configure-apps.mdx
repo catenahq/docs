@@ -6,6 +6,7 @@ description: "Guide pas à pas pour déployer le fichier compose propre à une a
 import { Code } from "@astrojs/starlight/components";
 import appSkeleton from "../../../examples/app-skeleton.yml?raw";
 import publishedPort from "../../../examples/published-port.yml?raw";
+import secondAddress from "../../../examples/second-address.yml?raw";
 import nextcloudCompose from "../../../examples/nextcloud-compose.yml?raw";
 import nextcloudOidcProvider from "../../../examples/nextcloud-oidc-provider.sh?raw";
 
@@ -19,7 +20,9 @@ Une application est un ensemble de services. L'un d'eux, le **service d'entrée*
 
 Vous écrivez les étiquettes sous la clé `labels:` propre à chaque service, en liste, une `"clé=valeur"` par ligne. La page d'état, les restaurations, les migrations et les mises à jour les lisent à cet endroit; les étiquettes placées sous `deploy.labels` leur échappent.
 
-La plupart des étiquettes décrivent l'application dans son ensemble : son adresse, qui peut entrer, son contrôle de santé, sa tuile. Elles figurent une seule fois, sur le service d'entrée, et le service d'entrée est celui qui porte `vps.route.host`. Catena lit ces étiquettes sur ce service seulement, telles que l'application en cours d'exécution les a. Quand deux services portent `vps.route.host`, l'application n'a aucune route. La même étiquette sur tout autre service est ignorée. La politique de mise à jour et les ports publiés décrivent un service en particulier, et chacun est facultatif. L'application à laquelle un service appartient est le nom de l'application dans Portainer, et le service est sa clé dans le fichier; Catena lit les deux dans Docker Swarm lui-même, aucune étiquette ne les nomme. La [référence des étiquettes](#référence-des-étiquettes) indique où va chacune.
+Un service qui porte `vps.route.host` a une **adresse** publique, et son port, qui peut entrer et son contrôle de santé sont lus sur ce service seulement. La plupart des applications ont une seule adresse, sur le service d'entrée. Une application peut en avoir plusieurs, comme un site public et une page d'administration servie par un autre service. Avec deux adresses ou plus, vous marquez l'**adresse principale** avec `vps.route.main=true` sur son service. Les étiquettes qui décrivent l'application dans son ensemble (sa tuile, son titre sur la page d'état, son entrée de connexion, `vps.auth.protected`) sont lues sur le service de l'adresse principale seulement, telles que l'application en cours d'exécution les a, et sont ignorées sur tout autre service. Avec une seule adresse, ce service est l'adresse principale et n'a pas besoin de marque. Quand une application a deux adresses ou plus et que aucune ou plusieurs sont marquées principales, l'application n'a aucune route.
+
+L'accès se règle par adresse et n'est jamais hérité : une adresse sans étiquette d'accès n'admet que les administrateurs, même quand l'adresse principale est publique. Deux adresses ne peuvent pas partager un nom d'hôte : celle qui a été déployée en premier le garde, et l'autre n'a aucune route. La politique de mise à jour et les ports publiés décrivent un service en particulier, et chacun est facultatif. L'application à laquelle un service appartient est le nom de l'application dans Portainer, et le service est sa clé dans le fichier; Catena lit les deux dans Docker Swarm lui-même, aucune étiquette ne les nomme. La [référence des étiquettes](#référence-des-étiquettes) indique où va chacune.
 
 La valeur d'une étiquette peut être une `${VARIABLE}` des variables d'environnement de Portainer : Catena lit la valeur qu'a reçue le service déployé. Une étiquette `vps.*` que Catena ne reconnaît pas reste sans effet.
 
@@ -49,13 +52,13 @@ Les applications tournent sur Docker Swarm, qui refuse certaines clés compose n
 
 Le service d'entrée se joint au réseau externe `catena-network` et garde le réseau `default` de l'application pour joindre les services internes. Aucun alias n'est nécessaire. Les services internes restent sur `default` seulement. Le fichier déclare `catena-network` comme `external: true` (voir le squelette ci-dessus).
 
-Le mandataire inverse joint le service d'entrée par ce réseau. Un service d'entrée qui n'est pas sur `catena-network` n'a aucune route. Un service interne sans entrée `catena-network` est inaccessible au mandataire et aux autres applications.
+Le mandataire inverse joint le service d'entrée par ce réseau, et de même tout autre service qui a une adresse. Un service avec une adresse qui n'est pas sur `catena-network` n'a aucune route pour cette adresse. Un service interne sans entrée `catena-network` est inaccessible au mandataire et aux autres applications.
 
 ## Étape 4 : Étiqueter le service d'entrée
 
-Ces étiquettes vont sur le service d'entrée, et nulle part ailleurs dans le fichier :
+Écrivez ces étiquettes sur le service d'entrée :
 
-1. `vps.route.host` avec l'adresse publique, comme `my-app.yourdomain.com`, sur ce service seulement. Sans elle, l'application n'a ni route, ni tuile, ni carte sur la page d'état.
+1. `vps.route.host` avec l'adresse publique, comme `my-app.yourdomain.com`. Sans elle, l'application n'a ni route, ni tuile, ni carte sur la page d'état.
 2. `vps.route.port` avec le port d'écoute de l'application dans son conteneur, s'il n'est pas 80.
 3. Qui peut entrer :
    - `vps.auth.mode=public` pour une application ouverte à tous. La connexion propre à l'application, s'il y en a une, reste aux commandes.
@@ -69,6 +72,19 @@ Les administrateurs entrent toujours. Aucune étiquette ne crée de groupe : les
 Un service qui publie un port pour un protocole autre que le web (courriel, relais TURN) porte aussi `vps.expose.tcp` ou `vps.expose.udp` avec ces ports, ce qui les ouvre dans le coupe-feu du serveur :
 
 <Code code={publishedPort} lang="yaml" />
+
+### Une autre adresse (facultatif)
+
+Quand un autre service de l'application répond sur une adresse qui lui est propre, comme une page d'administration, donnez aussi des étiquettes à ce service :
+
+1. Sur le service d'entrée, ajoutez `vps.route.main=true`. Elle marque l'adresse qu'ouvre la tuile et qui porte les étiquettes de l'application entière.
+2. Sur l'autre service, ajoutez `vps.route.host` avec son adresse propre, `vps.route.port` s'il n'est pas 80, et son accès : `vps.auth.mode=public`, ou `vps.auth.groups` avec les groupes admis. Sans l'un ni l'autre, seuls les administrateurs entrent, quoi que permette l'adresse principale.
+3. Ajoutez-y `vps.health.path` quand sa page d'accueil ne convient pas comme contrôle. La page d'état affiche alors une carte par adresse.
+4. Reliez aussi ce service à `catena-network` (étape 3).
+
+Laissez la tuile, le titre sur la page d'état, `vps.auth.protected` et les étiquettes de connexion sur le service d'entrée. Dans le fichier ci-dessous, `web` est public et `admin` admet le groupe `staff` :
+
+<Code code={secondAddress} lang="yaml" />
 
 ## Étape 5 : Régler la politique de mise à jour (facultatif)
 
@@ -133,32 +149,33 @@ Voir [Authentification unique](/fr/features/single-sign-on/) pour le fonctionnem
 
 Chaque étiquette va sous la clé `labels:` propre au service.
 
-### Adresse et accès
+### Sur chaque service avec une adresse
 
-Sur le service d'entrée, une seule fois.
+Sur chaque service qui porte `vps.route.host` : le service d'entrée et toute autre adresse. Chaque adresse lit les siennes.
 
 | Étiquette | Valeurs | Défaut | Description |
 |---|---|---|---|
-| `vps.route.host` | Une adresse sous `yourdomain.com` | aucun | Adresse publique de l'application. Le service qui la porte est le service d'entrée. Sans elle, l'application n'a ni route, ni tuile, ni carte sur la page d'état; sur deux services, l'application n'a aucune route. |
-| `vps.route.port` | Un numéro de port | `80` | Port d'écoute de l'application dans son conteneur. |
+| `vps.route.host` | Une adresse sous `yourdomain.com` | aucun | Adresse publique. Le service qui la porte a une adresse de l'application. Sans elle sur aucun service, l'application n'a ni route, ni tuile, ni carte sur la page d'état. Deux adresses ne peuvent pas partager un nom d'hôte : celle déployée en premier le garde. |
+| `vps.route.port` | Un numéro de port | `80` | Port d'écoute du service dans son conteneur. |
 | `vps.auth.mode` | `public`, `private`, `admin-only` | aucun | `public` : aucune barrière. `private` : les groupes de `vps.auth.groups`, ou `admin`, `client` et `staff` quand aucun n'est listé. `admin-only` : administrateurs seulement. |
-| `vps.auth.groups` | Noms de groupes Keycloak, séparés par des virgules | aucun | Groupes admis; une personne dans l'un d'eux entre. Ignorée avec `public` et `admin-only`. Le groupe `visitor` rend l'application publique. |
+| `vps.auth.groups` | Noms de groupes Keycloak, séparés par des virgules | aucun | Groupes admis; une personne dans l'un d'eux entre. Ignorée avec `public` et `admin-only`. Le groupe `visitor` rend l'adresse publique. |
+| `vps.health.path` | Un chemin d'URL | aucun | Adresse que la page d'état vérifie toutes les 2 minutes; l'adresse est en marche quand elle répond 200. Sans elle, la vérification lit la page d'accueil : une adresse publique est en marche quand elle répond sans erreur, une adresse derrière la connexion quand elle renvoie les visiteurs vers la connexion. |
+| `vps.health.expect` | Texte | aucun | Texte que la réponse doit contenir. Sert seulement avec `vps.health.path`. |
+
+Sans `vps.auth.mode` ni `vps.auth.groups`, seuls les administrateurs entrent. Cela vaut pour chaque adresse séparément : une adresse ne prend pas l'accès de l'adresse principale. Les administrateurs entrent toujours à une adresse privée.
+
+### Sur le service d'entrée, une seule fois
+
+Sur le service de l'adresse principale seulement. Sur tout autre service, ces étiquettes sont ignorées.
+
+| Étiquette | Valeurs | Défaut | Description |
+|---|---|---|---|
+| `vps.route.main` | `true`, `false` | `false` | Marque l'adresse principale. Nécessaire seulement quand l'application a deux adresses ou plus, sur un seul service exactement. Avec aucune ou plusieurs marquées, l'application n'a aucune route. |
 | `vps.auth.protected` | `true`, `false` | `false` | `true` désigne une application qui ne doit pas être publique : si ses étiquettes la rendent publique quand même, sa tuile dans **Applications** porte le badge "devrait exiger une connexion", visible des administrateurs seulement. |
 | `vps.auth.oidc` | `true`, `false` | `false` | Catena crée l'entrée de connexion propre à l'application dans Keycloak et place `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` dans l'environnement de l'application. Le personnel voit un badge OIDC sur la tuile; les administrateurs voient l'état de la connexion. |
 | `vps.auth.oidc.redirect_uris` | Adresses, séparées par des virgules | aucun | Adresses de retour de l'entrée de connexion. Obligatoire avec `vps.auth.oidc`. Voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif). |
 | `vps.auth.oidc.public` | `true`, `false` | `false` | `true` pour une application qui n'envoie aucun secret : l'entrée n'a aucun secret et exige PKCE. |
-
-Sans `vps.auth.mode` ni `vps.auth.groups`, seuls les administrateurs entrent. Les administrateurs entrent toujours dans une application privée.
-
-### Page d'état et tuile
-
-Sur le service d'entrée, une seule fois.
-
-| Étiquette | Valeurs | Défaut | Description |
-|---|---|---|---|
-| `vps.health.path` | Un chemin d'URL | aucun | Adresse que la page d'état vérifie toutes les 2 minutes; l'application est en marche quand elle répond 200. Sans elle, la vérification lit la page d'accueil : une application publique est en marche quand elle répond sans erreur, une application derrière la connexion quand elle renvoie les visiteurs vers la connexion. |
-| `vps.health.expect` | Texte | aucun | Texte que la réponse doit contenir. Sert seulement avec `vps.health.path`. |
-| `vps.display-name` | Texte | l'adresse de l'application | Titre de la carte de l'application sur la page d'état. |
+| `vps.display-name` | Texte | l'adresse principale | Titre de la carte de l'adresse principale sur la page d'état. Les cartes des autres adresses portent leur adresse pour titre. |
 | `vps.homepage.name` | Texte | le nom de l'application dans Portainer | Titre de la tuile dans l'onglet **Applications**. |
 | `vps.homepage.icon` | Un nom d'icône, ou l'adresse d'une image | `mdi-application` | Icône de la tuile. Une adresse qui commence par `http` s'affiche comme image. |
 | `vps.homepage.description` | Texte | aucun | Sous-titre de la tuile. |
@@ -221,7 +238,8 @@ La commande crée le fournisseur ou le met à jour : vous pouvez la répéter. L
 | 502 ou 503 sur l'adresse | Le mandataire ne joint pas l'application. Le service d'entrée est sur `catena-network`, et `vps.route.port` est son port d'écoute. Lisez les journaux dans Portainer. |
 | 403 après la connexion | La personne n'est dans aucun groupe autorisé. Le groupe de `vps.auth.groups` existe dans Keycloak, correspond exactement (majuscules comprises), et la personne en est membre (**Personnes** ou Keycloak). |
 | Seuls les administrateurs entrent | Ni `vps.auth.mode` ni `vps.auth.groups` n'est défini, ou le mode n'est pas `public`, `private` ou `admin-only` et aucun groupe n'est listé. |
-| Pas de route, ou une adresse ou un accès erronés | Aucun `vps.route.host`, `vps.route.host` sur plus d'un service, ou service d'entrée qui n'est pas sur `catena-network`. Une étiquette du service d'entrée sur un autre service est ignorée. La synchronisation des routes s'exécute quelques secondes après un déploiement et toutes les heures; **Synchroniser tout (apps + moniteurs)** dans **Actions** la lance tout de suite. |
+| Pas de route, ou une adresse ou un accès erronés | Aucun `vps.route.host`, plusieurs adresses dont aucune ou deux sont marquées `vps.route.main=true`, ou service d'entrée qui n'est pas sur `catena-network`. Une étiquette de l'application entière sur un autre service que celui de l'adresse principale est ignorée. La synchronisation des routes s'exécute quelques secondes après un déploiement et toutes les heures; **Synchroniser tout (apps + moniteurs)** dans **Actions** la lance tout de suite. |
+| Une adresse ne répond pas | Une autre adresse de ce serveur utilise déjà son nom d'hôte, ou son service n'est pas sur `catena-network`. La tuile indique à un administrateur quelle adresse et pourquoi. Donnez à l'adresse un nom d'hôte qui lui est propre, ou reliez son service à `catena-network`, puis redéployez. |
 | Carte rouge sur la page d'état | Application publique dont la page d'accueil répond une erreur, application derrière la connexion qui ne renvoie pas les visiteurs vers la connexion, `vps.health.path` qui ne répond pas 200, ou texte `vps.health.expect` absent de la réponse. |
 | La tuile indique **connexion en échec** ou **connexion en attente** | Lisez la raison sur la tuile. Une adresse de retour de `vps.auth.oidc.redirect_uris` doit être en `https://` sur un domaine que ce serveur sert, sans `*` ni `#`. Corrigez l'étiquette, redéployez l'application et lancez **Synchroniser tout (apps + moniteurs)**. |
 | Sauvegarde échouée sur un montage lié | Le montage est hors de la zone des applications. Déplacez les données vers un volume nommé, ou inscrivez le dossier sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. |

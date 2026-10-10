@@ -6,6 +6,7 @@ description: "Step-by-step guide to deploying an app's own compose file on a Cat
 import { Code } from "@astrojs/starlight/components";
 import appSkeleton from "../../../examples/app-skeleton.yml?raw";
 import publishedPort from "../../../examples/published-port.yml?raw";
+import secondAddress from "../../../examples/second-address.yml?raw";
 import nextcloudCompose from "../../../examples/nextcloud-compose.yml?raw";
 import nextcloudOidcProvider from "../../../examples/nextcloud-oidc-provider.sh?raw";
 
@@ -19,7 +20,9 @@ An app is a set of services. One of them, the **front-door service**, answers th
 
 You write labels under each service's own `labels:` key, as a list with one `"key=value"` per line. The status page, restores, migrations and updates read them from there; labels under `deploy.labels` are not seen by them.
 
-Most labels describe the app as a whole: its address, who gets in, its health check, its tile. They go once, on the front-door service, and the front-door service is the one that carries `vps.route.host`. Catena reads those labels from that service only, as the running app has them. When two services carry `vps.route.host`, the app gets no route. The same label on any other service is ignored. The update policy and the published ports describe a single service, and each is optional. Which app a service belongs to is the app's name in Portainer, and the service is its key in the file; Catena reads both from Docker Swarm itself, so no label names them. The [label reference](#label-reference) says where each label goes.
+A service that carries `vps.route.host` has a public **address**, and its port, who gets in and health check are read from that service alone. Most apps have one address, on the front-door service. An app can have several, such as a public site and an admin page served by another service. With two or more, you mark the **main address** with `vps.route.main=true` on its service. The labels that describe the app as a whole (its tile, its title on the status page, its sign-in entry, `vps.auth.protected`) are read from the main address's service only, as the running app has them, and are ignored on any other service. With one address, that service is the main address and needs no mark. When an app has two or more addresses and none or several are marked main, the app gets no route.
+
+Access is set per address and is never inherited: an address with no access label admits administrators only, even when the main address is public. Two addresses cannot share a host name: the one deployed first keeps it, and the other gets no route. The update policy and the published ports describe a single service, and each is optional. Which app a service belongs to is the app's name in Portainer, and the service is its key in the file; Catena reads both from Docker Swarm itself, so no label names them. The [label reference](#label-reference) says where each label goes.
 
 A label value can be a `${VARIABLE}` from Portainer's environment variables: Catena reads the value the deployed service received. A `vps.*` label that Catena does not recognise has no effect.
 
@@ -49,13 +52,13 @@ Apps run on Docker Swarm, which refuses some compose keys outright and silently 
 
 The front-door service joins the external network `catena-network` and keeps the app's own `default` network to reach the internal services. No alias is needed. The internal services stay on `default` only. The file declares `catena-network` as `external: true` (see the skeleton above).
 
-The reverse proxy reaches the front-door service through that network. A front-door service that is not on `catena-network` gets no route. An internal service with no `catena-network` entry is unreachable from the proxy and from other apps.
+The reverse proxy reaches the front-door service through that network, and every other service with an address the same way. A service with an address that is not on `catena-network` gets no route for that address. An internal service with no `catena-network` entry is unreachable from the proxy and from other apps.
 
 ## Step 4: Label the front door
 
-These labels go on the front-door service, and nowhere else in the file:
+Write these labels on the front-door service:
 
-1. `vps.route.host` with the public address, such as `my-app.yourdomain.com`, on that service alone. Without it the app has no route, no tile and no status-page card.
+1. `vps.route.host` with the public address, such as `my-app.yourdomain.com`. Without it the app has no route, no tile and no status-page card.
 2. `vps.route.port` with the port the app listens on inside its container, when it is not 80.
 3. Who gets in:
    - `vps.auth.mode=public` for an app open to everyone. The app's own login, if it has one, stays in charge.
@@ -69,6 +72,19 @@ Administrators always get in. Groups are not created by a label: they already ex
 A service that publishes a port for a protocol other than web traffic (mail, a TURN relay) also carries `vps.expose.tcp` or `vps.expose.udp` with those ports, which opens them in the server's firewall:
 
 <Code code={publishedPort} lang="yaml" />
+
+### Another address (optional)
+
+When another service of the app answers on an address of its own, such as an admin page, give that service its labels too:
+
+1. On the front-door service, add `vps.route.main=true`. It marks the address that the tile opens and that carries the app-wide labels.
+2. On the other service, add `vps.route.host` with its own address, `vps.route.port` when it is not 80, and its access: `vps.auth.mode=public`, or `vps.auth.groups` with the groups allowed in. With neither, only administrators get in, whatever the main address allows.
+3. Add `vps.health.path` on it when its front page is not a good check. The status page then shows one card for each address.
+4. Join that service to `catena-network` too (step 3).
+
+Leave the tile, the status-page title, `vps.auth.protected` and the sign-in labels on the front-door service. In the file below, `web` is public and `admin` admits the `staff` group:
+
+<Code code={secondAddress} lang="yaml" />
 
 ## Step 5: Set the update policy (optional)
 
@@ -133,32 +149,33 @@ See [Single sign-on](/en/features/single-sign-on/) for how sign-in works across 
 
 Every label goes under the service's own `labels:` key.
 
-### Address and access
+### On each service with an address
 
-On the front-door service, once.
+On every service that carries `vps.route.host`: the front-door service and any other address. Each address reads its own.
 
 | Label | Values | Default | Description |
 |---|---|---|---|
-| `vps.route.host` | An address under `yourdomain.com` | none | Public address of the app. The service that carries it is the front-door service. Without it the app has no route, no tile and no status-page card; on two services, the app has no route. |
-| `vps.route.port` | A port number | `80` | Port the app listens on inside its container. |
+| `vps.route.host` | An address under `yourdomain.com` | none | Public address. The service that carries it has an address of the app. Without it on any service, the app has no route, no tile and no status-page card. Two addresses cannot share a host name: the one deployed first keeps it. |
+| `vps.route.port` | A port number | `80` | Port the service listens on inside its container. |
 | `vps.auth.mode` | `public`, `private`, `admin-only` | none | `public`: no gate. `private`: the groups in `vps.auth.groups`, or `admin`, `client` and `staff` when none are listed. `admin-only`: administrators only. |
-| `vps.auth.groups` | Keycloak group names, comma-separated | none | Groups allowed in; a person in any one of them gets in. Ignored with `public` and `admin-only`. The group `visitor` makes the app public. |
+| `vps.auth.groups` | Keycloak group names, comma-separated | none | Groups allowed in; a person in any one of them gets in. Ignored with `public` and `admin-only`. The group `visitor` makes the address public. |
+| `vps.health.path` | A URL path | none | Address the status page checks every 2 minutes; the address is up when it answers 200. Without it, the check reads the front page: a public address is up when it answers without an error, an address behind sign-in when it sends visitors to sign in. |
+| `vps.health.expect` | Text | none | Text the reply must contain. Used only with `vps.health.path`. |
+
+With neither `vps.auth.mode` nor `vps.auth.groups`, only administrators get in. This holds for each address on its own: an address does not take the access of the main address. Administrators always get into a private address.
+
+### On the front-door service, once
+
+On the main address's service only. On any other service these labels are ignored.
+
+| Label | Values | Default | Description |
+|---|---|---|---|
+| `vps.route.main` | `true`, `false` | `false` | Marks the main address. Needed only when the app has two or more addresses, on exactly one service. With none or several marked, the app has no route. |
 | `vps.auth.protected` | `true`, `false` | `false` | `true` marks an app that must not be public: when its labels make it public anyway, its tile on **Apps** carries the badge "should require sign-in", shown to administrators only. |
 | `vps.auth.oidc` | `true`, `false` | `false` | Catena creates the app's own sign-in entry in Keycloak and puts `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` and `OIDC_ISSUER_URL` in the app's environment. Staff see an OIDC badge on the tile; administrators see the state of the sign-in. |
 | `vps.auth.oidc.redirect_uris` | Addresses, comma-separated | none | Return addresses of the sign-in entry. Required with `vps.auth.oidc`. See [Sign in with Catena accounts](#sign-in-with-catena-accounts-optional). |
 | `vps.auth.oidc.public` | `true`, `false` | `false` | `true` for an app that sends no secret: the entry has no secret and requires PKCE. |
-
-With neither `vps.auth.mode` nor `vps.auth.groups`, only administrators get in. Administrators always get into a private app.
-
-### Status page and Apps tile
-
-On the front-door service, once.
-
-| Label | Values | Default | Description |
-|---|---|---|---|
-| `vps.health.path` | A URL path | none | Address the status page checks every 2 minutes; the app is up when it answers 200. Without it, the check reads the front page: a public app is up when it answers without an error, an app behind sign-in when it sends visitors to sign in. |
-| `vps.health.expect` | Text | none | Text the reply must contain. Used only with `vps.health.path`. |
-| `vps.display-name` | Text | the app's address | Title of the app's card on the status page. |
+| `vps.display-name` | Text | the main address | Title of the main address's card on the status page. The other addresses' cards are titled by their address. |
 | `vps.homepage.name` | Text | the app's name in Portainer | Title of the tile on the **Apps** tab. |
 | `vps.homepage.icon` | An icon name, or an image address | `mdi-application` | Tile icon. An address starting with `http` is shown as an image. |
 | `vps.homepage.description` | Text | none | Tile subtitle. |
@@ -221,7 +238,8 @@ The command creates the provider or updates it, so you can repeat it. Nextcloud'
 | 502 or 503 on the address | The proxy cannot reach the app. The front-door service is on `catena-network`, and `vps.route.port` is the port it listens on. Read the logs in Portainer. |
 | 403 after signing in | The person is in none of the allowed groups. The group in `vps.auth.groups` exists in Keycloak, matches exactly (letter case included), and the person is a member (**People** or Keycloak). |
 | Only administrators get in | Neither `vps.auth.mode` nor `vps.auth.groups` is set, or the mode is not `public`, `private` or `admin-only` and no groups are listed. |
-| No route, or the wrong address or access | No `vps.route.host`, `vps.route.host` on more than one service, or a front-door service that is not on `catena-network`. A front-door label on another service is ignored. The route sync runs seconds after a deploy and every hour; **Sync all (apps + monitors)** in **Actions** runs it at once. |
+| No route, or the wrong address or access | No `vps.route.host`, several addresses with none or two marked `vps.route.main=true`, or a front-door service that is not on `catena-network`. An app-wide label on a service other than the main address's is ignored. The route sync runs seconds after a deploy and every hour; **Sync all (apps + monitors)** in **Actions** runs it at once. |
+| One address does not answer | Another address on this server already uses its host name, or its service is not on `catena-network`. The tile tells an administrator which address and why. Give the address a host name of its own, or join its service to `catena-network`, then deploy again. |
 | Red card on the status page | A public app whose front page answers an error, an app behind sign-in that does not send visitors to sign in, a `vps.health.path` that does not answer 200, or a `vps.health.expect` text that is absent from the reply. |
 | The tile says **sign-in failed** or **sign-in waiting** | Read the reason on the tile. A return address in `vps.auth.oidc.redirect_uris` must be `https://` on a domain this server serves, with no `*` and no `#`. Fix the label, deploy the app again and run **Sync all (apps + monitors)**. |
 | Backup failed on a bind mount | The mount is outside the apps area. Move the data to a named volume, or list the folder under **Settings** > **Backup repository** > **Other folders to back up (separated by commas)**. |
