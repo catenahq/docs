@@ -80,12 +80,12 @@ L'étiquette `vps.auto-update` d'une application détermine jusqu'où son numér
 
 ### Délai d'attente et barrière de vulnérabilités
 
-Une nouvelle version n'est adoptée qu'après 7 jours d'existence. Une version qu'aucune source ne sait dater n'est adoptée que si son analyse est propre.
+Une nouvelle version n'est adoptée qu'après avoir attendu un certain nombre de jours, 7 par défaut. Pour le changer, réglez **Jours d'attente d'une nouvelle version avant que la mise à jour nocturne la prenne** (de 0 à 90, où 0 signifie aucune attente) à côté de **Mises à jour** sur la page **Horaires** (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). Une version qu'aucune source ne sait dater n'est adoptée que si son analyse est propre.
 
 Avant une mise à jour, les versions candidates sont analysées pour les vulnérabilités connues (Trivy, gravités élevée et critique, jusqu'à quatre candidates) :
 
 - Une version qui ajoute une nouvelle vulnérabilité élevée ou critique est écartée au profit d'une version inférieure propre, ou la mise à jour attend.
-- Une version plus récente qui supprime une vulnérabilité élevée ou critique présente dans la version en cours est appliquée sans le délai de 7 jours.
+- Une version plus récente qui supprime une vulnérabilité élevée ou critique présente dans la version en cours est appliquée sans le délai d'attente.
 
 Sans analyseur, la vérification des vulnérabilités est désactivée et le délai d'attente s'applique toujours. Voir [Vulnérabilités](/fr/configuration/vulnerabilities/). Une vulnérabilité que trouve la veille des vulnérabilités peut aussi être corrigée à la demande, ou automatiquement lorsque la CISA la signale comme exploitée, sans le délai d'attente (voir [Corriger une vulnérabilité](/fr/configuration/vulnerabilities/#corriger-une-vulnérabilité)).
 

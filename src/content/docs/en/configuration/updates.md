@@ -80,12 +80,12 @@ An application's `vps.auto-update` label sets how far its tag may move, from `of
 
 ### Waiting period and vulnerability gate
 
-A new release is only adopted after it has existed for 7 days. A release no source can date is adopted only when its scan is clean.
+A new release is only adopted after it has waited a number of days, 7 by default. To change it, set **Days a new version waits before the nightly update takes it** (0 to 90, where 0 means no wait) beside **Updates** on the **Schedules** page (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). A release no source can date is adopted only when its scan is clean.
 
 Before an update, the candidate releases are scanned for known vulnerabilities (Trivy, high and critical severities, up to four candidates):
 
 - A release that adds a new high or critical vulnerability is skipped in favour of a lower clean one, or the update waits.
-- A newer release that removes a high or critical vulnerability present in the running one is applied without the 7-day waiting period.
+- A newer release that removes a high or critical vulnerability present in the running one is applied without the waiting period.
 
 Without a scanner the vulnerability check is off and the waiting period still applies. See [Vulnerabilities](/en/configuration/vulnerabilities/). A vulnerability the vulnerability watch finds can also be patched on demand, or automatically when CISA lists it as exploited, without the waiting period (see [Patch a vulnerability](/en/configuration/vulnerabilities/#patch-a-vulnerability)).
 
