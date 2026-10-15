@@ -27,6 +27,28 @@ La section se termine par **Enregistrer et appliquer**; les services qui utilise
 4. Les tâches planifiées (sauvegarde, copie hors site, entretien nocturne, sonde de redémarrage, signal de vie hors site) signalent leur passage à Healthchecks. Un signal manquant est en soi l'alerte. Les vérifications de la sauvegarde, de la copie hors site, de l'entretien nocturne (**Nightly maintenance**, avertie quand une nuit commence, échoue ou se termine) et du signal de vie hors site suivent les horaires des tâches qui s'y signalent; tant qu'aucune de ces tâches n'est activée, la vérification est en pause et n'est donc jamais en retard. L'entretien nocturne ne se signale aux vérifications de la sauvegarde et de la copie hors site que tant que ses étapes de sauvegarde et de copie hors site sont activées (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
 5. Beszel surveille le serveur avec des règles créées une seule fois et jamais écrasées : état (agent silencieux) pendant 5 minutes, processeur à 90 % pendant 10 minutes, mémoire à 90 % pendant 10 minutes, disque à 85 % pendant 10 minutes. Ses alertes passent par Healthchecks et parviennent donc aux mêmes canaux.
 
+## Envoyer des rapports d'erreurs au soutien de Catena
+
+**Paramètres** > **Rapports d'erreurs au soutien de Catena** permet à un serveur sous Catena Pro ou Catena Business d'aviser le soutien de Catena quand l'un des contrôles propres à Catena échoue ou se rétablit, pour que le soutien puisse vous aider avant qu'un petit problème ne grossisse. L'option est désactivée tant que vous ne l'activez pas.
+
+Pour l'activer :
+
+1. Lisez le rapport que la section affiche. C'est le rapport que ce serveur enverrait à l'instant.
+2. Cochez la case qui confirme votre accord, puis appuyez sur **Activer les rapports d'erreurs**. D'ici cinq minutes, le serveur s'inscrit auprès du soutien de Catena.
+
+Pour la désactiver, appuyez sur **Désactiver les rapports d'erreurs**. Le serveur cesse aussitôt d'envoyer et se désinscrit.
+
+Un rapport nomme le contrôle, indique s'il échoue et depuis quand, l'application concernée, votre version de Catena et votre édition. Il ne contient jamais ce qui se trouve dans vos applications : ni fichiers, ni lignes de journal, ni comptes d'utilisateurs, ni adresses courriel ou réseau, ni noms de domaine. Un rapport n'est envoyé que lorsque la liste des contrôles en échec change ou qu'un événement ponctuel survient.
+
+Sous l'interrupteur, la section liste les 100 derniers rapports envoyés, du plus récent au plus ancien, chacun avec le texte exact qui a quitté le serveur et l'indication que le soutien de Catena l'a reçu ou non.
+
+Quand une tâche en échec a écrit un texte sur ce qui a mal tourné, ce texte reste sur votre serveur. La liste le propose pour chaque rapport qui en a un :
+
+- **Télécharger le texte de la tâche** enregistre le texte tel quel.
+- **Relire et envoyer au soutien de Catena** ouvre le texte dans une zone. Retirez ce que vous ne voulez pas que le soutien voie, puis appuyez sur **Envoyer ce texte au soutien de Catena**. Seul le texte de la zone est envoyé, et la liste montre exactement ce que vous avez envoyé.
+
+Le soutien répond du lundi au vendredi, de 8 h à 17 h. Les rapports d'erreurs ne forment pas une surveillance 24 heures sur 24, et un serveur éteint ou sans accès à Internet n'envoie rien : pour cela, utilisez le signal de vie hors site décrit plus haut.
+
 ## Ajouter des canaux de notification dans Healthchecks
 
 Les alertes parviennent à votre courriel d'administrateur sans aucune étape ici. Vous ajoutez d'autres canaux, pour d'autres personnes ou d'autres outils, dans Healthchecks :

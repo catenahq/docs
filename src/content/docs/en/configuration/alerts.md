@@ -27,6 +27,28 @@ The section ends with **Save and apply**; the services that use these values res
 4. Scheduled jobs (backup, offsite copy, nightly maintenance, restart probe, off-site heartbeat) ping Healthchecks as they run. A missed ping is itself the alert. The checks of the backup, the offsite copy, the nightly maintenance (**Nightly maintenance**, told when a night starts, fails or ends) and the off-site heartbeat follow the schedules of the jobs that report to them; while none of those jobs is turned on, the check is paused, so it never goes late. The nightly maintenance reports to the backup and offsite copy checks only while its backup and offsite copy steps are on (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
 5. Beszel watches the server with rules created once and never overwritten: status (agent silent) for 5 minutes, CPU at 90% for 10 minutes, memory at 90% for 10 minutes, disk at 85% for 10 minutes. Its alerts go through Healthchecks, so they reach the same channels.
 
+## Send error reports to Catena support
+
+**Settings** > **Error reports to Catena support** lets a server on Catena Pro or Catena Business tell Catena support when one of Catena's own checks fails or recovers, so support can help you before a small fault becomes a large one. It is off until you turn it on.
+
+To turn it on:
+
+1. Read the report the section shows. It is the report this server would send right now.
+2. Tick the box that confirms you agree, then press **Turn error reports on**. Within five minutes the server signs up with Catena support.
+
+To turn it off, press **Turn error reports off**. The server stops sending at once and signs off.
+
+A report names the check, whether it is failing, since when, the application it concerns, your Catena version and your edition. It never holds what is inside your applications: no files, log lines, user accounts, email or network addresses, or domain names. A report is sent only when the list of failing checks changes or a one-off event happens.
+
+Below the switch, the section lists the last 100 reports sent, newest first, each with the exact text that left the server and whether Catena support received it.
+
+When a failed job wrote text about what went wrong, that text stays on your server. The list offers it for each report that has some:
+
+- **Download the job output** saves the text as it is.
+- **Review and send to Catena support** opens the text in a box. Remove whatever you do not want support to see, then press **Send this text to Catena support**. Only the text in the box is sent, and the list shows exactly what you sent.
+
+Support answers Monday to Friday, 08:00 to 17:00. Error reports are not round-the-clock monitoring, and a server that is switched off or cannot reach the internet sends nothing: for that, use the off-site heartbeat above.
+
 ## Add notification channels in Healthchecks
 
 Alerts reach your admin email with no step here. You add more channels, for other people or other tools, in Healthchecks:
