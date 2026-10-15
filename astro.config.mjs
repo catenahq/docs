@@ -116,6 +116,7 @@ export default defineConfig({
             { slug: "configuration/sign-in-and-people" },
             { slug: "configuration/alerts" },
             { slug: "configuration/server" },
+            { slug: "configuration/command-line" },
             { slug: "configuration/updates" },
             { slug: "configuration/vulnerabilities" },
           ],
