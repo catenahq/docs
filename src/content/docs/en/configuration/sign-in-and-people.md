@@ -14,7 +14,9 @@ In **Settings** > **Sign-in requirements**, **What signing in requires** offers:
 | **Password only** | The default. |
 | **Password and an authenticator app** | Every account must set up an authenticator app. |
 
-The setting applies to every account, existing ones included: each person is asked to set up an authenticator app at the next sign-in and cannot skip it. The section ends with **Save and apply**; the sign-in service restarts briefly.
+The setting applies to every account, existing ones included: each person is asked to set up an authenticator app at the next sign-in and cannot skip it. It covers the administrators of Keycloak's own console too, described below. The section ends with **Save and apply**; the sign-in service restarts briefly.
+
+While the setting is on **Password only**, a notice at the top of every admin page recommends the authenticator app. **Dismiss** hides it for good, and selecting **Password and an authenticator app** hides it too.
 
 The realm also keeps these rules on every configuration run: self-registration is off, the email address is the username, duplicate emails are refused, usernames cannot be edited, and brute-force protection is on.
 
@@ -53,6 +55,7 @@ Password reset and invitations send email. With **No outgoing mail** selected, n
 The top-level console at `auth.yourdomain.com/admin` (the master realm) has its own admin account, separate from the people above.
 
 - At your first sign-in there, Keycloak asks you to set up a one-time code in an authenticator app. It asks for that code at every sign-in after.
+- With **Password and an authenticator app** selected in Settings, every other account holding the admin role in that console, such as a recovery account you created, is asked to set up a one-time code at its next sign-in too. The configuration run that **Save and apply** starts asks for it; an account that already has a code is left alone. The automation account the server uses to configure Keycloak is not a person's account and is not asked.
 - After repeated wrong passwords the account locks for a pause that grows with each failure, up to 15 minutes.
 
 ## Switching off the sign-in service

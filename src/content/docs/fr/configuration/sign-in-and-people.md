@@ -14,7 +14,9 @@ Dans **Paramètres** > **Exigences de connexion**, **Ce qu'exige la connexion** 
 | **Mot de passe seulement** | La valeur par défaut. |
 | **Mot de passe et application d'authentification** | Chaque compte doit configurer une application d'authentification. |
 
-Le réglage s'applique à tous les comptes, y compris ceux qui existent déjà : chaque personne doit configurer une application d'authentification à sa prochaine connexion, sans possibilité de reporter. La section se termine par **Enregistrer et appliquer**; le service de connexion redémarre brièvement.
+Le réglage s'applique à tous les comptes, y compris ceux qui existent déjà : chaque personne doit configurer une application d'authentification à sa prochaine connexion, sans possibilité de reporter. Il couvre aussi les administrateurs de la console propre à Keycloak, décrite plus bas. La section se termine par **Enregistrer et appliquer**; le service de connexion redémarre brièvement.
+
+Tant que le réglage est sur **Mot de passe seulement**, un avis en haut de chaque page d'administration recommande l'application d'authentification. **Fermer** le masque définitivement, et choisir **Mot de passe et application d'authentification** le masque aussi.
 
 À chaque configuration, le domaine de sécurité maintient aussi ces règles : l'inscription libre est désactivée, le courriel sert d'identifiant, les courriels en double sont refusés, les noms d'utilisateur ne sont pas modifiables et la protection contre les attaques par force brute est active.
 
@@ -53,6 +55,7 @@ La réinitialisation de mot de passe et les invitations envoient du courriel. Av
 La console de premier niveau à `auth.yourdomain.com/admin` (le domaine de sécurité master) a son propre compte administrateur, distinct des personnes ci-dessus.
 
 - À votre première connexion, Keycloak vous demande de configurer un code à usage unique dans une application d'authentification. Il vous le demande ensuite à chaque connexion.
+- Avec **Mot de passe et application d'authentification** choisi dans les Paramètres, tout autre compte qui détient le rôle d'administrateur dans cette console, comme un compte de secours que vous avez créé, doit lui aussi configurer un code à usage unique à sa prochaine connexion. La configuration que lance **Enregistrer et appliquer** le lui demande; un compte qui a déjà un code est laissé tel quel. Le compte d'automatisation que le serveur utilise pour configurer Keycloak n'est pas le compte d'une personne et n'est pas sollicité.
 - Après plusieurs mots de passe erronés, le compte est verrouillé pour une pause qui s'allonge à chaque échec, jusqu'à 15 minutes.
 
 ## Désactiver le service de connexion
