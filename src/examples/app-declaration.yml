@@ -1,0 +1,15 @@
+x-catena:
+  schema: 1
+  quiesce:
+    service: web
+    pre:
+      - ["pkill", "-STOP", "-x", "node"]
+    post:
+      - ["pkill", "-CONT", "-x", "node"]
+    timeout_seconds: 10
+  lifecycle:
+    service: web
+    migrate:
+      - ["yarn", "db:migrate"]
+    versioned_volumes: ["web-data"]
+    timeout_seconds: 900

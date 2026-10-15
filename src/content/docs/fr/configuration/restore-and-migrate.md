@@ -17,7 +17,7 @@ La restauration remplace les données et rien d'autre. Les applications sont arr
 
 1. Ouvrez **Restauration**.
 2. Sous **Quelles sauvegardes restaurer**, gardez **Les sauvegardes de ce serveur** et appuyez sur **Afficher les sauvegardes**.
-3. Sous **Choisir une sauvegarde**, sélectionnez une ligne. Les colonnes sont **Effectuée le**, **Serveur**, **Taille** et **Étiquettes**. Chaque ligne est un point de restauration complet; choisissez la plus récente prise avant le début du problème. Lorsque le dépôt contient les sauvegardes de plus d'un serveur, la page avertit que choisir par horodatage seul peut restaurer les données d'un autre serveur par-dessus celles-ci : la colonne **Serveur** indique lequel a écrit chaque instantané.
+3. Sous **Choisir une sauvegarde**, sélectionnez une ligne. Les colonnes sont **Effectuée le**, **Serveur**, **Taille** et **Étiquettes**. Chaque ligne est un point de restauration complet; choisissez la plus récente prise avant le début du problème. Lorsque le dépôt contient les sauvegardes de plus d'un serveur, la page avertit que choisir par horodatage seul peut restaurer les données d'un autre serveur par-dessus celles-ci : la colonne **Serveur** indique lequel a écrit chaque instantané. Une sauvegarde effectuée depuis la dernière vérification réussie du dépôt, pendant que cette vérification échoue, porte l'étiquette "Effectuée pendant que la vérification du dépôt échoue" : elle est conservée, jamais supprimée, et l'étiquette disparaît pour les sauvegardes suivantes une fois la vérification réussie.
 4. Sous **Étendue de la restauration**, choisissez la portée :
    - **Tout ce que contient ce serveur** ramène toutes les applications à la sauvegarde choisie.
    - **Seulement les applications sélectionnées ci-dessous** (Catena Pro) ne ramène que les applications cochées. Seules celles-ci sont arrêtées; toutes les autres applications, l'authentification et le panneau continuent de fonctionner. Une application revient avec les données et la version enregistrées dans la sauvegarde. Ses réglages ne sont pas rétablis, car ils sont partagés avec le reste du serveur.
@@ -95,7 +95,44 @@ Il vous faut l'adresse du dépôt, son mot de passe (le mot de passe de chiffrem
 
 Une fois la restauration terminée, le serveur possède les données et la configuration enregistrée de la sauvegarde choisie. Ses applications restent à l'arrêt jusqu'à ce que vous les démarriez (voir [Démarrer les applications après une restauration](#démarrer-les-applications-après-une-restauration)).
 
-Après une restauration depuis une copie des sauvegardes de ce serveur, les sauvegardes s'arrêtent jusqu'à ce qu'un dépôt de sauvegarde existe à la destination : une sauvegarde n'en crée jamais. Enregistrez une destination de sauvegarde dans **Paramètres**, sous **Sauvegarde**, de préférence un nouveau compartiment avec de nouvelles clés, puisque l'ancien est peut-être entre les mains d'un attaquant; l'enregistrer y crée un nouveau dépôt.
+Après cette restauration, les sauvegardes attendent que vous confirmiez la destination de sauvegarde ou que vous en enregistriez une nouvelle (voir [Reprendre les sauvegardes après une restauration](#reprendre-les-sauvegardes-après-une-restauration)).
+
+## Reprendre les sauvegardes après une restauration
+
+Une restauration du serveur entier ne peut pas savoir si le dépôt qu'elle a lu, ou la destination de sauvegarde que nomme la configuration restaurée, peut encore recevoir des écritures sans risque : un attaquant en détient peut-être les clés. Les sauvegardes attendent donc après chaque restauration du serveur entier, depuis le dépôt de ce serveur ou un autre. La restauration d'une seule application et un [déplacement vers un autre serveur](#migrer-vers-un-autre-serveur) laissent les sauvegardes en marche.
+
+Tant que les sauvegardes attendent :
+
+- Aucune sauvegarde n'est faite, et chaque exécution de sauvegarde signale une tentative échouée. La copie hors site ne copie rien et le test de restauration est ignoré.
+- Chaque page d'administration affiche une bannière : "Les sauvegardes sont en pause depuis la restauration de ce serveur le {date} : une restauration ne peut pas savoir si la destination de sauvegarde peut encore recevoir des écritures sans risque. La confirmer, ou en enregistrer une nouvelle, dans Paramètres, sous Dépôt de sauvegarde."
+- La section **Restauration en cours** indique "Les sauvegardes restent en attente jusqu'à ce que la destination de sauvegarde soit confirmée, ou qu'une nouvelle soit enregistrée, dans Paramètres." et propose le choix décrit sous [Choisir comment le dépôt de sauvegarde se poursuit](#choisir-comment-le-dépôt-de-sauvegarde-se-poursuit).
+
+Pour les reprendre :
+
+1. Vérifiez le dépôt. Après une compromission soupçonnée, préférez un nouveau compartiment avec de nouvelles clés.
+2. Ouvrez **Paramètres** et allez à **Dépôt de sauvegarde**. La section indique "Les sauvegardes sont en pause depuis la restauration de ce serveur le {date} à partir de {repository}. Une restauration ne peut pas savoir si ce dépôt peut encore recevoir des écritures sans risque. Le vérifier, puis y sauvegarder de nouveau ou saisir une nouvelle destination." Quand la restauration a lu un autre dépôt que la destination que nomme la configuration restaurée, l'avis nomme les deux.
+3. Cochez "Sauvegarder de nouveau vers cette destination" pour garder la destination telle quelle, ou saisissez la nouvelle destination et ses clés.
+4. Enregistrez la section.
+
+L'enregistrement vérifie que la destination répond et y crée un dépôt s'il n'y en a pas. Les sauvegardes ne reprennent que si la destination s'ouvre. Elles restent en attente, avec la raison dans la section, si elle ne s'ouvre pas, si aucune destination n'est enregistrée, ou pendant qu'une restauration est en cours ou arrêtée en cours de route sur ce serveur (terminez-la ou effacez-la d'abord sur la page **Restauration**).
+
+Le mot de passe de sauvegarde suit votre choix sur la page **Restauration** :
+
+- Avec **Un dépôt neuf**, ou sans choix et avec une nouvelle destination, l'enregistrement crée un nouveau mot de passe de sauvegarde, affiché une seule fois sous **Mot de passe de sauvegarde**, plus bas dans la section. Quiconque a compromis le serveur avant la restauration peut connaître l'ancien.
+- Avec **Continuité**, le mot de passe de sauvegarde reste le même.
+- Sans choix, confirmer la même destination garde le mot de passe.
+
+La copie hors site qui copiait l'ancienne destination suit la nouvelle. Avec un dépôt neuf, elle copie dans un dossier qui lui est propre, dans le même compartiment verrouillé et nommé d'après le nouveau dépôt, et ce qu'elle avait copié de l'ancien reste en place. Avec la continuité, elle se poursuit dans le même dossier.
+
+## Réactiver les mises à jour nocturnes après une restauration
+
+Pour la même raison, une restauration du serveur entier désactive les étapes **Mises à jour** et **Mise à niveau du moteur Docker** de l'entretien nocturne, et les autres étapes gardent le choix que vous avez fait. Rien ne change sur le serveur pendant la nuit tant que vous n'avez pas décidé. Chaque page d'administration affiche alors une bannière : "Aucune mise à jour automatique n'est configurée sur ce serveur depuis la restauration du {date}. Les réactiver dans Horaires, sous Entretien nocturne." La section **Restauration en cours** indique "Les mises à jour nocturnes restent désactivées jusqu'à ce qu'elles soient réactivées dans Horaires."
+
+1. Ouvrez **Horaires** et allez à **Entretien nocturne**, sous **Étapes**.
+2. Cochez **Mises à jour**, **Mise à niveau du moteur Docker**, ou les deux (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
+3. Appuyez sur **Enregistrer les horaires**.
+
+La bannière disparaît dès que l'une des deux étapes est activée. Les mises à jour exigent Catena Pro ou Catena Business, et l'entretien nocturne lui-même doit être activé.
 
 ## Remettre un compartiment en place depuis sa copie hors site
 
@@ -117,7 +154,7 @@ Si l'opération s'arrête, la section indique "La remise en place du seau s'est 
 
 ### Choisir comment le dépôt de sauvegarde se poursuit
 
-Après une restauration, les sauvegardes attendent que vous confirmiez la destination de sauvegarde, ou que vous en enregistriez une nouvelle, dans **Paramètres** (voir [Restaurer depuis un autre dépôt de sauvegarde](#restaurer-depuis-un-autre-dépôt-de-sauvegarde)). Pendant qu'elles attendent, la page **Restauration** affiche **Comment le dépôt de sauvegarde se poursuit**, avec deux choix. Appuyez sur **Enregistrer ce choix** pour retenir le vôtre.
+Après une restauration, les sauvegardes attendent que vous confirmiez la destination de sauvegarde, ou que vous en enregistriez une nouvelle, dans **Paramètres** (voir [Reprendre les sauvegardes après une restauration](#reprendre-les-sauvegardes-après-une-restauration)). Pendant qu'elles attendent, la page **Restauration** affiche **Comment le dépôt de sauvegarde se poursuit**, avec deux choix. Appuyez sur **Enregistrer ce choix** pour retenir le vôtre.
 
 - **Un dépôt neuf** (sélectionné tant que vous ne choisissez pas autre chose). Les sauvegardes démarrent un nouveau dépôt sous un nouveau mot de passe de sauvegarde, affiché une seule fois lorsque vous enregistrez ou confirmez la destination dans **Paramètres**. Sa copie hors site va dans un nouveau dossier du même compartiment verrouillé, à côté de l'ancien. Choisissez ce mode après une compromission soupçonnée.
 - **Continuité**. Le dépôt de sauvegarde revient de sa copie hors site dans un nouveau compartiment vide que vous nommez sous **Remettre un seau en place depuis sa copie hors site** (voir les étapes ci-dessus, avec **Adresse du nouveau seau** remplie). Enregistrez ensuite ce compartiment comme destination de sauvegarde dans **Paramètres** : les sauvegardes s'y poursuivent sous le même mot de passe de sauvegarde, et la copie hors site se poursuit dans le même dossier du compartiment verrouillé, donc rien n'est stocké deux fois. Choisissez ce mode après un accident, comme un compartiment supprimé ou une panne du fournisseur.
@@ -204,4 +241,6 @@ Après un déplacement terminé, l'ancien serveur est arrêté, pas effacé. Ses
 | "Les applications n'ont pas pu être démarrées." | La demande a été refusée. La raison du serveur suit, par exemple "choose at least one application to start" ou une application qui n'est plus laissée à l'arrêt. |
 | "Son dernier démarrage n'a pas abouti :" | La raison suit. L'application a été de nouveau arrêtée et reste listée. Corrigez la cause, puis redémarrez-la depuis **Applications laissées à l'arrêt après la restauration**. |
 | "Démarrées hors de ce panneau depuis la restauration, sans la vérification de leurs bases de données ni leur sortie du mode sauvegarde : ..." | Les applications listées ont été démarrées dans Portainer. Démarrez-les depuis la page **Restauration** pour exécuter la vérification des bases de données et la sortie du mode sauvegarde qu'elles ont sautées. |
+| "Les sauvegardes restent en attente : ..." ou "Le serveur n'a pas répondu : les sauvegardes restent en attente. Enregistrer de nouveau la destination relance l'opération." sous **Dépôt de sauvegarde** | La destination a été enregistrée, mais les sauvegardes n'ont pas repris. La raison suit : la destination ne s'ouvre pas, aucune destination n'est enregistrée, ou une restauration est en cours ou arrêtée en cours de route. Corrigez la cause, puis enregistrez de nouveau. |
+| "Aucun nouveau mot de passe de sauvegarde n'a été créé, les sauvegardes restent donc en attente : ..." | Le nouveau mot de passe de sauvegarde n'a pas pu être créé. Enregistrez de nouveau la destination. |
 | Journal : la restauration a laissé `<application>` arrêté | La sauvegarde a été prise alors que sa définition nommait une image que ses services n'exécutaient pas. Réglez la définition sur les versions qu'exécutaient les services, puis déployez-la depuis Portainer. |

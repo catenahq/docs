@@ -7,12 +7,15 @@ import { Code } from "@astrojs/starlight/components";
 import appSkeleton from "../../../examples/app-skeleton.yml?raw";
 import publishedPort from "../../../examples/published-port.yml?raw";
 import secondAddress from "../../../examples/second-address.yml?raw";
+import appDeclaration from "../../../examples/app-declaration.yml?raw";
 import nextcloudCompose from "../../../examples/nextcloud-compose.yml?raw";
 import nextcloudOidcProvider from "../../../examples/nextcloud-oidc-provider.sh?raw";
 
 Catena manages an app from labels written in its compose file: it publishes the address, puts the sign-in gate in front, backs up the data, updates the images and watches the app on the status page. In this guide, you prepare an app's own compose file and deploy it from Portainer. An app that goes through every step is fully managed.
 
 When the software is in the catalog (Portainer, **App Templates**), the catalog entry is the shorter route: its labels, networks, placement and sign-in client are already in place, and the buttons in the panel's **Actions** tab finish the wiring after the first deploy.
+
+A catalog entry that needs a newer Catena than your server runs says so: its description in **App Templates**, the note in its detail panel and its README open with "Requires Catena X or later.", where X is the oldest release the entry works on. Update the server first (see [Updates](/en/configuration/updates/)), then deploy the entry. Portainer shows the sentence in English.
 
 ## How Catena reads an app
 
@@ -104,7 +107,7 @@ Nothing else is labelled per service. A service whose image is a database or cac
 - **Other engines** (MongoDB, SQLite and similar) get no automatic dump. You need the app's own export, or a volume copy that is consistent on its own.
 - **Large file sets** belong in S3-backed storage rather than in a local volume, which keeps the backup small.
 
-A backup does not pause an app added by hand: nothing is put in maintenance mode around the snapshot. A catalog entry can ask for it instead: Nextcloud, for one, is put in maintenance mode while the nightly maintenance takes its backup, and taken out of it afterwards, even when the backup fails.
+A backup does not pause an app added by hand unless the file declares a backup mode (see [Declare the backup mode and update steps](#declare-the-backup-mode-and-update-steps-optional)): otherwise nothing is put in maintenance mode around the snapshot. A catalog entry can ask for it instead: Nextcloud, for one, is put in maintenance mode while the nightly maintenance takes its backup, and taken out of it afterwards, even when the backup fails.
 
 ## Step 7: Deploy
 
@@ -145,6 +148,32 @@ To check that it worked:
 - Waiting means Catena tries again on its own. Failed means something needs fixing, and the tile says what. The **Log** tab also names the app and the reason.
 
 See [Single sign-on](/en/features/single-sign-on/) for how sign-in works across apps.
+
+## Declare the backup mode and update steps (optional)
+
+An app can carry its own backup mode and update steps in an `x-catena` block at the top of its compose file. Portainer stores the file as you deployed it, so the block travels with the app: backups and restores bring it back, and the server reads it from the deployed file, not from the catalog.
+
+<Code code={appDeclaration} lang="yaml" />
+
+Start the block with `schema: 1`. Each command is a list of words (`["yarn", "db:migrate"]`), run with `docker exec` inside the named `service` of the app, with no shell. Each section sets `service` and `timeout_seconds`; `user` is optional and names the account the commands run as.
+
+- **`quiesce`** is the backup mode. The nightly maintenance runs the `pre` commands before the backup, such as putting the app in maintenance mode, and the `post` commands after it, even when the backup fails. The nightly maintenance needs Catena Pro or Catena Business (see [Schedules](/en/configuration/schedules/)). `post` must succeed when `pre` never ran. Each command may take up to 60 seconds.
+- **`lifecycle`** holds the update steps, each command taking up to 3600 seconds:
+  - `before_update` runs in the running container just before an update deploys the new image, and `after_update` once the update is settled, whether kept or rolled back.
+  - `migrate` runs when an update moves the image of `service`, and after a restore of the whole server once the databases are put back. When it fails after an update, the update is rolled back, image and database.
+  - `versioned_volumes` lists the app's own named volumes that the new version upgrades in place and the previous version cannot read. The server copies each one before an update that moves `service` and puts the copy back when the update rolls back. A volume that a database or a one-shot service mounts cannot be listed.
+
+The updates themselves run in the nightly maintenance, which needs Catena Pro or Catena Business (see [Updates](/en/configuration/updates/)).
+
+The server refuses the app's updates when the block does not hold for its file. The rules:
+
+- A `service` names a service the file declares.
+- No value holds a `$`: Docker reads it as a variable when it deploys the file. Write the commands without one.
+- No value names an image of the file, because an update rewrites those.
+- A timeout stays within its limit.
+- A format newer than the server reads is refused until the server is updated.
+
+[Check the file with the panel](#check-an-app-with-the-panel) before you deploy: rule [K17](#k17) reports each of these and lists the commands the block has the server run.
 
 ## Label reference
 
@@ -278,6 +307,7 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | <a id="k14"></a>K14 | error | An address another app already holds. |
 | <a id="k15"></a>K15 | error | An address that is not under a domain your server serves. |
 | <a id="k16"></a>K16 | error | A port that another app already opens on your server. |
+| <a id="k17"></a>K17 | error, warning | An `x-catena` block that does not read or does not hold for its file (see [Declare the backup mode and update steps](#declare-the-backup-mode-and-update-steps-optional)): the server refuses the app's updates. A warning lists the commands the block has the server run in the app's containers. |
 
 ### What reaches the server
 

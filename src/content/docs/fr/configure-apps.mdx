@@ -7,12 +7,15 @@ import { Code } from "@astrojs/starlight/components";
 import appSkeleton from "../../../examples/app-skeleton.yml?raw";
 import publishedPort from "../../../examples/published-port.yml?raw";
 import secondAddress from "../../../examples/second-address.yml?raw";
+import appDeclaration from "../../../examples/app-declaration.yml?raw";
 import nextcloudCompose from "../../../examples/nextcloud-compose.yml?raw";
 import nextcloudOidcProvider from "../../../examples/nextcloud-oidc-provider.sh?raw";
 
 Catena gère une application à partir d'étiquettes (labels) écrites dans son fichier compose : il publie l'adresse, place la barrière de connexion devant, sauvegarde les données, met les images à jour et surveille l'application sur la page d'état. Dans ce guide, vous préparez le fichier compose propre à une application et le déployez depuis Portainer. Une application qui passe par toutes les étapes est entièrement gérée.
 
 Quand le logiciel figure au catalogue (Portainer, **App Templates**), l'entrée du catalogue est le chemin le plus court : ses étiquettes, ses réseaux, son placement et son client de connexion sont déjà en place, et les boutons de l'onglet **Actions** du panneau terminent le câblage après le premier déploiement.
+
+Une entrée du catalogue qui exige un Catena plus récent que celui de votre serveur le dit : sa description dans **App Templates**, la note de son panneau de détail et son README commencent par "Requires Catena X or later.", où X est la plus ancienne version avec laquelle l'entrée fonctionne. Mettez d'abord le serveur à jour (voir [Mises à jour](/fr/configuration/updates/)), puis déployez l'entrée. Portainer affiche la phrase en anglais.
 
 ## Comment Catena lit une application
 
@@ -104,7 +107,7 @@ Rien d'autre ne s'étiquette par service. Un service dont l'image est une base d
 - **Les autres moteurs** (MongoDB, SQLite et semblables) n'ont aucune copie automatique. Vous avez besoin de l'exportation propre à l'application, ou d'une copie de volume cohérente en soi.
 - **Les grands ensembles de fichiers** gagnent à vivre dans un stockage S3 plutôt que dans un volume local, ce qui garde la sauvegarde légère.
 
-Une sauvegarde ne met pas en pause une application ajoutée à la main : rien n'est placé en mode maintenance autour de l'instantané. Une entrée du catalogue peut le demander : Nextcloud, par exemple, est placé en mode maintenance pendant la sauvegarde de l'entretien nocturne et en est sorti ensuite, même quand la sauvegarde échoue.
+Une sauvegarde ne met pas en pause une application ajoutée à la main, sauf si le fichier déclare un mode de sauvegarde (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)) : sinon rien n'est placé en mode maintenance autour de l'instantané. Une entrée du catalogue peut le demander : Nextcloud, par exemple, est placé en mode maintenance pendant la sauvegarde de l'entretien nocturne et en est sorti ensuite, même quand la sauvegarde échoue.
 
 ## Étape 7 : Déployer
 
@@ -145,6 +148,32 @@ Pour vérifier que cela a fonctionné :
 - En attente signifie que Catena réessaie d'elle-même. En échec signifie que quelque chose est à corriger, et la tuile dit quoi. L'onglet **Journal** nomme aussi l'application et la raison.
 
 Voir [Authentification unique](/fr/features/single-sign-on/) pour le fonctionnement de la connexion entre applications.
+
+## Déclarer le mode de sauvegarde et les étapes de mise à jour (facultatif)
+
+Une application peut porter son propre mode de sauvegarde et ses propres étapes de mise à jour dans un bloc `x-catena`, au début de son fichier compose. Portainer garde le fichier tel que vous l'avez déployé : le bloc voyage donc avec l'application, les sauvegardes et les restaurations le ramènent, et le serveur le lit dans le fichier déployé, pas dans le catalogue.
+
+<Code code={appDeclaration} lang="yaml" />
+
+Commencez le bloc par `schema: 1`. Chaque commande est une liste de mots (`["yarn", "db:migrate"]`), exécutée avec `docker exec` dans le `service` nommé de l'application, sans interpréteur de commandes. Chaque section indique `service` et `timeout_seconds`; `user` est facultatif et nomme le compte sous lequel les commandes s'exécutent.
+
+- **`quiesce`** est le mode de sauvegarde. L'entretien nocturne exécute les commandes `pre` avant la sauvegarde, par exemple pour placer l'application en mode maintenance, et les commandes `post` après, même quand la sauvegarde échoue. L'entretien nocturne exige Catena Pro ou Catena Business (voir [Horaires](/fr/configuration/schedules/)). `post` doit réussir même si `pre` n'a jamais été exécutée. Chaque commande peut durer jusqu'à 60 secondes.
+- **`lifecycle`** contient les étapes de mise à jour, chaque commande pouvant durer jusqu'à 3600 secondes :
+  - `before_update` s'exécute dans le conteneur en marche juste avant qu'une mise à jour déploie la nouvelle image, et `after_update` une fois la mise à jour réglée, qu'elle soit conservée ou annulée.
+  - `migrate` s'exécute quand une mise à jour change l'image de `service`, et après une restauration du serveur entier une fois les bases de données remises en place. Si elle échoue après une mise à jour, la mise à jour est annulée, image et base de données.
+  - `versioned_volumes` liste les volumes nommés de l'application que la nouvelle version transforme sur place et que la version précédente ne sait plus lire. Le serveur copie chacun avant une mise à jour qui change `service` et remet la copie en place si la mise à jour est annulée. Un volume que monte une base de données ou un service qui ne s'exécute qu'une fois ne peut pas figurer dans la liste.
+
+Les mises à jour elles-mêmes s'exécutent pendant l'entretien nocturne, qui exige Catena Pro ou Catena Business (voir [Mises à jour](/fr/configuration/updates/)).
+
+Le serveur refuse les mises à jour de l'application quand le bloc ne tient pas pour son fichier. Les règles :
+
+- Un `service` nomme un service que le fichier déclare.
+- Aucune valeur ne contient de `$` : Docker le lit comme une variable quand il déploie le fichier. Écrivez les commandes sans `$`.
+- Aucune valeur ne nomme une image du fichier, car une mise à jour les réécrit.
+- Un délai reste dans sa limite.
+- Un format plus récent que celui que le serveur lit est refusé tant que le serveur n'est pas mis à jour.
+
+[Vérifiez le fichier avec le panneau](#vérifier-une-application-avec-le-panneau) avant de déployer : la règle [K17](#k17) signale chacun de ces cas et liste les commandes que le bloc fait exécuter par le serveur.
 
 ## Référence des étiquettes
 
@@ -278,6 +307,7 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | <a id="k14"></a>K14 | erreur | Une adresse qu'une autre application détient déjà. |
 | <a id="k15"></a>K15 | erreur | Une adresse qui n'est pas sous un domaine que sert votre serveur. |
 | <a id="k16"></a>K16 | erreur | Un port qu'une autre application ouvre déjà sur votre serveur. |
+| <a id="k17"></a>K17 | erreur, avertissement | Un bloc `x-catena` qui ne se lit pas ou ne tient pas pour son fichier (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)) : le serveur refuse les mises à jour de l'application. Un avertissement liste les commandes que le bloc fait exécuter par le serveur dans les conteneurs de l'application. |
 
 ### Ce qui atteint le serveur
 

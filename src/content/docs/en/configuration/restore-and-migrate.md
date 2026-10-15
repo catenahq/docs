@@ -17,7 +17,7 @@ The restore replaces data and nothing else. Applications are stopped while their
 
 1. Open **Restore**.
 2. Under **Which backups to restore from**, keep **This server's backups** and press **Show the backups**.
-3. Under **Choose a backup**, select one row. Columns are **Taken**, **Server**, **Size** and **Labels**. Each row is a complete restore point; pick the most recent one taken before the problem started. When the repository holds backups from more than one server, the page warns that selecting by timestamp alone can restore another server's data over this one: the **Server** column says which server wrote each snapshot.
+3. Under **Choose a backup**, select one row. Columns are **Taken**, **Server**, **Size** and **Labels**. Each row is a complete restore point; pick the most recent one taken before the problem started. When the repository holds backups from more than one server, the page warns that selecting by timestamp alone can restore another server's data over this one: the **Server** column says which server wrote each snapshot. A backup taken since the last passing repository check, while that check fails, is labelled "Taken while the repository check fails": it is kept, never deleted, and the label goes away for later backups once the check passes.
 4. Under **How much to put back**, choose the scope:
    - **Everything on this server** returns every application to the selected backup.
    - **Only the applications selected below** (Catena Pro) returns only the ticked applications. Only those are stopped; every other application, the sign-in and the panel keep running. An application comes back with the data and the version recorded in the backup. Its settings are not rolled back, because they are shared with the rest of the server.
@@ -95,7 +95,44 @@ You need the repository's address, its password (the backup encryption password)
 
 When the restore finishes, the server has the data and stored configuration of the selected backup. Its applications stay stopped until you start them (see [Start the applications after a restore](#start-the-applications-after-a-restore)).
 
-After a restore from a copy of this server's backups, backups stop until a backup repository exists at the destination: a backup never creates one. Save a backup destination in **Settings**, under **Backup**, preferably a new bucket with new keys, since the old one may be in an attacker's hands; saving it creates a new repository there.
+After this restore, the backups wait until you confirm the backup destination or save a new one (see [Resume the backups after a restore](#resume-the-backups-after-a-restore)).
+
+## Resume the backups after a restore
+
+A whole-server restore cannot tell whether the repository it read, or the backup destination the restored configuration names, is safe to keep writing to: an attacker may hold its keys. So the backups wait after every restore of the whole server, from this server's repository or another one. A restore of a single application and a [move to another server](#migrate-to-another-server) leave the backups running.
+
+While the backups wait:
+
+- No backup is taken, and each backup run reports a failed attempt. The offsite copy copies nothing and the restore test is skipped.
+- Every admin page shows a banner: "Backups are paused since this server was restored on {date}: a restore cannot tell whether the backup destination is safe to keep writing to. Confirm it, or save a new one, in Settings, under Backup repository."
+- The **Current restore** section reads "The backups wait until the backup destination is confirmed, or a new one saved, in Settings." and offers the choice described under [Choose how the backup repository carries on](#choose-how-the-backup-repository-carries-on).
+
+To resume them:
+
+1. Check the repository. After a suspected compromise, prefer a new bucket with new keys.
+2. Open **Settings** and go to **Backup repository**. The section reads "Backups are paused since this server was restored on {date} from {repository}. A restore cannot tell whether that repository is safe to keep writing to. Check it, then back up to it again or enter a new destination." When the restore read a repository other than the destination the restored configuration names, the notice names both.
+3. Either tick "Back up to this destination again" to keep the destination as it is, or enter the new destination and its keys.
+4. Save the section.
+
+Saving checks that the destination answers and creates a repository there when it holds none. The backups resume only when the destination opens. They keep waiting, with the reason in the section, when it does not, when no destination is saved, or while a restore is running or stopped part-way on this server (finish it or clear it on the **Restore** page first).
+
+The backup password follows your choice on the **Restore** page:
+
+- With **A fresh repository**, or with no choice and a new destination, saving makes a new backup password, shown once under **Backup password** further down the section. Whoever compromised the server before the restore may know the old one.
+- With **Continuity**, the backup password stays the same.
+- With no choice, confirming the same destination keeps the password.
+
+The offsite copy that copied the old destination follows the new one. With a fresh repository it copies into a folder of its own in the same locked bucket, named after the new repository, and what it copied of the old one stays where it is. With continuity it carries on in the same folder.
+
+## Turn the nightly updates back on after a restore
+
+For the same reason, a whole-server restore switches the nightly maintenance's **Updates** and **Docker engine upgrade** steps off, and the other steps keep the choice you made. Nothing changes on the server overnight until you decide. Every admin page then shows a banner: "No automatic updates are configured on this server since the restore of {date}. Turn them back on in Schedules, under Nightly maintenance." The **Current restore** section reads "The nightly updates stay off until they are turned back on in Schedules."
+
+1. Open **Schedules** and go to **Nightly maintenance**, under **Steps**.
+2. Tick **Updates**, **Docker engine upgrade**, or both (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
+3. Press **Save schedules**.
+
+The banner goes once either step is on. Updates need Catena Pro or Catena Business, and the nightly maintenance itself must be turned on.
 
 ## Put a bucket back from its offsite copy
 
@@ -117,7 +154,7 @@ If the repair stops, the section reads "Putting the bucket back stopped at:" fol
 
 ### Choose how the backup repository carries on
 
-After a restore, backups wait until you confirm the backup destination, or save a new one, in **Settings** (see [Restore from another backup repository](#restore-from-another-backup-repository)). While they wait, the **Restore** page shows **How the backup repository carries on**, with two choices. Press **Save this choice** to record yours.
+After a restore, backups wait until you confirm the backup destination, or save a new one, in **Settings** (see [Resume the backups after a restore](#resume-the-backups-after-a-restore)). While they wait, the **Restore** page shows **How the backup repository carries on**, with two choices. Press **Save this choice** to record yours.
 
 - **A fresh repository** (selected until you choose otherwise). The backups start a new repository under a new backup password, shown once when you save or confirm the destination in **Settings**. Its offsite copy goes into a new folder of the same locked bucket, beside the old one. Choose this after a suspected compromise.
 - **Continuity**. The backup repository comes back from its offsite copy into a new empty bucket that you name under **Put a bucket back from its offsite copy** (see the steps above, with **Address of the new bucket** filled). Then save that bucket as the backup destination in **Settings**: the backups carry on in it under the same backup password, and the offsite copy carries on in the same folder of the locked bucket, so nothing is stored twice. Choose this after an accident, such as a deleted bucket or a provider outage.
@@ -204,4 +241,6 @@ After a completed move the old server is stopped, not erased. Its data and backu
 | "The applications could not be started." | The request was refused. The server's reason follows, such as "choose at least one application to start" or an application that is no longer left stopped. |
 | "Its last start did not finish:" | The reason follows. The application was stopped again and stays listed. Fix the cause, then start it again from **Applications left stopped after the restore**. |
 | "Started outside this panel since the restore, without their database check or their release from backup mode: ..." | The listed applications were started in Portainer. Start them from the **Restore** page to run the database check and the release from backup mode they skipped. |
+| "The backups still wait: ..." or "The server did not answer, so the backups still wait. Saving the destination again retries." under **Backup repository** | The destination was saved but the backups did not resume. The reason follows: the destination does not open, no destination is saved, or a restore is running or stopped part-way. Fix the cause, then save again. |
+| "No new backup password was made, so the backups still wait: ..." | The new backup password could not be made. Save the destination again. |
 | Log: the restore left `<app>` stopped | The backup was taken while its saved definition named an image its services did not run. Set the definition to the versions the services ran and deploy it from Portainer. |
