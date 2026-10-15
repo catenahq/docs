@@ -128,7 +128,7 @@ Sans choix, enregistrer une nouvelle destination crée un nouveau mot de passe d
 
 ## Rapport de restauration
 
-Le panneau **Rapport de restauration** (Catena Pro) montre la preuve que les sauvegardes se restaurent : un test de restauration local avec son temps de récupération, et l'état de la copie hors site. L'entretien nocturne exécute le test local chaque nuit où il est actif; **Vérifier que ma sauvegarde est restaurable**, dans **Actions**, l'exécute sur demande. Un lien vers le rapport figure dans la section Restauration en cours.
+Le panneau **Rapport de restauration** (Catena Pro) montre la preuve que les sauvegardes se restaurent : un test de restauration local avec son temps de récupération, et l'état de la copie hors site. Le test local s'exécute chaque semaine selon l'horaire **Test de restauration**, ou chaque nuit comme étape de l'entretien nocturne (voir [Horaires](/fr/configuration/schedules/)); **Vérifier que ma sauvegarde est restaurable**, dans **Actions**, l'exécute sur demande. Un lien vers le rapport figure dans la section Restauration en cours.
 
 ## Migrer vers un autre serveur
 

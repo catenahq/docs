@@ -128,7 +128,7 @@ Without a choice, saving a new destination makes a new backup password and confi
 
 ## Restore report
 
-The **Restore report** panel (Catena Pro) shows evidence that backups restore: a local restore test with its recovery time, and the state of the offsite copy. The nightly maintenance runs the local test each night it is on; **Verify my backup can be restored** under **Actions** runs it on demand. A link to the report appears in the Current restore section.
+The **Restore report** panel (Catena Pro) shows evidence that backups restore: a local restore test with its recovery time, and the state of the offsite copy. The local test runs weekly on the **Restore test** schedule, or every night as a step of the nightly maintenance (see [Schedules](/en/configuration/schedules/)); **Verify my backup can be restored** under **Actions** runs it on demand. A link to the report appears in the Current restore section.
 
 ## Migrate to another server
 

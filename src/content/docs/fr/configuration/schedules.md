@@ -1,9 +1,9 @@
 ---
 title: "Horaires"
-description: "Les huit tâches planifiées d'un serveur Catena, leurs heures par défaut, la syntaxe des horaires, la chaîne d'entretien nocturne et la conservation des sauvegardes."
+description: "Les neuf tâches planifiées d'un serveur Catena, leurs heures par défaut, la syntaxe des horaires, la chaîne d'entretien nocturne et la conservation des sauvegardes."
 ---
 
-La page **Horaires** règle le moment où le serveur effectue ses tâches planifiées. Rien ne s'exécute selon un horaire tant que vous ne l'activez pas ici. Vous pouvez aussi lancer chaque tâche à la main depuis la page **Actions**, dans toutes les éditions.
+La page **Horaires** règle le moment où le serveur effectue ses tâches planifiées. À part le test de restauration, rien ne s'exécute selon un horaire tant que vous ne l'activez pas ici. Vous pouvez aussi lancer chaque tâche à la main depuis la page **Actions**, dans toutes les éditions.
 
 ## Prérequis
 
@@ -14,7 +14,7 @@ Enregistrer une tâche activée sans abonnement actif est refusé avec le messag
 
 ## Les tâches
 
-Chaque tâche est livrée désactivée. L'heure indiquée est l'horaire prérempli, qui ne s'exécute qu'une fois que vous avez activé la tâche.
+Chaque tâche est livrée désactivée, sauf le test de restauration, livré activé. L'heure indiquée est l'horaire prérempli, qui ne s'exécute qu'une fois la tâche activée.
 
 | Tâche | Horaire par défaut | Délai aléatoire | Rôle |
 |---|---|---|---|
@@ -22,6 +22,7 @@ Chaque tâche est livrée désactivée. L'heure indiquée est l'horaire préremp
 | **Entretien nocturne** | `*-*-* 03:00:00` (chaque jour, 3 h) | jusqu'à 15 minutes | Sauvegarde, vérifie la sauvegarde, la copie hors site, puis fait passer les composants du serveur et les applications déployées à des versions plus récentes derrière ces vérifications. Vous choisissez les étapes qu'il exécute (voir [Choisir les étapes](#choisir-les-étapes)). |
 | **Copie hors site** | `*-*-* 04:30:00` (chaque jour, 4 h 30) | jusqu'à 30 minutes | Copie chaque compartiment déclaré vers le stockage non réinscriptible du second fournisseur (voir [Copies hors site](/fr/configuration/backups/#copies-hors-site)). Demande Catena Business. |
 | **Contrôle d'intégrité des sauvegardes** | `Sun *-*-* 04:15:00` (dimanche, 4 h 15) | jusqu'à 1 heure | Lit un échantillon du dépôt de sauvegarde de bout en bout, ce qui détecte la corruption silencieuse du stockage entre deux instantanés. |
+| **Test de restauration** | `Sun *-*-* 05:00:00` (dimanche, 5 h) | jusqu'à 1 heure | Restaure la dernière sauvegarde dans une zone temporaire et vérifie ce qui en revient, ce qui prouve qu'une sauvegarde peut être restaurée. Il télécharge autant que la sauvegarde contient : il s'exécute donc chaque semaine. Il se signale à sa propre vérification Healthchecks : un test qui échoue ou ne s'exécute pas déclenche donc une alerte (voir [Alertes](/fr/configuration/alerts/)). Demande Catena Pro. Il peut plutôt s'exécuter comme étape de l'entretien nocturne (voir [Choisir les étapes](#choisir-les-étapes)). |
 | **Mises à jour du panneau de contrôle** | `monthly` | jusqu'à 30 minutes | Fait passer le panneau de contrôle à une version plus récente, et remet la précédente si la nouvelle rend le serveur moins sain. Le panneau est indisponible environ une minute. |
 | **Configuration du serveur** | `*-*-* 04:20:00` (chaque jour, 4 h 20) | jusqu'à 40 minutes | Ramène le serveur à la configuration que porte son panneau de contrôle. Ce qui a dérivé est rétabli, et ce qui est déjà correct n'est pas touché. |
 | **Signal de vie hors site** | `*:0/5` (toutes les 5 minutes) | jusqu'à 30 secondes | Vérifie que la page d'état, le moniteur de tâches et le moniteur de ressources répondent, puis appelle l'adresse du signal de vie hors site enregistrée dans **Paramètres** > **Alertes et signalement des tâches manquées** (voir [Alertes](/fr/configuration/alerts/)). Demande cette adresse et Catena Pro. Sa section indique la période et le délai de grâce à régler sur la vérification externe. |
@@ -36,7 +37,7 @@ L'entretien nocturne est une chaîne ordonnée. Elle reprend d'elle-même si un 
 1. **Vérifications préalables.** Contrôle qu'au moins 5 Gio de disque sont libres.
 2. **Mode maintenance et scripts autour de la sauvegarde.** Une application du catalogue dont l'entrée le demande, comme Nextcloud, est placée en mode maintenance le temps de la sauvegarde et en est sortie ensuite, même quand la sauvegarde échoue. Des scripts facultatifs s'exécutent avant et après la sauvegarde lorsqu'il en existe sur le serveur. Rien d'autre n'est mis en pause sauf si un script le fait, et un script en échec ne produit qu'un avertissement.
 3. **Sauvegarde.**
-4. **Test de restauration.** Restaure le dernier instantané dans une zone temporaire et le contrôle.
+4. **Test de restauration.** Restaure le dernier instantané dans une zone temporaire et le contrôle. Désactivée par défaut, parce que le test de restauration a son propre horaire (voir [Les tâches](#les-tâches)).
 5. **Vérification du dépôt de sauvegarde.** Vérifie les métadonnées du dépôt.
 6. **Copie hors site.**
 7. **Vérification de la copie hors site.**
@@ -49,9 +50,9 @@ L'entretien nocturne est une chaîne ordonnée. Elle reprend d'elle-même si un 
 14. **Nettoyage.** Supprime les couches d'images inutilisées de plus d'une semaine.
 15. **Redémarrage.** Ne redémarre le serveur que si une mise à jour de sécurité l'exige, puis vérifie que chaque service est revenu. Le redémarrage attend d'abord que les autres travaux sur le serveur, comme une sauvegarde ou une mise à jour, se terminent; des travaux encore en cours après une heure reportent le redémarrage à la nuit suivante, et la page **Système** l'indique comme reporté.
 
-Ces étapes arrêtent la chaîne, afin qu'aucune mise à jour ne s'applique par-dessus une défaillance : les vérifications préalables, la sauvegarde, le test de restauration, la vérification du dépôt de sauvegarde, le contrôle de santé avant les mises à jour (tout point de contrôle en échec dans la page d'état) et la vérification de la copie hors site (exigée par défaut). Les autres étapes consignent leur résultat et laissent la chaîne se poursuivre. Une étape que vous retirez ne s'exécute pas : elle ne peut donc pas arrêter la chaîne.
+Ces étapes arrêtent la chaîne, afin qu'aucune mise à jour ne s'applique par-dessus une défaillance : les vérifications préalables, la sauvegarde, le test de restauration (lorsque c'est une étape), la vérification du dépôt de sauvegarde, le contrôle de santé avant les mises à jour (tout point de contrôle en échec dans la page d'état) et la vérification de la copie hors site (exigée par défaut). Les autres étapes consignent leur résultat et laissent la chaîne se poursuivre. Une étape que vous retirez ne s'exécute pas : elle ne peut donc pas arrêter la chaîne.
 
-Une sauvegarde configurée qui échoue, ou dont le test de restauration ou la vérification du dépôt échoue, arrête donc la chaîne avant toute mise à jour, sauf si l'étape de sauvegarde est retirée. Une nuit ainsi arrêtée n'a rien changé sur le serveur, et elle redémarre tout de même le serveur si un redémarrage est dû et que l'étape **Redémarrage** est activée. Lorsqu'aucune sauvegarde n'est configurée, la chaîne saute de l'étape de sauvegarde au contrôle de santé avant les mises à jour, consigne un événement au Journal et applique tout de même les mises à jour; le panneau affiche une bannière sur chaque page tant qu'aucune sauvegarde n'est configurée. Lorsque la chaîne ne change alors rien (l'entretien nocturne est désactivé, ou **Mises à jour** et **Mise à niveau du moteur Docker** sont toutes deux retirées), la bannière est raccourcie : "Aucune sauvegarde n'est configurée. En configurer une dans Paramètres."
+Une sauvegarde configurée qui échoue, ou dont la vérification du dépôt (ou le test de restauration, lorsque c'est une étape) échoue, arrête donc la chaîne avant toute mise à jour, sauf si l'étape de sauvegarde est retirée. Une nuit ainsi arrêtée n'a rien changé sur le serveur, et elle redémarre tout de même le serveur si un redémarrage est dû et que l'étape **Redémarrage** est activée. Lorsqu'aucune sauvegarde n'est configurée, la chaîne saute de l'étape de sauvegarde au contrôle de santé avant les mises à jour, consigne un événement au Journal et applique tout de même les mises à jour; le panneau affiche une bannière sur chaque page tant qu'aucune sauvegarde n'est configurée. Lorsque la chaîne ne change alors rien (l'entretien nocturne est désactivé, ou **Mises à jour** et **Mise à niveau du moteur Docker** sont toutes deux retirées), la bannière est raccourcie : "Aucune sauvegarde n'est configurée. En configurer une dans Paramètres."
 
 ### Choisir les étapes
 
@@ -70,11 +71,12 @@ Sous **Étapes**, dans la section **Entretien nocturne**, chaque étape de la ch
 11. **Mise à niveau du moteur Docker**
 12. **Redémarrage**
 
-Toutes les étapes sont activées, sauf **Veille des vulnérabilités**. La vérification de l'espace disque au début et le nettoyage des anciennes couches d'images à la fin s'exécutent toujours et n'ont pas de case. Pour retirer une étape, décochez sa case et appuyez sur **Enregistrer les horaires** : la chaîne la saute chaque nuit. Pour la remettre, cochez la case et enregistrez de nouveau.
+Toutes les étapes sont activées, sauf **Test de restauration** et **Veille des vulnérabilités**. La vérification de l'espace disque au début et le nettoyage des anciennes couches d'images à la fin s'exécutent toujours et n'ont pas de case. Pour retirer une étape, décochez sa case et appuyez sur **Enregistrer les horaires** : la chaîne la saute chaque nuit. Pour la remettre, cochez la case et enregistrez de nouveau.
 
 Certains choix sont imposés ou refusés :
 
-- Tant que la copie hors site est activée et qu'une copie hors site est déclarée (voir [Copies hors site](/fr/configuration/backups/#copies-hors-site)), **Test de restauration** et **Vérification du dépôt de sauvegarde** restent cochées et grisées, avec la raison "Cette étape reste active tant que la copie hors site l'est : la copie va vers un stockage dont rien ne peut être supprimé, elle ne s'exécute donc qu'après la réussite du test de restauration et de la vérification du dépôt." Une fois enregistrées, elles restent cochées après la désactivation de la copie hors site, jusqu'à ce que vous les décochiez et enregistriez de nouveau.
+- Tant que la copie hors site est activée et qu'une copie hors site est déclarée (voir [Copies hors site](/fr/configuration/backups/#copies-hors-site)), **Vérification du dépôt de sauvegarde** reste cochée et grisée, avec la raison "Cette étape reste active tant que la copie hors site l'est : la copie va vers un stockage dont rien ne peut être supprimé, elle ne s'exécute donc qu'après la réussite de la vérification du dépôt de sauvegarde." Une fois enregistrée, elle reste cochée après la désactivation de la copie hors site, jusqu'à ce que vous la décochiez et enregistriez de nouveau.
+- Le test de restauration s'exécute soit comme étape, soit selon son propre horaire, jamais les deux. Cocher **Test de restauration** alors que son propre horaire est activé, ou activer cet horaire alors que l'étape est cochée, est refusé avec "Le test de restauration s'exécute soit chaque nuit dans l'entretien nocturne, soit selon son propre horaire, pas les deux. Désactiver l'un des deux." Désactivez l'un des deux et enregistrez de nouveau.
 - Avec Catena Pro, **Copie hors site** et **Vérification de la copie hors site** sont grisées, avec "Exige Catena Business : sans elle, la copie hors site ne s'exécute pas, ni selon un horaire ni à la main."
 - Sans copie hors site déclarée, **Copie hors site** affiche l'indication "Aucune copie hors site n'est déclarée dans Paramètres : cette étape ne copie donc rien."
 - La veille des vulnérabilités s'exécute soit comme étape, soit selon son propre horaire, jamais les deux. Cocher **Veille des vulnérabilités** alors que son propre horaire est activé, ou activer cet horaire alors que l'étape est cochée, est refusé avec "La veille des vulnérabilités s'exécute soit chaque nuit dans l'entretien nocturne, soit selon son propre horaire, pas les deux. Désactiver l'un des deux." et la page indique "Rien n'a été enregistré. Les étapes de l'entretien nocturne, plus bas, en donnent la raison." Désactivez l'un des deux et enregistrez de nouveau.
@@ -84,7 +86,7 @@ Cinq combinaisons s'enregistrent, avec un avertissement sous la liste :
 | Combinaison | Avertissement |
 |---|---|
 | **Mises à jour** ou **Mise à niveau du moteur Docker** activées, **Sauvegarde** désactivée | "Les mises à jour ou la mise à niveau du moteur Docker sont activées, mais pas la sauvegarde. Une mise à jour ou une migration de base de données ratée pourrait entraîner une perte de données définitive : les services de Catena ne gardent aucune copie de leurs données pendant leur mise à jour, et un dommage découvert après qu'une mise à jour a réussi son contrôle de santé n'a rien vers quoi revenir." |
-| **Sauvegarde** activée, **Test de restauration** désactivé | "La sauvegarde nocturne n'est pas testée par une restauration. Une sauvegarde impossible à restaurer n'est découverte qu'au moment où on en a besoin." |
+| **Sauvegarde** activée, et aucun test de restauration planifié (l'étape est désactivée et la tâche **Test de restauration** l'est aussi) | "Aucun test de restauration n'est planifié. Une sauvegarde impossible à restaurer n'est découverte qu'au moment où on en a besoin. Activez le test de restauration, selon son propre horaire ou comme étape ici." |
 | **Sauvegarde** activée, **Vérification du dépôt de sauvegarde** désactivée | "Le dépôt de sauvegarde n'est pas vérifié après la sauvegarde nocturne. Un dommage dans le stockage des sauvegardes n'est découvert qu'au moment d'une restauration." |
 | **Mises à jour** ou **Mise à niveau du moteur Docker** activées, **Contrôle de santé avant les mises à jour** désactivé | "Le contrôle de santé avant les mises à jour est désactivé. Une mise à jour peut s'appliquer à un service déjà en panne, et la comparaison qui décide de remettre la version précédente ne peut alors pas savoir que la mise à jour l'a cassé." |
 | **Copie hors site** activée, **Vérification de la copie hors site** désactivée | "La vérification de la copie hors site est désactivée. Rien ne prouve que la copie hors site peut être relue : une copie impossible à restaurer n'est découverte qu'au moment où on en a besoin, et les mises à jour n'attendent pas cette preuve." |
@@ -102,7 +104,7 @@ Le **Journal** consigne le résultat de chaque nuit, et chaque avertissement une
 | L'entretien nocturne s'est terminé. |
 | L'entretien nocturne ne s'est pas terminé correctement. Étape en échec : `<étape>`. |
 | L'entretien nocturne applique ses mises à jour sans sa sauvegarde, retirée sur la page Horaires. Une mise à jour ou une migration de base de données ratée pourrait entraîner une perte de données définitive. |
-| L'entretien nocturne fait sa sauvegarde sans le test de restauration, retiré sur la page Horaires. Une sauvegarde impossible à restaurer n'est découverte qu'au moment où on en a besoin. |
+| L'entretien nocturne fait sa sauvegarde sans qu'aucun test de restauration soit planifié sur la page Horaires. Une sauvegarde impossible à restaurer n'est découverte qu'au moment où on en a besoin. |
 | L'entretien nocturne fait sa sauvegarde sans la vérification du dépôt de sauvegarde, retirée sur la page Horaires. Un dommage dans le stockage des sauvegardes n'est découvert qu'au moment d'une restauration. |
 | L'entretien nocturne applique ses mises à jour sans le contrôle de santé avant les mises à jour, retiré sur la page Horaires. Une mise à jour peut s'appliquer à un service déjà en panne, et le contrôle qui la suit ne peut alors pas savoir si elle l'a cassé. |
 | L'entretien nocturne fait sa copie hors site sans la vérification de la copie hors site, retirée sur la page Horaires. Rien ne prouve que la copie peut être relue, et les mises à jour n'attendent pas cette preuve. |
@@ -110,6 +112,12 @@ Le **Journal** consigne le résultat de chaque nuit, et chaque avertissement une
 L'étape nommée pour une nuit en échec est celle qui l'a arrêtée, sinon la première qui a échoué.
 
 L'entretien nocturne a aussi sa propre vérification Healthchecks, nommée **Nightly maintenance**. Elle est avertie au début de chaque nuit, quand une étape échoue et à la fin de la nuit : une nuit qui échoue ou ne s'exécute pas déclenche donc une alerte (voir [Alertes](/fr/configuration/alerts/)). L'entretien nocturne ne se signale aux vérifications de la sauvegarde que tant que **Sauvegarde** est une étape, et à celles de la copie hors site que tant que **Copie hors site** en est une.
+
+### Copie hors site et test de restauration
+
+Avant chaque copie du dépôt de sauvegarde de ce serveur, la copie hors site vérifie le dépôt. Quand la vérification échoue, rien n'est copié : la copie va vers un stockage dont rien ne peut être supprimé, et un dépôt endommagé ne doit pas s'y retrouver. La copie sautée déclenche une alerte (voir [Alertes](/fr/configuration/alerts/)). Pour remettre en place un dépôt endommagé, voir [Remettre un compartiment en place depuis sa copie hors site](/fr/configuration/restore-and-migrate/#remettre-un-compartiment-en-place-depuis-sa-copie-hors-site).
+
+Dans la section **Copie hors site**, la case **Ne copier qu'une sauvegarde qui a réussi un test de restauration** fait attendre à la copie un test de restauration de la plus récente sauvegarde. Quand la plus récente sauvegarde n'en a pas réussi, la copie hors site exécute d'abord un test de restauration et ne copie rien s'il échoue. La case est désactivée par défaut : une sauvegarde jamais testée par une restauration n'est pas pour autant endommagée.
 
 ## Syntaxe des horaires
 
@@ -135,7 +143,7 @@ Sous **Vérifier un horaire**, saisissez une expression et appuyez sur **Vérifi
 2. Dans la section de la tâche, modifiez **Horaire** si la valeur par défaut ne convient pas, et cochez **Exécuter selon cet horaire**.
 3. Appuyez sur **Enregistrer les horaires**. La page confirme par "Horaires enregistrés et appliqués à ce serveur." Un refus affiche "Ce serveur n'a pas accepté l'horaire.", suivi de la raison.
 
-L'enregistrement règle aussi les vérifications Healthchecks de la sauvegarde, de la copie hors site, de l'entretien nocturne et du signal de vie hors site sur les nouveaux horaires; une vérification à laquelle aucune tâche activée ne se signale est en pause. Quand Healthchecks ne répond pas, la page indique "Horaires enregistrés et appliqués à ce serveur. Healthchecks n'a pas répondu : les vérifications qui surveillent ces tâches prendront les nouveaux horaires au prochain enregistrement des horaires ou à la prochaine mise à jour de la configuration de ce serveur." Une vérification réactivée affiche "new" dans Healthchecks jusqu'à la prochaine exécution de sa tâche.
+L'enregistrement règle aussi les vérifications Healthchecks de la sauvegarde, du contrôle d'intégrité des sauvegardes, du test de restauration, de la copie hors site, de l'entretien nocturne et du signal de vie hors site sur les nouveaux horaires; une vérification à laquelle aucune tâche activée ne se signale est en pause. Quand Healthchecks ne répond pas, la page indique "Horaires enregistrés et appliqués à ce serveur. Healthchecks n'a pas répondu : les vérifications qui surveillent ces tâches prendront les nouveaux horaires au prochain enregistrement des horaires ou à la prochaine mise à jour de la configuration de ce serveur." Une vérification réactivée affiche "new" dans Healthchecks jusqu'à la prochaine exécution de sa tâche.
 
 Lorsque rien n'est activé, la page avertit : "Aucune tâche n'est planifiée sur ce serveur, donc aucune sauvegarde ne sera faite. Activez l'horaire de sauvegarde ci-dessous."
 
