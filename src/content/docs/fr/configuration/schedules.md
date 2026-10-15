@@ -3,7 +3,7 @@ title: "Horaires"
 description: "Les neuf tâches planifiées d'un serveur Catena, leurs heures par défaut, la syntaxe des horaires, la chaîne d'entretien nocturne et la conservation des sauvegardes."
 ---
 
-La page **Horaires** règle le moment où le serveur effectue ses tâches planifiées. À part le test de restauration, rien ne s'exécute selon un horaire tant que vous ne l'activez pas ici. Vous pouvez aussi lancer chaque tâche à la main depuis la page **Actions**, dans toutes les éditions.
+La page **Horaires** règle le moment où le serveur effectue ses tâches planifiées. Rien ne s'exécute selon un horaire tant que vous ne l'activez pas ici. Vous pouvez aussi lancer chaque tâche à la main depuis la page **Actions**, dans toutes les éditions.
 
 ## Prérequis
 
@@ -14,7 +14,7 @@ Enregistrer une tâche activée sans abonnement actif est refusé avec le messag
 
 ## Les tâches
 
-Chaque tâche est livrée désactivée, sauf le test de restauration, livré activé. L'heure indiquée est l'horaire prérempli, qui ne s'exécute qu'une fois la tâche activée.
+Chaque tâche est livrée désactivée. L'heure indiquée est l'horaire prérempli, qui ne s'exécute qu'une fois la tâche activée.
 
 | Tâche | Horaire par défaut | Délai aléatoire | Rôle |
 |---|---|---|---|
@@ -22,7 +22,7 @@ Chaque tâche est livrée désactivée, sauf le test de restauration, livré act
 | **Entretien nocturne** | `*-*-* 03:00:00` (chaque jour, 3 h) | jusqu'à 15 minutes | Sauvegarde, vérifie la sauvegarde, la copie hors site, puis fait passer les composants du serveur et les applications déployées à des versions plus récentes derrière ces vérifications. Vous choisissez les étapes qu'il exécute (voir [Choisir les étapes](#choisir-les-étapes)). |
 | **Copie hors site** | `*-*-* 04:30:00` (chaque jour, 4 h 30) | jusqu'à 30 minutes | Copie chaque compartiment déclaré vers le stockage non réinscriptible du second fournisseur (voir [Copies hors site](/fr/configuration/backups/#copies-hors-site)). Demande Catena Business. |
 | **Contrôle d'intégrité des sauvegardes** | `Sun *-*-* 04:15:00` (dimanche, 4 h 15) | jusqu'à 1 heure | Lit un échantillon du dépôt de sauvegarde de bout en bout, ce qui détecte la corruption silencieuse du stockage entre deux instantanés. |
-| **Test de restauration** | `Sun *-*-* 05:00:00` (dimanche, 5 h) | jusqu'à 1 heure | Restaure la dernière sauvegarde dans une zone temporaire et vérifie ce qui en revient, ce qui prouve qu'une sauvegarde peut être restaurée. Il télécharge autant que la sauvegarde contient : il s'exécute donc chaque semaine. Il se signale à sa propre vérification Healthchecks : un test qui échoue ou ne s'exécute pas déclenche donc une alerte (voir [Alertes](/fr/configuration/alerts/)). Demande Catena Pro. Il peut plutôt s'exécuter comme étape de l'entretien nocturne (voir [Choisir les étapes](#choisir-les-étapes)). |
+| **Test de restauration** | `Sun *-*-* 05:00:00` (dimanche, 5 h) | jusqu'à 1 heure | Restaure la dernière sauvegarde dans une zone temporaire et vérifie ce qui en revient, ce qui prouve qu'une sauvegarde peut être restaurée. Il télécharge autant que la sauvegarde contient et demande autant d'espace disque libre : il est donc livré désactivé et s'exécute chaque semaine une fois activé. Activez-le lorsque le serveur a la place. Il se signale à sa propre vérification Healthchecks : un test qui échoue ou ne s'exécute pas déclenche donc une alerte (voir [Alertes](/fr/configuration/alerts/)). Demande Catena Pro. Il peut plutôt s'exécuter comme étape de l'entretien nocturne (voir [Choisir les étapes](#choisir-les-étapes)). |
 | **Mises à jour du panneau de contrôle** | `monthly` | jusqu'à 30 minutes | Fait passer le panneau de contrôle à une version plus récente, et remet la précédente si la nouvelle rend le serveur moins sain. Le panneau est indisponible environ une minute. |
 | **Configuration du serveur** | `*-*-* 04:20:00` (chaque jour, 4 h 20) | jusqu'à 40 minutes | Ramène le serveur à la configuration que porte son panneau de contrôle. Ce qui a dérivé est rétabli, et ce qui est déjà correct n'est pas touché. |
 | **Signal de vie hors site** | `*:0/5` (toutes les 5 minutes) | jusqu'à 30 secondes | Vérifie que la page d'état, le moniteur de tâches et le moniteur de ressources répondent, puis appelle l'adresse du signal de vie hors site enregistrée dans **Paramètres** > **Alertes et signalement des tâches manquées** (voir [Alertes](/fr/configuration/alerts/)). Demande cette adresse et Catena Pro. Sa section indique la période et le délai de grâce à régler sur la vérification externe. |

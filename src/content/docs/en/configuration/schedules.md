@@ -3,7 +3,7 @@ title: "Schedules"
 description: "The nine scheduled jobs of a Catena server, their default times, the schedule syntax, the nightly maintenance chain, and backup retention."
 ---
 
-The **Schedules** page sets when the server does its scheduled work. Apart from the restore test, nothing runs on a schedule until you turn it on here. You can also run every job by hand from the **Actions** page, in every edition.
+The **Schedules** page sets when the server does its scheduled work. Nothing runs on a schedule until you turn it on here. You can also run every job by hand from the **Actions** page, in every edition.
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ Saving an enabled job without an active subscription is refused with "scheduled 
 
 ## The jobs
 
-Every job ships switched off, except the restore test, which ships on. The time shown is the pre-filled schedule, which runs only once the job is on.
+Every job ships switched off. The time shown is the pre-filled schedule, which runs only once the job is on.
 
 | Job | Default schedule | Randomised delay | What it does |
 |---|---|---|---|
@@ -22,7 +22,7 @@ Every job ships switched off, except the restore test, which ships on. The time 
 | **Nightly maintenance** | `*-*-* 03:00:00` (every day, 3 AM) | up to 15 minutes | Backs up, checks the backup, copies it offsite, then moves the server's own components and the deployed applications to newer versions behind those checks. You choose which steps it runs (see [Choosing the steps](#choosing-the-steps)). |
 | **Offsite copy** | `*-*-* 04:30:00` (every day, 4:30 AM) | up to 30 minutes | Copies every declared bucket to the write-once storage at the second provider (see [Offsite copies](/en/configuration/backups/#offsite-copies)). Needs Catena Business. |
 | **Backup integrity check** | `Sun *-*-* 04:15:00` (Sundays, 4:15 AM) | up to 1 hour | Reads a sample of the backup repository end to end, which catches silent storage corruption between snapshots. |
-| **Restore test** | `Sun *-*-* 05:00:00` (Sundays, 5 AM) | up to 1 hour | Restores the latest backup into a scratch area and checks what came back, which proves a backup can be restored. It downloads as much as the backup holds, so it runs weekly. It reports to its own Healthchecks check, so a test that fails or does not run raises an alert (see [Alerts](/en/configuration/alerts/)). Needs Catena Pro. It can instead run as a step of the nightly maintenance (see [Choosing the steps](#choosing-the-steps)). |
+| **Restore test** | `Sun *-*-* 05:00:00` (Sundays, 5 AM) | up to 1 hour | Restores the latest backup into a scratch area and checks what came back, which proves a backup can be restored. It downloads as much as the backup holds and needs as much free disk, so it ships off and runs weekly once on. Turn it on when the server has the room. It reports to its own Healthchecks check, so a test that fails or does not run raises an alert (see [Alerts](/en/configuration/alerts/)). Needs Catena Pro. It can instead run as a step of the nightly maintenance (see [Choosing the steps](#choosing-the-steps)). |
 | **Control panel updates** | `monthly` | up to 30 minutes | Moves the control panel to a newer version, and puts the previous one back if the new one makes the server less healthy. The panel is unavailable for about a minute. |
 | **Server configuration** | `*-*-* 04:20:00` (every day, 4:20 AM) | up to 40 minutes | Brings the server back to the configuration its control panel carries. Anything that drifted is put back, and anything already correct is left alone. |
 | **Off-site heartbeat** | `*:0/5` (every 5 minutes) | up to 30 seconds | Checks that the status page, job monitor and resource monitor answer, then calls the off-site heartbeat address saved in **Settings** > **Alerts and missed-job reporting** (see [Alerts](/en/configuration/alerts/)). Needs that address and Catena Pro. Its section shows the period and grace time to set on the outside check. |
