@@ -104,9 +104,10 @@ This copies a bucket's offsite copy back into the bucket it was copied from. It 
 1. Open **Restore** and go to **Put a bucket back from its offsite copy**. The section is shown once the server's installed components support it (see Troubleshooting). Without a declared copy it reads "No offsite copy is declared on this server. Offsite copies are declared in Settings, under Offsite copies."
 2. Under **Offsite copy to put back**, choose the copy. Each entry shows its name and the address of the bucket it puts back.
 3. Enter **Access key that reads the offsite copy** and **Secret key that reads the offsite copy**. They are used for this run only and kept nowhere.
-4. Optional: under **Application that keeps its files in this bucket**, choose the application when the bucket holds its files, such as Nextcloud. It is put in its backup mode while its files are copied back, then its stored files are checked against its database. Keep **None, as for the backup repository** for any other bucket.
-5. Optional: under **As it was at (UTC, optional)**, enter a date and time to put back the files as the offsite copy held them at that moment, such as before they were encrypted or overwritten. The access key then needs the right to read earlier versions. Left blank, the latest versions are put back.
-6. Tick "I understand the bucket is written to while it is put back." and press **Put the bucket back**.
+4. Optional: under **Application that keeps its files in this bucket**, choose the application when the bucket holds its files, such as Nextcloud. It is put in its backup mode while its files are copied back, then its stored files are checked against its database. Keep **None** for any other bucket, and for the backup repository.
+5. Optional: under **Address of the new bucket**, **Access key that writes the new bucket** and **Secret key that writes the new bucket**, name an empty bucket to put the copy into instead of the bucket it was made from. Fill all three or none. An application cannot be named with a new bucket, and a bucket that holds anything is refused before the copy.
+6. Optional: under **As it was at (UTC, optional)**, enter a date and time to put back the files as the offsite copy held them at that moment, such as before they were encrypted or overwritten. The access key then needs the right to read earlier versions. Left blank, the latest versions are put back.
+7. Tick "I understand the bucket is written to while it is put back." and press **Put the bucket back**.
 
 The section follows the repair step by step: Waiting for the backup, the offsite copy or an update to finish, Reaching both buckets, Checking the bucket can take the copy back, Putting the application in its backup mode, Copying the files back, Taking the application out of its backup mode, Checking the stored files, and Finished. When you chose no application, the three steps that involve one (backup mode in, backup mode out, checking the stored files) pass without doing anything.
 
@@ -114,9 +115,16 @@ The copy writes into the bucket while it runs. A large bucket takes hours, and t
 
 If the repair stops, the section reads "Putting the bucket back stopped at:" followed by the step. Press **Put the bucket back** again with the same entries: starting again copies only what is still missing. A repair that puts the backup repository back is refused at the check step when the bucket already holds a different backup repository, such as one created in place of the lost one, because copying would mix the two. Nothing is copied. Empty the bucket, then start again.
 
-### Order after a restore from the offsite copy
+### Choose how the backup repository carries on
 
-After a restore from the offsite copy, backups wait for a backup destination saved in **Settings** (see [Restore from another backup repository](#restore-from-another-backup-repository)). The offsite copy then stops rather than mix the new repository into the locked bucket that holds the old one: declare a new locked bucket for it under **Offsite copies**. A repair and a restore do not run together: each is refused while the other runs.
+After a restore, backups wait until you confirm the backup destination, or save a new one, in **Settings** (see [Restore from another backup repository](#restore-from-another-backup-repository)). While they wait, the **Restore** page shows **How the backup repository carries on**, with two choices. Press **Save this choice** to record yours.
+
+- **A fresh repository** (selected until you choose otherwise). The backups start a new repository under a new backup password, shown once when you save or confirm the destination in **Settings**. Its offsite copy goes into a new folder of the same locked bucket, beside the old one. Choose this after a suspected compromise.
+- **Continuity**. The backup repository comes back from its offsite copy into a new empty bucket that you name under **Put a bucket back from its offsite copy** (see the steps above, with **Address of the new bucket** filled). Then save that bucket as the backup destination in **Settings**: the backups carry on in it under the same backup password, and the offsite copy carries on in the same folder of the locked bucket, so nothing is stored twice. Choose this after an accident, such as a deleted bucket or a provider outage.
+
+Continuity keeps the repository's master key. A new backup password only re-wraps that key, so anyone who holds the old password and a copy of the old key file can still read the data in the continued repository if they reach its files.
+
+Without a choice, saving a new destination makes a new backup password and confirming the same one does not. A repair and a restore do not run together: each is refused while the other runs.
 
 ## Restore report
 
