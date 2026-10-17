@@ -73,6 +73,8 @@ services:
       - "vps.auth.oidc.redirect_uris=https://nextcloud.yourdomain.com/apps/user_oidc/code"
       - "vps.health.path=/status.php"
       - "vps.auto-update=patch"
+    cap_drop:
+      - NET_RAW
     networks:
       - catena-network
       - default

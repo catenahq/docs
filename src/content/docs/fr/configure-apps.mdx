@@ -50,6 +50,7 @@ Les applications tournent sur Docker Swarm, qui refuse certaines clés compose n
 - **Clés refusées**, qui font rejeter tout le fichier par swarm : `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Les limites vont dans `deploy.resources.limits`, le nombre de répliques dans `deploy.replicas`.
 - **Clés ignorées**, sans effet : `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, `security_opt`, `shm_size`. Les images sont construites et publiées ailleurs; swarm ne fait que les télécharger.
 - **Clés d'accès au serveur.** Swarm abandonne aussi `privileged`, `pid` et `devices` : l'application tourne sans ce qu'elle demandait. La vérification d'application du panneau signale `privileged: true`, `pid: host` et `devices` comme des erreurs ([X1](#x1), [X3](#x3), [X5](#x5)) : le fichier demande le contrôle du serveur. Le fichier corrigé garde la clé : vous décidez.
+- **Pas d'accès réseau brut sur `catena-network`.** Docker donne à chaque conteneur le droit d'envoyer des paquets réseau bruts, ce qui permet à un conteneur de `catena-network` de forger du trafic vers les services propres de Catena. Chaque service qui rejoint `catena-network` porte `cap_drop: [NET_RAW]`. Une application qui a besoin des paquets bruts (un analyseur de réseau, par exemple) ajoute plutôt `cap_add: [NET_RAW]`. La vérification d'application du panneau signale un service qui le garde ([X11](#x11)), et le fichier corrigé porte le retrait. Un fichier déployé à la main garde l'accès jusqu'à ce que vous déployiez le fichier corrigé.
 - **Versions complètes.** Chaque image porte une version complète, comme `1.2.3` ou `1.2.3-alpine`. Seules celles-là sont mises à jour automatiquement : `latest`, `stable`, `1.2` ou `1` ne sont jamais modifiées.
 
 ## Étape 3 : Raccorder le service d'entrée
@@ -323,6 +324,7 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | <a id="x8"></a>X8 | avertissement | Un dossier du serveur monté hors de la zone des applications : l'application lit les fichiers du serveur. |
 | <a id="x9"></a>X9 | avertissement | Un port publié sur le serveur, joignable depuis Internet sans connexion. |
 | <a id="x10"></a>X10 | erreur | Des étiquettes Traefik, qui n'acheminent rien. Utilisez `vps.route.host` et `vps.auth.mode` ou `vps.auth.groups`. |
+| <a id="x11"></a>X11 | avertissement | Un service de `catena-network` qui garde l'accès réseau brut, avec lequel il pourrait forger du trafic vers les services propres de Catena. Le fichier corrigé ajoute `cap_drop: [NET_RAW]`; une application qui a besoin de l'accès ajoute `cap_add: [NET_RAW]` ([X7](#x7) le signale alors). |
 
 ## Dépannage
 

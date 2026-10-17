@@ -50,6 +50,7 @@ Apps run on Docker Swarm, which refuses some compose keys outright and silently 
 - **Refused keys**, which make swarm reject the whole file: `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Limits go in `deploy.resources.limits`, the replica count in `deploy.replicas`.
 - **Dropped keys**, with no effect: `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, `security_opt`, `shm_size`. Images are built and published elsewhere; swarm only pulls them.
 - **Server access keys.** Swarm also drops `privileged`, `pid` and `devices`, so the app runs without what it asked for. The panel's App check reports `privileged: true`, `pid: host` and `devices` as errors ([X1](#x1), [X3](#x3), [X5](#x5)): the file asks for control of the server. The corrected file keeps the key, so you decide.
+- **No raw network access on `catena-network`.** Docker gives every container the right to send raw network packets, which lets a container on `catena-network` forge traffic to Catena's own services. Every service that joins `catena-network` has `cap_drop: [NET_RAW]`. An app that needs raw packets (a network scanner, for example) adds `cap_add: [NET_RAW]` instead. The panel's App check reports a service that keeps it ([X11](#x11)), and the corrected file carries the drop. A file deployed by hand keeps the access until you deploy the corrected file.
 - **Full version tags.** Every image carries a full version tag, such as `1.2.3` or `1.2.3-alpine`. Only those are updated automatically: `latest`, `stable`, `1.2` or `1` are never touched.
 
 ## Step 3: Connect the front door
@@ -323,6 +324,7 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | <a id="x8"></a>X8 | warning | A server folder mounted outside the apps area: the app reads the server's files. |
 | <a id="x9"></a>X9 | warning | A port published on the server, reachable from the internet without signing in. |
 | <a id="x10"></a>X10 | error | Traefik labels, which route nothing. Use `vps.route.host` and `vps.auth.mode` or `vps.auth.groups`. |
+| <a id="x11"></a>X11 | warning | A service on `catena-network` that keeps raw network access, with which it could forge traffic to Catena's own services. The corrected file adds `cap_drop: [NET_RAW]`; an app that needs the access adds `cap_add: [NET_RAW]` ([X7](#x7) then reports it). |
 
 ## Troubleshooting
 

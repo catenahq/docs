@@ -1,6 +1,8 @@
 services:
   web:
     image: example/web:1.2.3
+    cap_drop:
+      - NET_RAW
     networks:
       - catena-network
       - default
@@ -13,6 +15,8 @@ services:
 
   admin:
     image: example/admin:1.2.3
+    cap_drop:
+      - NET_RAW
     networks:
       - catena-network
       - default

@@ -7,6 +7,8 @@ services:
           - node.labels.catena.role==data
     volumes:
       - web-data:/data
+    cap_drop:
+      - NET_RAW
     networks:
       - catena-network
       - default
