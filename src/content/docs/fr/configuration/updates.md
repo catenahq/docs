@@ -93,6 +93,8 @@ Sans analyseur, la vérification des vulnérabilités est désactivée et le dé
 
 Après chaque mise à jour, le serveur compare son état de santé à celui d'avant. S'il est moins bon, la version précédente est remise en place et l'étiquette fautive est mise en quarantaine : la prochaine exécution essaie la version suivante plutôt que la même. Une application dotée d'une base de données reçoit un export fait avant la mise à jour, remis en place lors du retour arrière. Lorsque la nouvelle version d'une application met aussi à niveau sur place son code, sa configuration et ses modules complémentaires, comme Nextcloud, une copie de ceux-ci est faite avant la mise à jour et remise en place lors du retour arrière, l'application étant arrêtée; les fichiers de ses utilisateurs ne sont jamais remis en place. Les copies sont supprimées dès que la mise à jour est conservée ou que le retour arrière se termine. Un retour arrière qui ne peut aboutir les conserve sur le serveur.
 
+Si Portainer refuse de conserver la définition de la nouvelle version d'une application, même après que le serveur l'a déployée de nouveau, la mise à jour est annulée de la même façon, mais la version n'est pas mise en quarantaine, car rien ne l'a montrée défectueuse; l'application est laissée de côté pour le reste de l'exécution.
+
 ### Services exclus des mises à jour automatiques
 
 Le modèle d'une application du catalogue peut poser `vps.auto-update=off` sur un service dont une nouvelle version risque de réécrire ses fichiers au-delà de ce que la version précédente sait lire. L'entretien nocturne ne fait jamais avancer un tel service. Deux services du catalogue sont ainsi exclus : le stockage d'objets de Plane et l'index de recherche de Zammad (Elasticsearch).
@@ -147,9 +149,10 @@ La page **Journal** consigne chaque décision de mise à jour, notamment :
 | Aucune sauvegarde n'est configurée; les mises à jour nocturnes s'appliquent sans sauvegarde. |
 | L'entretien nocturne s'est terminé, ou ne s'est pas terminé correctement, avec l'étape en échec. |
 | Une combinaison d'étapes choisie sur la page Horaires est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). |
-| La mise à jour de `<application>` n'a pas pu être enregistrée, ou son retour arrière n'a pas pu être effacé; la remise à niveau du serveur pourrait donc en changer la version. |
+| `<application>` a été mis à jour vers `<version>`, mais la mise à jour n'a pas pu être enregistrée; la remise à niveau du serveur remet donc la version précédente. |
+| La mise à jour de `<application>` vers `<version>` a été annulée, mais son enregistrement n'a pas pu être effacé; la remise à niveau du serveur pourrait donc réinstaller `<version>`. |
 | La définition de `<application>` enregistrée dans Portainer nomme une image qu'aucun de ses services n'exécute; `<application>` ne reçoit ni mise à jour automatique, ni changement de paramètres, ni restauration à partir de cette définition tant qu'elles ne concordent pas. |
-| La mise à jour nocturne laisse `<application>` de côté : son dernier déploiement a échoué et un service ne fonctionne pas. |
+| La mise à jour nocturne laisse `<application>` de côté : un de ses services ne fonctionne pas. Ses mises à jour reprennent dès que le service fonctionne. |
 
 ## Mettre à jour une application avec Communauté
 
@@ -171,4 +174,4 @@ Faites une sauvegarde préalable (**Actions** > **Sauvegardes** > **Lancer une s
 | La bannière de redémarrage reste affichée | Redémarrez depuis **Système** > **Redémarrage**, ou laissez l'entretien nocturne s'en charger. |
 | La liste de versions est remplacée par une zone de texte | Le registre n'a pas pu être joint; saisissez la version. |
 | La définition d'une application nomme une autre image | Dans Portainer, ouvrez **Stacks**, sélectionnez l'application, réglez chaque `image:` sur ce qu'exécutent ses services, puis déployez. |
-| La mise à jour nocturne laisse une application de côté | Corrigez le service arrêté, puis redéployez l'application depuis Portainer. |
+| La mise à jour nocturne laisse une application de côté | Corrigez le service arrêté. La mise à jour nocturne suivante reprend l'application dès que tous ses services fonctionnent. |

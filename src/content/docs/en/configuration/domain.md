@@ -37,6 +37,12 @@ The warning reads: "Applying replaces this server's Cloudflare tunnel with a new
 
 The same **Apply** repairs a leaked or broken tunnel: press it with the domain already in use to create a fresh tunnel and drop the old one.
 
+### What moves to the new domain
+
+The panel and the applications whose address the panel manages move to the new domain. An application that has its address built in, typed in its own settings, stays on its old name until you move it.
+
+The mail server application is one of these. It keeps its own name until you move it, and its certificate and its DNS records stay with that name: its certificate is issued for it, and its address record (A) and its MTA-STS and TLS-RPT records are published under the zones of that name when the Cloudflare token reaches them. When the token does not reach a zone, Catena keeps the certificate or records that exist and reports the name it left alone. Webmail checks the mail server's certificate against this name, so it keeps working after the domain change.
+
 ### Messages
 
 | Message | Meaning |

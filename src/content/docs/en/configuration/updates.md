@@ -93,6 +93,8 @@ Without a scanner the vulnerability check is off and the waiting period still ap
 
 After each update the server compares its health with the state before. If it is worse, the previous version is put back and the failed tag is quarantined, so the next run tries the next version up instead of the same one. An application with a database gets a dump taken before the update, put back on rollback. When the new version of an application also upgrades its code, configuration and add-ons in place, as Nextcloud does, a copy of those is taken before the update too and put back on rollback while the application is stopped; its users' files are never put back. The copies are deleted once the update is kept or the rollback completes. A rollback that cannot finish keeps them on the server.
 
+If Portainer will not keep the new version's definition of an application even after the server deploys it again, the update is rolled back the same way, but the version is not quarantined, since nothing showed it bad; the application is left alone for the rest of that run.
+
 ### Services kept off the automatic updates
 
 A catalog app's template can set `vps.auto-update=off` on a service whose files a new version may rewrite past what the version before it reads. The nightly maintenance never moves such a service. Two catalog services are kept off this way: Plane's object storage and Zammad's search index (Elasticsearch).
@@ -147,9 +149,10 @@ The **Log** page records every update decision, among them:
 | No backup is configured; nightly updates run without one. |
 | The nightly maintenance completed, or did not complete cleanly and the step that failed. |
 | A combination of steps chosen on the Schedules page is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). |
-| An update of `<app>` could not be recorded, or its rollback could not be cleared, so bringing the server up to date may change its version. |
+| `<app>` was updated to `<version>` but the update could not be recorded, so bringing the server up to date puts the previous version back. |
+| The update of `<app>` to `<version>` was rolled back but its record could not be cleared, so bringing the server up to date may install `<version>` again. |
 | Portainer's saved definition of `<app>` names an image none of its services runs; `<app>` gets no automatic update, settings change or restore from it until they agree. |
-| The nightly update leaves `<app>` alone: its last deployment failed and a service is not running. |
+| The nightly update leaves `<app>` alone: a service of it is not running. Its updates resume once the service runs. |
 
 ## Community: update an application
 
@@ -171,4 +174,4 @@ Take a backup beforehand (**Actions** > **Backups** > **Trigger backup now**). T
 | The restart banner stays | Restart from **System** > **Restart**, or let the nightly maintenance do it. |
 | The version list is replaced by a text box | The registry could not be reached; type the version. |
 | An application's saved definition names another image | In Portainer, open **Stacks**, select the application, set each `image:` to what its services run, and deploy. |
-| The nightly update leaves an application alone | Fix the service that is down, then redeploy the application from Portainer. |
+| The nightly update leaves an application alone | Fix the service that is down. The next nightly update takes the application again once every service runs. |

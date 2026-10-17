@@ -45,6 +45,8 @@ To move a key to another server:
 
 The old server learns of it at its next hourly check, its status changes to the "Polar does not grant this key" sentence below and its paid features lock. A move done with [Restore and migrate](/en/configuration/restore-and-migrate/) frees the old seat and activates the key on the new server automatically.
 
+A whole-server restore onto a new machine checks the key at its end, the same check the hourly one makes, so the new machine takes the key's seat as soon as the restore finishes, with no wait and no need to enter the key again. If the old server still holds the seat, Polar refuses the new machine: free the seat in the customer portal and save the key again.
+
 ## The hourly check and the grace period
 
 Each server asks Polar about its saved key once an hour, at a fixed offset of its own within the hour. A server with no saved key asks nothing. Between checks the features follow the last answer, with no network needed.
@@ -82,6 +84,6 @@ What never locks: applications and their data, manual backups, whole-server rest
 ## Troubleshooting
 
 - The status stays on "Waiting": check that the server can reach Polar over HTTPS, then save the key again to ask at once.
-- "Refused" right after a rebuild or restore: the new machine is a different server to Polar. Free the old activation in the customer portal first.
+- "Refused" right after a rebuild or restore: the new machine is a different server to Polar and the old server still holds the seat. Free the old activation in the customer portal, then save the key again.
 - A panel is still greyed after saving: the saved edition does not include it. The **Edition** line shows what the key grants.
 - An **Unanswered activation** line is shown: an activation reached Polar but its answer was lost, so Polar may count this server's seat as taken while the server does not know it. Free this server's activation, labelled with its domain, in Polar's customer portal, then save the key again.

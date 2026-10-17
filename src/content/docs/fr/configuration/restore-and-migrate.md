@@ -152,6 +152,16 @@ La copie écrit dans le compartiment pendant qu'elle s'exécute. Un gros compart
 
 Si l'opération s'arrête, la section indique "La remise en place du seau s'est arrêtée à :" suivi de l'étape. Appuyez de nouveau sur **Remettre le seau en place** avec les mêmes valeurs : relancer ne recopie que ce qui manque encore. L'opération qui remet en place le dépôt de sauvegarde est refusée à l'étape de vérification lorsque le compartiment contient déjà un autre dépôt de sauvegarde, par exemple un dépôt créé à la place de celui qui a été perdu, car la copie mélangerait les deux. Rien n'est copié. Videz le compartiment, puis relancez.
 
+### Faire pointer Nextcloud vers le nouveau seau
+
+Une fois la copie hors site dans le nouveau seau, faites passer Nextcloud sur ce seau :
+
+1. Dans Portainer, ouvrez **Stacks** et sélectionnez Nextcloud.
+2. Dans l'onglet **Environment**, changez `S3_BUCKET`, ainsi que `S3_HOST`, `S3_REGION`, `S3_ACCESS_KEY` et `S3_SECRET_KEY` s'ils ont changé avec lui.
+3. Déployez de nouveau l'application.
+
+Au démarrage, Catena reporte l'enregistrement de stockage de Nextcloud du nom de l'ancien seau vers celui du nouveau : ses fichiers restent lisibles. Cela vaut seulement si les données ont d'abord été copiées dans le nouveau seau. Si Nextcloud a déjà démarré sur un nouveau seau vide, il détient deux enregistrements de stockage et refuse de démarrer; son journal les nomme et explique comment choisir lequel conserver.
+
 ### Choisir comment le dépôt de sauvegarde se poursuit
 
 Après une restauration, les sauvegardes attendent que vous confirmiez la destination de sauvegarde, ou que vous en enregistriez une nouvelle, dans **Paramètres** (voir [Reprendre les sauvegardes après une restauration](#reprendre-les-sauvegardes-après-une-restauration)). Pendant qu'elles attendent, la page **Restauration** affiche **Comment le dépôt de sauvegarde se poursuit**, avec deux choix. Appuyez sur **Enregistrer ce choix** pour retenir le vôtre.

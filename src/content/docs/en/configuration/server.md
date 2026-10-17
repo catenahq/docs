@@ -62,6 +62,7 @@ The keyset (backup repository address, storage keys and backup encryption passwo
 
 ## Troubleshooting
 
-- A section reports that applying did not start: another configuration run is in progress. Wait for it to finish, then press **Bring this server up to date**.
+- A section reports that it will apply the change as soon as the running update finishes: nothing to do, the server applies it in one more run right after.
+- A section reports that applying did not start: it could be neither started nor queued behind the configuration run in progress. Wait for that run to finish, then press **Bring this server up to date**.
 - The last attempt failed: read the log under "What the server recorded during this attempt". The server keeps its previous configuration, and running again is safe.
 - A time zone is refused: use the exact name, for example `America/Toronto`.

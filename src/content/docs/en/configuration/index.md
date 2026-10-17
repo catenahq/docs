@@ -26,7 +26,8 @@ Sign in with the admin email and the admin password shown once at install. See [
 - A value the section cannot accept is refused as a whole: "Nothing was saved. Correct the fields marked below."
 - Sections that end with **Save and apply** (Infrastructure app subdomains, Outgoing mail, Alerts and missed-job reporting, Sign-in requirements, Time zone and locale) bring the server up to date right away. The note under the button reads: "Saving applies these settings right away: the services that use them restart and are briefly unavailable." Progress shows in **Server configuration**, further down the page.
 - Other sections have their own action: **Apply** for **Domain**, the join for **Admin access tunnel**, and a plain **Save** for the rest. Backup values are read by the backup itself and need no restart.
-- If applying cannot start, the section reports: "Saved, but applying it did not start, most likely because the server is already updating its configuration." Run **Bring this server up to date** once the other work finishes to apply the saved values. See [Server settings](/en/configuration/server/).
+- If the server is already updating its configuration, the section reports: "Saved. The server is already updating its configuration, and will apply this change as soon as that finishes." The server applies the saved values in one more run right after the running one; there is nothing to repeat.
+- If applying can neither start nor be queued, the section reports: "Saved, but applying it did not start, most likely because the server is already updating its configuration." Run **Bring this server up to date** once the other work finishes to apply the saved values. See [Server settings](/en/configuration/server/).
 
 ## First-time setup order
 

@@ -152,6 +152,16 @@ The copy writes into the bucket while it runs. A large bucket takes hours, and t
 
 If the repair stops, the section reads "Putting the bucket back stopped at:" followed by the step. Press **Put the bucket back** again with the same entries: starting again copies only what is still missing. A repair that puts the backup repository back is refused at the check step when the bucket already holds a different backup repository, such as one created in place of the lost one, because copying would mix the two. Nothing is copied. Empty the bucket, then start again.
 
+### Point Nextcloud at the new bucket
+
+Once the offsite copy is in the new bucket, switch Nextcloud to it:
+
+1. In Portainer, open **Stacks** and select Nextcloud.
+2. In the **Environment** tab, change `S3_BUCKET`, and `S3_HOST`, `S3_REGION`, `S3_ACCESS_KEY` and `S3_SECRET_KEY` if they changed with it.
+3. Deploy the stack again.
+
+At start, Catena carries Nextcloud's storage record over from the old bucket's name to the new one, so its files stay readable. This holds only when the data was copied into the new bucket first. If Nextcloud has already started on an empty new bucket, it holds two storage records and refuses to start; its log names both and says how to choose which to keep.
+
 ### Choose how the backup repository carries on
 
 After a restore, backups wait until you confirm the backup destination, or save a new one, in **Settings** (see [Resume the backups after a restore](#resume-the-backups-after-a-restore)). While they wait, the **Restore** page shows **How the backup repository carries on**, with two choices. Press **Save this choice** to record yours.

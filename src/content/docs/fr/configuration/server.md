@@ -62,6 +62,7 @@ La trousse (adresse du dépôt de sauvegarde, clés de stockage et mot de passe 
 
 ## Dépannage
 
-- Une section indique que l'application n'a pas démarré : une autre exécution de configuration est en cours. Attendez sa fin, puis appuyez sur **Remettre ce serveur à niveau**.
+- Une section indique qu'elle appliquera le changement dès que la mise à niveau en cours sera terminée : rien à faire, le serveur l'applique lors d'une exécution de plus, juste après.
+- Une section indique que l'application n'a pas démarré : elle n'a pu ni démarrer ni être mise en file derrière l'exécution de configuration en cours. Attendez la fin de cette exécution, puis appuyez sur **Remettre ce serveur à niveau**.
 - La dernière tentative a échoué : lisez le journal sous "Ce que le serveur a enregistré pendant cette tentative". Le serveur garde sa configuration précédente, et relancer est sans danger.
 - Un fuseau horaire est refusé : utilisez le nom exact, par exemple `America/Toronto`.
