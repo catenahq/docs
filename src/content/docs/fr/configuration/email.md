@@ -37,13 +37,13 @@ Seuls les champs dont l'option choisie a besoin sont affichés :
 |---|---|---|---|
 | **Adresse d'expédition** | oui | oui | oui |
 | **Hôte du serveur SMTP** | non | non | oui |
-| **Port du serveur SMTP** | non | non | oui (587 est le port de soumission habituel) |
+| **Port du serveur SMTP** | non | non | oui (587, ou 465 pour un serveur qui prend TLS dès le premier octet) |
 | **Nom d'utilisateur** | non | oui | oui |
 | **Clé d'API ou mot de passe** | oui | oui | oui |
 
 Le secret est stocké et jamais réaffiché; un champ vide le conserve. Le choix du service est la seule valeur que le panneau valide ("Choisissez l'une des options proposées."). La section se termine par **Enregistrer et appliquer** : les services qui expédient du courriel redémarrent brièvement.
 
-Cette section est le seul endroit où vivent les réglages de courriel du serveur. Les réglages de courriel propres au service de connexion (dans la console d'administration de Keycloak) sont écrasés à partir d'elle chaque fois que la configuration du serveur est appliquée : une modification que vous y faites ne dure pas.
+Les réglages de courriel modifiés dans l'onglet Courriel propre au service de connexion (dans la console d'administration de Keycloak) restent, et cette section ne les modifie plus. L'exception est le mot de passe seul : un nouveau mot de passe saisi uniquement à cet endroit ne peut pas être détecté, de sorte que le mot de passe de cette section le remplace la prochaine fois que la configuration du serveur est appliquée.
 
 ## Étapes côté compte
 
