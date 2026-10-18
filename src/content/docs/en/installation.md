@@ -3,7 +3,7 @@ title: "Installation"
 description: "How to install Catena on a fresh server from Windows, macOS or Linux, the first sign-in, and the installer messages that need attention."
 ---
 
-You install Catena from your admin computer with a small tool, `catena-installer`, that reaches the server over SSH. The installer asks only how to reach the server and your admin email. You set the domain, Cloudflare, backups, email and the private network afterwards in the panel (see [Configuration overview](/en/configuration/)).
+You install Catena from your admin computer with a small tool, `catena-installer`, that reaches the server over SSH. The installer asks only how to reach the server and your admin email and name. You set the domain, Cloudflare, backups, email and the private network afterwards in the panel (see [Configuration overview](/en/configuration/)).
 
 ## Requirements
 
@@ -70,6 +70,8 @@ Each server has an inventory, a folder holding its non-secret settings. The **In
 | **Host initial user** | The login the provider gave, such as `root`, `debian` or `ubuntu`. |
 | **Host initial user's password** | Optional. Needed only when the server does not accept the SSH key yet: the install uses it once to add the key. It is kept in memory only and never written to disk. |
 | **Admin email** | The panel login. |
+| **Admin first name** | Shown in the sign-in service. You can change it there later. |
+| **Admin last name** | Shown in the sign-in service. You can change it there later. |
 | **SSH key file** | The private key (its `.pub` file must sit next to it). The box **Create this SSH key pair now** creates a missing pair. |
 
 The initial user can no longer sign in over SSH once Catena is installed. The installer creates a new user, `ops`, to administer the server.

@@ -3,7 +3,7 @@ title: "Installation"
 description: "Installation de Catena sur un serveur neuf depuis Windows, macOS ou Linux, première connexion et messages de l'installateur qui demandent une intervention."
 ---
 
-Vous installez Catena depuis votre ordinateur d'administration, avec un petit outil, `catena-installer`, qui joint le serveur en SSH. L'installateur demande seulement comment joindre le serveur et votre courriel d'administrateur. Vous réglez ensuite le domaine, Cloudflare, les sauvegardes, le courriel sortant et le réseau privé dans le panneau (voir la [Vue d'ensemble de la configuration](/fr/configuration/)).
+Vous installez Catena depuis votre ordinateur d'administration, avec un petit outil, `catena-installer`, qui joint le serveur en SSH. L'installateur demande seulement comment joindre le serveur, ainsi que votre courriel et votre nom d'administrateur. Vous réglez ensuite le domaine, Cloudflare, les sauvegardes, le courriel sortant et le réseau privé dans le panneau (voir la [Vue d'ensemble de la configuration](/fr/configuration/)).
 
 ## Prérequis
 
@@ -70,6 +70,8 @@ Chaque serveur a un inventaire, un dossier qui contient ses réglages non secret
 | **Utilisateur initial du serveur** | L'identifiant fourni par l'hébergeur, par exemple `root`, `debian` ou `ubuntu`. |
 | **Mot de passe de l'utilisateur initial** | Facultatif. Nécessaire seulement si le serveur n'accepte pas encore la clé SSH : l'installation s'en sert une fois pour ajouter la clé. Il reste en mémoire et n'est jamais écrit sur le disque. |
 | **Courriel de l'administrateur** | L'identifiant de connexion du panneau. |
+| **Prénom de l'administrateur** | Affiché dans le service de connexion. Vous pourrez le modifier plus tard à cet endroit. |
+| **Nom de l'administrateur** | Affiché dans le service de connexion. Vous pourrez le modifier plus tard à cet endroit. |
 | **Fichier de clé SSH** | La clé privée (son fichier `.pub` doit se trouver à côté). La case **Créer cette paire de clés SSH maintenant** crée une paire absente. |
 
 L'utilisateur initial ne peut plus ouvrir de session SSH une fois Catena installé. L'installateur crée un nouvel utilisateur, `ops`, pour administrer le serveur.
