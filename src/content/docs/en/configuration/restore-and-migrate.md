@@ -84,7 +84,7 @@ You need the repository's address, its password (the backup encryption password)
 
    | Field | Value |
    |---|---|
-   | **Repository address** | The repository address, `s3:https://<endpoint>/<bucket>`. The addresses of this server's offsite copies are suggested. |
+   | **Repository address** | The repository address, `s3:https://<endpoint>/<bucket>`. The addresses of this server's offsite copies are suggested, and so are the repositories you [listed in a locked bucket](#list-the-repositories-in-a-locked-bucket). |
    | **Repository password** | The backup encryption password |
    | **Storage access key** | The S3 access key |
    | **Storage secret key** | The S3 secret key |
@@ -147,7 +147,7 @@ This copies a bucket's offsite copy back into the bucket it was copied from. It 
 2. Under **Offsite copy to put back**, choose the copy. Each entry shows its name and the address of the bucket it puts back.
 3. Enter **Access key that reads the offsite copy** and **Secret key that reads the offsite copy**. They are used for this run only and kept nowhere.
 4. Optional: under **Application that keeps its files in this bucket**, choose the application when the bucket holds its files, such as Nextcloud. It is put in its backup mode while its files are copied back, then its stored files are checked against its database. Keep **None** for any other bucket, and for the backup repository.
-5. Optional: under **Into another bucket (optional)**, fill **Address of the new bucket**, **Access key that writes the new bucket** and **Secret key that writes the new bucket** to put the copy into an empty bucket instead of the bucket it was made from. Fill all three or none. Enter **Region of the new bucket (optional)** when the storage provider names one: it is used for the application you chose in step 4. A bucket that holds anything is refused before the copy. With an application and a new bucket, the repair also switches the application to the new bucket (see [Point Nextcloud at the new bucket](#point-nextcloud-at-the-new-bucket)).
+5. Optional: under **Into another bucket (optional)**, the fields start with the bucket the chosen copy is made from (**Address of the new bucket**) and its access key (**Access key that writes the new bucket**), so the files go back where they were. Leave **Secret key that writes the new bucket** blank to keep the secret the server holds. For the backup repository's copy the fields start empty, because the backup repository is never put back into its own bucket. To put the copy into another, empty bucket instead, replace the address, the access key and the secret key with that bucket's: a changed bucket or access key needs its secret. Enter **Region of the new bucket (optional)** when the storage provider names one: it is used for the application you chose in step 4. A bucket that holds anything is refused before the copy. With an application and a new bucket, the repair also switches the application to the new bucket (see [Point Nextcloud at the new bucket](#point-nextcloud-at-the-new-bucket)).
 6. Optional: under **As it was at (UTC, optional)**, enter a date and time to put back the files as the offsite copy held them at that moment, such as before they were encrypted or overwritten. The access key then needs the right to read earlier versions. Left blank, the latest versions are put back.
 7. Tick "I understand the bucket is written to while it is put back." and press **Put the bucket back**.
 
@@ -166,6 +166,16 @@ To move Nextcloud's files to a new bucket, the repair form does the whole move:
 3. Fill in the rest of the form as described above and press **Put the bucket back**.
 
 The repair copies the files into the new bucket. At the step Pointing the application and the offsite copy at the new bucket, it switches Nextcloud to the new bucket and its keys, renames Nextcloud's storage so its files stay readable, and makes the offsite copy copy the new bucket from then on. Nextcloud restarts on the new bucket. If the switch fails, Nextcloud's settings are put back. Nextcloud has to be running; a Nextcloud you stopped yourself is refused, so start it first. A Nextcloud a restore left stopped is switched when you start it from the **Restore** page (see [Start the applications after a restore](#start-the-applications-after-a-restore)). You change nothing in Portainer.
+
+### List the repositories in a locked bucket
+
+To find the backup repositories an offsite copy's locked bucket holds, such as the one a fresh start copies into its own folder:
+
+1. Below the repair form, under **Repositories in an offsite copy's bucket**, choose the copy under **Offsite copy to put back**.
+2. Enter **Access key that reads the offsite copy** and **Secret key that reads the offsite copy**. They read the bucket for this request only and are kept nowhere.
+3. Press **List the repositories**.
+
+The page reads "Backup repositories in this bucket:" followed by the addresses, "This bucket holds no backup repository." or "The bucket could not be listed." with the reason. Each address is offered as a suggestion in **Repository address** under **Another backup repository** (see [Restore from another backup repository](#restore-from-another-backup-repository)).
 
 ### Choose how the backup repository carries on
 

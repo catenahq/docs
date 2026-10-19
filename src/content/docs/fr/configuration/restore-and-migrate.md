@@ -84,7 +84,7 @@ Il vous faut l'adresse du dépôt, son mot de passe (le mot de passe de chiffrem
 
    | Champ | Valeur |
    |---|---|
-   | **Adresse du dépôt** | L'adresse du dépôt, `s3:https://<point-d-acces>/<compartiment>`. Les adresses des copies hors site de ce serveur sont proposées. |
+   | **Adresse du dépôt** | L'adresse du dépôt, `s3:https://<point-d-acces>/<compartiment>`. Les adresses des copies hors site de ce serveur sont proposées, ainsi que les dépôts que vous avez [listés dans un seau verrouillé](#lister-les-dépôts-dun-seau-verrouillé). |
    | **Mot de passe du dépôt** | Le mot de passe de chiffrement des sauvegardes |
    | **Clé d'accès du stockage** | La clé d'accès S3 |
    | **Clé secrète du stockage** | La clé secrète S3 |
@@ -147,7 +147,7 @@ Cette opération recopie la copie hors site d'un compartiment dans le compartime
 2. Sous **Copie hors site à remettre en place**, choisissez la copie. Chaque entrée indique son nom et l'adresse du compartiment qu'elle remet en place.
 3. Saisissez **Clé d'accès qui lit la copie hors site** et **Clé secrète qui lit la copie hors site**. Elles servent à cette opération seulement et ne sont conservées nulle part.
 4. Facultatif : sous **Application qui range ses fichiers dans ce seau**, choisissez l'application lorsque le compartiment contient ses fichiers, comme Nextcloud. Elle est mise en mode sauvegarde pendant que ses fichiers sont recopiés, puis ses fichiers stockés sont comparés à sa base de données. Gardez **Aucune** pour tout autre compartiment, et pour le dépôt de sauvegarde.
-5. Facultatif : sous **Dans un autre seau (facultatif)**, remplissez **Adresse du nouveau seau**, **Clé d'accès qui écrit dans le nouveau seau** et **Clé secrète qui écrit dans le nouveau seau** pour mettre la copie dans un compartiment vide au lieu du compartiment dont elle provient. Remplissez les trois champs ou aucun. Saisissez **Région du nouveau seau (facultatif)** lorsque le fournisseur de stockage en indique une : elle sert pour l'application choisie à l'étape 4. Un compartiment qui contient quoi que ce soit est refusé avant la copie. Avec une application et un nouveau compartiment, l'opération règle aussi l'application sur le nouveau compartiment (voir [Faire pointer Nextcloud vers le nouveau seau](#faire-pointer-nextcloud-vers-le-nouveau-seau)).
+5. Facultatif : sous **Dans un autre seau (facultatif)**, les champs commencent par le seau dont provient la copie choisie (**Adresse du nouveau seau**) et sa clé d'accès (**Clé d'accès qui écrit dans le nouveau seau**), de sorte que les fichiers retournent là où ils étaient. Laissez **Clé secrète qui écrit dans le nouveau seau** vide pour garder celle que le serveur détient. Pour la copie du dépôt de sauvegarde, les champs commencent vides, car le dépôt de sauvegarde n'est jamais remis dans son propre seau. Pour mettre plutôt la copie dans un autre compartiment vide, remplacez l'adresse, la clé d'accès et la clé secrète par celles de ce compartiment : un seau ou une clé d'accès modifié exige sa clé secrète. Saisissez **Région du nouveau seau (facultatif)** lorsque le fournisseur de stockage en indique une : elle sert pour l'application choisie à l'étape 4. Un compartiment qui contient quoi que ce soit est refusé avant la copie. Avec une application et un nouveau compartiment, l'opération règle aussi l'application sur le nouveau compartiment (voir [Faire pointer Nextcloud vers le nouveau seau](#faire-pointer-nextcloud-vers-le-nouveau-seau)).
 6. Facultatif : sous **Tel qu'il était le (UTC, facultatif)**, saisissez une date et une heure pour remettre les fichiers tels que la copie hors site les contenait à ce moment, par exemple avant qu'ils soient chiffrés ou écrasés. La clé d'accès doit alors avoir le droit de lire les versions antérieures. Laissé vide, les versions les plus récentes sont remises en place.
 7. Cochez "Je comprends que le seau est modifié pendant sa remise en place." et appuyez sur **Remettre le seau en place**.
 
@@ -166,6 +166,16 @@ Pour déplacer les fichiers de Nextcloud vers un nouveau seau, le formulaire de 
 3. Remplissez le reste du formulaire comme décrit plus haut et appuyez sur **Remettre le seau en place**.
 
 L'opération copie les fichiers dans le nouveau seau. À l'étape Réglage de l'application et de la copie hors site sur le nouveau seau, elle règle Nextcloud sur le nouveau seau et ses clés, renomme le stockage de Nextcloud pour que ses fichiers restent lisibles, et fait copier le nouveau seau par la copie hors site désormais. Nextcloud redémarre sur le nouveau seau. Si le réglage échoue, les paramètres de Nextcloud sont remis comme avant. Nextcloud doit être en marche : un Nextcloud que vous avez arrêté vous-même est refusé, donc démarrez-le d'abord. Un Nextcloud qu'une restauration a laissé arrêté est réglé lorsque vous le démarrez depuis la page **Restauration** (voir [Démarrer les applications après une restauration](#démarrer-les-applications-après-une-restauration)). Vous ne changez rien dans Portainer.
+
+### Lister les dépôts d'un seau verrouillé
+
+Pour trouver les dépôts de sauvegarde que contient le seau verrouillé d'une copie hors site, comme celui qu'un nouveau départ recopie dans son propre dossier :
+
+1. Sous le formulaire de remise en place, sous **Dépôts du seau d'une copie hors site**, choisissez la copie sous **Copie hors site à remettre en place**.
+2. Saisissez **Clé d'accès qui lit la copie hors site** et **Clé secrète qui lit la copie hors site**. Elles lisent le seau pour cette demande seulement et ne sont conservées nulle part.
+3. Appuyez sur **Lister les dépôts**.
+
+La page indique "Dépôts de sauvegarde de ce seau :" suivi des adresses, "Ce seau ne contient aucun dépôt de sauvegarde." ou "Le seau n'a pas pu être listé." avec la raison. Chaque adresse est proposée en suggestion sous **Adresse du dépôt** de **Un autre dépôt de sauvegarde** (voir [Restaurer depuis un autre dépôt de sauvegarde](#restaurer-depuis-un-autre-dépôt-de-sauvegarde)).
 
 ### Choisir comment le dépôt de sauvegarde se poursuit
 
