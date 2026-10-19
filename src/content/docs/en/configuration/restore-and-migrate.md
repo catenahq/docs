@@ -124,6 +124,11 @@ The backup password follows your choice on the **Restore** page:
 
 The offsite copy that copied the old destination follows the new one. With a fresh repository it copies into a folder of its own in the same locked bucket, named after the new repository, and what it copied of the old one stays where it is. With continuity it carries on in the same folder.
 
+With continuity, saving first opens the offsite copy and checks that it holds the same repository as the new destination. The backups keep waiting, and the section names the copy and its address, in two cases:
+
+- The offsite copy holds another repository than the new destination. The reason ends "Put the offsite copy back into the new bucket, or choose a fresh start". Put the offsite copy back into the new bucket first (see [Put a bucket back from its offsite copy](#put-a-bucket-back-from-its-offsite-copy)) and save that bucket again, or choose **A fresh repository** under **How the backup repository carries on** and save again.
+- The offsite copy does not open, so it cannot be checked. Correct the cause the reason gives, such as the keys of the offsite copy in **Settings**, under **Offsite copies**, then save again.
+
 ## Turn the nightly updates back on after a restore
 
 For the same reason, a whole-server restore switches the nightly maintenance's **Updates** and **Docker engine upgrade** steps off, and the other steps keep the choice you made. Nothing changes on the server overnight until you decide. Every admin page then shows a banner: "No automatic updates are configured on this server since the restore of {date}. Turn them back on in Schedules, under Nightly maintenance." The **Current restore** section reads "The nightly updates stay off until they are turned back on in Schedules."
@@ -142,25 +147,25 @@ This copies a bucket's offsite copy back into the bucket it was copied from. It 
 2. Under **Offsite copy to put back**, choose the copy. Each entry shows its name and the address of the bucket it puts back.
 3. Enter **Access key that reads the offsite copy** and **Secret key that reads the offsite copy**. They are used for this run only and kept nowhere.
 4. Optional: under **Application that keeps its files in this bucket**, choose the application when the bucket holds its files, such as Nextcloud. It is put in its backup mode while its files are copied back, then its stored files are checked against its database. Keep **None** for any other bucket, and for the backup repository.
-5. Optional: under **Address of the new bucket**, **Access key that writes the new bucket** and **Secret key that writes the new bucket**, name an empty bucket to put the copy into instead of the bucket it was made from. Fill all three or none. An application cannot be named with a new bucket, and a bucket that holds anything is refused before the copy.
+5. Optional: under **Into another bucket (optional)**, fill **Address of the new bucket**, **Access key that writes the new bucket** and **Secret key that writes the new bucket** to put the copy into an empty bucket instead of the bucket it was made from. Fill all three or none. Enter **Region of the new bucket (optional)** when the storage provider names one: it is used for the application you chose in step 4. A bucket that holds anything is refused before the copy. With an application and a new bucket, the repair also switches the application to the new bucket (see [Point Nextcloud at the new bucket](#point-nextcloud-at-the-new-bucket)).
 6. Optional: under **As it was at (UTC, optional)**, enter a date and time to put back the files as the offsite copy held them at that moment, such as before they were encrypted or overwritten. The access key then needs the right to read earlier versions. Left blank, the latest versions are put back.
 7. Tick "I understand the bucket is written to while it is put back." and press **Put the bucket back**.
 
-The section follows the repair step by step: Waiting for the backup, the offsite copy or an update to finish, Reaching both buckets, Checking the bucket can take the copy back, Putting the application in its backup mode, Copying the files back, Taking the application out of its backup mode, Checking the stored files, and Finished. When you chose no application, the three steps that involve one (backup mode in, backup mode out, checking the stored files) pass without doing anything.
+The section follows the repair step by step: Waiting for the backup, the offsite copy or an update to finish, Reaching both buckets, Checking the bucket can take the copy back, Putting the application in its backup mode, Copying the files back, Pointing the application and the offsite copy at the new bucket, Taking the application out of its backup mode, Checking the stored files, and Finished. When you chose no application, the three steps that involve one (backup mode in, backup mode out, checking the stored files) pass without doing anything. When you named no new bucket, the pointing step passes without doing anything too.
 
 The copy writes into the bucket while it runs. A large bucket takes hours, and the storage provider may charge for the data read.
 
-If the repair stops, the section reads "Putting the bucket back stopped at:" followed by the step. Press **Put the bucket back** again with the same entries: starting again copies only what is still missing. A repair that puts the backup repository back is refused at the check step when the bucket already holds a different backup repository, such as one created in place of the lost one, because copying would mix the two. Nothing is copied. Empty the bucket, then start again.
+If the repair stops, the section reads "Putting the bucket back stopped at:" followed by the step. Press **Put the bucket back** again with the same entries: starting again copies only what is still missing. The backup repository is never put back into its own bucket: a request to do so is refused before anything is copied. Save a new backup destination in **Settings**, under **Backup repository**, or name a new empty bucket for the copy to go into under **Into another bucket (optional)** and save that bucket as the backup destination (see [Choose how the backup repository carries on](#choose-how-the-backup-repository-carries-on)).
 
 ### Point Nextcloud at the new bucket
 
-Once the offsite copy is in the new bucket, switch Nextcloud to it:
+To move Nextcloud's files to a new bucket, the repair form does the whole move:
 
-1. In Portainer, open **Stacks** and select Nextcloud.
-2. In the **Environment** tab, change `S3_BUCKET`, and `S3_HOST`, `S3_REGION`, `S3_ACCESS_KEY` and `S3_SECRET_KEY` if they changed with it.
-3. Deploy the stack again.
+1. Under **Application that keeps its files in this bucket**, choose Nextcloud.
+2. Under **Into another bucket (optional)**, fill **Address of the new bucket**, **Access key that writes the new bucket** and **Secret key that writes the new bucket**, and **Region of the new bucket (optional)** when the storage provider names one.
+3. Fill in the rest of the form as described above and press **Put the bucket back**.
 
-At start, Catena carries Nextcloud's storage record over from the old bucket's name to the new one, so its files stay readable. This holds only when the data was copied into the new bucket first. If Nextcloud has already started on an empty new bucket, it holds two storage records and refuses to start; its log names both and says how to choose which to keep.
+The repair copies the files into the new bucket. At the step Pointing the application and the offsite copy at the new bucket, it switches Nextcloud to the new bucket and its keys, renames Nextcloud's storage so its files stay readable, and makes the offsite copy copy the new bucket from then on. Nextcloud restarts on the new bucket. If the switch fails, Nextcloud's settings are put back. Nextcloud has to be running; a Nextcloud you stopped yourself is refused, so start it first. A Nextcloud a restore left stopped is switched when you start it from the **Restore** page (see [Start the applications after a restore](#start-the-applications-after-a-restore)). You change nothing in Portainer.
 
 ### Choose how the backup repository carries on
 
@@ -252,6 +257,6 @@ After a completed move the old server is stopped, not erased. Its data and backu
 | "The applications could not be started." | The request was refused. The server's reason follows, such as "choose at least one application to start" or an application that is no longer left stopped. |
 | "Its last start did not finish:" | The reason follows. The application was stopped again and stays listed. Fix the cause, then start it again from **Applications left stopped after the restore**. |
 | "Started outside this panel since the restore, without their database check or their release from backup mode: ..." | The listed applications were started in Portainer. Start them from the **Restore** page to run the database check and the release from backup mode they skipped. |
-| "The backups still wait: ..." or "The server did not answer, so the backups still wait. Saving the destination again retries." under **Backup repository** | The destination was saved but the backups did not resume. The reason follows: the destination does not open, no destination is saved, or a restore is running or stopped part-way. Fix the cause, then save again. |
+| "The backups still wait: ..." or "The server did not answer, so the backups still wait. Saving the destination again retries." under **Backup repository** | The destination was saved but the backups did not resume. The reason follows: the destination does not open, no destination is saved, a restore is running or stopped part-way, or, with continuity, the offsite copy holds another repository or does not open (see [Resume the backups after a restore](#resume-the-backups-after-a-restore)). Fix the cause, then save again. |
 | "No new backup password was made, so the backups still wait: ..." | The new backup password could not be made. Save the destination again. |
 | Log: the restore left `<app>` stopped | The backup was taken while its saved definition named an image its services did not run. Set the definition to the versions the services ran and deploy it from Portainer. |
