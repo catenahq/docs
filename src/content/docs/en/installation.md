@@ -167,6 +167,7 @@ The installer prints its messages in English in both locales. Messages are quote
 | `catena-installer: the panel forward did not open: <problem>` | The SSH forward to the panel could not start. | Run `uvx catena-installer connect --inventory prod`. If a local port is busy, the installer prints another address. |
 | `refusing to continue: this session did not prove that ops opens with its key` | The second login was not an `ops` key login, so nothing was closed. | Run the install again from the installer. |
 | `the passwords could not be shown; running the install again shows them` | The passwords were not displayed. | Run the install again (the journal verification key is shown only on the first install). |
+| `catena-install: waiting for an earlier install on this server to end`, or `catena-install: waiting for another lane holding /run/catena.lock` | An earlier install whose connection dropped is still finishing on the server, or another job is running there. | Wait. The install goes on once the other one ends. |
 | `The installation stopped. The output says where.` | The install failed. | Read the output for the failing step, fix the cause, and run the install again. |
 
 The console exits with 0 when installed, 1 when the install failed, 3 when it finished and a check failed, and 4 when the server refused the second login.
@@ -175,7 +176,7 @@ A public port scan reported as skipped (`public port scan SKIPPED`) only means t
 
 ## Re-run, upgrade and uninstall
 
-**Re-run.** Running the install again on an installed server is safe. It asks nothing, re-applies everything with the release the server records, validates the server and shows the passwords again (the journal verification key is shown once). It is also the way in when the panel is unavailable, for example after a full disk.
+**Re-run.** Running the install again on an installed server is safe. It asks nothing, re-applies everything with the release the server records, validates the server and shows the passwords again (the journal verification key is shown once). It is also the way in when the panel is unavailable, for example after a full disk. An install whose connection drops keeps running on the server until it ends, and running the install again waits for it.
 
 ```sh
 uvx catena-installer install --inventory prod
