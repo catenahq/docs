@@ -5,6 +5,11 @@
 # checkout step puts contracts at $GITHUB_WORKSPACE/contracts and the
 # docs job at $GITHUB_WORKSPACE/docs. Local dev mirrors this layout.
 # catenahq/contracts is public, so the checkout needs no token.
+#
+# A push to a branch keeps the absolute gate. A pull request is judged on what
+# it introduces: the docs job and the duplication ratchet run through
+# contracts' new-failures-only action, which passes when the base commit fails
+# them too.
 
 name: CI
 
@@ -36,18 +41,6 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: "24"
-      - name: Install
-        working-directory: ./docs
-        run: npm ci
-      - name: Unicode hygiene (no em dashes / smart quotes / decorative symbols)
-        working-directory: ./docs
-        run: npm run check:unicode
-      - name: Repo rules (no tracked env file; .gitignore carries the env rule)
-        working-directory: ./docs
-        run: node ../contracts/scripts/check-repo-rules.mjs
-      - name: Versions (the documentation names no product version)
-        working-directory: ./docs
-        run: npm run check:versions
       # Pinned in contracts/.vale-version, which check-prose.mjs also
       # reads and enforces: the grammars decide which comments are
       # visible, so a different version is a different gate.
@@ -58,15 +51,24 @@ jobs:
           curl -fsSL "https://github.com/errata-ai/vale/releases/download/v${version}/vale_${version}_Linux_64-bit.tar.gz" \
             | tar -xz -C "$RUNNER_TEMP/bin" vale
           echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
-      - name: Prose (comments describe the code, not its history)
-        working-directory: ./docs
-        run: npm run check:prose
-      - name: Typecheck
-        working-directory: ./docs
-        run: npm run check
-      - name: Build
-        working-directory: ./docs
-        run: npm run build
+      - name: Install, hygiene, versions, prose, typecheck and build
+        # Install is part of the gate: an update may change the lock.
+        # Unicode hygiene (no em dashes / smart quotes / decorative symbols),
+        # repo rules (no tracked env file; .gitignore carries the env rule),
+        # versions (the documentation names no product version), prose
+        # (comments describe the code, not its history).
+        uses: catenahq/contracts/.github/actions/new-failures-only@main
+        with:
+          working-directory: ${{ github.workspace }}/docs
+          repo-path: ${{ github.workspace }}/docs
+          run: |
+            npm ci
+            npm run check:unicode
+            node ../contracts/scripts/check-repo-rules.mjs
+            npm run check:versions
+            npm run check:prose
+            npm run check
+            npm run build
 
   duplication:
     # Copy-paste ratchet: .jscpd.json carries the baseline threshold;
@@ -82,4 +84,8 @@ jobs:
         with:
           node-version: "24"
       - name: jscpd (threshold in .jscpd.json)
-        run: npx --yes jscpd@4 --silent
+        uses: catenahq/contracts/.github/actions/new-failures-only@main
+        with:
+          working-directory: ${{ github.workspace }}
+          repo-path: ${{ github.workspace }}
+          run: npx --yes jscpd@4 --silent
