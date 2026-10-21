@@ -90,6 +90,44 @@ docker service scale <nom>=1
 
 Passer à zéro, c'est l'arrêt; revenir à un, c'est le démarrage. Une application qu'une restauration a laissée à l'arrêt n'a aucun service tant qu'elle n'est pas démarrée : `docker service scale` ne la démarre donc pas. Vous reconstruisez un serveur entier à partir de la trousse en suivant [Restauration et migration](/fr/configuration/restore-and-migrate/), ce qui fonctionne sans le panneau d'administration.
 
+### Restaurer une application sur n'importe quelle machine
+
+Vous pouvez ramener une application sur toute machine munie de Docker et de restic, sans Catena. La sauvegarde garde chaque application dans un dossier qui porte son nom et contient son fichier compose (`docker-compose.yml`), ses réglages dans `.env` et une note sur l'origine du fichier. Ses données vivent dans des volumes Docker qui portent son nom. Avant de commencer, définissez `RESTIC_REPOSITORY`, `RESTIC_PASSWORD`, `AWS_ACCESS_KEY_ID` et `AWS_SECRET_ACCESS_KEY` dans votre terminal à partir de la trousse. Sur le serveur lui-même, chargez-les comme montré plus haut.
+
+1. Restaurez le dossier de l'application et ses volumes dans un répertoire vide. Remplacez `<app>` par le nom de l'application et `<volume>` par chacun de ses volumes (`docker volume ls` sur le serveur les liste) :
+
+   ```sh
+   restic restore latest --target /recovered \
+     --include /srv/catena/compose/<app> \
+     --include /srv/catena/docker/volumes/<volume>
+   ```
+
+2. Créez chaque volume et copiez-y ses données :
+
+   ```sh
+   docker volume create <volume>
+   sudo cp -a /recovered/srv/catena/docker/volumes/<volume>/_data/. \
+     /var/lib/docker/volumes/<volume>/_data/
+   ```
+
+3. Sur une machine qui n'exécute pas encore Docker swarm, préparez-la une fois. Les applications de Catena s'exécutent comme services swarm sur un réseau nommé `catena-network`, sur un nœud portant l'étiquette `catena.role=data` :
+
+   ```sh
+   docker swarm init
+   docker network create --driver overlay catena-network
+   docker node update --label-add catena.role=data self
+   ```
+
+4. Démarrez l'application depuis son dossier, avec les réglages de `.env` chargés :
+
+   ```sh
+   cd /recovered/srv/catena/compose/<app>
+   set -a; . ./.env; set +a
+   docker stack deploy -c docker-compose.yml <app>
+   ```
+
+Le fichier compose nomme les versions exactes des images qui étaient en service : l'application redémarre donc dans la version que ses données attendent.
+
 Pour partir complètement :
 
 1. Exportez ce dont vous avez besoin avec les outils propres à chaque application.

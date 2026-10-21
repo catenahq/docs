@@ -90,6 +90,44 @@ docker service scale <name>=1
 
 Scaling to zero is the stop, and back to one is the start. An application a restore left stopped has no service until it is started, so `docker service scale` does not start it. You rebuild a whole server from the keyset by following [Restore and migrate](/en/configuration/restore-and-migrate/), which works without the admin panel.
 
+### Restore one app on any machine
+
+You can bring one app back on any machine that has Docker and restic, without Catena. The backup keeps each app in a folder named after it, holding its compose file (`docker-compose.yml`), its settings in `.env` and a note of where the file came from. Its data lives in Docker volumes that carry its name. Before you start, set `RESTIC_REPOSITORY`, `RESTIC_PASSWORD`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` in your shell from the keyset. On the server itself, load them as shown above.
+
+1. Restore the app's folder and its volumes into an empty directory. Replace `<app>` with the app's name and `<volume>` with each of its volumes (`docker volume ls` on the server lists them):
+
+   ```sh
+   restic restore latest --target /recovered \
+     --include /srv/catena/compose/<app> \
+     --include /srv/catena/docker/volumes/<volume>
+   ```
+
+2. Create each volume and copy its data in:
+
+   ```sh
+   docker volume create <volume>
+   sudo cp -a /recovered/srv/catena/docker/volumes/<volume>/_data/. \
+     /var/lib/docker/volumes/<volume>/_data/
+   ```
+
+3. On a machine that does not run Docker swarm yet, prepare it once. Catena's apps run as swarm services on a network named `catena-network`, on a node labelled `catena.role=data`:
+
+   ```sh
+   docker swarm init
+   docker network create --driver overlay catena-network
+   docker node update --label-add catena.role=data self
+   ```
+
+4. Start the app from its folder, with the settings in `.env` loaded:
+
+   ```sh
+   cd /recovered/srv/catena/compose/<app>
+   set -a; . ./.env; set +a
+   docker stack deploy -c docker-compose.yml <app>
+   ```
+
+The compose file names the exact image versions that were running, so the app comes back at the version its data expects.
+
 To move away entirely:
 
 1. Export what you need with each app's own tools.
