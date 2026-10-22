@@ -3,22 +3,22 @@ title: "Horaires"
 description: "Les neuf tâches planifiées d'un serveur Catena, leurs heures par défaut, la syntaxe des horaires, la chaîne d'entretien nocturne et la conservation des sauvegardes."
 ---
 
-La page **Horaires** règle le moment où le serveur effectue ses tâches planifiées. Rien ne s'exécute selon un horaire tant que vous ne l'activez pas ici. Vous pouvez aussi lancer chaque tâche à la main depuis la page **Actions**, dans toutes les éditions.
+La page **Horaires** règle le moment où le serveur effectue ses tâches planifiées. Sauf la **Veille des vulnérabilités** sur un serveur qui n'a jamais enregistré ses horaires, rien ne s'exécute selon un horaire tant que vous ne l'activez pas ici. Vous pouvez aussi lancer chaque tâche à la main depuis la page **Actions**, dans toutes les éditions.
 
 ## Prérequis
 
-- Catena Pro ou Catena Business. Activer un horaire demande un abonnement actif (voir [Abonnement](/fr/configuration/subscription/) et la [comparaison des éditions](https://catena.run/fr/#pricing)). Avec Communauté, la page indique "Les horaires s'activent avec une licence Catena. D'ici là, chaque tâche ci-dessous peut encore être lancée à la main depuis la page Actions."
+- Un serveur sans abonnement payant (Catena Communauté) planifie deux tâches : la tâche **Sauvegarde**, au plus une fois par semaine, et la **Veille des vulnérabilités**, au plus une fois par jour. Toute autre tâche, et une sauvegarde plus fréquente, demande Catena Pro ou Catena Business (voir [Abonnement](/fr/configuration/subscription/) et la [comparaison des éditions](https://catena.run/fr/#pricing)). Sans abonnement payant, la page indique "Sans abonnement payant, ce serveur planifie sa sauvegarde au plus une fois par semaine et sa veille des vulnérabilités au plus une fois par jour. Toute autre tâche, et une sauvegarde plus fréquente, exige Catena Pro, et la copie hors site exige Catena Business. Chaque tâche qui exige un abonnement payant indique ci-dessous si elle peut encore être lancée à la main."
 - Pour la tâche de sauvegarde, un dépôt de sauvegarde configuré (voir [Sauvegardes et stockage S3](/fr/configuration/backups/)).
 
-Enregistrer une tâche activée sans abonnement actif est refusé avec le message "scheduled work needs an active Catena Pro licence", une fois l'horaire lui-même vérifié.
+Enregistrer une tâche que l'abonnement ne couvre pas est refusé avec le message "scheduling this lane needs an active Catena Pro licence", ou "this lane needs an active Catena Business licence" pour la copie hors site, une fois l'horaire lui-même vérifié. Enregistrer un horaire de sauvegarde ou de veille des vulnérabilités plus fréquent que ce que permet un serveur sans abonnement payant est aussi refusé (voir [Syntaxe des horaires](#syntaxe-des-horaires)).
 
 ## Les tâches
 
-Chaque tâche est livrée désactivée. L'heure indiquée est l'horaire prérempli, qui ne s'exécute qu'une fois la tâche activée.
+Chaque tâche est livrée désactivée, sauf la **Veille des vulnérabilités** sur un serveur qui n'a jamais enregistré ses horaires : elle est activée dès le départ. L'heure indiquée est l'horaire prérempli, qui ne s'exécute qu'une fois la tâche activée.
 
 | Tâche | Horaire par défaut | Délai aléatoire | Rôle |
 |---|---|---|---|
-| **Sauvegarde** | `Sun *-*-* 03:00:00` (dimanche, 3 h) | jusqu'à 1 heure | Prend un instantané du serveur et l'envoie vers le stockage de sauvegarde configuré. |
+| **Sauvegarde** | `Sun *-*-* 03:00:00` (dimanche, 3 h) | jusqu'à 1 heure | Prend un instantané du serveur et l'envoie vers le stockage de sauvegarde configuré. Offerte dans toutes les éditions : sans abonnement payant, elle s'exécute au plus une fois par semaine, le jour et à l'heure de votre choix, et Catena Pro ajoute les horaires quotidiens et personnalisés. |
 | **Entretien nocturne** | `*-*-* 03:00:00` (chaque jour, 3 h) | jusqu'à 15 minutes | Sauvegarde, vérifie la sauvegarde, la copie hors site, puis fait passer les composants du serveur et les applications déployées à des versions plus récentes derrière ces vérifications. Vous choisissez les étapes qu'il exécute (voir [Choisir les étapes](#choisir-les-étapes)). |
 | **Copie hors site** | `*-*-* 04:30:00` (chaque jour, 4 h 30) | jusqu'à 30 minutes | Copie chaque compartiment déclaré vers le stockage non réinscriptible du second fournisseur (voir [Copies hors site](/fr/configuration/backups/#copies-hors-site)). Demande Catena Business. |
 | **Contrôle d'intégrité des sauvegardes** | `Sun *-*-* 04:15:00` (dimanche, 4 h 15) | jusqu'à 1 heure | Lit un échantillon du dépôt de sauvegarde de bout en bout, ce qui détecte la corruption silencieuse du stockage entre deux instantanés. |
@@ -26,7 +26,7 @@ Chaque tâche est livrée désactivée. L'heure indiquée est l'horaire préremp
 | **Mises à jour du panneau de contrôle** | `monthly` | jusqu'à 30 minutes | Fait passer le panneau de contrôle à une version plus récente, et remet la précédente si la nouvelle rend le serveur moins sain. Le panneau est indisponible environ une minute. |
 | **Configuration du serveur** | `*-*-* 04:20:00` (chaque jour, 4 h 20) | jusqu'à 40 minutes | Ramène le serveur à la configuration que porte son panneau de contrôle. Ce qui a dérivé est rétabli, et ce qui est déjà correct n'est pas touché. |
 | **Signal de vie hors site** | `*:0/5` (toutes les 5 minutes) | jusqu'à 30 secondes | Vérifie que la page d'état, le moniteur de tâches et le moniteur de ressources répondent, puis appelle l'adresse du signal de vie hors site enregistrée dans **Paramètres** > **Alertes et signalement des tâches manquées** (voir [Alertes](/fr/configuration/alerts/)). Demande cette adresse et Catena Pro. Sa section indique la période et le délai de grâce à régler sur la vérification externe. |
-| **Veille des vulnérabilités** | `*-*-* 01,07,13,19:00:00` (toutes les 6 heures, dès 1 h) | jusqu'à 10 minutes | Vérifie les logiciels de chaque application et service à l'aide d'une base de vulnérabilités fraîche et de la liste de la CISA des vulnérabilités exploitées, et alerte pour chacune qui est exploitée, ou critique et publiée dans les 30 derniers jours (voir [Vulnérabilités](/fr/configuration/vulnerabilities/#page-vulnérabilités-catena-pro)). Demande Catena Pro. Elle peut plutôt s'exécuter dans l'entretien nocturne, après les mises à jour de la nuit (voir [Choisir les étapes](#choisir-les-étapes)). |
+| **Veille des vulnérabilités** | `*-*-* 01,07,13,19:00:00` (toutes les 6 heures, dès 1 h); `*-*-* 01:00:00` (chaque jour, 1 h) sans abonnement payant | jusqu'à 10 minutes | Vérifie les logiciels de chaque application et service à l'aide d'une base de vulnérabilités fraîche et de la liste de la CISA des vulnérabilités exploitées, et alerte pour chacune qui est exploitée, ou critique, publiée dans les 30 derniers jours et corrigée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). Offerte dans toutes les éditions : sans abonnement payant, elle s'exécute au plus une fois par jour. Avec Catena Pro ou Catena Business, elle peut plutôt s'exécuter dans l'entretien nocturne, après les mises à jour de la nuit (voir [Choisir les étapes](#choisir-les-étapes)). |
 
 Le délai aléatoire étale le démarrage réel sur une fenêtre après l'heure réglée : une tâche démarre donc un peu plus tard que l'heure écrite. Une tâche manquée parce que le serveur était éteint ou en redémarrage s'exécute au prochain démarrage du serveur.
 
@@ -131,7 +131,7 @@ Un horaire est une expression de calendrier systemd, que vous écrivez dans le c
 | `hourly`, `monthly` | les intervalles nommés |
 | `*:0/15` | chaque quart d'heure |
 
-La fréquence d'exécution d'une tâche n'a pas de limite. Le lien **Référence complète de la syntaxe** ouvre la syntaxe complète.
+Avec Catena Pro et Catena Business, la fréquence d'exécution d'une tâche n'a pas de limite. Sans abonnement payant, la sauvegarde s'exécute au plus une fois par semaine, par exemple `Sun 3:00` ou `weekly`, et la veille des vulnérabilités au plus une fois par jour, par exemple `3:00`; le jour et l'heure sont à votre choix. Un horaire qui exécute l'une ou l'autre plus souvent est refusé avec un message comme "backup: this schedule runs it as often as every 1 day 0 hours. Without a paid subscription the backup runs at most once a week. Choose a weekly or less frequent schedule, such as Sun 3:00, or subscribe to Catena Pro for daily and custom schedules." Le lien **Référence complète de la syntaxe** ouvre la syntaxe complète.
 
 ### Outil de vérification
 
@@ -145,7 +145,7 @@ Sous **Vérifier un horaire**, saisissez une expression et appuyez sur **Vérifi
 
 L'enregistrement règle aussi les vérifications Healthchecks de la sauvegarde, du contrôle d'intégrité des sauvegardes, du test de restauration, de la copie hors site, de l'entretien nocturne et du signal de vie hors site sur les nouveaux horaires; une vérification à laquelle aucune tâche activée ne se signale est en pause. Quand Healthchecks ne répond pas, la page indique "Horaires enregistrés et appliqués à ce serveur. Healthchecks n'a pas répondu : les vérifications qui surveillent ces tâches prendront les nouveaux horaires au prochain enregistrement des horaires ou à la prochaine mise à jour de la configuration de ce serveur." Une vérification réactivée affiche "new" dans Healthchecks jusqu'à la prochaine exécution de sa tâche.
 
-Lorsque rien n'est activé, la page avertit : "Aucune tâche n'est planifiée sur ce serveur, donc aucune sauvegarde ne sera faite. Activez l'horaire de sauvegarde ci-dessous."
+Lorsqu'aucune sauvegarde n'est planifiée, la page avertit : "Aucune tâche n'est planifiée sur ce serveur, donc aucune sauvegarde ne sera faite. Activez l'horaire de sauvegarde ci-dessous."
 
 ## Combien de sauvegardes conserver
 
@@ -163,13 +163,16 @@ Conserver les 8 plus récentes et 24 horaires avec un horaire au quart d'heure g
 
 ## Lorsque l'abonnement prend fin
 
-Les minuteries sont désactivées et les tâches cessent de s'exécuter. Les horaires et les nombres de conservation enregistrés sont conservés. Les applications, leurs données et les sauvegardes manuelles ne sont pas touchées. Le Journal et une bannière consignent le verrouillage.
+La sauvegarde continue de s'exécuter une fois par semaine et la veille des vulnérabilités une fois par jour. Lorsque l'horaire de sauvegarde enregistré était plus fréquent qu'hebdomadaire, ou que la sauvegarde ne s'exécutait que comme étape de l'entretien nocturne, elle s'exécute à l'heure par défaut (dimanche, 3 h) jusqu'à ce que vous enregistriez un horaire hebdomadaire ou que l'abonnement revienne. La veille des vulnérabilités fait de même à 1 h chaque jour. La page nomme ce que chacune exécute à la place de l'horaire enregistré. Toute autre tâche cesse de s'exécuter. Les horaires et les nombres de conservation enregistrés sont conservés, et les horaires enregistrés reviennent avec l'abonnement. Les applications, leurs données et les sauvegardes manuelles ne sont pas touchées. Le Journal et une bannière consignent le verrouillage.
 
 ## Dépannage
 
 | Symptôme | Cause et correctif |
 |---|---|
-| "Les horaires s'activent avec une licence Catena." | Aucun abonnement Catena Pro ou Catena Business actif. Vérifiez **Paramètres** > **Abonnement**. |
+| "scheduling this lane needs an active Catena Pro licence" | La tâche demande Catena Pro ou Catena Business, et le serveur n'a pas d'abonnement actif. Vérifiez **Paramètres** > **Abonnement**. |
+| "backup: this schedule runs it as often as every ..." | Sans abonnement payant, la sauvegarde s'exécute au plus une fois par semaine et la veille des vulnérabilités au plus une fois par jour. Choisissez un horaire moins fréquent, comme `Sun 3:00`, ou abonnez-vous à Catena Pro. |
+| "Ce serveur exécute la sauvegarde selon ..." ou "Ce serveur exécute la veille des vulnérabilités selon ..." | L'horaire enregistré est plus fréquent que ce que permet un serveur sans abonnement payant. La ligne nomme l'horaire qui s'exécute à la place. Enregistrez un horaire hebdomadaire (sauvegarde) ou quotidien (veille), ou renouvelez l'abonnement. |
+| "Aucune tâche n'est planifiée sur ce serveur, donc aucune sauvegarde ne sera faite." | Aucun horaire de sauvegarde n'est activé. Activez **Sauvegarde** et enregistrez. |
 | "Ce serveur n'a pas accepté l'horaire." | La raison suit le message; le plus souvent, une expression qui ne s'interprète pas. Utilisez **Vérifier**. |
 | "Impossible de joindre ce serveur pour lire ou modifier l'horaire." | L'hôte n'a pas répondu; réessayez dans un instant. |
 | Une tâche n'a pas démarré à l'heure réglée | Le délai aléatoire s'applique; une exécution manquée démarre au prochain démarrage. |

@@ -163,7 +163,7 @@ Sans l'entretien nocturne, vous mettez à jour une application en changeant son 
 3. Dans l'éditeur, changez l'étiquette d'image pour la nouvelle étiquette de version complète.
 4. Appuyez sur le bouton de mise à jour sous l'éditeur.
 
-Faites une sauvegarde préalable (**Actions** > **Sauvegardes** > **Lancer une sauvegarde**). La catégorie **Mises à jour** de **Actions** est vide avec Communauté : ses boutons arrivent avec un abonnement.
+Les alertes de sécurité vous préviennent quand une application est atteinte par une vulnérabilité exploitée, ou critique et dotée d'une version corrigée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). Faites une sauvegarde préalable (**Actions** > **Sauvegardes** > **Lancer une sauvegarde**). La catégorie **Mises à jour** de **Actions** est vide avec Communauté : ses boutons arrivent avec un abonnement.
 
 ## Dépannage
 

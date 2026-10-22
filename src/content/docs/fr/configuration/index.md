@@ -33,10 +33,10 @@ Connectez-vous avec le courriel de l'administrateur et le mot de passe administr
 
 L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précédentes.
 
-1. [Abonnement](/fr/configuration/subscription/), si vous avez acheté une clé Catena Pro ou Catena Business. Enregistrer la clé en premier permet aux étapes suivantes d'utiliser ce qu'elle débloque, comme les horaires et les domaines supplémentaires.
+1. [Abonnement](/fr/configuration/subscription/), si vous avez acheté une clé Catena Pro ou Catena Business. Enregistrer la clé en premier permet aux étapes suivantes d'utiliser ce qu'elle débloque, comme les horaires plus fréquents et les domaines supplémentaires.
 2. [Domaine et Cloudflare](/fr/configuration/domain/) : le jeton d'API Cloudflare, le domaine, puis **Appliquer**. Tant que vous ne l'avez pas faite, le serveur fonctionne sans adresses publiques.
 3. [Sauvegardes et stockage S3](/fr/configuration/backups/) : le dépôt et ses clés, puis **Générer le mot de passe de chiffrement des sauvegardes**, puis la trousse de reprise après sinistre à conserver dans un gestionnaire de mots de passe.
-4. [Horaires](/fr/configuration/schedules/) : l'activation des horaires de sauvegarde et d'entretien (Catena Pro ou Catena Business).
+4. [Horaires](/fr/configuration/schedules/) : l'activation de l'horaire de sauvegarde, au plus une fois par semaine dans toutes les éditions, et des horaires d'entretien (Catena Pro ou Catena Business).
 5. [Courriel sortant](/fr/configuration/email/) : le service de courriel utilisé pour les réinitialisations de mot de passe, les invitations et les alertes.
 6. [Accès administrateur et réseau privé](/fr/configuration/admin-access/) : le réseau privé, puis éventuellement **Fermer le SSH sur le port public 22**.
 7. [Alertes](/fr/configuration/alerts/) : l'adresse du signal de vie hors site et les canaux de notification.
@@ -46,7 +46,7 @@ L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précéd
 ## Autres pages de configuration
 
 - [Mises à jour](/fr/configuration/updates/) : la version du panneau de contrôle et la mise à jour des applications.
-- [Vulnérabilités](/fr/configuration/vulnerabilities/) : ce qui est analysé et comment les constats s'affichent.
+- [Vulnérabilités](/fr/configuration/vulnerabilities/) : les alertes de sécurité que toutes les éditions reçoivent, ce qui est analysé et comment les constats s'affichent.
 - [Restauration et migration](/fr/configuration/restore-and-migrate/) : restaurer depuis une sauvegarde et passer à un autre serveur.
 - [Configurer une application pour Catena](/fr/configure-apps/) : raccorder une application à la connexion et au tableau de bord.
 

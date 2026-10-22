@@ -11,7 +11,7 @@ Des copies chiffrées de toutes les données des applications et de la configura
 - **Contenu.** Les données et volumes des applications, la configuration du serveur (dont `/etc/catena/config.json`) et la piste d'audit. Vous déclarez les dossiers supplémentaires dans **Autres dossiers à sauvegarder**; un conteneur qui monte un chemin hors de l'ensemble sauvegardé fait échouer l'exécution plutôt que d'être ignoré en silence.
 - **Bases de données.** Avant chaque instantané, chaque conteneur en marche dont le nom d'image contient `postgres` est vidé avec `pg_dumpall`, de même que chaque conteneur `mariadb` ou `mysql` (qui exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD` dans son environnement). Un vidage qui échoue fait échouer la sauvegarde. Les autres moteurs, comme MongoDB ou SQLite, n'ont aucun vidage automatique, et les applications ne sont pas mises en pause autour d'une sauvegarde.
 - **Rétention.** Par défaut : 24 horaires, 7 quotidiens, 4 hebdomadaires et 6 mensuels, que vous pouvez modifier dans la page **Horaires**.
-- **Cadence.** Un bouton de sauvegarde est toujours offert dans **Actions**. Un horaire de sauvegarde (le dimanche à 3 h par défaut, toute cadence permise) reste désactivé jusqu'à ce que vous l'activiez, ce qui exige Catena Pro ou Catena Business. Healthchecks reçoit un signal après chaque exécution.
+- **Cadence.** Un bouton de sauvegarde est toujours offert dans **Actions**. Un horaire de sauvegarde (le dimanche à 3 h par défaut) reste désactivé jusqu'à ce que vous l'activiez. Sans abonnement payant, il s'exécute au plus une fois par semaine, le jour et à l'heure de votre choix; Catena Pro et Catena Business ajoutent les cadences quotidiennes et personnalisées. Healthchecks reçoit un signal après chaque exécution.
 - **Consultation.** Vous pouvez lister les instantanés, les parcourir en lecture seule et les exporter vers une archive depuis **Actions**, sans restauration.
 
 ## Restauration
@@ -28,7 +28,7 @@ Un nouveau serveur tire depuis l'ancien avec **Déplacer un autre serveur ici**.
 
 ## Ce qu'ajoute chaque édition
 
-Communauté offre les sauvegardes manuelles, la consultation des instantanés, la restauration et la reconstruction du serveur entier, et le côté récepteur d'une migration. Catena Pro ajoute les horaires, la restauration d'une seule application, le rapport de restauration et le côté source d'une migration, et Catena Business ajoute les copies hors site. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté offre les sauvegardes manuelles, une sauvegarde planifiée au plus une fois par semaine, la consultation des instantanés, la restauration et la reconstruction du serveur entier, et le côté récepteur d'une migration. Catena Pro ajoute les horaires de sauvegarde quotidiens et personnalisés, les autres horaires, la restauration d'une seule application, le rapport de restauration et le côté source d'une migration, et Catena Business ajoute les copies hors site. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 

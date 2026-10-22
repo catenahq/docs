@@ -33,10 +33,10 @@ Sign in with the admin email and the admin password shown once at install. See [
 
 The order below avoids dead ends: later steps rely on earlier ones.
 
-1. [Subscription](/en/configuration/subscription/), if you bought a Catena Pro or Catena Business key. Saving the key first lets the later steps use the features it unlocks, such as schedules and extra domains.
+1. [Subscription](/en/configuration/subscription/), if you bought a Catena Pro or Catena Business key. Saving the key first lets the later steps use the features it unlocks, such as faster schedules and extra domains.
 2. [Domain and Cloudflare](/en/configuration/domain/): the Cloudflare API token, the domain, then **Apply**. Until you do this, the server runs without public addresses.
 3. [Backups and S3 storage](/en/configuration/backups/): the repository and its keys, then **Generate backup encryption password**, then save the disaster-recovery keyset in a password manager.
-4. [Schedules](/en/configuration/schedules/): turning on the backup and maintenance schedules (Catena Pro or Catena Business).
+4. [Schedules](/en/configuration/schedules/): turning on the backup schedule, at most once a week on every edition, and the maintenance schedules (Catena Pro or Catena Business).
 5. [Outgoing email](/en/configuration/email/): the mail service used for password resets, invitations and alerts.
 6. [Admin access and tailnet](/en/configuration/admin-access/): the private network, then optionally **Close SSH on public port 22**.
 7. [Alerts](/en/configuration/alerts/): the off-site heartbeat address and notification channels.
@@ -46,7 +46,7 @@ The order below avoids dead ends: later steps rely on earlier ones.
 ## Other configuration pages
 
 - [Updates](/en/configuration/updates/): the control panel version and how applications are kept current.
-- [Vulnerabilities](/en/configuration/vulnerabilities/): what is scanned and how findings are shown.
+- [Vulnerabilities](/en/configuration/vulnerabilities/): the security alerts every edition gets, what is scanned and how findings are shown.
 - [Restore and migrate](/en/configuration/restore-and-migrate/): restoring from a backup and moving to another server.
 - [Configure an app for Catena](/en/configure-apps/): wiring an application into sign-in and the dashboard.
 

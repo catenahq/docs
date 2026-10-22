@@ -40,7 +40,7 @@ You can change each name in **Settings** > **Infrastructure app subdomains**. Un
 
 ## Editions
 
-Community is free and fully functional: apps, single sign-on, manual backups, whole-server restore, manual updates and monitoring. Catena Pro and Catena Business unlock more panel and automation features, such as schedules, managed updates, People and offsite copies, with a subscription key. Your applications and data are never locked. The comparison is on the [pricing page](https://catena.run/en/#pricing).
+Community is free and fully functional: apps, single sign-on, manual backups and a weekly scheduled backup, whole-server restore, manual updates, monitoring and security alerts. Catena Pro and Catena Business unlock more panel and automation features, such as daily backups and other schedules, managed updates, People and offsite copies, with a subscription key. Your applications and data are never locked. The comparison is on the [pricing page](https://catena.run/en/#pricing).
 
 ## Data ownership
 

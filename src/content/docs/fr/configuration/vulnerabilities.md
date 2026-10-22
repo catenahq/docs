@@ -7,7 +7,8 @@ Un serveur signale les vulnérabilités connues (CVE publiées) à deux endroits
 
 ## Prérequis
 
-- Les analyses font partie de l'entretien nocturne, qui demande Catena Pro ou Catena Business (voir [Horaires](/fr/configuration/schedules/) et la [comparaison des éditions](https://catena.run/fr/#pricing)). Tant qu'aucune analyse n'a eu lieu, les chiffres indiquent "Pas encore mesuré".
+- Les alertes de sécurité fonctionnent dans toutes les éditions (voir [Alertes de sécurité](#alertes-de-sécurité-toutes-les-éditions)).
+- Les analyses des images et des paquets font partie de l'entretien nocturne, qui demande Catena Pro ou Catena Business (voir [Horaires](/fr/configuration/schedules/) et la [comparaison des éditions](https://catena.run/fr/#pricing)). Tant qu'aucune analyse n'a eu lieu, les chiffres de la carte **Vulnérabilités connues** indiquent "Pas encore mesuré".
 - L'analyseur est livré avec le serveur. Si l'analyse le signale absent, lancez **Installer les moteurs gérés sur ce serveur** (voir [Mises à jour](/fr/configuration/updates/#panneau-mises-à-jour-gérées)) pour le rétablir.
 
 ## Où les constats s'affichent
@@ -58,25 +59,44 @@ Les règles sur les étiquettes, les étiquettes d'application et le retour arri
 3. Pour un paquet de l'hôte, les mises à jour de sécurité automatiques appliquent le correctif. Si la page **Système** indique un redémarrage en attente, redémarrez depuis **Système** > **Redémarrage**. **Mises à jour apt en attente**, sous **Actions** > **Opérations**, liste ce qui attend.
 4. Si aucune version plus récente n'existe encore, le constat demeure jusqu'à la reconstruction de l'image en amont. L'analyse nocturne suivante le déclare corrigé dans le Journal dès qu'il a disparu.
 
+## Alertes de sécurité (toutes les éditions)
+
+Votre serveur vérifie les logiciels de chaque application et service en marche à l'aide d'une base de vulnérabilités et de la liste de la CISA des vulnérabilités que des attaquants exploitent activement. Le serveur télécharge les deux comme des données et fait la vérification localement : aucune liste de vos logiciels ne le quitte. La vérification est la tâche **Veille des vulnérabilités** (voir [Horaires](/fr/configuration/schedules/)). Elle s'exécute au plus une fois par jour sans abonnement payant, et un serveur qui n'a jamais enregistré ses horaires l'exécute chaque jour à 1 h.
+
+La veille envoie une alerte pour chaque vulnérabilité qui est :
+
+- signalée par la CISA comme exploitée, avec ou sans version corrigée; ou
+- critique, publiée dans les 30 derniers jours, et dotée d'une version corrigée.
+
+Une vulnérabilité critique qui n'est pas exploitée et n'a pas de version corrigée reste silencieuse jusqu'à la publication d'un correctif. Une alerte dure, quel que soit l'âge de la vulnérabilité, tant que quelque chose sur le serveur en est atteint, et elle est levée lorsque plus rien ne l'est. C'est une seule alerte par vulnérabilité, quel que soit le nombre d'applications atteintes.
+
+Le courriel d'alerte nomme la vulnérabilité, l'application, le paquet et la version corrigée. Quand aucun correctif n'est encore publié, il le dit et vous demande de limiter l'accès à l'application ou de l'arrêter jusqu'à la publication d'un correctif. Un correctif publié après l'alerte n'envoie pas de second courriel. Mettez l'application à la version corrigée (voir [Mises à jour](/fr/configuration/updates/)) : l'alerte est levée quand la veille ne trouve plus la vulnérabilité.
+
+Le courriel va à l'adresse de l'administrateur par le courriel sortant réglé dans **Paramètres** > **Courriel sortant** (voir [Courriel sortant](/fr/configuration/email/)). Sans courriel sortant, l'alerte n'apparaît que dans Healthchecks et sous **Système**, et la page **Système** indique "Aucun courriel ne peut être envoyé : réglez le courrier sortant dans Paramètres." Vous ajoutez d'autres canaux dans Healthchecks (voir [Alertes](/fr/configuration/alerts/)).
+
+Une fois la veille exécutée, la carte **Vulnérabilités connues** de la page **Système** affiche sa ligne dans toutes les éditions : le nombre de vulnérabilités exploitées dans les logiciels en service ici, le nombre de correctifs disponibles pour ce qui déclenche une alerte, et le moment de la dernière vérification. Avec Catena Pro, la ligne mène à la page Vulnérabilités; sinon, elle indique "Le détail et le correctif en une étape font partie de Catena Pro."
+
+Catena Pro ajoute la page Vulnérabilités, le correctif en une étape, le correctif automatique et l'inventaire logiciel, décrits plus bas.
+
 ## Page Vulnérabilités (Catena Pro)
 
-La veille des vulnérabilités vérifie les logiciels de chaque application et service du serveur à l'aide d'une base de vulnérabilités qu'elle rafraîchit lorsque celle en usage date de six heures, et de la liste de la CISA des vulnérabilités que des attaquants exploitent activement. Le serveur télécharge les deux comme des données et fait la vérification localement : aucune liste de vos logiciels ne le quitte.
+La veille des vulnérabilités (voir [Alertes de sécurité](#alertes-de-sécurité-toutes-les-éditions)) rafraîchit sa base de vulnérabilités lorsque celle en usage date de six heures.
 
 **Vulnérabilités** liste, par application, chaque vulnérabilité connue élevée ou critique et chacune que la CISA signale comme exploitée, avec son paquet, sa version installée et sa version corrigée, et le moment où elle a été vue pour la première fois. Une vulnérabilité que la CISA signale porte un badge "exploitée" avec les dates que fournit la CISA et, le cas échéant, un badge "rançongiciel". Une vulnérabilité sans version corrigée indique "aucun correctif publié".
 
-Pour ouvrir la page, ouvrez le panneau **Mises à jour gérées** et suivez **Vulnérabilités**. Elle exige Catena Pro et un compte administrateur. La tuile d'une application, dans l'onglet **Applications**, affiche aux administrateurs "Vulnérabilités à traiter" et, quand la CISA en signale, "Exploitées par des attaquants", et la carte **Vulnérabilités connues** de **Système** ajoute le nombre de vulnérabilités exploitées dans les logiciels en service ici.
+Pour ouvrir la page, ouvrez le panneau **Mises à jour gérées** et suivez **Vulnérabilités**. Elle exige Catena Pro et un compte administrateur. La tuile d'une application, dans l'onglet **Applications**, affiche aux administrateurs "Vulnérabilités à traiter" et, quand la CISA en signale, "Exploitées par des attaquants", et la ligne de la veille sur la carte **Vulnérabilités connues** de **Système** y mène.
 
 La page indique quand les résultats ont été établis, l'âge de la base de vulnérabilités et la version de la liste de la CISA en usage. Elle avertit lorsque la veille ne peut pas faire son travail : aucun analyseur installé, pas encore de base, une base de plus de 48 heures, la liste de la CISA non lue depuis plus de 7 jours, ou la liste des images en marche illisible. Des résultats non renouvelés depuis plus de 32 heures sont marqués "périmé" et n'offrent aucun correctif. Les services en marche dont l'image n'a pas encore de liste de logiciels apparaissent sous **Non vérifiés**.
 
 ### Activer la veille
 
-La veille est une tâche planifiée, **Veille des vulnérabilités**, désactivée jusqu'à ce que vous l'activiez (voir [Horaires](/fr/configuration/schedules/)). Elle exige Catena Pro. Elle s'exécute à l'un de deux endroits, jamais aux deux : selon son propre horaire, ou comme étape de l'entretien nocturne, après les mises à jour de la nuit, de sorte qu'elle n'alerte que sur ce que les mises à jour n'ont pas corrigé (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). Tant qu'elle ne s'exécute à aucun des deux, la page l'indique et ses résultats ne sont renouvelés que lorsque vous appuyez sur **Vérifier maintenant**.
+La veille est la tâche planifiée **Veille des vulnérabilités** (voir [Horaires](/fr/configuration/schedules/)). Elle s'exécute à l'un de deux endroits, jamais aux deux : selon son propre horaire, ou, avec Catena Pro ou Catena Business, comme étape de l'entretien nocturne, après les mises à jour de la nuit, de sorte qu'elle n'alerte que sur ce que les mises à jour n'ont pas corrigé (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). Tant qu'elle ne s'exécute à aucun des deux, la page l'indique et ses résultats ne sont renouvelés que lorsque vous appuyez sur **Vérifier maintenant**.
 
 **Vérifier maintenant** lance la veille en arrière-plan : une base fraîche si celle en usage date de six heures, la liste de la CISA, puis la vérification de chaque application. La page en montre les résultats quelques minutes plus tard.
 
 ### Alertes
 
-La veille envoie une alerte pour chaque vulnérabilité que la CISA signale comme exploitée, ou qui est critique et publiée dans les 30 derniers jours. Elle continue d'alerter, quel que soit l'âge de la vulnérabilité, tant que quelque chose sur le serveur en est atteint. L'alerte va au courriel administrateur et à chaque canal configuré dans Healthchecks (voir [Alertes](/fr/configuration/alerts/)), et elle nomme la vulnérabilité, chaque application et chaque paquet atteints, ainsi que la version corrigée. C'est une seule alerte par vulnérabilité, quel que soit le nombre d'applications atteintes; son texte est mis à jour lorsqu'une autre application en est atteinte. Lorsque plus aucune application n'est atteinte, l'alerte est levée.
+Les alertes suivent la règle des [Alertes de sécurité](#alertes-de-sécurité-toutes-les-éditions). Elles vont au courriel administrateur et à chaque canal configuré dans Healthchecks (voir [Alertes](/fr/configuration/alerts/)). Le texte d'une alerte est mis à jour lorsqu'une autre application est atteinte par la vulnérabilité.
 
 Une seconde alerte, **Veille des vulnérabilités**, se déclenche lorsque la veille elle-même ne peut pas vérifier : les mêmes causes que celles dont la page avertit.
 

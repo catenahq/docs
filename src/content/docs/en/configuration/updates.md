@@ -163,7 +163,7 @@ Without the nightly maintenance, you update an application by changing its image
 3. In the editor, change the image tag to the new full version tag.
 4. Press the update button under the editor.
 
-Take a backup beforehand (**Actions** > **Backups** > **Trigger backup now**). The **Upgrades** category of **Actions** is empty on Community: its buttons arrive with a subscription.
+The security alerts tell you when an application carries an exploited vulnerability, or a critical one with a fixed version (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). Take a backup beforehand (**Actions** > **Backups** > **Trigger backup now**). The **Upgrades** category of **Actions** is empty on Community: its buttons arrive with a subscription.
 
 ## Troubleshooting
 

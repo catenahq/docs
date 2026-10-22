@@ -40,7 +40,7 @@ Vous pouvez changer chaque nom dans **Paramètres** > **Sous-domaines des applic
 
 ## Éditions
 
-Communauté est gratuite et pleinement fonctionnelle : applications, authentification unique, sauvegardes manuelles, restauration du serveur entier, mises à jour manuelles et surveillance. Catena Pro et Catena Business débloquent d'autres fonctions du panneau et d'automatisation, comme les horaires, les mises à jour gérées, Personnes et les copies hors site, au moyen d'une clé d'abonnement. Vos applications et vos données ne sont jamais verrouillées. La comparaison se trouve sur la [page des tarifs](https://catena.run/fr/#pricing).
+Communauté est gratuite et pleinement fonctionnelle : applications, authentification unique, sauvegardes manuelles et une sauvegarde planifiée hebdomadaire, restauration du serveur entier, mises à jour manuelles, surveillance et alertes de sécurité. Catena Pro et Catena Business débloquent d'autres fonctions du panneau et d'automatisation, comme les sauvegardes quotidiennes et d'autres horaires, les mises à jour gérées, Personnes et les copies hors site, au moyen d'une clé d'abonnement. Vos applications et vos données ne sont jamais verrouillées. La comparaison se trouve sur la [page des tarifs](https://catena.run/fr/#pricing).
 
 ## Propriété des données
 

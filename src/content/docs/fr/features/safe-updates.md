@@ -28,7 +28,7 @@ Le panneau a son propre horaire **Mises à jour du panneau de contrôle** (mensu
 
 ## Ce qu'ajoute chaque édition
 
-Communauté offre les correctifs du système, le signalement des redémarrages, la visibilité des versions et les mises à jour manuelles du panneau et du moteur; pour les applications, vous changez l'étiquette à la main dans Portainer. Catena Pro et Catena Business ajoutent les horaires, l'entretien nocturne, les mises à jour gérées des applications, la correction des CVE et le retour en arrière automatique. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté offre les correctifs du système, le signalement des redémarrages, la visibilité des versions, les alertes de sécurité pour les vulnérabilités exploitées et critiques (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)) et les mises à jour manuelles du panneau et du moteur; pour les applications, vous changez l'étiquette à la main dans Portainer. Catena Pro et Catena Business ajoutent l'entretien nocturne et les autres horaires, les mises à jour gérées des applications, la correction des CVE et le retour en arrière automatique. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 

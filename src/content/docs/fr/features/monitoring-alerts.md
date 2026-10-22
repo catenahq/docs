@@ -18,7 +18,7 @@ Le serveur héberge sa propre supervision : une page d'état, des graphiques de 
 
 ## Ce qu'ajoute chaque édition
 
-Gatus, Healthchecks, Beszel, la page d'état et les alertes sur l'hôte fonctionnent dans toutes les éditions. Catena Pro ajoute le signal de vie hors site et Catena Business, la supervision en tant que service, décrits dans la [comparaison des éditions](https://catena.run/fr/#pricing).
+Gatus, Healthchecks, Beszel, la page d'état et les alertes sur l'hôte fonctionnent dans toutes les éditions, tout comme les alertes de sécurité : la veille des vulnérabilités vous écrit au sujet d'une vulnérabilité exploitée, ou critique et dotée d'une version corrigée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). Catena Pro ajoute le signal de vie hors site et Catena Business, la supervision en tant que service, décrits dans la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 

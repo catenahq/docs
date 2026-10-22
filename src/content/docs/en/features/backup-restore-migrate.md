@@ -11,7 +11,7 @@ Encrypted copies of all app data and of the server's own configuration go to S3 
 - **What is included.** App data and volumes, the server's configuration (including `/etc/catena/config.json`) and the audit trail. You declare extra folders in **Other folders to back up**; a container that mounts a path outside the backup set makes the run fail rather than silently skip it.
 - **Databases.** Before each snapshot, every running container whose image name contains `postgres` is dumped with `pg_dumpall`, and every `mariadb` or `mysql` container is dumped too (it needs `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in its environment). A failed dump fails the backup. Other engines such as MongoDB or SQLite get no automatic dump, and apps are not paused around a backup.
 - **Retention.** The defaults keep 24 hourly, 7 daily, 4 weekly and 6 monthly snapshots, which you can edit on the **Schedules** page.
-- **Cadence.** A backup button is always available in **Actions**. A backup schedule (Sunday at 03:00 by default, any cadence allowed) is off until you turn it on, which needs Catena Pro or Catena Business. Healthchecks receives a ping after each run.
+- **Cadence.** A backup button is always available in **Actions**. A backup schedule (Sunday at 03:00 by default) is off until you turn it on. Without a paid subscription it runs at most once a week, on the day and time you choose; Catena Pro and Catena Business add daily and custom cadences. Healthchecks receives a ping after each run.
 - **Browsing.** You can list snapshots, browse them read-only and export them to an archive from **Actions** without a restore.
 
 ## Restore
@@ -28,7 +28,7 @@ A new server pulls from the old one with **Move another server here**. The old s
 
 ## What each edition adds
 
-Community has manual backups, snapshot browsing, whole-server restore and rebuild, and the receiving side of a migration. Catena Pro adds schedules, restoring a single app, the restore report and the source side of a migration, and Catena Business adds offsite copies. See the [edition comparison](https://catena.run/en/#pricing).
+Community has manual backups, a scheduled backup at most once a week, snapshot browsing, whole-server restore and rebuild, and the receiving side of a migration. Catena Pro adds daily and custom backup schedules, the other schedules, restoring a single app, the restore report and the source side of a migration, and Catena Business adds offsite copies. See the [edition comparison](https://catena.run/en/#pricing).
 
 ## Limits
 

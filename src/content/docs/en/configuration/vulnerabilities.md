@@ -7,7 +7,8 @@ A server reports known vulnerabilities (published CVEs) in two places: the softw
 
 ## Prerequisites
 
-- Scans run as part of the nightly maintenance, which needs Catena Pro or Catena Business (see [Schedules](/en/configuration/schedules/) and the [edition comparison](https://catena.run/en/#pricing)). Until a scan has run, the figures read "Not measured yet".
+- The security alerts run on every edition (see [Security alerts](#security-alerts-every-edition)).
+- The image and package scans run as part of the nightly maintenance, which needs Catena Pro or Catena Business (see [Schedules](/en/configuration/schedules/) and the [edition comparison](https://catena.run/en/#pricing)). Until a scan has run, the figures of the **Known vulnerabilities** card read "Not measured yet".
 - The scanner ships with the server. If the scan reports it missing, run **Install managed engines on this server** (see [Updates](/en/configuration/updates/#managed-updates-panel)) to restore it.
 
 ## Where findings show
@@ -58,25 +59,44 @@ The rules for tags, labels and rollback are on the [Updates](/en/configuration/u
 3. For a host package, the automatic security updates apply the fix. If the **System** page shows a restart is pending, restart from **System** > **Restart**. **Pending apt updates** under **Actions** > **Ops** lists what is waiting.
 4. If no newer release exists yet, the finding stays until the image is rebuilt upstream. The next nightly scan reports it as cleared in the Log once it is gone.
 
+## Security alerts (every edition)
+
+Your server checks the software of every running application and service against a vulnerability database and CISA's list of vulnerabilities attackers are actively exploiting. The server downloads both as data and checks locally: no list of your software leaves it. The check is the **Vulnerability watch** job (see [Schedules](/en/configuration/schedules/)). It runs at most once a day without a paid subscription, and a server that has never saved its schedules runs it every day at 1 AM.
+
+The watch raises one alert for each vulnerability that is:
+
+- listed by CISA as exploited, with or without a fixed version; or
+- critical, published in the last 30 days, and has a fixed version.
+
+A critical vulnerability that is not exploited and has no fixed version stays silent until a fix is published. An alert lasts, whatever the age of the vulnerability, while anything on the server carries it, and resolves when nothing does. It is one alert per vulnerability, however many applications carry it.
+
+The alert email names the vulnerability, the application, the package and the fixed version. When no fix is published yet, it says so and tells you to limit access to the application or stop it until one is. A fix published after the alert sends no second email. Update the application to the fixed version (see [Updates](/en/configuration/updates/)): the alert resolves once the watch no longer finds the vulnerability.
+
+The email goes to the admin address through the outgoing mail you set in **Settings** > **Outgoing mail** (see [Outgoing email](/en/configuration/email/)). With no outgoing mail, the alert shows in Healthchecks and under **System** only, and the **System** page reads "No email can be sent: set outgoing mail in Settings." You add other channels in Healthchecks (see [Alerts](/en/configuration/alerts/)).
+
+Once the watch has run, the **Known vulnerabilities** card of the **System** page shows its line on every edition: the number of exploited vulnerabilities in the software running there, the number of fixes available for what raises an alert, and when the watch last checked. On Catena Pro, the line links to the Vulnerabilities page; otherwise it reads "Details and one-step patching are part of Catena Pro."
+
+Catena Pro adds the Vulnerabilities page, the one-step patch, the automatic patch and the software inventory, described below.
+
 ## Vulnerabilities page (Catena Pro)
 
-The vulnerability watch checks the software of every application and service on the server against a vulnerability database that it refreshes when the one in use is six hours old, and against CISA's list of vulnerabilities attackers are actively exploiting. The server downloads both as data and checks locally: no list of your software leaves it.
+The vulnerability watch (see [Security alerts](#security-alerts-every-edition)) refreshes its vulnerability database when the one in use is six hours old.
 
 **Vulnerabilities** lists, per application, each high or critical known vulnerability and each one CISA lists as exploited, with its package, installed and fixed version, and when it was first seen. A vulnerability CISA lists carries an "exploited" badge with the dates CISA gives and, when it applies, a "ransomware" badge. A vulnerability with no fixed version reads "no fix published yet".
 
-To open the page, open the **Managed updates** panel and follow **Vulnerabilities**. It needs Catena Pro and an administrator account. An application's tile on the **Apps** tab shows administrators "Vulnerabilities to act on" and, when CISA lists some, "Exploited by attackers" counts, and the **Known vulnerabilities** card on **System** adds the count of exploited vulnerabilities in the software running there.
+To open the page, open the **Managed updates** panel and follow **Vulnerabilities**. It needs Catena Pro and an administrator account. An application's tile on the **Apps** tab shows administrators "Vulnerabilities to act on" and, when CISA lists some, "Exploited by attackers" counts, and the watch's line on the **Known vulnerabilities** card of **System** links here.
 
 The page shows when the findings were made, the age of the vulnerability database and the version of CISA's list in use. It warns when the watch cannot do its job: no scanner installed, no database yet, a database over 48 hours old, CISA's list not read for over 7 days, or the list of running images unreadable. Findings not renewed for over 32 hours are marked "out of date" and offer no patch. Running services whose image has no software list yet appear under **Not checked**.
 
 ### Turn the watch on
 
-The watch is a scheduled job, **Vulnerability watch**, switched off until you turn it on (see [Schedules](/en/configuration/schedules/)). It needs Catena Pro. It runs in one of two places, never both: on its own schedule, or as a step of the nightly maintenance, after the night's updates, so that it alerts only on what the updates did not fix (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). While it runs in neither, the page says so and its findings are renewed only when you press **Check now**.
+The watch is the scheduled job **Vulnerability watch** (see [Schedules](/en/configuration/schedules/)). It runs in one of two places, never both: on its own schedule, or, on Catena Pro or Catena Business, as a step of the nightly maintenance, after the night's updates, so that it alerts only on what the updates did not fix (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). While it runs in neither, the page says so and its findings are renewed only when you press **Check now**.
 
 **Check now** runs the watch in the background: a fresh database when the one in use is six hours old, CISA's list, then a check of every application. The page shows the findings a few minutes later.
 
 ### Alerts
 
-The watch raises one alert for each vulnerability that CISA lists as exploited, or that is critical and was published in the last 30 days. It keeps alerting on it, whatever its age, while anything on the server carries it. The alert goes to the admin email and to every channel set up in Healthchecks (see [Alerts](/en/configuration/alerts/)), and it names the vulnerability, each application and package carrying it, and the fixed version. It is one alert for the vulnerability, however many applications carry it; the text is updated when another application comes to carry it. When no application carries the vulnerability any more, the alert resolves.
+The alerts follow the rule in [Security alerts](#security-alerts-every-edition). They go to the admin email and to every channel set up in Healthchecks (see [Alerts](/en/configuration/alerts/)). The text of an alert is updated when another application comes to carry the vulnerability.
 
 A second alert, **CVE watch**, fires when the watch itself cannot check: the same causes the page warns about.
 

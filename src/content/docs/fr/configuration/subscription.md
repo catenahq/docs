@@ -75,11 +75,11 @@ La ligne **État** affiche l'une de ces phrases. Le texte entre accolades est re
 Quand Polar cesse d'accorder la clé, ou que le délai de grâce est écoulé :
 
 - Les panneaux payants deviennent des entrées grisées sous **Catena Pro** ou **Catena Business**. Chacune ouvre une explication de la fonction, de l'édition qui la comprend et un bouton **S'abonner**.
-- Tous les horaires sont désactivés, puisque l'activation d'un horaire exige une édition payante. Les choix enregistrés sont conservés et reviennent avec l'abonnement.
+- Tous les horaires sont désactivés, puisque l'activation d'un horaire exige une édition payante, sauf deux : la sauvegarde continue de s'exécuter une fois par semaine et la veille des vulnérabilités une fois par jour, à leur heure par défaut quand l'horaire enregistré était plus fréquent (voir [Lorsque l'abonnement prend fin](/fr/configuration/schedules/#lorsque-labonnement-prend-fin)). Les choix enregistrés sont conservés et reviennent avec l'abonnement.
 - Les actions payantes sont refusées, et les domaines supplémentaires au-delà du domaine principal cessent d'être servis (ils restent enregistrés).
 - Une bannière sur chaque page d'administration mène à la section **Abonnement** et en donne la raison, une entrée s'ajoute au **Journal**, et un courriel part vers votre adresse d'administrateur par le service de courriel configuré (en anglais puis en français). Sans service de courriel, la bannière et l'entrée du journal sont les seuls avis. Voir [Courriel sortant](/fr/configuration/email/).
 
-Ce qui ne se verrouille jamais : les applications et leurs données, les sauvegardes manuelles, les restaurations du serveur entier, les mises à jour lancées à la main, l'authentification unique et la supervision. Une clé absente, refusée ou non confirmée laisse le serveur sur Catena Communauté et n'empêche jamais une installation ni l'accès aux données.
+Ce qui ne se verrouille jamais : les applications et leurs données, la sauvegarde hebdomadaire, les alertes de sécurité (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)), les sauvegardes manuelles, les restaurations du serveur entier, les mises à jour lancées à la main, l'authentification unique et la supervision. Une clé absente, refusée ou non confirmée laisse le serveur sur Catena Communauté et n'empêche jamais une installation ni l'accès aux données.
 
 ## Dépannage
 

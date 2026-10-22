@@ -3,22 +3,22 @@ title: "Schedules"
 description: "The nine scheduled jobs of a Catena server, their default times, the schedule syntax, the nightly maintenance chain, and backup retention."
 ---
 
-The **Schedules** page sets when the server does its scheduled work. Nothing runs on a schedule until you turn it on here. You can also run every job by hand from the **Actions** page, in every edition.
+The **Schedules** page sets when the server does its scheduled work. Apart from the **Vulnerability watch** on a server that has never saved its schedules, nothing runs on a schedule until you turn it on here. You can also run every job by hand from the **Actions** page, in every edition.
 
 ## Prerequisites
 
-- Catena Pro or Catena Business. Turning on any schedule needs an active subscription (see [Subscription](/en/configuration/subscription/) and the [edition comparison](https://catena.run/en/#pricing)). On Community the page reads "Schedules can be turned on with a Catena license. Until then, every job below can still be run by hand from the Actions page."
+- A server without a paid subscription (Catena Community) schedules two jobs: the **Backup** job, at most once a week, and the **Vulnerability watch**, at most once a day. Every other job, and a faster backup, needs Catena Pro or Catena Business (see [Subscription](/en/configuration/subscription/) and the [edition comparison](https://catena.run/en/#pricing)). Without a paid subscription the page reads "Without a paid subscription, this server schedules its backup at most once a week and its vulnerability watch at most once a day. Every other job, and a faster backup, needs Catena Pro, and the offsite copy needs Catena Business. Each job that needs a paid subscription says below whether it can still be run by hand."
 - For the backup job, a configured backup repository (see [Backups and S3 storage](/en/configuration/backups/)).
 
-Saving an enabled job without an active subscription is refused with "scheduled work needs an active Catena Pro licence", after the schedule itself has been checked.
+Saving a job that the subscription does not cover is refused with "scheduling this lane needs an active Catena Pro licence", or "this lane needs an active Catena Business licence" for the offsite copy, after the schedule itself has been checked. Saving a backup or vulnerability watch schedule that runs more often than a server without a paid subscription may is refused too (see [Schedule syntax](#schedule-syntax)).
 
 ## The jobs
 
-Every job ships switched off. The time shown is the pre-filled schedule, which runs only once the job is on.
+Every job ships switched off, except the **Vulnerability watch** on a server that has never saved its schedules: it is on from the start. The time shown is the pre-filled schedule, which runs only once the job is on.
 
 | Job | Default schedule | Randomised delay | What it does |
 |---|---|---|---|
-| **Backup** | `Sun *-*-* 03:00:00` (Sundays, 3 AM) | up to 1 hour | Takes a snapshot of the server and sends it to the configured backup storage. |
+| **Backup** | `Sun *-*-* 03:00:00` (Sundays, 3 AM) | up to 1 hour | Takes a snapshot of the server and sends it to the configured backup storage. Available on every edition: without a paid subscription it runs at most once a week, on any day and time you choose, and Catena Pro adds daily and custom schedules. |
 | **Nightly maintenance** | `*-*-* 03:00:00` (every day, 3 AM) | up to 15 minutes | Backs up, checks the backup, copies it offsite, then moves the server's own components and the deployed applications to newer versions behind those checks. You choose which steps it runs (see [Choosing the steps](#choosing-the-steps)). |
 | **Offsite copy** | `*-*-* 04:30:00` (every day, 4:30 AM) | up to 30 minutes | Copies every declared bucket to the write-once storage at the second provider (see [Offsite copies](/en/configuration/backups/#offsite-copies)). Needs Catena Business. |
 | **Backup integrity check** | `Sun *-*-* 04:15:00` (Sundays, 4:15 AM) | up to 1 hour | Reads a sample of the backup repository end to end, which catches silent storage corruption between snapshots. |
@@ -26,7 +26,7 @@ Every job ships switched off. The time shown is the pre-filled schedule, which r
 | **Control panel updates** | `monthly` | up to 30 minutes | Moves the control panel to a newer version, and puts the previous one back if the new one makes the server less healthy. The panel is unavailable for about a minute. |
 | **Server configuration** | `*-*-* 04:20:00` (every day, 4:20 AM) | up to 40 minutes | Brings the server back to the configuration its control panel carries. Anything that drifted is put back, and anything already correct is left alone. |
 | **Off-site heartbeat** | `*:0/5` (every 5 minutes) | up to 30 seconds | Checks that the status page, job monitor and resource monitor answer, then calls the off-site heartbeat address saved in **Settings** > **Alerts and missed-job reporting** (see [Alerts](/en/configuration/alerts/)). Needs that address and Catena Pro. Its section shows the period and grace time to set on the outside check. |
-| **Vulnerability watch** | `*-*-* 01,07,13,19:00:00` (every 6 hours, from 1 AM) | up to 10 minutes | Checks the software of every application and service against a fresh vulnerability database and CISA's list of exploited vulnerabilities, and alerts on each one that is exploited, or critical and published in the last 30 days (see [Vulnerabilities](/en/configuration/vulnerabilities/#vulnerabilities-page-catena-pro)). Needs Catena Pro. It can instead run inside the nightly maintenance, after the night's updates (see [Choosing the steps](#choosing-the-steps)). |
+| **Vulnerability watch** | `*-*-* 01,07,13,19:00:00` (every 6 hours, from 1 AM); `*-*-* 01:00:00` (every day, 1 AM) without a paid subscription | up to 10 minutes | Checks the software of every application and service against a fresh vulnerability database and CISA's list of exploited vulnerabilities, and alerts on each one that is exploited, or critical, published in the last 30 days and fixed (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). Available on every edition: without a paid subscription it runs at most once a day. On Catena Pro or Catena Business it can instead run inside the nightly maintenance, after the night's updates (see [Choosing the steps](#choosing-the-steps)). |
 
 The randomised delay spreads the real start over a window after the set time, so a job starts a little later than the time written. A job missed because the server was off or restarting runs at the next start of the server.
 
@@ -131,7 +131,7 @@ A schedule is a systemd calendar expression, which you write in the **Schedule**
 | `hourly`, `monthly` | the named intervals |
 | `*:0/15` | every quarter hour |
 
-There is no limit on how often a job runs. The **Full syntax reference** link opens the complete syntax.
+On Catena Pro and Catena Business, there is no limit on how often a job runs. Without a paid subscription, the backup runs at most once a week, for example `Sun 3:00` or `weekly`, and the vulnerability watch at most once a day, for example `3:00`; the day and time are yours to choose. A schedule that runs either job more often is refused with a message such as "backup: this schedule runs it as often as every 1 day 0 hours. Without a paid subscription the backup runs at most once a week. Choose a weekly or less frequent schedule, such as Sun 3:00, or subscribe to Catena Pro for daily and custom schedules." The **Full syntax reference** link opens the complete syntax.
 
 ### Check tool
 
@@ -145,7 +145,7 @@ Under **Check a schedule**, type an expression and press **Check**. The panel re
 
 Saving also sets the Healthchecks checks of the backup, the backup integrity check, the restore test, the offsite copy, the nightly maintenance and the off-site heartbeat to the new schedules; a check that no turned-on job reports to is paused. When Healthchecks does not answer, the page reads "Schedules saved and applied to this server. Healthchecks did not answer, so the checks that watch these jobs take the new schedules the next time the schedules are saved or this server's configuration is brought up to date." A check turned back on shows "new" in Healthchecks until its job next runs.
 
-When nothing is turned on, the page warns "Nothing is scheduled on this server, so no backup will run. Turn on the backup schedule below."
+When no backup is scheduled, the page warns "Nothing is scheduled on this server, so no backup will run. Turn on the backup schedule below."
 
 ## How many backups to keep
 
@@ -163,13 +163,16 @@ Keeping the last 8 and 24 hourly on a quarter-hour schedule holds 8 backups acro
 
 ## When the subscription lapses
 
-The timers are switched off and the jobs stop running. The saved schedules and retention numbers are kept. Applications, their data and manual backups are not affected. The Log and a banner record the lock.
+The backup keeps running once a week and the vulnerability watch once a day. When the saved backup schedule was faster than weekly, or the backup ran only as a step of the nightly maintenance, it runs at the default time (Sunday 3 AM) until you save a weekly schedule or the subscription returns. The vulnerability watch does the same at 1 AM every day. The page names what each one runs in place of the saved schedule. Every other job stops. The saved schedules and retention numbers are kept, and the saved schedules return with the subscription. Applications, their data and manual backups are not affected. The Log and a banner record the lock.
 
 ## Troubleshooting
 
 | Symptom | Cause and fix |
 |---|---|
-| "Schedules can be turned on with a Catena license." | No active Catena Pro or Catena Business subscription. Check **Settings** > **Subscription**. |
+| "scheduling this lane needs an active Catena Pro licence" | The job needs Catena Pro or Catena Business, and the server has no active subscription. Check **Settings** > **Subscription**. |
+| "backup: this schedule runs it as often as every ..." | Without a paid subscription, the backup runs at most once a week and the vulnerability watch at most once a day. Choose a slower schedule, such as `Sun 3:00`, or subscribe to Catena Pro. |
+| "This server runs the backup on ..." or "This server runs the vulnerability watch on ..." | The saved schedule is faster than a server without a paid subscription may run. The line names the schedule that runs instead. Save a weekly (backup) or daily (watch) schedule, or renew the subscription. |
+| "Nothing is scheduled on this server, so no backup will run." | No backup schedule is on. Turn on **Backup** and save. |
 | "This server did not accept the schedule." | The reason follows the message; most often an expression that does not parse. Use **Check**. |
 | "Could not reach this server to read or change the schedule." | The host did not answer; retry in a moment. |
 | A job did not start at the set time | The randomised delay applies; a missed run starts at the next boot. |
