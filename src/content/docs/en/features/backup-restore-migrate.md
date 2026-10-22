@@ -74,7 +74,7 @@ sudo bash -c 'set -a; . /etc/catena/backup.env; set +a; \
   restic restore latest --target / --include /path/to/restore'
 ```
 
-After a restore, the applications it brought back stay stopped. Start them without the panel with the command below, repeating `-app` for each application. The name is the application's name as Docker lists it, such as `catena-nextcloud`. A name the restore did not leave stopped is refused, and the refusal lists the ones it did. It runs the same start as the **Restore** page: the database check, the release from backup mode, then a configuration update that brings the server up to date. If you deleted the admin panel, that update has no panel to take its files from and applies nothing: the start skips it, the panel stays deleted and the server is not brought up to date.
+After a restore, the applications it brought back stay stopped. Start them without the panel with the command below, repeating `-app` for each application. The name is the application's name as Docker lists it, such as `catena-nextcloud`. A name the restore did not leave stopped is refused, and the refusal lists the ones it did. It runs the same start as the **Restore** page: the database check and the release from backup mode. The start ends there, without a configuration update.
 
 ```sh
 sudo catena-recovery start-apps -app <name>

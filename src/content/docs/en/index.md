@@ -32,7 +32,6 @@ Once you apply a domain, each service answers on its own subdomain of `yourdomai
 | `gatus.yourdomain.com` | Gatus status page |
 | `healthchecks.yourdomain.com` | Healthchecks |
 | `beszel.yourdomain.com` | Beszel resource graphs |
-| `turn.yourdomain.com` | Relay for audio and video calls (not a web page) |
 
 You can change each name in **Settings** > **Infrastructure app subdomains**. Until you apply a domain, nothing is published and you reach the panel through an SSH forward (see [Installation](/en/installation/)).
 

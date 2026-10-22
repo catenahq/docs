@@ -32,7 +32,6 @@ Une fois votre domaine appliqué, chaque service répond sur son propre sous-dom
 | `gatus.yourdomain.com` | Page d'état Gatus |
 | `healthchecks.yourdomain.com` | Healthchecks |
 | `beszel.yourdomain.com` | Graphiques de ressources Beszel |
-| `turn.yourdomain.com` | Relais des appels audio et vidéo (pas une page web) |
 
 Vous pouvez changer chaque nom dans **Paramètres** > **Sous-domaines des applications d'infrastructure**. Tant que vous n'avez appliqué aucun domaine, rien n'est publié et vous atteignez le panneau par un transfert de port SSH (voir [Installation](/fr/installation/)).
 

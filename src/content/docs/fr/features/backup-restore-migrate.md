@@ -74,7 +74,7 @@ sudo bash -c 'set -a; . /etc/catena/backup.env; set +a; \
   restic restore latest --target / --include /chemin/a/restaurer'
 ```
 
-Après une restauration, les applications qu'elle a ramenées restent à l'arrêt. Démarrez-les sans le panneau avec la commande ci-dessous, en répétant `-app` pour chaque application. Le nom est celui que Docker donne à l'application, comme `catena-nextcloud`. Un nom que la restauration n'a pas laissé à l'arrêt est refusé, et le refus liste ceux qu'elle a laissés. La commande exécute le même démarrage que la page **Restauration** : la vérification des bases de données, la sortie du mode sauvegarde, puis une mise à jour de la configuration qui remet le serveur à niveau. Si vous avez supprimé le panneau d'administration, cette mise à jour n'a aucun panneau d'où tirer ses fichiers et n'applique rien : le démarrage l'omet, le panneau reste supprimé et le serveur n'est pas remis à niveau.
+Après une restauration, les applications qu'elle a ramenées restent à l'arrêt. Démarrez-les sans le panneau avec la commande ci-dessous, en répétant `-app` pour chaque application. Le nom est celui que Docker donne à l'application, comme `catena-nextcloud`. Un nom que la restauration n'a pas laissé à l'arrêt est refusé, et le refus liste ceux qu'elle a laissés. La commande exécute le même démarrage que la page **Restauration** : la vérification des bases de données et la sortie du mode sauvegarde. Le démarrage s'arrête là, sans mise à jour de la configuration.
 
 ```sh
 sudo catena-recovery start-apps -app <nom>
