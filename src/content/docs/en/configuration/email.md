@@ -13,7 +13,7 @@ Everything on the server that sends automated email goes through one outside mai
 - Email from WordPress sites deployed from the catalog, such as contact forms.
 - The one-time email sent to you when your paid subscription locks. See [Subscription](/en/configuration/subscription/).
 
-A mailbox application deployed on the server (a mail server app) keeps its own separate settings; this section does not configure it.
+A mailbox application deployed on the server (a mail server app) keeps its own separate settings. Its relay password and its Spamhaus key are set on the mail server's card under **Apps**; the stored value is never shown again.
 
 ## Prerequisites
 

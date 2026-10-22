@@ -13,7 +13,7 @@ Tout ce qui, sur le serveur, envoie du courriel automatisé passe par un seul se
 - Les courriels des sites WordPress déployés depuis le catalogue, comme les formulaires de contact.
 - Le courriel unique qui vous est envoyé quand votre abonnement payant se verrouille. Voir [Abonnement](/fr/configuration/subscription/).
 
-Une application de messagerie déployée sur le serveur (un serveur de courriel) garde ses propres réglages, distincts; cette section ne la configure pas.
+Une application de messagerie déployée sur le serveur (un serveur de courriel) garde ses propres réglages, distincts. Son mot de passe de relais et sa clé Spamhaus se saisissent sur la carte du serveur de courriel, sous **Applications**; la valeur stockée n'est jamais réaffichée.
 
 ## Prérequis
 
