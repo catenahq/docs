@@ -12,7 +12,7 @@ A Catena server has four layers that update independently: the operating system,
 | Docker engine | **Upgrade Docker**, or a step of the nightly maintenance. | Button: all. Step: Catena Pro or Catena Business |
 | Applications and Catena's own services | The nightly maintenance, behind a waiting period, a vulnerability check and a rollback. | Catena Pro or Catena Business |
 
-On Community, applications are updated by hand (see [Community: update an application](#community-update-an-application)). The [edition comparison](https://catena.run/en/#pricing) lists the editions.
+On Community, no application is offered or given an update (see [Community: applications](#community-applications)). The [edition comparison](https://catena.run/en/#pricing) lists the editions.
 
 ## Operating system
 
@@ -68,7 +68,45 @@ The nightly maintenance upgrades Docker the same way within the current major ve
 
 ## Applications (Catena Pro)
 
-The nightly maintenance updates Catena's own services and every application deployed from Portainer. It first takes a backup and verifies it, and stops before any update if that fails, unless you left the backup step out (see [Schedules](/en/configuration/schedules/#nightly-maintenance)). You can leave out any step, and Catena warns when the combination is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
+The nightly maintenance updates Catena's own services and every application on the **Apps** page. It first takes a backup and verifies it, and stops before any update if that fails, unless you left the backup step out (see [Schedules](/en/configuration/schedules/#nightly-maintenance)). You can leave out any step, and Catena warns when the combination is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
+
+An application is updated in two ways, and the nightly maintenance does both: it moves an application to a newer version of itself from its repository, then moves the images inside each application file to newer tags.
+
+### Apps added from a repository
+
+You add an application from a repository on the server's list (see [Add an app from a repository](/en/configure-apps/#add-an-app-from-a-repository)). The repository publishes each version of an application as a tag, written `<app>/<version>-<revision>`, and the **Apps** page shows the one an application runs as "Version `<tag>` from `<repository>`". A newer version is a newer tag of the same application.
+
+1. **Waiting period.** A tag is taken only after Catena has seen it for the waiting period (7 days by default, the same setting as for images: see [Waiting period and vulnerability gate](#waiting-period-and-vulnerability-gate)). The count starts the night Catena first sees the tag. When the newest tag has not waited long enough, the newest one that has is taken.
+2. **Trusted repository.** The update applies by itself. Catena's catalog is trusted. A repository you add is trusted only if you tick **Trusted: apply its updates by themselves**.
+3. **Repository that is not trusted.** The update is offered and waits for you. The application's card on the **Apps** page reads "Version `<tag>` is available (now `<current>`)." and the tile shows "Update `<tag>` offered". Tick "Move to version `<tag>` now" and press **Update**. The update then runs as a night's would, without the waiting period.
+4. **Version older than 12 months.** When the version an application runs dates from more than 12 months ago, an update to a newer one is only offered, even from a trusted repository.
+
+A version whose content changes after Catena first saw it is refused and set aside. When the application declares versions it must pass through, the update goes through each of them in turn.
+
+Every update first holds the application: its address answers a bare 503 (service unavailable) until the update stands or its rollback is complete, with no page that says why, and the application's writers are kept still with its own backup mode or update steps when it declares them (see [Declare the backup mode and update steps](/en/configure-apps/#declare-the-backup-mode-and-update-steps-optional)). The update takes a copy of the application's databases and data first, then checks the application's health, and rolls back by itself when the application is less healthy than before (see [Rollback and quarantine](#rollback-and-quarantine)).
+
+### Revert an update
+
+After an update stands, Catena keeps the application's previous files and the copies of its data for 14 days and until a backup taken after the update has succeeded, whichever is later. While they exist, an administrator can put the application back as it was before the update, on every edition:
+
+1. On the **Apps** page, find the application's card. While the copies exist it offers "Put back the previous version", with a note that the files and data go back to how they were before the update.
+2. Tick "Put `<app>` back to what it ran before its last update".
+3. Press **Put back the previous version**.
+
+The revert stops the application, puts back its previous files and data and starts it. The page then reads "`<app>` was put back to what it ran before its last update." and says what the revert dropped. The data written since the update is dropped, and the databases are copied as they are now and kept like the other copies. The version the application ran is set aside, so the nightly maintenance does not apply it again. When the server refuses, the page reads "The server refused the revert: the application was not updated by Catena, or the copies kept for it are gone."; an application changed outside Catena is refused too.
+
+### Apps changed outside Catena
+
+Catena updates an application only while its files and its services are what Catena last deployed. The **Apps** page says when they are not, with a badge on the application's card:
+
+| Badge | Meaning |
+|---|---|
+| **Files changed by hand** | The compose file or the settings file in the application's folder differs from what Catena last deployed. |
+| **Changed outside Catena** | A service of the application differs from the deploy, is missing, or a new one appeared, for example after a change in Docker or in another container manager. |
+| **Own version of the file** | The files and services are as deployed, but the compose file is not that of a version of a repository. |
+| **Stopped** | The application is stopped. |
+
+The nightly maintenance leaves such an application alone, and a revert refuses it. A service that runs on the server without having been added by Catena is listed under **Outside Catena** and is never updated. Portainer and Arcane are optional apps of the catalog. The applications you deploy with them are in this group: Catena gives them routes, sign-in, monitoring and backups of their data through their labels, and their updates are that manager's job. Catena updates Portainer and Arcane themselves.
 
 ### Which images are eligible
 
@@ -92,8 +130,6 @@ Without a scanner the vulnerability check is off and the waiting period still ap
 ### Rollback and quarantine
 
 After each update the server compares its health with the state before. If it is worse, the previous version is put back and the failed tag is quarantined, so the next run tries the next version up instead of the same one. An application with a database gets a dump taken before the update, put back on rollback. When the new version of an application also upgrades its code, configuration and add-ons in place, as Nextcloud does, a copy of those is taken before the update too and put back on rollback while the application is stopped; its users' files are never put back. The copies are deleted once the update is kept or the rollback completes. A rollback that cannot finish keeps them on the server.
-
-If Portainer will not keep the new version's definition of an application even after the server deploys it again, the update is rolled back the same way, but the version is not quarantined, since nothing showed it bad; the application is left alone for the rest of that run.
 
 ### Services kept off the automatic updates
 
@@ -151,19 +187,11 @@ The **Log** page records every update decision, among them:
 | A combination of steps chosen on the Schedules page is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). |
 | `<app>` was updated to `<version>` but the update could not be recorded, so bringing the server up to date puts the previous version back. |
 | The update of `<app>` to `<version>` was rolled back but its record could not be cleared, so bringing the server up to date may install `<version>` again. |
-| Portainer's saved definition of `<app>` names an image none of its services runs; `<app>` gets no automatic update, settings change or restore from it until they agree. |
 | The nightly update leaves `<app>` alone: a service of it is not running. Its updates resume once the service runs. |
 
-## Community: update an application
+## Community: applications
 
-Without the nightly maintenance, you update an application by changing its image tag:
-
-1. Open Portainer (`https://portainer.yourdomain.com`, or through the SSH forward before a domain exists).
-2. Open **Stacks** and select the application.
-3. In the editor, change the image tag to the new full version tag.
-4. Press the update button under the editor.
-
-The security alerts tell you when an application carries an exploited vulnerability, or a critical one with a fixed version (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). Take a backup beforehand (**Actions** > **Backups** > **Trigger backup now**). The **Upgrades** category of **Actions** is empty on Community: its buttons arrive with a subscription.
+Without the nightly maintenance, Catena looks for no newer version of your applications, offers none and applies none: an application stays on the version you added. The **Update** button on an application's card applies an offer on any edition, but only a night's run makes an offer, so a Community server shows none. The security alerts tell you when an application carries an exploited vulnerability, or a critical one with a fixed version (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). The **Upgrades** category of **Actions** is empty on Community: its buttons arrive with a subscription.
 
 ## Troubleshooting
 
@@ -173,5 +201,5 @@ The security alerts tell you when an application carries an exploited vulnerabil
 | "The last attempt did not finish." under **Control panel version** | The update was put back. Read the log in the section, then retry. |
 | The restart banner stays | Restart from **System** > **Restart**, or let the nightly maintenance do it. |
 | The version list is replaced by a text box | The registry could not be reached; type the version. |
-| An application's saved definition names another image | In Portainer, open **Stacks**, select the application, set each `image:` to what its services run, and deploy. |
+| An application is never updated, though its repository has newer versions | The **Apps** page shows why on its card: a badge such as **Files changed by hand** (see [Apps changed outside Catena](#apps-changed-outside-catena)), or an offer waiting for you because the repository is not trusted. |
 | The nightly update leaves an application alone | Fix the service that is down. The next nightly update takes the application again once every service runs. |

@@ -7,7 +7,7 @@ Catena est une suite logicielle installée sur un serveur qui vous appartient. E
 
 ## À qui elle s'adresse
 
-Aux petites et moyennes organisations qui veulent posséder les logiciels dont elles dépendent, avec une personne administratrice à l'aise avec SSH et Portainer. Catena est entièrement auto-hébergée : vous possédez et exploitez le serveur, et vous faites chaque tâche depuis le panneau d'administration ou avec des outils standards.
+Aux petites et moyennes organisations qui veulent posséder les logiciels dont elles dépendent, avec une personne administratrice à l'aise avec SSH. Catena est entièrement auto-hébergée : vous possédez et exploitez le serveur, et vous faites chaque tâche depuis le panneau d'administration ou avec des outils standards.
 
 ## Ce qui est installé
 
@@ -16,8 +16,7 @@ Aux petites et moyennes organisations qui veulent posséder les logiciels dont e
 | Tunnel Cloudflare | Achemine tout le trafic web vers le serveur : aucun port web n'est ouvert sur la machine. |
 | Traefik | Dirige chaque adresse vers la bonne application. |
 | Keycloak | Une seule connexion pour toutes les applications, des groupes décidant qui peut ouvrir quoi. |
-| Portainer | Déploie et gère les applications. |
-| catena-admin | Le panneau d'administration : état, actions, restauration, horaires et paramètres. |
+| catena-admin | Le panneau d'administration : applications (les ajouter, les configurer, les démarrer, les arrêter, les mettre à jour et les supprimer), état, actions, restauration, horaires et paramètres. |
 | Sauvegardes restic | Sauvegardes chiffrées envoyées vers un stockage S3 qui vous appartient. |
 | Gatus, Healthchecks, Beszel | Page d'état, alarmes de tâches manquées et graphiques de ressources du serveur. |
 | Tailnet (facultatif) | Un réseau privé pour l'administration. |
@@ -30,7 +29,6 @@ Une fois votre domaine appliqué, chaque service répond sur son propre sous-dom
 |---|---|
 | `auth.yourdomain.com` | Connexion Keycloak |
 | `dash.yourdomain.com` | Le panneau d'administration |
-| `portainer.yourdomain.com` | Portainer |
 | `gatus.yourdomain.com` | Page d'état Gatus |
 | `healthchecks.yourdomain.com` | Healthchecks |
 | `beszel.yourdomain.com` | Graphiques de ressources Beszel |
@@ -40,7 +38,7 @@ Vous pouvez changer chaque nom dans **Paramètres** > **Sous-domaines des applic
 
 ## Éditions
 
-Communauté est gratuite et pleinement fonctionnelle : applications, authentification unique, sauvegardes manuelles et une sauvegarde planifiée hebdomadaire, restauration du serveur entier, mises à jour manuelles, surveillance et alertes de sécurité. Catena Pro et Catena Business débloquent d'autres fonctions du panneau et d'automatisation, comme les sauvegardes quotidiennes et d'autres horaires, les mises à jour gérées, Personnes et les copies hors site, au moyen d'une clé d'abonnement. Vos applications et vos données ne sont jamais verrouillées. La comparaison se trouve sur la [page des tarifs](https://catena.run/fr/#pricing).
+Communauté est gratuite et pleinement fonctionnelle : applications, authentification unique, sauvegardes manuelles et une sauvegarde planifiée hebdomadaire, restauration du serveur entier, mises à jour manuelles du panneau et du moteur Docker, surveillance et alertes de sécurité. Catena Pro et Catena Business débloquent d'autres fonctions du panneau et d'automatisation, comme les sauvegardes quotidiennes et d'autres horaires, les mises à jour gérées, Personnes et les copies hors site, au moyen d'une clé d'abonnement. Vos applications et vos données ne sont jamais verrouillées. La comparaison se trouve sur la [page des tarifs](https://catena.run/fr/#pricing).
 
 ## Propriété des données
 
@@ -51,4 +49,4 @@ Le serveur, le domaine, le compte Cloudflare, le stockage de sauvegarde et les c
 1. [Installation](/fr/installation/) : exigences et installateur.
 2. [Vue d'ensemble de la configuration](/fr/configuration/) : l'ordre de la première configuration.
 3. Fonctions : [Connexions sécurisées](/fr/features/secure-connections/), [Sauvegarde, restauration et migration](/fr/features/backup-restore-migrate/), [Authentification unique](/fr/features/single-sign-on/), [Mises à jour sûres](/fr/features/safe-updates/), [Tableau de bord d'administration](/fr/features/admin-dashboard/), [Supervision et alertes](/fr/features/monitoring-alerts/).
-4. [Configurer une application pour Catena](/fr/configure-apps/) : routage, accès et mises à jour d'une application déployée depuis Portainer.
+4. [Configurer une application pour Catena](/fr/configure-apps/) : ajouter une application depuis un dépôt, puis routage, accès et mises à jour.

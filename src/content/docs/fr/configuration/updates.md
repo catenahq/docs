@@ -12,7 +12,7 @@ Un serveur Catena compte quatre couches qui se mettent à jour indépendamment :
 | Moteur Docker | **Mettre à niveau Docker**, ou une étape de l'entretien nocturne. | Bouton : toutes. Étape : Catena Pro ou Catena Business |
 | Applications et services propres à Catena | L'entretien nocturne, derrière un délai d'attente, une vérification des vulnérabilités et un retour arrière. | Catena Pro ou Catena Business |
 
-Avec Communauté, les applications se mettent à jour à la main (voir [Mettre à jour une application avec Communauté](#mettre-à-jour-une-application-avec-communauté)). La [comparaison des éditions](https://catena.run/fr/#pricing) présente les éditions.
+Avec Communauté, aucune application n'est proposée ni mise à jour (voir [Applications avec Communauté](#applications-avec-communauté)). La [comparaison des éditions](https://catena.run/fr/#pricing) présente les éditions.
 
 ## Système d'exploitation
 
@@ -68,7 +68,45 @@ L'entretien nocturne met Docker à niveau de la même façon au sein de la versi
 
 ## Applications (Catena Pro)
 
-L'entretien nocturne met à jour les services propres à Catena et chaque application déployée depuis Portainer. Il prend d'abord une sauvegarde et la vérifie, et s'arrête avant toute mise à jour si cela échoue, sauf si vous avez retiré l'étape de sauvegarde (voir [Horaires](/fr/configuration/schedules/#entretien-nocturne)). Vous pouvez retirer n'importe quelle étape, et Catena avertit lorsque la combinaison est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
+L'entretien nocturne met à jour les services propres à Catena et chaque application de la page **Applications**. Il prend d'abord une sauvegarde et la vérifie, et s'arrête avant toute mise à jour si cela échoue, sauf si vous avez retiré l'étape de sauvegarde (voir [Horaires](/fr/configuration/schedules/#entretien-nocturne)). Vous pouvez retirer n'importe quelle étape, et Catena avertit lorsque la combinaison est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
+
+Une application se met à jour de deux façons, et l'entretien nocturne fait les deux : il fait passer une application à une version plus récente d'elle-même, depuis son dépôt, puis il fait passer les images du fichier de chaque application à des étiquettes plus récentes.
+
+### Applications ajoutées depuis un dépôt
+
+Vous ajoutez une application depuis un dépôt de la liste du serveur (voir [Ajouter une application depuis un dépôt](/fr/configure-apps/#ajouter-une-application-depuis-un-dépôt)). Le dépôt publie chaque version d'une application sous forme d'étiquette, écrite `<application>/<version>-<révision>`, et la page **Applications** affiche celle qu'une application exécute sous la forme "Version `<étiquette>` du dépôt `<dépôt>`". Une version plus récente est une étiquette plus récente de la même application.
+
+1. **Délai d'attente.** Une étiquette n'est prise qu'après que Catena l'a vue pendant le délai d'attente (7 jours par défaut, le même réglage que pour les images : voir [Délai d'attente et barrière de vulnérabilités](#délai-dattente-et-barrière-de-vulnérabilités)). Le compte commence la nuit où Catena voit l'étiquette pour la première fois. Si l'étiquette la plus récente n'a pas attendu assez longtemps, la plus récente qui a attendu est prise.
+2. **Dépôt de confiance.** La mise à jour s'applique d'elle-même. Le catalogue de Catena est de confiance. Un dépôt que vous ajoutez ne l'est que si vous cochez **De confiance : appliquer ses mises à jour d'elles-mêmes**.
+3. **Dépôt qui n'est pas de confiance.** La mise à jour est proposée et attend votre décision. La fiche de l'application, sur la page **Applications**, indique "La version `<étiquette>` est disponible (actuellement `<actuelle>`)." et la tuile affiche "Mise à jour `<étiquette>` proposée". Cochez "Passer à la version `<étiquette>` maintenant" et appuyez sur **Mettre à jour**. La mise à jour se déroule alors comme celle d'une nuit, sans le délai d'attente.
+4. **Version de plus de 12 mois.** Lorsque la version qu'exécute une application date de plus de 12 mois, la mise à jour vers une version plus récente est seulement proposée, même depuis un dépôt de confiance.
+
+Une version dont le contenu change après que Catena l'a vue pour la première fois est refusée et mise de côté. Lorsque l'application déclare des versions par lesquelles elle doit passer, la mise à jour les traverse l'une après l'autre.
+
+Chaque mise à jour commence par retenir l'application : son adresse répond un simple 503 (service indisponible) jusqu'à ce que la mise à jour tienne ou que son retour arrière soit terminé, sans page qui en explique la raison, et les écritures de l'application sont immobilisées par son propre mode de sauvegarde ou ses propres étapes de mise à jour lorsqu'elle en déclare (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](/fr/configure-apps/#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)). La mise à jour fait d'abord une copie des bases de données et des données de l'application, vérifie ensuite sa santé, et revient en arrière d'elle-même lorsque l'application est en moins bon état qu'avant (voir [Retour arrière et quarantaine](#retour-arrière-et-quarantaine)).
+
+### Annuler une mise à jour
+
+Une fois qu'une mise à jour tient, Catena garde les fichiers précédents de l'application et les copies de ses données pendant 14 jours et jusqu'à ce qu'une sauvegarde faite après la mise à jour ait réussi, selon la dernière échéance. Tant qu'ils existent, un administrateur peut remettre l'application comme elle était avant la mise à jour, dans toutes les éditions :
+
+1. Sur la page **Applications**, repérez la fiche de l'application. Tant que les copies existent, elle propose "Remettre la version précédente", avec une note disant que les fichiers et les données reviennent à leur état d'avant la mise à jour.
+2. Cochez "Remettre `<application>` comme elle tournait avant sa dernière mise à jour".
+3. Appuyez sur **Remettre la version précédente**.
+
+L'annulation arrête l'application, remet ses fichiers et ses données précédents, puis la démarre. La page indique alors "`<application>` a été remise comme elle tournait avant sa dernière mise à jour." et dit ce que l'annulation a abandonné. Les données écrites depuis la mise à jour sont abandonnées, et les bases de données sont copiées dans leur état actuel et conservées comme les autres copies. La version qu'exécutait l'application est mise de côté : l'entretien nocturne ne l'applique donc pas de nouveau. Lorsque le serveur refuse, la page indique "Le serveur a refusé le retour en arrière : l'application n'a pas été mise à jour par Catena, ou les copies gardées pour elle n'existent plus."; une application modifiée hors de Catena est refusée aussi.
+
+### Applications modifiées hors de Catena
+
+Catena ne met une application à jour que tant que ses fichiers et ses services sont ce que Catena a déployé en dernier. La page **Applications** le dit par un badge sur la fiche de l'application :
+
+| Badge | Signification |
+|---|---|
+| **Fichiers modifiés à la main** | Le fichier compose ou le fichier de réglages du dossier de l'application diffère de ce que Catena a déployé en dernier. |
+| **Modifiée hors de Catena** | Un service de l'application diffère du déploiement, manque, ou un nouveau service est apparu, par exemple après un changement dans Docker ou dans un autre gestionnaire de conteneurs. |
+| **Version propre du fichier** | Les fichiers et les services sont ceux du déploiement, mais le fichier compose n'est celui d'aucune version d'un dépôt. |
+| **Arrêtée** | L'application est arrêtée. |
+
+L'entretien nocturne laisse une telle application de côté, et l'annulation la refuse. Un service qui tourne sur le serveur sans avoir été ajouté par Catena est listé sous **Hors de Catena** et n'est jamais mis à jour. Portainer et Arcane sont des applications facultatives du catalogue. Les applications que vous déployez avec elles font partie de ce groupe : Catena leur donne des routes, la connexion, la surveillance et la sauvegarde de leurs données par leurs étiquettes, et leurs mises à jour relèvent de ce gestionnaire. Portainer et Arcane eux-mêmes sont mis à jour par Catena.
 
 ### Images admissibles
 
@@ -92,8 +130,6 @@ Sans analyseur, la vérification des vulnérabilités est désactivée et le dé
 ### Retour arrière et quarantaine
 
 Après chaque mise à jour, le serveur compare son état de santé à celui d'avant. S'il est moins bon, la version précédente est remise en place et l'étiquette fautive est mise en quarantaine : la prochaine exécution essaie la version suivante plutôt que la même. Une application dotée d'une base de données reçoit un export fait avant la mise à jour, remis en place lors du retour arrière. Lorsque la nouvelle version d'une application met aussi à niveau sur place son code, sa configuration et ses modules complémentaires, comme Nextcloud, une copie de ceux-ci est faite avant la mise à jour et remise en place lors du retour arrière, l'application étant arrêtée; les fichiers de ses utilisateurs ne sont jamais remis en place. Les copies sont supprimées dès que la mise à jour est conservée ou que le retour arrière se termine. Un retour arrière qui ne peut aboutir les conserve sur le serveur.
-
-Si Portainer refuse de conserver la définition de la nouvelle version d'une application, même après que le serveur l'a déployée de nouveau, la mise à jour est annulée de la même façon, mais la version n'est pas mise en quarantaine, car rien ne l'a montrée défectueuse; l'application est laissée de côté pour le reste de l'exécution.
 
 ### Services exclus des mises à jour automatiques
 
@@ -151,19 +187,11 @@ La page **Journal** consigne chaque décision de mise à jour, notamment :
 | Une combinaison d'étapes choisie sur la page Horaires est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). |
 | `<application>` a été mis à jour vers `<version>`, mais la mise à jour n'a pas pu être enregistrée; la remise à niveau du serveur remet donc la version précédente. |
 | La mise à jour de `<application>` vers `<version>` a été annulée, mais son enregistrement n'a pas pu être effacé; la remise à niveau du serveur pourrait donc réinstaller `<version>`. |
-| La définition de `<application>` enregistrée dans Portainer nomme une image qu'aucun de ses services n'exécute; `<application>` ne reçoit ni mise à jour automatique, ni changement de paramètres, ni restauration à partir de cette définition tant qu'elles ne concordent pas. |
 | La mise à jour nocturne laisse `<application>` de côté : un de ses services ne fonctionne pas. Ses mises à jour reprennent dès que le service fonctionne. |
 
-## Mettre à jour une application avec Communauté
+## Applications avec Communauté
 
-Sans l'entretien nocturne, vous mettez à jour une application en changeant son étiquette d'image :
-
-1. Ouvrez Portainer (`https://portainer.yourdomain.com`, ou par le transfert de port SSH avant qu'un domaine existe).
-2. Ouvrez **Stacks** et sélectionnez l'application.
-3. Dans l'éditeur, changez l'étiquette d'image pour la nouvelle étiquette de version complète.
-4. Appuyez sur le bouton de mise à jour sous l'éditeur.
-
-Les alertes de sécurité vous préviennent quand une application est atteinte par une vulnérabilité exploitée, ou critique et dotée d'une version corrigée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). Faites une sauvegarde préalable (**Actions** > **Sauvegardes** > **Lancer une sauvegarde**). La catégorie **Mises à jour** de **Actions** est vide avec Communauté : ses boutons arrivent avec un abonnement.
+Sans l'entretien nocturne, Catena ne cherche aucune version plus récente de vos applications, n'en propose aucune et n'en applique aucune : une application reste à la version que vous avez ajoutée. Le bouton **Mettre à jour** de la fiche d'une application applique une proposition dans toutes les éditions, mais seule une exécution de nuit en fait une : un serveur Communauté n'en montre aucune. Les alertes de sécurité vous préviennent quand une application est atteinte par une vulnérabilité exploitée, ou critique et dotée d'une version corrigée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). La catégorie **Mises à jour** de **Actions** est vide avec Communauté : ses boutons arrivent avec un abonnement.
 
 ## Dépannage
 
@@ -173,5 +201,5 @@ Les alertes de sécurité vous préviennent quand une application est atteinte p
 | "La dernière tentative n'a pas abouti." sous **Version du panneau de contrôle** | La mise à jour a été remise en arrière. Lisez le journal de la section, puis réessayez. |
 | La bannière de redémarrage reste affichée | Redémarrez depuis **Système** > **Redémarrage**, ou laissez l'entretien nocturne s'en charger. |
 | La liste de versions est remplacée par une zone de texte | Le registre n'a pas pu être joint; saisissez la version. |
-| La définition d'une application nomme une autre image | Dans Portainer, ouvrez **Stacks**, sélectionnez l'application, réglez chaque `image:` sur ce qu'exécutent ses services, puis déployez. |
+| Une application ne se met jamais à jour, bien que son dépôt ait des versions plus récentes | La page **Applications** en donne la raison sur sa fiche : un badge comme **Fichiers modifiés à la main** (voir [Applications modifiées hors de Catena](#applications-modifiées-hors-de-catena)), ou une mise à jour proposée qui attend votre décision parce que le dépôt n'est pas de confiance. |
 | La mise à jour nocturne laisse une application de côté | Corrigez le service arrêté. La mise à jour nocturne suivante reprend l'application dès que tous ses services fonctionnent. |
