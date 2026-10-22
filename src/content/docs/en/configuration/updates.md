@@ -3,14 +3,15 @@ title: "Updates"
 description: "What a Catena server updates on its own, what needs a decision, and how an update is gated, rolled back and recorded."
 ---
 
-A Catena server has four layers that update independently: the operating system, the control panel, the Docker engine and the applications. This page lists what moves on its own, what needs a click, and what Catena Pro adds.
+A Catena server has five layers that update independently: the operating system, the control panel, the Docker engine, Catena's own services and the applications. This page lists what moves on its own, what needs a click, and what Catena Pro adds.
 
 | Layer | How it updates | Edition |
 |---|---|---|
 | Operating system | Security updates apply automatically; the restart is a decision. | All |
 | Control panel | **Update this panel**, or the monthly **Control panel updates** job. | Button: all. Job: Catena Pro or Catena Business |
 | Docker engine | **Upgrade Docker**, or a step of the nightly maintenance. | Button: all. Step: Catena Pro or Catena Business |
-| Applications and Catena's own services | The nightly maintenance, behind a waiting period, a vulnerability check and a rollback. | Catena Pro or Catena Business |
+| Catena's own services | Patch releases by the nightly maintenance; newer versions arrive with a control panel update (see [Catena's own services](#catenas-own-services)). | Catena Pro or Catena Business |
+| Applications | The nightly maintenance, behind a waiting period, a vulnerability check and a rollback. | Catena Pro or Catena Business |
 
 On Community, no application is offered or given an update (see [Community: applications](#community-applications)). The [edition comparison](https://catena.run/en/#pricing) lists the editions.
 
@@ -41,7 +42,7 @@ Open **Settings** > **Control panel version**.
 
 The section follows the update through Downloading (with a layer count), Installing, Restarting, Checking health and Applying its configuration. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if you close the page. Everything else keeps running.
 
-An update that makes the server less healthy than before is put back automatically. The section then reads "The last attempt did not finish. This server put the previous version back and is running normally on it, one version behind." with the server's log of the attempt folded below.
+An update brings the newer versions of Catena's own services that were tested together with it (see [Catena's own services](#catenas-own-services)). It checks the server's health again after applying its configuration, and one that makes the server less healthy than before is put back automatically, along with the data copied for it (see [Rollback and quarantine](#rollback-and-quarantine)). The section then reads "The last attempt did not finish. This server put the previous version back and is running normally on it, one version behind." with the server's log of the attempt folded below.
 
 The button works in every edition. The **Control panel updates** job on the [Schedules](/en/configuration/schedules/) page (monthly by default, Catena Pro or Catena Business) does the same on a schedule, through the same checks.
 
@@ -66,9 +67,21 @@ This moves Docker to the version the panel carries, then checks that every servi
 
 The nightly maintenance upgrades Docker the same way within the current major version. The result shows in the **Last upgrade** line of the section.
 
+## Catena's own services
+
+Catena's own services are the sign-in service, the reverse proxy, the monitoring services, the shared database and the helpers of the server dashboard.
+
+- **Patch releases, by themselves.** On Catena Pro and Catena Business, the nightly maintenance moves each of them to its newest patch release. For the shared database, a minor release counts as a patch.
+- **Newer minor and major versions, with a control panel update.** They arrive only with a control panel update (see [Control panel version](#control-panel-version)), after they were tested together before release. The control panel's own update takes any newer version.
+- **The tunnel connector.** It is the one exception: after the waiting period and the vulnerability check, it takes any newer release by itself. The move stands only once the new connector reconnects to Cloudflare; otherwise the server puts the previous one back by itself.
+
+The **Infrastructure** list on the **System** page shows beside each service what applies: "The nightly maintenance moves it to `<version>`" for a patch release, or "`<version>` arrives with a control panel update".
+
+A service that keeps data has it copied before it moves, and put back if the move rolls back (see [Rollback and quarantine](#rollback-and-quarantine)).
+
 ## Applications (Catena Pro)
 
-The nightly maintenance updates Catena's own services and every application on the **Apps** page. It first takes a backup and verifies it, and stops before any update if that fails, unless you left the backup step out (see [Schedules](/en/configuration/schedules/#nightly-maintenance)). You can leave out any step, and Catena warns when the combination is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
+The nightly maintenance updates every application on the **Apps** page, and Catena's own services as described in [Catena's own services](#catenas-own-services). It first takes a backup and verifies it, and stops before any update if that fails, unless you left the backup step out (see [Schedules](/en/configuration/schedules/#nightly-maintenance)). You can leave out any step, and Catena warns when the combination is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
 
 An application is updated in two ways, and the nightly maintenance does both: it moves an application to a newer version of itself from its repository, then moves the images inside each application file to newer tags.
 
@@ -114,7 +127,7 @@ Only images pinned to a full version tag are updated automatically: `1.2.3`, `v1
 
 ### The vps.auto-update label
 
-An application's `vps.auto-update` label sets how far its tag may move, from `off` to `major`; its values are in the [label reference](/en/configure-apps/#updates). Applications default to `patch`, which keeps the major and minor numbers; Catena's own services default to `patch+minor`, which keeps the major number. Services that share one image take the most restrictive label.
+An application's `vps.auto-update` label sets how far its tag may move, from `off` to `major`; its values are in the [label reference](/en/configure-apps/#updates). Applications default to `patch`, which keeps the major and minor numbers; Catena's own services follow the rule in [Catena's own services](#catenas-own-services). Services that share one image take the most restrictive label.
 
 ### Waiting period and vulnerability gate
 
@@ -130,6 +143,8 @@ Without a scanner the vulnerability check is off and the waiting period still ap
 ### Rollback and quarantine
 
 After each update the server compares its health with the state before. If it is worse, the previous version is put back and the failed tag is quarantined, so the next run tries the next version up instead of the same one. An application with a database gets a dump taken before the update, put back on rollback. When the new version of an application also upgrades its code, configuration and add-ons in place, as Nextcloud does, a copy of those is taken before the update too and put back on rollback while the application is stopped; its users' files are never put back. The copies are deleted once the update is kept or the rollback completes. A rollback that cannot finish keeps them on the server.
+
+Before one of Catena's own services that keeps data moves to a new version, its data is copied, and the service is held for the copy. This covers the sign-in service and the stores of the monitoring services. If the move rolls back, or a control panel update does, the copied data and the previous versions are put back. Anything written between the copy and the rollback is lost, a few minutes at most.
 
 ### Services kept off the automatic updates
 

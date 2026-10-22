@@ -18,7 +18,7 @@ The setting applies to every account, existing ones included: each person is ask
 
 While the setting is on **Password only**, a notice at the top of every admin page recommends the authenticator app. **Dismiss** hides it for good, and selecting **Password and an authenticator app** hides it too.
 
-The realm also keeps these rules on every configuration run: self-registration is off, the email address is the username, duplicate emails are refused, usernames cannot be edited, and brute-force protection is on.
+The realm also keeps these rules on every configuration run: self-registration is off, the email address is the username, duplicate emails are refused, usernames cannot be edited, and brute-force protection is on. An application's refusal of an account outside its groups is not a failed sign-in for that protection (see [Groups](#groups)).
 
 ## Groups
 
@@ -32,6 +32,8 @@ Access is decided by Keycloak groups.
 | `visitor` | A keyword in an application's access setting meaning "anyone, signed in or not". It is never a real group and never appears in a sign-in token. |
 
 An application lists the groups allowed to open it; `admin` is always allowed. An application opened to a department subgroup admits only that department. See [Configure an app for Catena](/en/configure-apps/) for the labels that set this.
+
+An application that signs in by itself refuses an account outside its groups. This holds for an account that signs in through an identity provider added in Keycloak, including an organization's. The refusal never counts toward the account's lockout (see [Sign-in requirements](#sign-in-requirements)).
 
 A change of group takes effect the next time the person signs in.
 

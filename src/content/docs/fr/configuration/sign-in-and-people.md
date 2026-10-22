@@ -18,7 +18,7 @@ Le réglage s'applique à tous les comptes, y compris ceux qui existent déjà :
 
 Tant que le réglage est sur **Mot de passe seulement**, un avis en haut de chaque page d'administration recommande l'application d'authentification. **Fermer** le masque définitivement, et choisir **Mot de passe et application d'authentification** le masque aussi.
 
-À chaque configuration, le domaine de sécurité maintient aussi ces règles : l'inscription libre est désactivée, le courriel sert d'identifiant, les courriels en double sont refusés, les noms d'utilisateur ne sont pas modifiables et la protection contre les attaques par force brute est active.
+À chaque configuration, le domaine de sécurité maintient aussi ces règles : l'inscription libre est désactivée, le courriel sert d'identifiant, les courriels en double sont refusés, les noms d'utilisateur ne sont pas modifiables et la protection contre les attaques par force brute est active. Le refus d'un compte hors des groupes d'une application n'est pas une connexion échouée pour cette protection (voir [Groupes](#groupes)).
 
 ## Groupes
 
@@ -32,6 +32,8 @@ L'accès est décidé par les groupes Keycloak.
 | `visitor` | Un mot-clé dans le réglage d'accès d'une application, qui signifie "tout le monde, connecté ou non". Ce n'est jamais un vrai groupe et il n'apparaît jamais dans un jeton de connexion. |
 
 Une application liste les groupes autorisés à l'ouvrir; `admin` l'est toujours. Une application ouverte à un sous-groupe de département n'admet que ce département. Voir [Configurer une application pour Catena](/fr/configure-apps/) pour les étiquettes qui fixent cela.
+
+Une application qui gère elle-même la connexion refuse un compte hors de ses groupes. Cela vaut aussi pour un compte qui se connecte par un fournisseur d'identité ajouté dans Keycloak, y compris celui d'une organisation. Ce refus ne compte jamais dans le verrouillage du compte (voir [Exigences de connexion](#exigences-de-connexion)).
 
 Un changement de groupe prend effet à la prochaine connexion de la personne.
 

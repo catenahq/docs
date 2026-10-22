@@ -3,14 +3,15 @@ title: "Mises à jour"
 description: "Ce qu'un serveur Catena met à jour seul, ce qui demande une décision, et comment une mise à jour est encadrée, annulée au besoin et consignée."
 ---
 
-Un serveur Catena compte quatre couches qui se mettent à jour indépendamment : le système d'exploitation, le panneau de contrôle, le moteur Docker et les applications. Cette page indique ce qui avance seul, ce qui demande un clic et ce qu'ajoute Catena Pro.
+Un serveur Catena compte cinq couches qui se mettent à jour indépendamment : le système d'exploitation, le panneau de contrôle, le moteur Docker, les services propres à Catena et les applications. Cette page indique ce qui avance seul, ce qui demande un clic et ce qu'ajoute Catena Pro.
 
 | Couche | Mode de mise à jour | Édition |
 |---|---|---|
 | Système d'exploitation | Les mises à jour de sécurité s'appliquent automatiquement; le redémarrage est une décision. | Toutes |
 | Panneau de contrôle | **Mettre à jour ce panneau**, ou la tâche mensuelle **Mises à jour du panneau de contrôle**. | Bouton : toutes. Tâche : Catena Pro ou Catena Business |
 | Moteur Docker | **Mettre à niveau Docker**, ou une étape de l'entretien nocturne. | Bouton : toutes. Étape : Catena Pro ou Catena Business |
-| Applications et services propres à Catena | L'entretien nocturne, derrière un délai d'attente, une vérification des vulnérabilités et un retour arrière. | Catena Pro ou Catena Business |
+| Services propres à Catena | Les versions correctives par l'entretien nocturne; les versions plus récentes arrivent avec une mise à jour du panneau de contrôle (voir [Services propres à Catena](#services-propres-à-catena)). | Catena Pro ou Catena Business |
+| Applications | L'entretien nocturne, derrière un délai d'attente, une vérification des vulnérabilités et un retour arrière. | Catena Pro ou Catena Business |
 
 Avec Communauté, aucune application n'est proposée ni mise à jour (voir [Applications avec Communauté](#applications-avec-communauté)). La [comparaison des éditions](https://catena.run/fr/#pricing) présente les éditions.
 
@@ -41,7 +42,7 @@ Ouvrez **Paramètres** > **Version du panneau de contrôle**.
 
 La section suit la mise à jour à travers Téléchargement (avec un compte de couches), Installation, Redémarrage, Vérification de l'état et Application de sa configuration. Le panneau est inaccessible environ une minute pendant son redémarrage et revient de lui-même; la mise à jour se poursuit sur le serveur même si vous fermez la page. Tout le reste continue de fonctionner.
 
-Une mise à jour qui rend le serveur moins sain qu'avant est remise en arrière automatiquement. La section indique alors "La dernière tentative n'a pas abouti. Ce serveur a remis la version précédente et fonctionne normalement avec celle-ci, avec une version de retard.", avec le journal de la tentative replié en dessous.
+Une mise à jour apporte les versions plus récentes des services propres à Catena qui ont été testées avec elle (voir [Services propres à Catena](#services-propres-à-catena)). Elle vérifie de nouveau la santé du serveur après avoir appliqué sa configuration, et une mise à jour qui rend le serveur moins sain qu'avant est remise en arrière automatiquement, avec les données copiées pour elle (voir [Retour arrière et quarantaine](#retour-arrière-et-quarantaine)). La section indique alors "La dernière tentative n'a pas abouti. Ce serveur a remis la version précédente et fonctionne normalement avec celle-ci, avec une version de retard.", avec le journal de la tentative replié en dessous.
 
 Le bouton fonctionne dans toutes les éditions. La tâche **Mises à jour du panneau de contrôle** de la page [Horaires](/fr/configuration/schedules/) (mensuelle par défaut, Catena Pro ou Catena Business) fait la même chose selon un horaire, avec les mêmes vérifications.
 
@@ -66,9 +67,21 @@ Docker passe à la version que porte le panneau, puis le serveur vérifie que ch
 
 L'entretien nocturne met Docker à niveau de la même façon au sein de la version majeure en cours. Le résultat s'affiche à la ligne **Dernière mise à niveau** de la section.
 
+## Services propres à Catena
+
+Les services propres à Catena sont le service de connexion, le mandataire inverse, les services de surveillance, la base de données partagée et les auxiliaires du tableau de bord du serveur.
+
+- **Versions correctives, d'elles-mêmes.** Avec Catena Pro et Catena Business, l'entretien nocturne fait passer chacun d'eux à sa version corrective la plus récente. Pour la base de données partagée, une version mineure compte comme corrective.
+- **Versions mineures et majeures plus récentes, avec une mise à jour du panneau de contrôle.** Elles n'arrivent qu'avec une mise à jour du panneau de contrôle (voir [Version du panneau de contrôle](#version-du-panneau-de-contrôle)), après avoir été testées ensemble avant la publication. La mise à jour du panneau de contrôle lui-même prend toute version plus récente.
+- **Le connecteur du tunnel.** C'est la seule exception : après le délai d'attente et la vérification des vulnérabilités, il prend de lui-même toute version plus récente. Le changement ne tient que lorsque le nouveau connecteur se reconnecte à Cloudflare; sinon, le serveur remet de lui-même le précédent.
+
+La liste **Infrastructure** de la page **Système** indique à côté de chaque service ce qui s'applique : "La maintenance de nuit le fait passer à `<version>`" pour une version corrective, ou "`<version>` arrive avec une mise à jour du panneau de contrôle".
+
+Un service qui conserve des données les voit copiées avant son changement de version, puis remises en place si le changement est annulé (voir [Retour arrière et quarantaine](#retour-arrière-et-quarantaine)).
+
 ## Applications (Catena Pro)
 
-L'entretien nocturne met à jour les services propres à Catena et chaque application de la page **Applications**. Il prend d'abord une sauvegarde et la vérifie, et s'arrête avant toute mise à jour si cela échoue, sauf si vous avez retiré l'étape de sauvegarde (voir [Horaires](/fr/configuration/schedules/#entretien-nocturne)). Vous pouvez retirer n'importe quelle étape, et Catena avertit lorsque la combinaison est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
+L'entretien nocturne met à jour chaque application de la page **Applications**, et les services propres à Catena comme décrit dans [Services propres à Catena](#services-propres-à-catena). Il prend d'abord une sauvegarde et la vérifie, et s'arrête avant toute mise à jour si cela échoue, sauf si vous avez retiré l'étape de sauvegarde (voir [Horaires](/fr/configuration/schedules/#entretien-nocturne)). Vous pouvez retirer n'importe quelle étape, et Catena avertit lorsque la combinaison est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
 
 Une application se met à jour de deux façons, et l'entretien nocturne fait les deux : il fait passer une application à une version plus récente d'elle-même, depuis son dépôt, puis il fait passer les images du fichier de chaque application à des étiquettes plus récentes.
 
@@ -114,7 +127,7 @@ Seules les images épinglées à une étiquette de version complète sont mises 
 
 ### L'étiquette vps.auto-update
 
-L'étiquette `vps.auto-update` d'une application détermine jusqu'où son numéro de version peut avancer, de `off` à `major`; ses valeurs figurent dans la [référence des étiquettes](/fr/configure-apps/#mises-à-jour). Les applications ont `patch` par défaut, qui garde les numéros majeur et mineur; les services propres à Catena ont `patch+minor` par défaut, qui garde le numéro majeur. Des services qui partagent une même image prennent l'étiquette la plus restrictive.
+L'étiquette `vps.auto-update` d'une application détermine jusqu'où son numéro de version peut avancer, de `off` à `major`; ses valeurs figurent dans la [référence des étiquettes](/fr/configure-apps/#mises-à-jour). Les applications ont `patch` par défaut, qui garde les numéros majeur et mineur; les services propres à Catena suivent la règle de [Services propres à Catena](#services-propres-à-catena). Des services qui partagent une même image prennent l'étiquette la plus restrictive.
 
 ### Délai d'attente et barrière de vulnérabilités
 
@@ -130,6 +143,8 @@ Sans analyseur, la vérification des vulnérabilités est désactivée et le dé
 ### Retour arrière et quarantaine
 
 Après chaque mise à jour, le serveur compare son état de santé à celui d'avant. S'il est moins bon, la version précédente est remise en place et l'étiquette fautive est mise en quarantaine : la prochaine exécution essaie la version suivante plutôt que la même. Une application dotée d'une base de données reçoit un export fait avant la mise à jour, remis en place lors du retour arrière. Lorsque la nouvelle version d'une application met aussi à niveau sur place son code, sa configuration et ses modules complémentaires, comme Nextcloud, une copie de ceux-ci est faite avant la mise à jour et remise en place lors du retour arrière, l'application étant arrêtée; les fichiers de ses utilisateurs ne sont jamais remis en place. Les copies sont supprimées dès que la mise à jour est conservée ou que le retour arrière se termine. Un retour arrière qui ne peut aboutir les conserve sur le serveur.
+
+Avant qu'un service propre à Catena qui conserve des données passe à une nouvelle version, ses données sont copiées, et le service est retenu le temps de la copie. Cela couvre le service de connexion et les magasins de données des services de surveillance. Si le changement est annulé, ou si une mise à jour du panneau de contrôle l'est, les données copiées et les versions précédentes sont remises en place. Tout ce qui a été écrit entre la copie et l'annulation est perdu, quelques minutes au plus.
 
 ### Services exclus des mises à jour automatiques
 
