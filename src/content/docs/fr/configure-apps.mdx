@@ -117,7 +117,7 @@ Le mandataire inverse joint le service d'entrée par ce réseau, et de même tou
 
 Les administrateurs entrent toujours. Aucune étiquette ne crée de groupe : les groupes existent déjà dans Keycloak, gérés dans sa console d'administration à `auth.yourdomain.com` ou dans le panneau **Personnes** avec Catena Pro (voir [Connexion et personnes](/fr/configuration/sign-in-and-people/)). La barrière décide qui atteint l'application, pas ce qu'une personne peut y faire : les rôles et permissions internes relèvent des réglages de l'application elle-même.
 
-Un service qui publie un port pour un protocole autre que le web (courriel, relais TURN) porte aussi `vps.expose.tcp` ou `vps.expose.udp` avec ces ports, ce qui les ouvre dans le coupe-feu du serveur :
+Un service qui publie un port pour un protocole autre que le web (courriel, relais TURN) porte aussi `vps.expose.tcp` ou `vps.expose.udp` avec ces ports, ce qui les ouvre dans le coupe-feu du serveur. Une étiquette n'ouvre jamais un port que le serveur déclare lui-même (SSH, ou un port réservé au serveur ou à votre réseau privé) : Catena ignore cette entrée et la consigne dans son journal.
 
 <Code code={publishedPort} lang="yaml" />
 
@@ -294,7 +294,7 @@ Sur le service qui publie les ports.
 
 | Étiquette | Valeurs | Défaut | Description |
 |---|---|---|---|
-| `vps.expose.tcp` | Ports ou plages, séparés par des virgules (`25,465`, `7000-7010`) | aucun | Ouvre ces ports TCP à Internet dans le coupe-feu du serveur. Le service les publie lui-même, en forme longue avec `mode: host`. Une entrée invalide est ignorée. |
+| `vps.expose.tcp` | Ports ou plages, séparés par des virgules (`25,465`, `7000-7010`) | aucun | Ouvre ces ports TCP à Internet dans le coupe-feu du serveur. Le service les publie lui-même, en forme longue avec `mode: host`. Une application du catalogue à qui le réseau de l'hôte est accordé ne publie rien : ses étiquettes ouvrent les ports qu'elle écoute directement sur le serveur. Une entrée qui chevauche un port que le serveur déclare lui-même, ou une entrée invalide, est ignorée. |
 | `vps.expose.udp` | Ports ou plages, séparés par des virgules | aucun | La même chose pour les ports UDP. |
 
 ## Exemple complet : Nextcloud
@@ -369,7 +369,7 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | <a id="k9"></a>K9 | erreur | Un montage de dossier hors de la zone des applications, absent de **Autres dossiers à sauvegarder** : la sauvegarde de nuit échoue. |
 | <a id="k10"></a>K10 | avertissement | Le fichier correspond à une application du catalogue mais est déployé sous un autre nom : les actions du catalogue et les restaurations ne la trouvent pas. |
 | <a id="k11"></a>K11 | note | Une étiquette `vps.*` que Catena ne lit pas, comme une qui nomme l'application ou le service. |
-| <a id="k12"></a>K12 | avertissement | Un port publié qu'aucune étiquette `vps.expose.tcp` ou `vps.expose.udp` ne déclare (ouvert sur Internet), ou un port déclaré que le service ne publie pas avec `mode: host`. |
+| <a id="k12"></a>K12 | avertissement | Un port publié qu'aucune étiquette `vps.expose.tcp` ou `vps.expose.udp` ne déclare (ouvert sur Internet), ou un port déclaré que le service ne publie pas avec `mode: host`. Une application du catalogue à qui le réseau de l'hôte est accordé ne publie rien et ne reçoit aucun avertissement pour ses ports déclarés. |
 | <a id="k13"></a>K13 | note | Une base de données qui n'est pas exportée avant chaque sauvegarde : son volume est copié pendant qu'elle tourne. |
 | <a id="k14"></a>K14 | erreur | Une adresse qu'une autre application détient déjà. |
 | <a id="k15"></a>K15 | erreur | Une adresse qui n'est pas sous un domaine que sert votre serveur. |

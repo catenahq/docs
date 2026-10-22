@@ -117,7 +117,7 @@ Write these labels on the front-door service:
 
 Administrators always get in. Groups are not created by a label: they already exist in Keycloak, managed in its admin console at `auth.yourdomain.com` or in the **People** panel with Catena Pro (see [Sign-in and people](/en/configuration/sign-in-and-people/)). The gate decides who reaches the app, not what a person can do inside it: roles and permissions inside the app are the app's own settings.
 
-A service that publishes a port for a protocol other than web traffic (mail, a TURN relay) also carries `vps.expose.tcp` or `vps.expose.udp` with those ports, which opens them in the server's firewall:
+A service that publishes a port for a protocol other than web traffic (mail, a TURN relay) also carries `vps.expose.tcp` or `vps.expose.udp` with those ports, which opens them in the server's firewall. A label never opens a port the server itself declares (SSH, or a port kept to the server or to your private network): Catena ignores that entry and logs it.
 
 <Code code={publishedPort} lang="yaml" />
 
@@ -294,7 +294,7 @@ On the service that publishes the ports.
 
 | Label | Values | Default | Description |
 |---|---|---|---|
-| `vps.expose.tcp` | Ports or ranges, comma-separated (`25,465`, `7000-7010`) | none | Opens these TCP ports to the internet in the server's firewall. The service publishes them itself, in long form with `mode: host`. An invalid entry is ignored. |
+| `vps.expose.tcp` | Ports or ranges, comma-separated (`25,465`, `7000-7010`) | none | Opens these TCP ports to the internet in the server's firewall. The service publishes them itself, in long form with `mode: host`. A catalog app that is granted the host network publishes nothing: its labels open the ports it listens on directly on the server. An entry that overlaps a port the server declares itself, or an invalid entry, is ignored. |
 | `vps.expose.udp` | Ports or ranges, comma-separated | none | The same for UDP ports. |
 
 ## Worked example: Nextcloud
@@ -369,7 +369,7 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | <a id="k9"></a>K9 | error | A bind mount outside the apps area that is not listed under **Other folders to back up**: the nightly backup fails. |
 | <a id="k10"></a>K10 | warning | The file matches a catalog app but is deployed under another name: catalog actions and restores do not find it. |
 | <a id="k11"></a>K11 | note | A `vps.*` label Catena does not read, such as one that names the app or the service. |
-| <a id="k12"></a>K12 | warning | A published port that no `vps.expose.tcp` or `vps.expose.udp` label declares (open to the internet), or a declared port the service does not publish with `mode: host`. |
+| <a id="k12"></a>K12 | warning | A published port that no `vps.expose.tcp` or `vps.expose.udp` label declares (open to the internet), or a declared port the service does not publish with `mode: host`. A catalog app granted the host network publishes nothing and draws no warning for its declared ports. |
 | <a id="k13"></a>K13 | note | A database that is not exported before each backup: its volume is copied while it runs. |
 | <a id="k14"></a>K14 | error | An address another app already holds. |
 | <a id="k15"></a>K15 | error | An address that is not under a domain your server serves. |
