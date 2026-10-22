@@ -15,6 +15,9 @@ Sur Catena Pro et Catena Business, **Horaires** > **Entretien nocturne** (désac
 
 ## Mises à jour des applications
 
+- **Nouvelles versions d'une application.** Une application vient d'un dépôt, qui publie ses versions sous forme d'étiquettes. Une nouvelle version attend le délai d'attente, puis s'applique d'elle-même lorsque le dépôt est de confiance (le catalogue de Catena l'est), ou vous est proposée sur la page **Applications** lorsqu'il ne l'est pas. Lorsque la version en cours a plus de 12 mois, les mises à jour sont seulement proposées, même depuis un dépôt de confiance. Voir [Applications ajoutées depuis un dépôt](/fr/configuration/updates/#applications-ajoutées-depuis-un-dépôt).
+- **Retenue, copies et annulation.** Une mise à jour retient les écritures de l'application et garde des copies de ses bases de données et de ses données. Elles sont gardées 14 jours et jusqu'à ce qu'une sauvegarde ultérieure réussisse, et tant qu'elles existent vous pouvez [annuler la mise à jour](/fr/configuration/updates/#annuler-une-mise-à-jour).
+- **Applications modifiées à la main.** Une application modifiée à la main, ou par un autre gestionnaire de conteneurs, n'est pas mise à jour, et la page **Applications** le dit (voir [Applications modifiées hors de Catena](/fr/configuration/updates/#applications-modifiées-hors-de-catena)).
 - **Seules les étiquettes complètes x.y.z sont mises à jour automatiquement.** Une étiquette comme `1.2.3` est admissible; `1.2`, `latest` ou `stable` ne sont jamais touchées.
 - **Politique.** Vos applications reçoivent par défaut les mises à jour correctives (`1.2.3` vers `1.2.9`); les services d'infrastructure, les correctives et mineures. L'étiquette `vps.auto-update=off|patch|minor|major`, propre à chaque application, remplace le défaut pour vos applications (voir [Configurer une application pour Catena](/fr/configure-apps/)). `off` laisse l'application telle quelle.
 - **Délai d'attente.** Par défaut, une nouvelle version attend 7 jours après sa publication avant d'être adoptée.
@@ -28,7 +31,7 @@ Le panneau a son propre horaire **Mises à jour du panneau de contrôle** (mensu
 
 ## Ce qu'ajoute chaque édition
 
-Communauté offre les correctifs du système, le signalement des redémarrages, la visibilité des versions, les alertes de sécurité pour les vulnérabilités exploitées et critiques (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)) et les mises à jour manuelles du panneau et du moteur; pour les applications, vous changez l'étiquette à la main dans Portainer. Catena Pro et Catena Business ajoutent l'entretien nocturne et les autres horaires, les mises à jour gérées des applications, la correction des CVE et le retour en arrière automatique. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté offre les correctifs du système, le signalement des redémarrages, la visibilité des versions, les alertes de sécurité pour les vulnérabilités exploitées et critiques (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)) et les mises à jour manuelles du panneau et du moteur; pour les applications, aucune mise à jour n'est proposée ni appliquée. Catena Pro et Catena Business ajoutent l'entretien nocturne et les autres horaires, les mises à jour gérées des applications, la correction des CVE et le retour en arrière automatique. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 

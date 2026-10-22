@@ -93,7 +93,7 @@ Après quelques minutes, la section **Accès au serveur Catena** affiche trois s
 
 | Secret | Usage |
 |---|---|
-| Mot de passe administrateur | Connexion au panneau et à Portainer. |
+| Mot de passe administrateur | Connexion au panneau. |
 | Mot de passe de l'utilisateur 'ops' | Fonctionne seulement à la console web de l'hébergeur (KVM ou série) ou sur un clavier physique, jamais par SSH. C'est la voie d'accès quand SSH est indisponible. |
 | Clé de vérification du journal | Prouve que le journal des actions administratives du serveur n'a pas été modifié. Affichée une seule fois, à la première installation seulement. |
 
@@ -119,7 +119,7 @@ La console demande le mot de passe de l'hébergeur seulement quand la clé n'ouv
 
 ## Première connexion
 
-Le SSH public reste ouvert après l'installation et aucun domaine n'existe encore : vous joignez donc le panneau et Portainer par une redirection SSH. La page de l'installateur la garde ouverte tant que sa fenêtre l'est. Vous pouvez la rouvrir en tout temps avec :
+Le SSH public reste ouvert après l'installation et aucun domaine n'existe encore : vous joignez donc le panneau par une redirection SSH. La page de l'installateur la garde ouverte tant que sa fenêtre l'est. Vous pouvez la rouvrir en tout temps avec :
 
 ```sh
 uvx catena-installer connect --inventory prod
@@ -128,17 +128,12 @@ uvx catena-installer connect --inventory prod
 Depuis un ordinateur sans l'installateur, ouvrez la même redirection avec :
 
 ```sh
-ssh -N -L 9010:127.0.0.1:9010 -L 9000:127.0.0.1:9000 panel@<adresse-du-serveur>
+ssh -N -L 9010:127.0.0.1:9010 panel@<adresse-du-serveur>
 ```
 
-Le compte `panel` ne peut rien faire d'autre que rediriger ces deux ports. L'adresse du serveur est l'adresse IP publique, ou l'adresse du tailnet une fois que vous avez fermé le SSH public. Tant que la redirection est ouverte :
+Le compte `panel` ne peut rien faire d'autre que rediriger ce port. L'adresse du serveur est l'adresse IP publique, ou l'adresse du tailnet une fois que vous avez fermé le SSH public. Tant que la redirection est ouverte, le panneau est à `http://localhost:9010`. Connectez-vous avec **Courriel administrateur** et **Mot de passe** : le courriel d'administrateur que vous avez saisi à l'installation et le mot de passe administrateur affiché une seule fois.
 
-| Outil | Adresse | Connexion |
-|---|---|---|
-| Panneau Catena | `http://localhost:9010` | **Courriel administrateur** et **Mot de passe** : le courriel d'administrateur que vous avez saisi à l'installation et le mot de passe administrateur affiché une seule fois. |
-| Portainer | `http://localhost:9000` | Nom d'utilisateur `admin` (pas un courriel) et le même mot de passe administrateur. |
-
-Une fois que vous avez appliqué un domaine, les mêmes outils sont à `https://dash.yourdomain.com` et `https://portainer.yourdomain.com`.
+Une fois que vous avez appliqué un domaine, le panneau est à `https://dash.yourdomain.com`.
 
 L'étape suivante est la [Vue d'ensemble de la configuration](/fr/configuration/), qui donne l'ordre de réglage du domaine, des sauvegardes, des horaires et du reste dans **Paramètres**.
 
@@ -204,7 +199,7 @@ uvx catena-installer uninstall --inventory prod
 
 Elle démasque les minuteries de mise à jour de Debian, retire les origines de mises à jour automatiques et la politique de redémarrage ajoutées par Catena, et lève le blocage des paquets du moteur de conteneurs. Elle laisse en place, à vous de les retirer délibérément :
 
-- les applications et leurs données, ainsi que Portainer (retirez-les depuis Portainer ou avec Docker);
+- les applications et leurs données (retirez-les depuis la page **Applications** ou avec Docker);
 - les comptes créés sur le serveur;
 - le tunnel Cloudflare et les enregistrements DNS (supprimez-les dans le tableau de bord Cloudflare);
 - le nœud Tailscale (retirez-le dans la console d'administration de Tailscale);

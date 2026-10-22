@@ -63,7 +63,6 @@ Après un changement de domaine, le nom affiché sur la page de connexion à `au
 
 | Champ | Service | Valeur par défaut | Adresse |
 |---|---|---|---|
-| **Portainer (gestionnaire d'applications)** | Portainer | `portainer` | `portainer.yourdomain.com` |
 | **Keycloak (connexion)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (ce panneau)** | Ce panneau | `dash` | `dash.yourdomain.com` |
 | **Gatus (page d'état)** | Gatus | `gatus` | `gatus.yourdomain.com` |

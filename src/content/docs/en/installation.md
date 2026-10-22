@@ -93,7 +93,7 @@ A few minutes in, the **Catena server access** section shows three secrets, and 
 
 | Secret | Use |
 |---|---|
-| Admin password | Panel and Portainer sign-in. |
+| Admin password | Panel sign-in. |
 | Console password for `ops` | Works only at the provider's web console (KVM or serial) or on a physical keyboard, never over SSH. It is the way in when SSH is unavailable. |
 | Journal verification key | Proves the server's log of administrative actions was not altered. Shown once, on the first install only. |
 
@@ -119,7 +119,7 @@ The console asks for the provider's password only when the key does not open the
 
 ## First sign-in
 
-Public SSH stays open after the install, and no domain exists yet, so you reach the panel and Portainer through an SSH forward. The installer page keeps it open while its window is open. You can open it again at any time with:
+Public SSH stays open after the install, and no domain exists yet, so you reach the panel through an SSH forward. The installer page keeps it open while its window is open. You can open it again at any time with:
 
 ```sh
 uvx catena-installer connect --inventory prod
@@ -128,17 +128,12 @@ uvx catena-installer connect --inventory prod
 From a computer without the installer, open the same forward with:
 
 ```sh
-ssh -N -L 9010:127.0.0.1:9010 -L 9000:127.0.0.1:9000 panel@<server-address>
+ssh -N -L 9010:127.0.0.1:9010 panel@<server-address>
 ```
 
-The `panel` account can do nothing but forward these two ports. The server address is the public IP, or the tailnet IP once you have closed public SSH. While the forward is open:
+The `panel` account can do nothing but forward this port. The server address is the public IP, or the tailnet IP once you have closed public SSH. While the forward is open, the panel is at `http://localhost:9010`. Sign in with **Admin email** and **Password**: the admin email you gave at install and the admin password shown once.
 
-| Tool | Address | Sign-in |
-|---|---|---|
-| Catena panel | `http://localhost:9010` | **Admin email** and **Password**: the admin email you gave at install and the admin password shown once. |
-| Portainer | `http://localhost:9000` | User name `admin` (not an email) and the same admin password. |
-
-After you apply a domain, the same tools are at `https://dash.yourdomain.com` and `https://portainer.yourdomain.com`.
+After you apply a domain, the panel is at `https://dash.yourdomain.com`.
 
 The next step is the [Configuration overview](/en/configuration/), which gives the order for setting up the domain, backups, schedules and the rest in **Settings**.
 
@@ -204,7 +199,7 @@ uvx catena-installer uninstall --inventory prod
 
 It unmasks the Debian update timers, removes Catena's automatic-update origins and restart policy, and releases the hold on the container engine packages. It leaves in place, for you to remove deliberately:
 
-- the apps and their data, and Portainer (remove them from Portainer or with Docker);
+- the apps and their data (remove them from the **Apps** page or with Docker);
 - the accounts created on the server;
 - the Cloudflare tunnel and DNS records (delete them in the Cloudflare dashboard);
 - the Tailscale node (remove it in the Tailscale admin console);

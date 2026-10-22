@@ -88,7 +88,7 @@ Le compte d'administration est `ops`, que vous atteignez avec la clé SSH que vo
 - Tant que le port public 22 est ouvert : `ssh ops@<ip-publique-du-serveur>`
 - Une fois fermé : `ssh ops@<ip-du-tailnet>`, depuis un appareil du même tailnet.
 
-`ops` dispose de sudo sans mot de passe. Un compte distinct, `panel`, ne sert qu'à transférer les ports du panneau et de Portainer et ne peut pas ouvrir de shell.
+`ops` dispose de sudo sans mot de passe. Un compte distinct, `panel`, ne sert qu'à transférer le port du panneau et ne peut pas ouvrir de shell.
 
 ### Ajouter une clé SSH pour ops
 

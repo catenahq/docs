@@ -88,7 +88,7 @@ The administration account is `ops`, which you reach with the SSH key you gave t
 - While public port 22 is open: `ssh ops@<server-public-ip>`
 - After it is closed: `ssh ops@<tailnet-ip>`, from a device on the same tailnet.
 
-`ops` has passwordless sudo. A separate `panel` account exists only to forward the panel and Portainer ports and cannot open a shell.
+`ops` has passwordless sudo. A separate `panel` account exists only to forward the panel's port and cannot open a shell.
 
 ### Add an SSH key for ops
 

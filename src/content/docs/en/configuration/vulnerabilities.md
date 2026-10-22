@@ -55,7 +55,7 @@ The rules for tags, labels and rollback are on the [Updates](/en/configuration/u
 ## What to do about a finding
 
 1. Open the **Log** and the **System** page to see which side the finding is on: an application image or a host package.
-2. For an application image, a newer release usually removes it. The nightly maintenance applies such a release by itself, without the 7-day wait, unless the application is labelled `vps.auto-update=off` or its tag is not a full version tag. Otherwise change the tag by hand: open Portainer, open **Stacks**, select the application, edit the image tag to the fixed release and press the update button.
+2. For an application image, a newer release usually removes it. The nightly maintenance applies such a release by itself, without the 7-day wait, unless the application is labelled `vps.auto-update=off`, its tag is not a full version tag, or it was changed outside Catena (see [Apps changed outside Catena](/en/configuration/updates/#apps-changed-outside-catena)). Otherwise apply the newer version of the application that the **Apps** page offers (see [Apps added from a repository](/en/configuration/updates/#apps-added-from-a-repository)).
 3. For a host package, the automatic security updates apply the fix. If the **System** page shows a restart is pending, restart from **System** > **Restart**. **Pending apt updates** under **Actions** > **Ops** lists what is waiting.
 4. If no newer release exists yet, the finding stays until the image is rebuilt upstream. The next nightly scan reports it as cleared in the Log once it is gone.
 

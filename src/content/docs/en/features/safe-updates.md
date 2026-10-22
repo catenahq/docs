@@ -15,6 +15,9 @@ On Catena Pro and Catena Business, **Schedules** > **Nightly maintenance** (off 
 
 ## App updates
 
+- **New versions of an app.** An app comes from a repository, which publishes its versions as tags. A new version waits for the waiting period, then applies by itself when the repository is trusted (Catena's catalog is), or is offered to you on the **Apps** page when it is not. When the running version is more than 12 months old, updates are only offered, even from a trusted repository. See [Apps added from a repository](/en/configuration/updates/#apps-added-from-a-repository).
+- **Hold, copies and revert.** An update holds the app's writes and keeps copies of its databases and data. They are kept 14 days and until a later backup succeeds, and while they exist you can [revert the update](/en/configuration/updates/#revert-an-update).
+- **Apps changed by hand.** An app changed by hand, or through another container manager, is not updated, and the **Apps** page says so (see [Apps changed outside Catena](/en/configuration/updates/#apps-changed-outside-catena)).
 - **Only full x.y.z tags are updated automatically.** A tag such as `1.2.3` is eligible; `1.2`, `latest` or `stable` are never touched.
 - **Policy.** Your apps default to patch updates (`1.2.3` to `1.2.9`); infrastructure services default to patch and minor. The per-app label `vps.auto-update=off|patch|minor|major` overrides the default for your apps (see [Configure an app for Catena](/en/configure-apps/)). `off` leaves an app alone.
 - **Waiting period.** A new version waits 7 days after release by default before it is adopted.
@@ -28,7 +31,7 @@ The panel has its own **Control panel updates** schedule (monthly by default) an
 
 ## What each edition adds
 
-Community has OS patching, restart reporting, version visibility, security alerts for exploited and critical vulnerabilities (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)), and manual panel and engine updates; for apps, you change the tag by hand in Portainer. Catena Pro and Catena Business add the nightly maintenance and the other schedules, managed app updates, CVE remediation and automatic rollback. See the [edition comparison](https://catena.run/en/#pricing).
+Community has OS patching, restart reporting, version visibility, security alerts for exploited and critical vulnerabilities (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)), and manual panel and engine updates; for apps, no update is offered or applied. Catena Pro and Catena Business add the nightly maintenance and the other schedules, managed app updates, CVE remediation and automatic rollback. See the [edition comparison](https://catena.run/en/#pricing).
 
 ## Limits
 

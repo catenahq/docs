@@ -63,7 +63,6 @@ After a domain change, the name shown on the sign-in page at `auth.yourdomain.co
 
 | Field | Service | Default | Address |
 |---|---|---|---|
-| **Portainer (application manager)** | Portainer | `portainer` | `portainer.yourdomain.com` |
 | **Keycloak (sign-in)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (this panel)** | This panel | `dash` | `dash.yourdomain.com` |
 | **Gatus (status page)** | Gatus | `gatus` | `gatus.yourdomain.com` |
