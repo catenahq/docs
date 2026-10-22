@@ -46,7 +46,7 @@ The **Compliance report** maps your server's security and privacy controls to IS
 
 Each control shows what the server measures for it as you open the page: the latest restore test, the backups kept, vulnerability counts, who can reach each application, whether a second factor is required at sign-in. A measurement older than its limit is marked out of date. For a control you own or share, press **Record the state of this control** and choose its state (**Met**, **In progress**, **Not met** or **Not applicable**), with a note, evidence files and an optional review date. A control Catena operates carries Catena's statement.
 
-You can add your own controls under **Add a control**, mapped to the clauses they help satisfy, and keep evidence files under **Add a file**: PDF, PNG, JPEG, text, CSV, Office or OpenDocument, up to 10 MiB each, 500 files and 200 MiB in all. If your server runs the ClamAV antivirus app from the catalog, each file is scanned before it is kept; otherwise the list says it was not scanned.
+You can add your own controls under **Add a control**, mapped to the clauses they help satisfy, and keep evidence files under **Add a file**: PDF, PNG, JPEG, text, CSV, Office or OpenDocument, up to 10 MiB each, 500 files and 200 MiB in all. If your server runs the ClamAV antivirus app from the catalog, each file is scanned before it is kept, and refused when ClamAV is not the catalog's unchanged version, when another antivirus app is installed beside it, or when it is not running and able to scan the file. If no antivirus app is installed, the list says the file was not scanned.
 
 Nothing is edited or deleted: each change is one more record carrying the hash of the one before it, and a withdrawn file still downloads.
 
