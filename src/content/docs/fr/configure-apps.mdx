@@ -27,13 +27,13 @@ Une application vient d'un dépôt git de la liste du serveur. Le catalogue de C
 4. Au besoin, saisissez **Nom sur ce serveur** : lettres minuscules, chiffres et traits d'union. Sans nom, l'application garde le sien. Un nom qui est déjà un dossier ou une application du serveur est refusé.
 5. Appuyez sur **Ajouter**.
 
-Catena récupère l'application à cette version, vérifie son fichier compose (voir [Vérifier une application avec le panneau](#vérifier-une-application-avec-le-panneau)), écrit le dossier et le déploie. Un fichier qui comporte une erreur à la vérification est refusé et n'est pas conservé; les avertissements et les notes n'arrêtent pas le déploiement. La page indique alors "`<application>` a été ajoutée." et la tuile de l'application apparaît dès que Catena l'a prise en compte, en quelques secondes.
+Catena récupère l'application à cette version, vérifie son fichier compose (voir [Vérifier une application avec le panneau](#vérifier-une-application-avec-le-panneau)), écrit le dossier et le déploie. Un fichier qui comporte une erreur à la vérification est refusé et n'est pas conservé; les avertissements et les notes n'arrêtent pas le déploiement. La page indique alors "`<application>` a été ajoutée." et la tuile de l'application apparaît dès que Catena l'a prise en compte, en quelques secondes. Un refus affiche la réponse du serveur sous l'avis.
 
 ### Réglages, démarrage, arrêt et suppression
 
 Chaque application a une fiche sous **Gérer les applications** :
 
-- **Réglages.** Les valeurs que l'application vous laisse changer, chacune avec sa valeur par défaut. Saisissez une valeur et appuyez sur **Enregistrer**. Une application en marche est déployée de nouveau avec la nouvelle valeur; si cela échoue, la page indique "Le réglage a été enregistré, mais `<application>` n'a pas redémarré avec lui. La démarrer de nouveau pour l'appliquer." Une application arrêtée prend la valeur quand vous la démarrez. Une valeur secrète n'est jamais réaffichée : son champ indique "Une valeur est définie" ou "Aucune valeur définie", et vous saisissez une nouvelle valeur pour la remplacer. Les valeurs que Catena génère ou garde elle-même sont listées par nom et en lecture seule. Une valeur est stockée en texte brut; ni Docker ni un shell ne l'exécute comme une commande.
+- **Réglages.** Les valeurs que l'application vous laisse changer, chacune avec sa valeur par défaut. Saisissez les valeurs et appuyez sur **Enregistrer les réglages** : l'application est déployée de nouveau une seule fois avec toutes ces valeurs. Seules les valeurs que vous avez modifiées sont écrites, et une valeur qu'un autre administrateur a changée depuis l'ouverture de la page est refusée comme périmée. Une valeur sur plusieurs lignes est affichée mais n'est pas modifiable ici. Si cela échoue, la page indique "Les réglages ont été enregistrés, mais `<application>` n'a pas redémarré avec eux. La démarrer de nouveau pour les appliquer." Une application arrêtée prend les valeurs quand vous la démarrez. Une valeur secrète n'est jamais réaffichée : son champ indique "Une valeur est définie" ou "Aucune valeur définie", et vous saisissez une nouvelle valeur dans son propre champ puis appuyez sur **Enregistrer** pour la remplacer. Les valeurs que Catena génère ou garde elle-même sont listées par nom et en lecture seule. Une valeur est stockée en texte brut; ni Docker ni un shell ne l'exécute comme une commande.
 - **Démarrer** et **Arrêter.** L'arrêt demande de cocher la case de confirmation et garde les données de l'application.
 - **Supprimer.** Demande de cocher la case de confirmation. Cochez **Supprimer aussi ses données (irréversible)** pour supprimer aussi les données de l'application; sans cela, les données restent.
 
@@ -381,11 +381,11 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | Règle | Niveau | Ce qu'elle signale |
 |---|---|---|
 | <a id="x1"></a>X1 | erreur | `privileged: true`. |
-| <a id="x2"></a>X2 | erreur | Le réseau propre du serveur (`network_mode: host`, ou le réseau externe `host`). |
+| <a id="x2"></a>X2 | erreur | Le réseau propre du serveur (`network_mode: host`, ou le réseau externe `host`). Un fichier déployé tel quel depuis le catalogue de Catena dont le bloc le déclare passe. |
 | <a id="x3"></a>X3 | erreur | `pid: host`, qui montre chaque processus du serveur. |
 | <a id="x4"></a>X4 | erreur | `ipc: host`, qui atteint la mémoire partagée d'autres processus. |
 | <a id="x5"></a>X5 | erreur | `devices`, qui atteint le matériel du serveur. |
-| <a id="x6"></a>X6 | erreur | Le socket Docker monté dans le service, qui contrôle chaque conteneur. |
+| <a id="x6"></a>X6 | erreur | Le socket Docker monté dans le service, qui contrôle chaque conteneur. Un fichier déployé tel quel depuis le catalogue de Catena dont le bloc le déclare passe. |
 | <a id="x7"></a>X7 | avertissement | `cap_add` : des capacités ajoutées. Ne gardez chacune que si l'application en a besoin. |
 | <a id="x8"></a>X8 | avertissement | Un dossier du serveur monté hors de la zone des applications : l'application lit les fichiers du serveur. |
 | <a id="x9"></a>X9 | avertissement | Un port publié sur le serveur, joignable depuis Internet sans connexion. |

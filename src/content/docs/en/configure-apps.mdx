@@ -27,13 +27,13 @@ An app comes from a git repository on the server's list. Catena's catalog is on 
 4. Optionally enter **Name on this server**: lower-case letters, digits and hyphens. Without it, the app keeps its own name. A name that is already a folder or an app on the server is refused.
 5. Press **Add**.
 
-Catena fetches the app at that version, checks its compose file (see [Check an app with the panel](#check-an-app-with-the-panel)), writes the folder and deploys it. A file with an error in the check is refused and not kept; warnings and notes do not stop the deploy. The page then reads "`<app>` was added." and the app's tile appears once Catena has picked the app up, within seconds.
+Catena fetches the app at that version, checks its compose file (see [Check an app with the panel](#check-an-app-with-the-panel)), writes the folder and deploys it. A file with an error in the check is refused and not kept; warnings and notes do not stop the deploy. The page then reads "`<app>` was added." and the app's tile appears once Catena has picked the app up, within seconds. A refusal shows the server's answer under the notice.
 
 ### Settings, start, stop and remove
 
 Each app has a card under **Manage applications**:
 
-- **Settings.** The values the app lets you change, each with its default. Type a value and press **Save**. A running app is deployed again with the new value; when that fails, the page reads "The setting was saved, but `<app>` did not restart with it. Start it again to apply it." A stopped app takes the value when you start it. A secret value is never shown again: its field reads "A value is set" or "No value is set", and you type a new value to replace it. Values Catena generates, or keeps set itself, are listed by name and are read-only. A value is stored as plain text; neither Docker nor a shell runs it as a command.
+- **Settings.** The values the app lets you change, each with its default. Type the values and press **Save settings**: the app is deployed again once with all of them. Only the values you changed are written, and a value that another administrator changed since the page opened is refused as out of date. A value that spans several lines is shown but not editable here. When that fails, the page reads "The settings were saved, but `<app>` did not restart with them. Start it again to apply them." A stopped app takes the values when you start it. A secret value is never shown again: its field reads "A value is set" or "No value is set", and you type a new value in its own field and press **Save** to replace it. Values Catena generates, or keeps set itself, are listed by name and are read-only. A value is stored as plain text; neither Docker nor a shell runs it as a command.
 - **Start** and **Stop.** Stopping needs a tick on the confirmation box and keeps the app's data.
 - **Remove.** Needs a tick on the confirmation box. Tick **Also delete its data (cannot be undone)** to delete the app's data as well; without it, the data stays.
 
@@ -381,11 +381,11 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | Rule | Level | What it reports |
 |---|---|---|
 | <a id="x1"></a>X1 | error | `privileged: true`. |
-| <a id="x2"></a>X2 | error | The server's own network (`network_mode: host`, or the external `host` network). |
+| <a id="x2"></a>X2 | error | The server's own network (`network_mode: host`, or the external `host` network). A file deployed unchanged from Catena's catalog whose block declares it passes. |
 | <a id="x3"></a>X3 | error | `pid: host`, which shows every process of the server. |
 | <a id="x4"></a>X4 | error | `ipc: host`, which reaches the shared memory of other processes. |
 | <a id="x5"></a>X5 | error | `devices`, which reaches the server's hardware. |
-| <a id="x6"></a>X6 | error | The Docker socket mounted in the service, which controls every container. |
+| <a id="x6"></a>X6 | error | The Docker socket mounted in the service, which controls every container. A file deployed unchanged from Catena's catalog whose block declares it passes. |
 | <a id="x7"></a>X7 | warning | `cap_add`: added capabilities. Keep each only if the app needs it. |
 | <a id="x8"></a>X8 | warning | A server folder mounted outside the apps area: the app reads the server's files. |
 | <a id="x9"></a>X9 | warning | A port published on the server, reachable from the internet without signing in. |
