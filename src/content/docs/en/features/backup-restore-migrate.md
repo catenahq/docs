@@ -9,8 +9,8 @@ Encrypted copies of all app data and of the server's own configuration go to S3 
 
 - **Storage and encryption.** restic encrypts on the server before anything is uploaded. The repository is one address, written `s3:https://<endpoint>/<bucket>`, which you enter in **Settings** > **Backup repository** with its two S3 keys. The server generates the backup password in **Settings** > **Backup password**, shows it once and holds it nowhere else, so save it in a password manager. You can check it against the repository or change it, which re-keys the repository.
 - **What is included.** App data and volumes, the server's configuration (including `/etc/catena/config.json`) and the audit trail. You declare extra folders in **Other folders to back up**; a container that mounts a path outside the backup set makes the run fail rather than silently skip it.
-- **Databases.** Before each snapshot, every running container whose image name contains `postgres` is dumped with `pg_dumpall`, and every `mariadb` or `mysql` container is dumped too (it needs `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in its environment). A failed dump fails the backup. Other engines such as MongoDB or SQLite get no automatic dump, and apps are not paused around a backup.
-- **Retention.** The defaults keep 24 hourly, 7 daily, 4 weekly and 6 monthly snapshots, which you can edit on the **Schedules** page.
+- **Databases.** Before each snapshot, every running container whose image name contains `postgres` is exported with `pg_dumpall`, and every `mariadb` or `mysql` container is exported too (it needs `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in its environment). Exports are plain SQL files, one per database server, compressed by the backup storage, so each backup after the first sends only what changed. A failed export of a running database fails the backup. A backup waits up to ten minutes for each application's database to run; one still down after that is left out and the run is reported as failed, naming the application. Other engines such as MongoDB or SQLite get no automatic export.
+- **Retention.** The defaults keep 24 hourly, 7 daily, 4 weekly and 6 monthly snapshots, which you can edit on the **Schedules** page. Backups past these numbers are removed once a day, and before each offsite copy. Until then every backup stays listed and restorable.
 - **Cadence.** A backup button is always available in **Actions**. A backup schedule (Sunday at 03:00 by default) is off until you turn it on. Without a paid subscription it runs at most once a week, on the day and time you choose; Catena Pro and Catena Business add daily and custom cadences. Healthchecks receives a ping after each run.
 - **Browsing.** You can list snapshots, browse them read-only and export them to an archive from **Actions** without a restore.
 
@@ -35,6 +35,7 @@ Community has manual backups, a scheduled backup at most once a week, snapshot b
 - You need an S3-compatible repository, and if you lose the backup password the backups become unreadable.
 - A file bucket copied offsite is restorable only together with a database snapshot from the same moment.
 - Restoring one app does not roll back the server's settings.
+- A backup the **Backup** job runs on its own schedule brings an app's database and the files on its volumes back to that backup's moment, with no maintenance mode around it. Files an app keeps in its own storage bucket come back as the bucket holds them, or as of its last offsite copy. Apps are put in maintenance mode only for the nightly maintenance's backup.
 
 ## Configuration
 
