@@ -26,16 +26,17 @@ Connectez-vous avec le courriel de l'administrateur et le mot de passe administr
 - Une valeur que la section ne peut pas accepter est refusée en bloc : "Rien n'a été enregistré. Corrigez les champs signalés ci-dessous."
 - Les sections qui se terminent par **Enregistrer et appliquer** (Sous-domaines des applications d'infrastructure, Courriel sortant, Alertes et signalement des tâches manquées, Exigences de connexion, Fuseau horaire et paramètres régionaux) remettent le serveur à niveau aussitôt. La note sous le bouton indique : "L'enregistrement applique ces réglages immédiatement : les services qui les utilisent redémarrent et sont brièvement indisponibles." Le déroulement se suit dans **Configuration du serveur**, plus bas sur la page.
 - Les autres sections ont leur propre action : **Appliquer** pour **Domaine**, la jonction pour **Tunnel d'accès administrateur**, et un simple **Enregistrer** pour le reste. Les valeurs de sauvegarde sont lues par la sauvegarde elle-même et n'exigent aucun redémarrage.
-- Si l'application ne peut pas démarrer, la section l'indique : "Enregistré, mais l'application n'a pas démarré, sans doute parce que le serveur met déjà sa configuration à niveau." Lancez **Remettre ce serveur à niveau** une fois l'autre opération terminée pour appliquer les valeurs enregistrées. Voir [Paramètres du serveur](/fr/configuration/server/).
+- Si le serveur met déjà sa configuration à niveau, la section l'indique : "Enregistré. Le serveur met déjà sa configuration à niveau, et appliquera ce changement dès que cette opération sera terminée." Le serveur applique les valeurs enregistrées lors d'une exécution de plus, juste après celle en cours; il n'y a rien à refaire.
+- Si l'application ne peut ni démarrer ni être mise en file, la section l'indique : "Enregistré, mais l'application n'a pas démarré, sans doute parce que le serveur met déjà sa configuration à niveau." Lancez **Remettre ce serveur à niveau** une fois l'autre opération terminée pour appliquer les valeurs enregistrées. Voir [Paramètres du serveur](/fr/configuration/server/).
 
 ## Ordre de la première configuration
 
 L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précédentes.
 
-1. [Abonnement](/fr/configuration/subscription/), si vous avez acheté une clé Catena Pro ou Catena Business. Enregistrer la clé en premier permet aux étapes suivantes d'utiliser ce qu'elle débloque, comme les horaires et les domaines supplémentaires.
+1. [Abonnement](/fr/configuration/subscription/), si vous avez acheté une clé Catena Pro ou Catena Business. Enregistrer la clé en premier permet aux étapes suivantes d'utiliser ce qu'elle débloque, comme les horaires plus fréquents et les domaines supplémentaires.
 2. [Domaine et Cloudflare](/fr/configuration/domain/) : le jeton d'API Cloudflare, le domaine, puis **Appliquer**. Tant que vous ne l'avez pas faite, le serveur fonctionne sans adresses publiques.
 3. [Sauvegardes et stockage S3](/fr/configuration/backups/) : le dépôt et ses clés, puis **Générer le mot de passe de chiffrement des sauvegardes**, puis la trousse de reprise après sinistre à conserver dans un gestionnaire de mots de passe.
-4. [Horaires](/fr/configuration/schedules/) : l'activation des horaires de sauvegarde et d'entretien (Catena Pro ou Catena Business).
+4. [Horaires](/fr/configuration/schedules/) : l'activation de l'horaire de sauvegarde, au plus une fois par semaine dans toutes les éditions, et des horaires d'entretien (Catena Pro ou Catena Business).
 5. [Courriel sortant](/fr/configuration/email/) : le service de courriel utilisé pour les réinitialisations de mot de passe, les invitations et les alertes.
 6. [Accès administrateur et réseau privé](/fr/configuration/admin-access/) : le réseau privé, puis éventuellement **Fermer le SSH sur le port public 22**.
 7. [Alertes](/fr/configuration/alerts/) : l'adresse du signal de vie hors site et les canaux de notification.
@@ -45,7 +46,7 @@ L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précéd
 ## Autres pages de configuration
 
 - [Mises à jour](/fr/configuration/updates/) : la version du panneau de contrôle et la mise à jour des applications.
-- [Vulnérabilités](/fr/configuration/vulnerabilities/) : ce qui est analysé et comment les constats s'affichent.
+- [Vulnérabilités](/fr/configuration/vulnerabilities/) : les alertes de sécurité que toutes les éditions reçoivent, ce qui est analysé et comment les constats s'affichent.
 - [Restauration et migration](/fr/configuration/restore-and-migrate/) : restaurer depuis une sauvegarde et passer à un autre serveur.
 - [Configurer une application pour Catena](/fr/configure-apps/) : raccorder une application à la connexion et au tableau de bord.
 

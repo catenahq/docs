@@ -11,7 +11,7 @@ Backups are encrypted on the server before they leave it and are written to an S
 - A provider, or at least a region, other than the one hosting the server. A single outage or incident then cannot take out both the server and its backups.
 - Access to the panel as an administrator (see [Admin access and tailnet](/en/configuration/admin-access/)).
 
-The bucket is an ordinary bucket: old backups are pruned according to the retention numbers on the Schedules page. Object Lock and versioning belong on the destination of an [offsite copy](#offsite-copies), not on this bucket.
+The bucket is an ordinary bucket: backups past the retention numbers on the Schedules page are removed once a day, and before each offsite copy. Object Lock and versioning belong on the destination of an [offsite copy](#offsite-copies), not on this bucket.
 
 ## Backup repository
 
@@ -80,8 +80,50 @@ An offsite copy duplicates a bucket into a locked bucket at a different provider
 
 ### Prerequisites
 
-- A destination bucket at a provider other than the one holding the source, created with **Object Lock** and **versioning** enabled. Most providers allow Object Lock only at bucket creation.
-- An access key pair for the destination and, if the source is not the main backup bucket, for the source.
+- A destination bucket at a provider other than the one holding the source, created with **Object Lock** and **versioning** enabled (see [Create the destination bucket](#create-the-destination-bucket)).
+- An access key pair for the destination (see [Keys for the destination](#keys-for-the-destination)) and, for the source, the keys of the bucket being copied.
+
+### Create the destination bucket
+
+A copy cannot go into the backup bucket itself, because backups are pruned there and a lock would block the pruning. Each source bucket gets its own destination bucket.
+
+1. Choose a provider that supports Object Lock and is not the one holding the source:
+
+   | Provider | Notes |
+   |---|---|
+   | eazybackup (Canada) | Canadian-owned, S3-compatible with Object Lock and versioning, no egress fees. |
+   | Backblaze B2 | Object Lock supported; US-owned; egress fees above a monthly allowance. |
+   | AWS S3 | Compliance mode is enforced strictly; US-owned. |
+   | OVHcloud Object Storage | Object Lock is turned on when the bucket is created, which also turns on versioning. Not available on the Cold Archive storage class. |
+
+   Cloudflare R2 cannot hold a destination: it offers neither Object Lock nor versioning. Its bucket locks stop objects from being deleted or overwritten, but keep no earlier version to put back.
+2. Create a new bucket, one per source bucket. Do not share a destination bucket between copies.
+3. Enable **versioning**. It keeps the earlier version of an object that is overwritten or deleted.
+4. Enable **Object Lock** at creation, with a default retention of at least 30 days (90 days recommended). Choose **Compliance** mode when the provider offers it: nobody, not even the bucket owner, can shorten it. **Governance** mode is the fallback when Compliance is not available to you.
+5. Note the endpoint and the bucket name. The panel takes them as one address, `s3:https://<endpoint>/<bucket>`.
+
+Versions that are no longer current keep using storage until the lock expires. For a bucket with much change, such as an application's files, plan for two to five times the size of the source in the first year, and set a lifecycle rule at the provider that expires non-current versions after the retention period. A lifecycle rule runs at the provider and needs no delete right on the key you give Catena.
+
+### Keys for the destination
+
+Make one key pair per destination bucket, so a leak of one cannot reach another bucket. Keep three roles apart:
+
+| Key | Rights | Where it lives |
+|---|---|---|
+| Copy key | Write and read, never delete: `s3:PutObject`, `s3:GetObject`, `s3:GetObjectVersion`, `s3:ListBucket`, `s3:GetBucketLocation`, `s3:AbortMultipartUpload`, `s3:ListMultipartUploadParts`. Leave out `s3:DeleteObject`, `s3:DeleteObjectVersion`, `s3:PutObjectRetention` and `s3:BypassGovernanceRetention`. | In the **Destination S3 access key** and **Destination S3 secret key** fields of the row. |
+| Restore key | Read only: list the bucket, read objects (earlier versions too, to restore a past moment), and find the bucket's location (`s3:ListBucket`, `s3:GetObject`, `s3:GetObjectVersion`, `s3:GetBucketLocation`). | In a password manager. You type it on the **Restore** page when you need it (see [Restore from another backup repository](/en/configuration/restore-and-migrate/#restore-from-another-backup-repository)); it is not stored on the server. |
+| Prune key | The copy key's rights plus `s3:DeleteObject` and `s3:DeleteObjectVersion`. | Never on the server. In a password manager, used from your own computer only when the provider has no lifecycle rule and you must delete old versions by hand. |
+
+A copy key without delete rights means no delete request from the server can ever reach the destination, and any delete in the provider's access log is not from Catena. Some providers also need the delete right to clean up unfinished uploads; add it only if copies fail on that.
+
+How each provider expresses "no delete":
+
+- **eazybackup and other MinIO-compatible providers:** attach a policy that allows the actions above to the key's user.
+- **AWS S3:** attach the same policy, with the bucket's ARN, to an IAM user.
+- **Backblaze B2:** when creating the application key, tick `listBuckets`, `listFiles`, `readFiles` and `writeFiles`, and leave `deleteFiles` unticked.
+- **OVH Object Storage:** give the key the read and write role, not the administrator role.
+
+To replace a key: enter the new one in the row, wait for one scheduled run to succeed, then delete the old key at the provider. No other step is needed.
 
 ### Steps
 
@@ -100,12 +142,13 @@ An offsite copy duplicates a bucket into a locked bucket at a different provider
 
 Enter both sets of keys here even when a bucket is configured elsewhere as well: an application owns where it stores its files, and this list owns what gets copied where. Source and destination must be different buckets, and you can add at most 32 rows. Leave the secret blank on an existing row to keep the stored one. Until a row exists the section reads "No offsite copies are declared, so nothing is copied offsite."
 
-The copies run on the **Offsite copy** lane of the Schedules page (and as a step of the nightly maintenance). An unreachable or unconfigured destination is recorded as skipped and does not stop backups.
+The copies run on the **Offsite copy** job of the [Schedules](/en/configuration/schedules/) page, which ships switched off: turn it on there once the row is saved. They also run as a step of the nightly maintenance. An unreachable or unconfigured destination is recorded as skipped and does not stop backups.
 
 ### How the copy behaves
 
+- Before each copy, the backups past the retention numbers are removed from the backup repository and the repository is checked, so the write-once storage receives only the backups you keep. While an offsite copy exists, this clean-up only deletes data that no kept backup uses and never rewrites partly used storage, so the write-once storage holds each piece of data once.
 - A copy only ever adds. Nothing it has written is changed or deleted afterwards. A bucket removed from the list keeps every copy already made, and the storage cost grows with churn.
-- A locked bucket cannot be restored into directly. To recover, copy it out to a fresh, unlocked bucket first and read from that.
+- A locked copy is read where it is. The **Restore** page restores the server from the offsite copy of its backup repository and puts any declared bucket back from its copy (see [Restore from another backup repository](/en/configuration/restore-and-migrate/#restore-from-another-backup-repository) and [Put a bucket back from its offsite copy](/en/configuration/restore-and-migrate/#put-a-bucket-back-from-its-offsite-copy)).
 - A copy of an application's own file bucket is only restorable together with a same-moment copy of the database that indexes those files. That database is inside the backup snapshots, so a file bucket copied on its own is not a backup by itself.
 
 ## What a backup contains
@@ -113,13 +156,17 @@ The copies run on the **Offsite copy** lane of the Schedules page (and as a step
 Included:
 
 - the data of every application, including its Docker volumes and the folders kept under the server's application storage;
-- a dump of each database taken just before the snapshot (below);
+- an export of each database taken just before the snapshot (below);
 - the server's own configuration: system files, SSH and firewall settings, the settings and secrets stored by Catena, and the administrative log;
 - every folder listed under **Other folders to back up**.
 
 Excluded: container image layers (they are pulled again), the history kept by the status page, the heartbeat monitor and the resource monitor, antivirus signature databases, logs and temporary folders.
 
-Database dumps are automatic for every running container whose image name contains `postgres`, `mariadb` or `mysql`. PostgreSQL is dumped with `pg_dumpall`. MariaDB and MySQL need `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in the container's environment. A failed dump fails the whole backup. Other engines, such as MongoDB or SQLite, get no automatic dump. Backups do not pause applications. In the nightly maintenance, a catalog application whose entry asks for it, such as Nextcloud, is put in maintenance mode while the backup runs and taken out of it afterwards, even when the backup fails; a backup started any other way leaves every application as it is. A restore takes the applications it puts back out of maintenance mode.
+Not included: the files an application keeps in its own storage bucket, such as Nextcloud's. Their earlier states come back from that bucket's offsite copy, as of its last copy (see [Put a bucket back from its offsite copy](/en/configuration/restore-and-migrate/#put-a-bucket-back-from-its-offsite-copy)).
+
+Database exports are automatic for every running container whose image name contains `postgres`, `mariadb` or `mysql`. PostgreSQL is exported with `pg_dumpall`. MariaDB and MySQL need `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in the container's environment. Each export is a plain SQL file, one per database server, and the backup storage compresses it, so each backup after the first sends only what changed. A failed export of a running database fails the whole backup. A database that is not running yet is another case: a backup waits up to ten minutes for every deployed application's database to run before exporting it, and a database still down after that is left out of that backup, the backup of everything else goes ahead, and the run is reported as failed, naming the application. Other engines, such as MongoDB or SQLite, get no automatic export.
+
+Only the nightly maintenance's backup puts applications in maintenance mode: a catalog application whose entry asks for it, such as Nextcloud, is put in maintenance mode while the backup runs and taken out of it afterwards, even when the backup fails. A backup the **Backup** job runs on its own schedule, or that you start by hand, leaves every application running: its database exports are consistent, and the application's files on disk are as they were while in use. The nightly backup is the fully consistent restore point when the nightly maintenance runs with its backup step. A restore takes the applications it puts back out of maintenance mode.
 
 After each snapshot the server checks every running container for folders mounted from outside the backup set. A backup fails when it finds one that is not listed under **Other folders to back up**; the **Check backup coverage** action runs the same check on demand.
 
@@ -142,7 +189,7 @@ The exported archive is listed under **Available downloads** on the **Restore** 
 
 ## When no backup is configured
 
-Every admin page shows the banner "No backup is configured: updates run with nothing to return to. Configure one in Settings." The nightly maintenance still applies updates in that state, and records a Log event saying so. The banner stays until a repository is configured.
+Every admin page shows the banner "No backup is configured: updates run with nothing to return to. Configure one in Settings." The nightly maintenance still applies updates in that state, and records a Log event saying so. When the nightly maintenance changes nothing (it is off, or [Updates and Docker engine upgrade](/en/configuration/schedules/#choosing-the-steps) are both left out), the banner is shortened to "No backup is configured. Configure one in Settings." The banner stays until a repository is configured.
 
 ## Troubleshooting
 
@@ -152,7 +199,7 @@ Every admin page shows the banner "No backup is configured: updates run with not
 | "Endpoint valid, but its contents could not be read." | Wrong key pair, no list right on the bucket, or a wrong bucket name in the address. Correct it and save again. |
 | **Generate backup encryption password** is refused | A password already exists, or the bucket holds backups under another password. Use an empty bucket. |
 | A backup fails on coverage | A container mounts a folder outside the backup set. List it under **Other folders to back up**. |
-| A backup fails on a database dump | A MariaDB or MySQL container without `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD`, or a database that could not be dumped. The backup log gives the reason. |
+| A backup fails on a database export | A MariaDB or MySQL container without `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD`, a database that could not be exported, or an application whose database was still down after ten minutes. The run names the application, and the backup log gives the reason. |
 | You have lost the saved password | While the server runs, **Show the values** in **Disaster-recovery keyset** displays it again. With the server gone too, the backups cannot be read by any means. |
 
 The **Log** page records each completed backup with its size; the [Updates](/en/configuration/updates/) page describes the other events recorded there.

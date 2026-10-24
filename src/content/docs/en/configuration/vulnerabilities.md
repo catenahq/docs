@@ -1,13 +1,14 @@
 ---
 title: "Vulnerabilities"
-description: "Where known vulnerabilities show on a Catena server, how they are found and used by the update engine, and how the control panel image is verified."
+description: "Where known vulnerabilities show on a Catena server, how they are found, alerted on and patched, the software inventory, and how the control panel image is verified."
 ---
 
 A server reports known vulnerabilities (published CVEs) in two places: the software in the running application images, and the packages of the host operating system. Findings are informational: they never stop the nightly maintenance by themselves. The update engine uses the same scans to avoid adopting a release that makes things worse.
 
 ## Prerequisites
 
-- Scans run as part of the nightly maintenance, which needs Catena Pro or Catena Business (see [Schedules](/en/configuration/schedules/) and the [edition comparison](https://catena.run/en/#pricing)). Until a scan has run, the figures read "Not measured yet".
+- The security alerts run on every edition (see [Security alerts](#security-alerts-every-edition)).
+- The image and package scans run as part of the nightly maintenance, which needs Catena Pro or Catena Business (see [Schedules](/en/configuration/schedules/) and the [edition comparison](https://catena.run/en/#pricing)). Until a scan has run, the figures of the **Known vulnerabilities** card read "Not measured yet".
 - The scanner ships with the server. If the scan reports it missing, run **Install managed engines on this server** (see [Updates](/en/configuration/updates/#managed-updates-panel)) to restore it.
 
 ## Where findings show
@@ -17,8 +18,6 @@ A server reports known vulnerabilities (published CVEs) in two places: the softw
 On the **System** page, the **Known vulnerabilities** card gives two counts, labelled "critical / high in running apps". They come from a Trivy scan of every image of a running container, at high and critical severity, counting only vulnerabilities for which a fix has been published. A finding therefore means a fixed version exists upstream, even if the application's image does not carry it yet.
 
 Each report lists at most 200 findings. On the first of each month it is archived, and the last three monthly archives are kept on the server.
-
-The status page also carries a check on these findings: it fails when a critical finding exists or when more than ten high ones do.
 
 ### Log events
 
@@ -30,13 +29,17 @@ The **Log** page records changes in the advisories, from both scans:
 | Security advisories in host packages cleared. | Operating system packages |
 | `<count>` security advisory(ies) flagged in application images; tracked for the next update cycle. | Application images |
 | Security advisories in application images cleared. | Application images |
+| `<app>` carries `<vulnerability>` (`<severity>`) in `<packages>`, which the vulnerability watch alerts on. | Vulnerability watch |
+| `<app>` no longer carries `<vulnerability>`. | Vulnerability watch |
+| `<app>` was moved from `<from>` to `<to>` to patch `<vulnerability>`. | Patch |
+| The patch of `<app>` to `<version>` against `<vulnerability>` did not hold and was rolled back. | Patch |
 
 ## How the scans run
 
 Two steps of the nightly maintenance produce the findings:
 
-1. **Host vulnerabilities.** The list of security advisories that apply to the packages installed on the host.
-2. **Image vulnerability scan.** Runs after the application updates, so it reflects the state after any update. The scanner's vulnerability database is refreshed at each run, and the cached copy is used if that fails.
+1. **Server package scan.** The list of security advisories that apply to the packages installed on the host.
+2. **Image scan.** Runs after the application updates, so it reflects the state after any update. The scanner's vulnerability database is refreshed at each run, and the cached copy is used if that fails.
 
 Both are informational and never abort the chain. Only a failing backup, backup verification or status check stops it (see [Schedules](/en/configuration/schedules/#nightly-maintenance)).
 
@@ -52,9 +55,96 @@ The rules for tags, labels and rollback are on the [Updates](/en/configuration/u
 ## What to do about a finding
 
 1. Open the **Log** and the **System** page to see which side the finding is on: an application image or a host package.
-2. For an application image, a newer release usually removes it. The nightly maintenance applies such a release by itself, without the 7-day wait, unless the application is labelled `vps.auto-update=off` or its tag is not a full version tag. Otherwise change the tag by hand: open Portainer, open **Stacks**, select the application, edit the image tag to the fixed release and press the update button.
+2. For an application image, a newer release usually removes it. The nightly maintenance applies such a release by itself, without the 7-day wait, unless the application is labelled `vps.auto-update=off`, its tag is not a full version tag, or it was changed outside Catena (see [Apps changed outside Catena](/en/configuration/updates/#apps-changed-outside-catena)). Otherwise apply the newer version of the application that the **Apps** page offers (see [Apps added from a repository](/en/configuration/updates/#apps-added-from-a-repository)).
 3. For a host package, the automatic security updates apply the fix. If the **System** page shows a restart is pending, restart from **System** > **Restart**. **Pending apt updates** under **Actions** > **Ops** lists what is waiting.
 4. If no newer release exists yet, the finding stays until the image is rebuilt upstream. The next nightly scan reports it as cleared in the Log once it is gone.
+
+## Security alerts (every edition)
+
+Your server checks the software of every running application and service against a vulnerability database and CISA's list of vulnerabilities attackers are actively exploiting. The server downloads both as data and checks locally: no list of your software leaves it. The check is the **Vulnerability watch** job (see [Schedules](/en/configuration/schedules/)). It runs at most once a day without a paid subscription, and a server that has never saved its schedules runs it every day at 1 AM.
+
+The watch raises one alert for each vulnerability that is:
+
+- listed by CISA as exploited, with or without a fixed version; or
+- critical, published in the last 30 days, and has a fixed version.
+
+A critical vulnerability that is not exploited and has no fixed version stays silent until a fix is published. An alert lasts, whatever the age of the vulnerability, while anything on the server carries it, and resolves when nothing does. It is one alert per vulnerability, however many applications carry it.
+
+The alert email names the vulnerability, the application, the package and the fixed version. When no fix is published yet, it says so and tells you to limit access to the application or stop it until one is. A fix published after the alert sends no second email. Update the application to the fixed version (see [Updates](/en/configuration/updates/)): the alert resolves once the watch no longer finds the vulnerability.
+
+The email goes to the admin address through the outgoing mail you set in **Settings** > **Outgoing mail** (see [Outgoing email](/en/configuration/email/)). With no outgoing mail, the alert shows in Healthchecks and under **System** only, and the **System** page reads "No email can be sent: set outgoing mail in Settings." You add other channels in Healthchecks (see [Alerts](/en/configuration/alerts/)).
+
+Once the watch has run, the **Known vulnerabilities** card of the **System** page shows its line on every edition: the number of exploited vulnerabilities in the software running there, the number of fixes available for what raises an alert, and when the watch last checked. On Catena Pro, the line links to the Vulnerabilities page; otherwise it reads "Details and one-step patching are part of Catena Pro."
+
+Catena Pro adds the Vulnerabilities page, the one-step patch, the automatic patch and the software inventory, described below.
+
+## Vulnerabilities page (Catena Pro)
+
+The vulnerability watch (see [Security alerts](#security-alerts-every-edition)) refreshes its vulnerability database when the one in use is six hours old.
+
+**Vulnerabilities** lists, per application, each high or critical known vulnerability and each one CISA lists as exploited, with its package, installed and fixed version, and when it was first seen. A vulnerability CISA lists carries an "exploited" badge with the dates CISA gives and, when it applies, a "ransomware" badge. A vulnerability with no fixed version reads "no fix published yet".
+
+To open the page, open the **Managed updates** panel and follow **Vulnerabilities**. It needs Catena Pro and an administrator account. An application's tile on the **Apps** tab shows administrators "Vulnerabilities to act on" and, when CISA lists some, "Exploited by attackers" counts, and the watch's line on the **Known vulnerabilities** card of **System** links here.
+
+The page shows when the findings were made, the age of the vulnerability database and the version of CISA's list in use. It warns when the watch cannot do its job: no scanner installed, no database yet, a database over 48 hours old, CISA's list not read for over 7 days, or the list of running images unreadable. Findings not renewed for over 32 hours are marked "out of date" and offer no patch. Running services whose image has no software list yet appear under **Not checked**.
+
+### Turn the watch on
+
+The watch is the scheduled job **Vulnerability watch** (see [Schedules](/en/configuration/schedules/)). It runs in one of two places, never both: on its own schedule, or, on Catena Pro or Catena Business, as a step of the nightly maintenance, after the night's updates, so that it alerts only on what the updates did not fix (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). While it runs in neither, the page says so and its findings are renewed only when you press **Check now**.
+
+**Check now** runs the watch in the background: a fresh database when the one in use is six hours old, CISA's list, then a check of every application. The page shows the findings a few minutes later.
+
+### Alerts
+
+The alerts follow the rule in [Security alerts](#security-alerts-every-edition). They go to the admin email and to every channel set up in Healthchecks (see [Alerts](/en/configuration/alerts/)). The text of an alert is updated when another application comes to carry the vulnerability.
+
+A second alert, **CVE watch**, fires when the watch itself cannot check: the same causes the page warns about.
+
+### Patch a vulnerability
+
+1. On **Vulnerabilities**, press **Patch** beside the vulnerability.
+2. Read the page **Patch a vulnerability**. It lists the application services carrying it and what the patch does. A patch moves at most 20 services; the others stay listed for the next one. The server's own infrastructure services are listed apart: its updates move them, so they are not patched from here.
+3. Tick "I understand that each service listed restarts on its new version, and that a service whose move does not hold goes back to the version it runs now."
+4. Press **Patch `<vulnerability>`**.
+
+The patch moves each service to the oldest version that its update policy allows and that a scan on the server shows free of the vulnerability, even when that version is newer than the usual waiting period (see [Updates](/en/configuration/updates/#waiting-period-and-vulnerability-gate)). Before the move it copies the service's database and data. It then checks that the server is as healthy as before and puts everything back if it is not, the same way every update does. It scans the new image again and starts the watch, so the alert resolves once the vulnerability is gone.
+
+A service kept off the automatic updates is moved too when you confirm, with its data copied first; its label stays as it is. The patch never moves a service to a version outside its update policy: when only a newer version is free of the vulnerability, nothing moves and the page names that version, so you can widen the service's `vps.auto-update` label (see the [label reference](/en/configure-apps/#updates)) and patch again.
+
+A scan finds what the scanner can identify. Code that an application's authors copied into it can escape the scan, and so escapes this check.
+
+The patch continues on the server if you close the page. **Last patch** on the **Vulnerabilities** page says where each service got to:
+
+| Result | Meaning | What to do |
+|---|---|---|
+| Moved from `<a>` to `<b>`. The scan after the move no longer finds the vulnerability. | The patch worked. | Nothing. |
+| Moved from `<a>` to `<b>`, but the scan after the move still finds the vulnerability, or could not be made: not verified. | The service stays on the new version and the scanner still finds the vulnerability. | Check the reason shown, then watch for a later release. |
+| The move did not hold and was rolled back; the version is not offered again. | The health check failed and the service is back on its previous version with its data. | Read the reason shown. |
+| The move could not be rolled back cleanly and needs attention. | The rollback did not finish. | Check the **Log** tab and the server's update log. |
+| Not moved: no version its update policy allows is free of the vulnerability. `<version>`, past that policy, is. | Only a newer version is free of it. | Change the service's `vps.auto-update` label, then patch again. |
+| Not moved: no published version newer than `<a>` that was scanned is free of the vulnerability yet, or every version free of it brings a new high or critical one. | Upstream has no usable fix yet. | Wait for a new release; the alert stays. |
+| Not moved: a scan of the image it runs does not find the vulnerability. | The findings were out of date. | Press **Check now**. |
+| Not moved: its label keeps it off the automatic updates. | The automatic patch never moves such a service. | Patch it from this page. |
+| Not run: the updates are paused on this server. | The automatic patch waits while updates are paused. | Patch from this page, which a pause does not stop. |
+| Not moved: the images could not be scanned, there is no scanner or database yet, the application is stopped, the application or service is no longer deployed, the versions of its image cannot be listed, or the service runs a version on a naming scheme its publisher has left. | The reason follows the message. | Fix the cause it names, press **Check now**, and patch again. |
+
+### Automatic patch
+
+Under **Settings** > **Vulnerabilities**, the **Automatic patch** field chooses what the server does about an exploited vulnerability:
+
+- **Off: a person confirms each patch** (the default).
+- **Patch exploited vulnerabilities automatically**: each time the watch finds a vulnerability CISA lists as exploited in an application service, the server patches that service as a confirmed patch would, with the same copy, health check and rollback.
+
+The automatic patch never moves a service kept off the automatic updates, and it waits while updates are paused. It asks about one service and vulnerability at most once a day, so a version published later is still taken. It needs Catena Pro: the setting can be saved without it, and nothing is patched until the subscription includes it. **Last patch** says "Started by the automatic patch" for its runs.
+
+## Software inventory (Catena Pro)
+
+**Software inventory** lists every running service's image with its software bill of materials (SBOM, CycloneDX format) to download, and finds which services carry a package, searched by name or `name@version`. The server makes each SBOM itself, without downloading anything. Open it from the **Managed updates** panel, or from the link at the foot of **Vulnerabilities**.
+
+- **Find a package**: type a name, for example `openssl`, or `openssl@3.0.15` for one version. The results list each matching package, its version and the services running it. Only the first matches are listed; a longer name narrows the search.
+- **Running images**: each service with its application, image, package count and an SBOM to download, for an auditor or another scanner. An image with no SBOM shows why.
+
+The list is empty until the watch or the nightly scan has listed the images.
 
 ## Verifying the panel image
 
@@ -68,11 +158,11 @@ The control panel runs from a public image, `ghcr.io/catenahq/catena-admin`, pul
 
 The release workflow also builds the panel binary twice and fails if the two builds differ.
 
-To scan the published image with any scanner, resolve the digest of a version tag, then scan the digest:
+To scan the published image with any scanner, resolve the digest of a version tag, then scan the digest. With Trivy, add `--skip-version-check` and `--disable-telemetry` so the scan does not report to the scanner's maker:
 
 ```sh
 docker buildx imagetools inspect ghcr.io/catenahq/catena-admin:<tag> --format '{{.Manifest.Digest}}'
-trivy image ghcr.io/catenahq/catena-admin@sha256:<digest>
+trivy image --skip-version-check --disable-telemetry ghcr.io/catenahq/catena-admin@sha256:<digest>
 ```
 
 To check the signature and read the SBOM with `cosign`:

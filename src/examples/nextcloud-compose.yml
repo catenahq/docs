@@ -2,8 +2,6 @@ services:
   app:
     image: nextcloud:1.2.3-apache
     deploy:
-      restart_policy:
-        condition: any
       placement:
         constraints:
           - node.labels.catena.role==data
@@ -59,9 +57,9 @@ services:
       OBJECTSTORE_S3_AUTOCREATE: "false"
       OBJECTSTORE_S3_KEY: ${S3_ACCESS_KEY}
       OBJECTSTORE_S3_SECRET: ${S3_SECRET_KEY}
-      NEXTCLOUD_OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
-      NEXTCLOUD_OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
-      NEXTCLOUD_OIDC_ISSUER_URL: ${OIDC_ISSUER_URL}
+      NEXTCLOUD_OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      NEXTCLOUD_OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      NEXTCLOUD_OIDC_ISSUER_URL: ${OIDC_ISSUER_URL:-}
     volumes:
       - nc-html:/var/www/html
       - nc-config:/var/www/html/config
@@ -70,21 +68,20 @@ services:
     labels:
       - "vps.route.host=nextcloud.yourdomain.com"
       - "vps.route.port=80"
-      - "vps.route.service=app"
       - "vps.auth.mode=public"
+      - "vps.auth.oidc=true"
+      - "vps.auth.oidc.redirect_uris=https://nextcloud.yourdomain.com/apps/user_oidc/code"
       - "vps.health.path=/status.php"
       - "vps.auto-update=patch"
+    cap_drop:
+      - NET_RAW
     networks:
-      catena-network:
-        aliases:
-          - my-nextcloud
-      default: {}
+      - catena-network
+      - default
 
   db:
     image: postgres:1.2.3-alpine
     deploy:
-      restart_policy:
-        condition: any
       placement:
         constraints:
           - node.labels.catena.role==data
@@ -102,9 +99,6 @@ services:
 
   redis:
     image: redis:1.2.3-alpine
-    deploy:
-      restart_policy:
-        condition: any
     labels:
       - "vps.auto-update=patch"
     networks:
@@ -113,8 +107,6 @@ services:
   cron:
     image: nextcloud:1.2.3-apache
     deploy:
-      restart_policy:
-        condition: any
       placement:
         constraints:
           - node.labels.catena.role==data

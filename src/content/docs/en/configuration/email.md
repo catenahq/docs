@@ -13,7 +13,7 @@ Everything on the server that sends automated email goes through one outside mai
 - Email from WordPress sites deployed from the catalog, such as contact forms.
 - The one-time email sent to you when your paid subscription locks. See [Subscription](/en/configuration/subscription/).
 
-A mailbox application deployed on the server (a mail server app) keeps its own separate settings; this section does not configure it.
+A mailbox application deployed on the server (a mail server app) keeps its own separate settings. Its relay password and its Spamhaus key are set on the mail server's card under **Apps**; the stored value is never shown again.
 
 ## Prerequisites
 
@@ -37,13 +37,13 @@ Only the fields the chosen option needs are shown:
 |---|---|---|---|
 | **Sender address** | yes | yes | yes |
 | **SMTP server host** | no | no | yes |
-| **SMTP server port** | no | no | yes (587 is the usual submission port) |
+| **SMTP server port** | no | no | yes (587, or 465 for a server that takes TLS from the first byte) |
 | **Username** | no | yes | yes |
 | **API key or password** | yes | yes | yes |
 
 The secret is stored and never shown again; a blank field keeps it. The provider choice is the only value the panel validates ("Choose one of the options offered."). The section ends with **Save and apply**: the services that send mail restart briefly.
 
-This section is the one place the server's mail settings live. The sign-in service's own Email settings (in the Keycloak admin console) are overwritten from it each time the server's configuration is applied, so a change you make there does not last.
+Mail settings changed in the sign-in service's own Email tab (in the Keycloak admin console) stay, and this section no longer changes them. The exception is the password alone: a new password entered only there cannot be detected, so the next time the server's configuration is applied this section's password replaces it.
 
 ## Account-side steps
 

@@ -3,7 +3,7 @@ title: "Installation"
 description: "How to install Catena on a fresh server from Windows, macOS or Linux, the first sign-in, and the installer messages that need attention."
 ---
 
-You install Catena from your admin computer with a small tool, `catena-installer`, that reaches the server over SSH. The installer asks only how to reach the server and your admin email. You set the domain, Cloudflare, backups, email and the private network afterwards in the panel (see [Configuration overview](/en/configuration/)).
+You install Catena from your admin computer with a small tool, `catena-installer`, that reaches the server over SSH. The installer asks only how to reach the server and your admin email and name. You set the domain, Cloudflare, backups, email and the private network afterwards in the panel (see [Configuration overview](/en/configuration/)).
 
 ## Requirements
 
@@ -70,6 +70,8 @@ Each server has an inventory, a folder holding its non-secret settings. The **In
 | **Host initial user** | The login the provider gave, such as `root`, `debian` or `ubuntu`. |
 | **Host initial user's password** | Optional. Needed only when the server does not accept the SSH key yet: the install uses it once to add the key. It is kept in memory only and never written to disk. |
 | **Admin email** | The panel login. |
+| **Admin first name** | Shown in the sign-in service. You can change it there later. |
+| **Admin last name** | Shown in the sign-in service. You can change it there later. |
 | **SSH key file** | The private key (its `.pub` file must sit next to it). The box **Create this SSH key pair now** creates a missing pair. |
 
 The initial user can no longer sign in over SSH once Catena is installed. The installer creates a new user, `ops`, to administer the server.
@@ -91,7 +93,7 @@ A few minutes in, the **Catena server access** section shows three secrets, and 
 
 | Secret | Use |
 |---|---|
-| Admin password | Panel and Portainer sign-in. |
+| Admin password | Panel sign-in. |
 | Console password for `ops` | Works only at the provider's web console (KVM or serial) or on a physical keyboard, never over SSH. It is the way in when SSH is unavailable. |
 | Journal verification key | Proves the server's log of administrative actions was not altered. Shown once, on the first install only. |
 
@@ -117,7 +119,7 @@ The console asks for the provider's password only when the key does not open the
 
 ## First sign-in
 
-Public SSH stays open after the install, and no domain exists yet, so you reach the panel and Portainer through an SSH forward. The installer page keeps it open while its window is open. You can open it again at any time with:
+Public SSH stays open after the install, and no domain exists yet, so you reach the panel through an SSH forward. The installer page keeps it open while its window is open. You can open it again at any time with:
 
 ```sh
 uvx catena-installer connect --inventory prod
@@ -126,17 +128,12 @@ uvx catena-installer connect --inventory prod
 From a computer without the installer, open the same forward with:
 
 ```sh
-ssh -N -L 9010:127.0.0.1:9010 -L 9000:127.0.0.1:9000 panel@<server-address>
+ssh -N -L 9010:127.0.0.1:9010 panel@<server-address>
 ```
 
-The `panel` account can do nothing but forward these two ports. The server address is the public IP, or the tailnet IP once you have closed public SSH. While the forward is open:
+The `panel` account can do nothing but forward this port. The server address is the public IP, or the tailnet IP once you have closed public SSH. While the forward is open, the panel is at `http://localhost:9010`. Sign in with **Admin email** and **Password**: the admin email you gave at install and the admin password shown once.
 
-| Tool | Address | Sign-in |
-|---|---|---|
-| Catena panel | `http://localhost:9010` | **Admin email** and **Password**: the admin email you gave at install and the admin password shown once. |
-| Portainer | `http://localhost:9000` | User name `admin` (not an email) and the same admin password. |
-
-After you apply a domain, the same tools are at `https://dash.yourdomain.com` and `https://portainer.yourdomain.com`.
+After you apply a domain, the panel is at `https://dash.yourdomain.com`.
 
 The next step is the [Configuration overview](/en/configuration/), which gives the order for setting up the domain, backups, schedules and the rest in **Settings**.
 
@@ -165,6 +162,7 @@ The installer prints its messages in English in both locales. Messages are quote
 | `catena-installer: the panel forward did not open: <problem>` | The SSH forward to the panel could not start. | Run `uvx catena-installer connect --inventory prod`. If a local port is busy, the installer prints another address. |
 | `refusing to continue: this session did not prove that ops opens with its key` | The second login was not an `ops` key login, so nothing was closed. | Run the install again from the installer. |
 | `the passwords could not be shown; running the install again shows them` | The passwords were not displayed. | Run the install again (the journal verification key is shown only on the first install). |
+| `catena-install: waiting for an earlier install on this server to end`, or `catena-install: waiting for another lane holding /run/catena.lock` | An earlier install whose connection dropped is still finishing on the server, or another job is running there. | Wait. The install goes on once the other one ends. |
 | `The installation stopped. The output says where.` | The install failed. | Read the output for the failing step, fix the cause, and run the install again. |
 
 The console exits with 0 when installed, 1 when the install failed, 3 when it finished and a check failed, and 4 when the server refused the second login.
@@ -173,7 +171,7 @@ A public port scan reported as skipped (`public port scan SKIPPED`) only means t
 
 ## Re-run, upgrade and uninstall
 
-**Re-run.** Running the install again on an installed server is safe. It asks nothing, re-applies everything with the release the server records, validates the server and shows the passwords again (the journal verification key is shown once). It is also the way in when the panel is unavailable, for example after a full disk.
+**Re-run.** Running the install again on an installed server is safe. It asks nothing, re-applies everything with the release the server records, validates the server and shows the passwords again (the journal verification key is shown once). It is also the way in when the panel is unavailable, for example after a full disk. An install whose connection drops keeps running on the server until it ends, and running the install again waits for it.
 
 ```sh
 uvx catena-installer install --inventory prod
@@ -201,7 +199,7 @@ uvx catena-installer uninstall --inventory prod
 
 It unmasks the Debian update timers, removes Catena's automatic-update origins and restart policy, and releases the hold on the container engine packages. It leaves in place, for you to remove deliberately:
 
-- the apps and their data, and Portainer (remove them from Portainer or with Docker);
+- the apps and their data (remove them from the **Apps** page or with Docker);
 - the accounts created on the server;
 - the Cloudflare tunnel and DNS records (delete them in the Cloudflare dashboard);
 - the Tailscale node (remove it in the Tailscale admin console);

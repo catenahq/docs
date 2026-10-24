@@ -45,6 +45,8 @@ To move a key to another server:
 
 The old server learns of it at its next hourly check, its status changes to the "Polar does not grant this key" sentence below and its paid features lock. A move done with [Restore and migrate](/en/configuration/restore-and-migrate/) frees the old seat and activates the key on the new server automatically.
 
+A whole-server restore onto a new machine checks the key at its end, the same check the hourly one makes, so the new machine takes the key's seat as soon as the restore finishes, with no wait and no need to enter the key again. If the old server still holds the seat, Polar refuses the new machine: free the seat in the customer portal and save the key again.
+
 ## The hourly check and the grace period
 
 Each server asks Polar about its saved key once an hour, at a fixed offset of its own within the hour. A server with no saved key asks nothing. Between checks the features follow the last answer, with no network needed.
@@ -73,15 +75,15 @@ The **Status** line shows one of these. Text in braces is filled in with a date.
 When Polar stops granting the key, or the grace period ends:
 
 - The paid panels turn into greyed entries under **Catena Pro** or **Catena Business**. Each opens an explanation of the feature, the edition that includes it and a **Subscribe** button.
-- Every schedule is turned off, since turning one on needs a paid edition. The saved choices are kept and return with the subscription.
+- Every schedule is turned off, since turning one on needs a paid edition, except two: the backup keeps running once a week and the vulnerability watch once a day, at their default times when the saved schedule was faster (see [When the subscription lapses](/en/configuration/schedules/#when-the-subscription-lapses)). The saved choices are kept and return with the subscription.
 - Paid actions are refused, and extra domains beyond the primary one stop being served (they stay stored).
 - A banner on every admin page links to the **Subscription** section with the reason, one entry is added to the **Log**, and one email goes to your admin address through the mail service you configured (English then French). With no mail service set, the banner and the log entry are the only notices. See [Outgoing email](/en/configuration/email/).
 
-What never locks: applications and their data, manual backups, whole-server restores, updates started by hand, single sign-on and monitoring. A missing, refused or unconfirmed key leaves the server on Catena Community and never blocks an installation or access to data.
+What never locks: applications and their data, the weekly backup, the security alerts (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)), manual backups, whole-server restores, updates started by hand, single sign-on and monitoring. A missing, refused or unconfirmed key leaves the server on Catena Community and never blocks an installation or access to data.
 
 ## Troubleshooting
 
 - The status stays on "Waiting": check that the server can reach Polar over HTTPS, then save the key again to ask at once.
-- "Refused" right after a rebuild or restore: the new machine is a different server to Polar. Free the old activation in the customer portal first.
+- "Refused" right after a rebuild or restore: the new machine is a different server to Polar and the old server still holds the seat. Free the old activation in the customer portal, then save the key again.
 - A panel is still greyed after saving: the saved edition does not include it. The **Edition** line shows what the key grants.
 - An **Unanswered activation** line is shown: an activation reached Polar but its answer was lost, so Polar may count this server's seat as taken while the server does not know it. Free this server's activation, labelled with its domain, in Polar's customer portal, then save the key again.

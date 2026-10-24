@@ -37,6 +37,12 @@ L'avertissement indique : "L'application remplace le tunnel Cloudflare de ce ser
 
 Le même bouton **Appliquer** répare un tunnel compromis ou défaillant : appuyez dessus avec le domaine déjà en usage pour créer un nouveau tunnel et abandonner l'ancien.
 
+### Ce qui passe au nouveau domaine
+
+Le panneau et les applications dont le panneau gère l'adresse passent au nouveau domaine. Une application dont l'adresse est intégrée, saisie dans ses propres réglages, reste sous son ancien nom jusqu'à ce que vous la déplaciez.
+
+Le serveur de courriel est de celles-là. Il garde son propre nom jusqu'à ce que vous le déplaciez, et son certificat comme ses enregistrements DNS restent associés à ce nom : son certificat est émis pour lui, et son enregistrement d'adresse (A) ainsi que ses enregistrements MTA-STS et TLS-RPT sont publiés dans les zones de ce nom lorsque le jeton Cloudflare les atteint. Quand le jeton n'atteint pas une zone, Catena conserve le certificat ou les enregistrements existants et signale le nom laissé de côté. Le webmail vérifie le certificat du serveur de courriel d'après ce nom : il continue donc de fonctionner après le changement de domaine.
+
 ### Messages
 
 | Message | Sens |
@@ -47,13 +53,16 @@ Le même bouton **Appliquer** répare un tunnel compromis ou défaillant : appuy
 | "Le jeton Cloudflare n'atteint pas ce domaine. Choisissez-en un dans la liste." | Le domaine sélectionné ne fait pas partie de ceux que le jeton atteint. |
 | "Un nom de domaine, par exemple example.com." | Le domaine n'est pas un nom valide. |
 
+### Le nom de la page de connexion
+
+Après un changement de domaine, le nom affiché sur la page de connexion à `auth.yourdomain.com` suit le nouveau domaine. Si vous avez renommé la page de connexion à la main dans les paramètres du domaine de sécurité de Keycloak, votre nom reste et n'est jamais remplacé. Voir [Connexion et personnes](/fr/configuration/sign-in-and-people/).
+
 ## Sous-domaines des applications d'infrastructure
 
 **Paramètres** > **Sous-domaines des applications d'infrastructure** fixe le nom sur lequel répond chacun des services propres au serveur, sous le domaine. Chaque champ affiche le nom en usage.
 
 | Champ | Service | Valeur par défaut | Adresse |
 |---|---|---|---|
-| **Portainer (gestionnaire d'applications)** | Portainer | `portainer` | `portainer.yourdomain.com` |
 | **Keycloak (connexion)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (ce panneau)** | Ce panneau | `dash` | `dash.yourdomain.com` |
 | **Gatus (page d'état)** | Gatus | `gatus` | `gatus.yourdomain.com` |

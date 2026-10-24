@@ -1,9 +1,6 @@
 services:
   relay:
     image: example/relay:1.2.3
-    deploy:
-      restart_policy:
-        condition: any
     ports:
       - target: 3478
         published: 3478

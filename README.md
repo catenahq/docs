@@ -40,8 +40,7 @@ so the duplication gate never sees two copies.
 
 Per-application documentation does not live here. Each template carries
 its own README beside its compose file, in its
-catenahq/catena-templates blueprint directory, which is also what a
-client's Portainer shows in the entry's detail panel.
+catenahq/catena-templates blueprint directory.
 
 ## The client's domain
 

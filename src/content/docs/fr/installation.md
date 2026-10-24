@@ -3,7 +3,7 @@ title: "Installation"
 description: "Installation de Catena sur un serveur neuf depuis Windows, macOS ou Linux, première connexion et messages de l'installateur qui demandent une intervention."
 ---
 
-Vous installez Catena depuis votre ordinateur d'administration, avec un petit outil, `catena-installer`, qui joint le serveur en SSH. L'installateur demande seulement comment joindre le serveur et votre courriel d'administrateur. Vous réglez ensuite le domaine, Cloudflare, les sauvegardes, le courriel sortant et le réseau privé dans le panneau (voir la [Vue d'ensemble de la configuration](/fr/configuration/)).
+Vous installez Catena depuis votre ordinateur d'administration, avec un petit outil, `catena-installer`, qui joint le serveur en SSH. L'installateur demande seulement comment joindre le serveur, ainsi que votre courriel et votre nom d'administrateur. Vous réglez ensuite le domaine, Cloudflare, les sauvegardes, le courriel sortant et le réseau privé dans le panneau (voir la [Vue d'ensemble de la configuration](/fr/configuration/)).
 
 ## Prérequis
 
@@ -70,6 +70,8 @@ Chaque serveur a un inventaire, un dossier qui contient ses réglages non secret
 | **Utilisateur initial du serveur** | L'identifiant fourni par l'hébergeur, par exemple `root`, `debian` ou `ubuntu`. |
 | **Mot de passe de l'utilisateur initial** | Facultatif. Nécessaire seulement si le serveur n'accepte pas encore la clé SSH : l'installation s'en sert une fois pour ajouter la clé. Il reste en mémoire et n'est jamais écrit sur le disque. |
 | **Courriel de l'administrateur** | L'identifiant de connexion du panneau. |
+| **Prénom de l'administrateur** | Affiché dans le service de connexion. Vous pourrez le modifier plus tard à cet endroit. |
+| **Nom de l'administrateur** | Affiché dans le service de connexion. Vous pourrez le modifier plus tard à cet endroit. |
 | **Fichier de clé SSH** | La clé privée (son fichier `.pub` doit se trouver à côté). La case **Créer cette paire de clés SSH maintenant** crée une paire absente. |
 
 L'utilisateur initial ne peut plus ouvrir de session SSH une fois Catena installé. L'installateur crée un nouvel utilisateur, `ops`, pour administrer le serveur.
@@ -91,7 +93,7 @@ Après quelques minutes, la section **Accès au serveur Catena** affiche trois s
 
 | Secret | Usage |
 |---|---|
-| Mot de passe administrateur | Connexion au panneau et à Portainer. |
+| Mot de passe administrateur | Connexion au panneau. |
 | Mot de passe de l'utilisateur 'ops' | Fonctionne seulement à la console web de l'hébergeur (KVM ou série) ou sur un clavier physique, jamais par SSH. C'est la voie d'accès quand SSH est indisponible. |
 | Clé de vérification du journal | Prouve que le journal des actions administratives du serveur n'a pas été modifié. Affichée une seule fois, à la première installation seulement. |
 
@@ -117,7 +119,7 @@ La console demande le mot de passe de l'hébergeur seulement quand la clé n'ouv
 
 ## Première connexion
 
-Le SSH public reste ouvert après l'installation et aucun domaine n'existe encore : vous joignez donc le panneau et Portainer par une redirection SSH. La page de l'installateur la garde ouverte tant que sa fenêtre l'est. Vous pouvez la rouvrir en tout temps avec :
+Le SSH public reste ouvert après l'installation et aucun domaine n'existe encore : vous joignez donc le panneau par une redirection SSH. La page de l'installateur la garde ouverte tant que sa fenêtre l'est. Vous pouvez la rouvrir en tout temps avec :
 
 ```sh
 uvx catena-installer connect --inventory prod
@@ -126,17 +128,12 @@ uvx catena-installer connect --inventory prod
 Depuis un ordinateur sans l'installateur, ouvrez la même redirection avec :
 
 ```sh
-ssh -N -L 9010:127.0.0.1:9010 -L 9000:127.0.0.1:9000 panel@<adresse-du-serveur>
+ssh -N -L 9010:127.0.0.1:9010 panel@<adresse-du-serveur>
 ```
 
-Le compte `panel` ne peut rien faire d'autre que rediriger ces deux ports. L'adresse du serveur est l'adresse IP publique, ou l'adresse du tailnet une fois que vous avez fermé le SSH public. Tant que la redirection est ouverte :
+Le compte `panel` ne peut rien faire d'autre que rediriger ce port. L'adresse du serveur est l'adresse IP publique, ou l'adresse du tailnet une fois que vous avez fermé le SSH public. Tant que la redirection est ouverte, le panneau est à `http://localhost:9010`. Connectez-vous avec **Courriel administrateur** et **Mot de passe** : le courriel d'administrateur que vous avez saisi à l'installation et le mot de passe administrateur affiché une seule fois.
 
-| Outil | Adresse | Connexion |
-|---|---|---|
-| Panneau Catena | `http://localhost:9010` | **Courriel administrateur** et **Mot de passe** : le courriel d'administrateur que vous avez saisi à l'installation et le mot de passe administrateur affiché une seule fois. |
-| Portainer | `http://localhost:9000` | Nom d'utilisateur `admin` (pas un courriel) et le même mot de passe administrateur. |
-
-Une fois que vous avez appliqué un domaine, les mêmes outils sont à `https://dash.yourdomain.com` et `https://portainer.yourdomain.com`.
+Une fois que vous avez appliqué un domaine, le panneau est à `https://dash.yourdomain.com`.
 
 L'étape suivante est la [Vue d'ensemble de la configuration](/fr/configuration/), qui donne l'ordre de réglage du domaine, des sauvegardes, des horaires et du reste dans **Paramètres**.
 
@@ -165,6 +162,7 @@ L'installateur affiche ses messages en anglais dans les deux langues. Les messag
 | `catena-installer: the panel forward did not open: <problem>` | La redirection SSH vers le panneau n'a pas pu démarrer. | Exécutez `uvx catena-installer connect --inventory prod`. Si un port local est occupé, l'installateur affiche une autre adresse. |
 | `refusing to continue: this session did not prove that ops opens with its key` | La seconde connexion n'était pas une connexion de `ops` par clé : rien n'a été fermé. | Relancez l'installation depuis l'installateur. |
 | `the passwords could not be shown; running the install again shows them` | Les mots de passe n'ont pas pu s'afficher. | Relancez l'installation (la clé de vérification du journal ne s'affiche qu'à la première installation). |
+| `catena-install: waiting for an earlier install on this server to end`, ou `catena-install: waiting for another lane holding /run/catena.lock` | Une installation précédente dont la connexion a été coupée se termine encore sur le serveur, ou une autre tâche s'y exécute. | Patientez. L'installation se poursuit dès que l'autre se termine. |
 | `The installation stopped. The output says where.` | L'installation a échoué. | Lisez la sortie pour repérer l'étape en cause, corrigez, puis relancez l'installation. |
 
 La console se termine avec le code 0 quand l'installation a réussi, 1 quand elle a échoué, 3 quand elle s'est terminée mais qu'une vérification a échoué, et 4 quand le serveur a refusé la seconde connexion.
@@ -173,7 +171,7 @@ Un balayage des ports publics signalé comme ignoré (`public port scan SKIPPED`
 
 ## Relancer, mettre à niveau et désinstaller
 
-**Relancer.** Relancer l'installation sur un serveur déjà installé est sans danger. Elle ne demande rien, réapplique tout avec la version que le serveur a enregistrée, valide le serveur et affiche de nouveau les mots de passe (la clé de vérification du journal ne s'affiche qu'une fois). C'est aussi la voie d'accès quand le panneau est indisponible, par exemple après un disque plein.
+**Relancer.** Relancer l'installation sur un serveur déjà installé est sans danger. Elle ne demande rien, réapplique tout avec la version que le serveur a enregistrée, valide le serveur et affiche de nouveau les mots de passe (la clé de vérification du journal ne s'affiche qu'une fois). C'est aussi la voie d'accès quand le panneau est indisponible, par exemple après un disque plein. Une installation dont la connexion est coupée continue de s'exécuter sur le serveur jusqu'à sa fin, et la relancer attend cette fin.
 
 ```sh
 uvx catena-installer install --inventory prod
@@ -201,7 +199,7 @@ uvx catena-installer uninstall --inventory prod
 
 Elle démasque les minuteries de mise à jour de Debian, retire les origines de mises à jour automatiques et la politique de redémarrage ajoutées par Catena, et lève le blocage des paquets du moteur de conteneurs. Elle laisse en place, à vous de les retirer délibérément :
 
-- les applications et leurs données, ainsi que Portainer (retirez-les depuis Portainer ou avec Docker);
+- les applications et leurs données (retirez-les depuis la page **Applications** ou avec Docker);
 - les comptes créés sur le serveur;
 - le tunnel Cloudflare et les enregistrements DNS (supprimez-les dans le tableau de bord Cloudflare);
 - le nœud Tailscale (retirez-le dans la console d'administration de Tailscale);

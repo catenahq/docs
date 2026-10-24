@@ -71,6 +71,8 @@ Un refus laisse le port 22 ouvert et la raison dans le journal de la tentative. 
 
 Si le tailnet reste inactif plus de 5 minutes après la fermeture, le serveur rouvre lui-même le port 22 pour que la clé sur le SSH public refonctionne.
 
+Une fois le SSH public fermé, un [déplacement vers un autre serveur](/fr/configuration/restore-and-migrate/#migrer-vers-un-autre-serveur) joint ce serveur par le réseau privé : saisissez son adresse sur le réseau privé dans le nouveau serveur.
+
 :::caution
 Avant de fermer, confirmez depuis un second appareil que le SSH par l'adresse du tailnet fonctionne. Éprouvez la nouvelle voie avant de retirer l'ancienne.
 :::
@@ -86,7 +88,7 @@ Le compte d'administration est `ops`, que vous atteignez avec la clé SSH que vo
 - Tant que le port public 22 est ouvert : `ssh ops@<ip-publique-du-serveur>`
 - Une fois fermé : `ssh ops@<ip-du-tailnet>`, depuis un appareil du même tailnet.
 
-`ops` dispose de sudo sans mot de passe. Un compte distinct, `panel`, ne sert qu'à transférer les ports du panneau et de Portainer et ne peut pas ouvrir de shell.
+`ops` dispose de sudo sans mot de passe. Un compte distinct, `panel`, ne sert qu'à transférer le port du panneau et ne peut pas ouvrir de shell.
 
 ### Ajouter une clé SSH pour ops
 

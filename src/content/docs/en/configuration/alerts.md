@@ -1,42 +1,60 @@
 ---
 title: "Alerts"
-description: "The off-site heartbeat address and ntfy fields of the alerts section, how missed jobs and failing services raise alerts, how alerts reach your admin email, and how you add more notification channels in Healthchecks."
+description: "The off-site heartbeat address in the alerts section, how missed jobs and failing services raise alerts, how alerts reach your admin email, and how you add more notification channels in Healthchecks."
 ---
 
 Alerts come from three on-server tools: Gatus (is each service answering), Healthchecks (did each scheduled job report in) and Beszel (are CPU, memory and disk healthy). The overview is in [Monitoring and alerts](/en/features/monitoring-alerts/). This page covers the settings and the first-time wiring.
 
 ## Fields
 
-**Settings** > **Alerts and missed-job reporting** holds the ntfy channel and the off-site heartbeat address. Scheduled jobs report to the Healthchecks on the server, which raises the alarm when a report is late or failed.
+**Settings** > **Alerts and missed-job reporting** holds the off-site heartbeat address. Scheduled jobs report to the Healthchecks on the server, which raises the alarm when a report is late or failed.
 
 | Field | Purpose |
 |---|---|
 | **Off-site heartbeat address** | The ping address of a check at an outside monitoring service, such as a free healthchecks.io check. Used by the off-site heartbeat (Catena Pro), which you turn on in [Schedules](/en/configuration/schedules/). |
-| **ntfy server** | Address of an ntfy server for push notifications. |
-| **ntfy topic** | The topic on that server. Hard to guess by design: anyone who knows it can post to it. |
 
 A monitor on the server cannot report an outage that takes the whole server down. The off-site heartbeat closes that gap: on its schedule, the server checks that its status page, job monitor and resource monitor answer, then calls the off-site address. A plain call means all is well; a failure call names the monitors that stopped answering; no call at all means the server is down, and the outside service raises the alert. Saving the address alone sends nothing: the heartbeat runs once you turn it on in [Schedules](/en/configuration/schedules/), where its section shows the period and grace time to set on the outside check. When your subscription ends, the calls stop, so pause the outside check then.
 
-The ntfy channel is created only when both **ntfy server** and **ntfy topic** are filled. There is no default.
-
-Alerts also reach your admin email, through the service chosen in [Outgoing email](/en/configuration/email/): while outgoing mail is set, the server keeps an email channel to your admin address in Healthchecks, attached to every check when the channel is created. A channel detached from a check in Healthchecks stays detached. With **No outgoing mail**, the channel is removed and alerts reach only ntfy and the channels added in Healthchecks.
+Alerts also reach your admin email, through the service chosen in [Outgoing email](/en/configuration/email/): while outgoing mail is set, the server keeps an email channel to your admin address in Healthchecks, attached to every check when the channel is created. A channel detached from a check in Healthchecks stays detached. With **No outgoing mail**, the channel is removed and alerts reach only the channels you add in Healthchecks.
 
 The section ends with **Save and apply**; the services that use these values restart briefly.
 
 ## How alerts flow
 
-1. Gatus probes the shared services (the admin panel, Portainer, Healthchecks, Keycloak, Beszel, the Cloudflare tunnel and the reverse proxy), the latest backup, the container vulnerability report and every routed application on a fixed interval (about one to two minutes). After 3 consecutive failures it raises an alert, and after 2 successes it resolves it.
+1. Gatus probes the shared services (the admin panel, Healthchecks, Keycloak, Beszel, the Cloudflare tunnel and the reverse proxy) and every routed application on a fixed interval (about one to two minutes). After 3 consecutive failures it raises an alert, and after 2 successes it resolves it.
 2. Each Gatus alert is posted to Healthchecks as one check per service, named `gatus-<service>`, created on the first failure.
-3. Healthchecks sends each alert to your admin email, to the ntfy channel when it is set, and to the channels added in its own interface.
-4. Scheduled jobs (backup, offsite copy, nightly maintenance, restart probe, off-site heartbeat) ping Healthchecks as they run. A missed ping is itself the alert. The checks of the backup, the offsite copy and the off-site heartbeat follow the schedules of the jobs that report to them; while none of those jobs is turned on, the check is paused, so it never goes late.
+3. Healthchecks sends each alert to your admin email and to the channels added in its own interface.
+4. Scheduled jobs (backup, offsite copy, nightly maintenance, restart probe, off-site heartbeat) ping Healthchecks as they run. A missed ping is itself the alert. The checks of the backup, the offsite copy, the nightly maintenance (**Nightly maintenance**, told when a night starts, fails or ends) and the off-site heartbeat follow the schedules of the jobs that report to them; while none of those jobs is turned on, the check is paused, so it never goes late. On every edition, the vulnerability watch also creates one check per vulnerability it alerts on (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). The nightly maintenance reports to the backup and offsite copy checks only while its backup and offsite copy steps are on (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
 5. Beszel watches the server with rules created once and never overwritten: status (agent silent) for 5 minutes, CPU at 90% for 10 minutes, memory at 90% for 10 minutes, disk at 85% for 10 minutes. Its alerts go through Healthchecks, so they reach the same channels.
+
+## Send error reports to Catena support
+
+**Settings** > **Error reports to Catena support** lets a server on Catena Pro or Catena Business tell Catena support when one of Catena's own checks fails or recovers, so support can help you before a small fault becomes a large one. It is off until you turn it on.
+
+To turn it on:
+
+1. Read the report the section shows. It is the report this server would send right now.
+2. Tick the box that confirms you agree, then press **Turn error reports on**. Within five minutes the server signs up with Catena support.
+
+To turn it off, press **Turn error reports off**. The server stops sending at once and signs off.
+
+A report names the check, whether it is failing, since when, the application it concerns, your Catena version and your edition. It never holds what is inside your applications: no files, log lines, user accounts, email or network addresses, or domain names. A report is sent only when the list of failing checks changes or a one-off event happens.
+
+Below the switch, the section lists the last 100 reports sent, newest first, each with the exact text that left the server and whether Catena support received it.
+
+When a failed job wrote text about what went wrong, that text stays on your server. The list offers it for each report that has some:
+
+- **Download the job output** saves the text as it is.
+- **Review and send to Catena support** opens the text in a box. Remove whatever you do not want support to see, then press **Send this text to Catena support**. Only the text in the box is sent, and the list shows exactly what you sent.
+
+Support answers Monday to Friday, 08:00 to 17:00. Error reports are not round-the-clock monitoring, and a server that is switched off or cannot reach the internet sends nothing: for that, use the off-site heartbeat above.
 
 ## Add notification channels in Healthchecks
 
-Alerts reach your admin email and the ntfy channel above with no step here. You add more channels, for other people or other tools, in Healthchecks:
+Alerts reach your admin email with no step here. You add more channels, for other people or other tools, in Healthchecks:
 
 1. Open `https://healthchecks.yourdomain.com` and sign in (single sign-on).
-2. Open the project's integrations page and add a channel: email, Slack, a webhook, or any other the page offers.
+2. Open the project's integrations page and add a channel: email, Slack, ntfy, a webhook, or any other the page offers.
 3. Check that the channel is attached to the checks you want notified. New checks, including the `gatus-` ones, use the project's channels.
 
 Email channels need [Outgoing email](/en/configuration/email/).
@@ -55,4 +73,4 @@ You can change the subdomain names in [Domain and Cloudflare](/en/configuration/
 - A job shows late or down in Healthchecks: the job failed, or did not run at its schedule. Check the **Log** and [Schedules](/en/configuration/schedules/).
 - No alert email arrived: **Outgoing mail** is set to **No outgoing mail**, your admin email channel was detached from that check in Healthchecks, or the mail went to the spam folder.
 - No notification on another channel: that channel is not attached to the check. Attach it as above.
-- ntfy messages never arrive: both ntfy fields must be set, and the topic must match on the receiving side.
+- A channel you added never delivers: check its address or topic in Healthchecks against the receiving side.

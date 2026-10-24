@@ -3,7 +3,7 @@ title: "Safe updates"
 description: "How the operating system, apps, the panel and the Docker engine are kept current, with checks before and rollback after each change."
 ---
 
-The operating system patches itself on every edition. Apps and infrastructure containers update on a schedule, behind a backup and health checks, and roll back by themselves when the server gets less healthy.
+The operating system patches itself on every edition. Apps and Catena's own services update on a schedule, behind a backup and health checks, and roll back by themselves when the server gets less healthy.
 
 ## Operating system
 
@@ -11,12 +11,15 @@ Debian's unattended upgrades is the only thing that applies OS packages: securit
 
 ## Nightly maintenance
 
-On Catena Pro and Catena Business, **Schedules** > **Nightly maintenance** (off by default, 03:00 when turned on) runs one ordered chain: a free-disk check, a backup, a restore check, a check of the backup repository, the offsite copy, a Gatus health gate, container updates, a vulnerability scan, the Docker engine upgrade and the restart if due. The chain stops before any update when the disk floor, the backup, its verification or the health gate fails, and it resumes after a reboot. Without a configured backup, updates still run and a warning banner says there is nothing to return to.
+On Catena Pro and Catena Business, **Schedules** > **Nightly maintenance** (off by default, 03:00 when turned on) runs one ordered chain: a free-disk check, a backup, a restore check, a check of the backup repository, the offsite copy, a Gatus health gate, container updates, a vulnerability scan, the Docker engine upgrade and the restart if due. The chain stops before any update when the disk floor, the backup, its verification or the health gate fails, and it resumes after a reboot. Without a configured backup, updates still run and a warning banner says there is nothing to return to. You choose which steps run, and a warning appears when a combination is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
 
 ## App updates
 
+- **New versions of an app.** An app comes from a repository, which publishes its versions as tags. A new version waits for the waiting period, then applies by itself when the repository is trusted (Catena's catalog is), or is offered to you on the **Apps** page when it is not. When the running version is more than 12 months old, updates are only offered, even from a trusted repository. See [Apps added from a repository](/en/configuration/updates/#apps-added-from-a-repository).
+- **Hold, copies and revert.** An update holds the app's writes and keeps copies of its databases and data. They are kept 14 days and until a later backup succeeds, and while they exist you can [revert the update](/en/configuration/updates/#revert-an-update).
+- **Apps changed by hand.** An app changed by hand, or through another container manager, is not updated, and the **Apps** page says so (see [Apps changed outside Catena](/en/configuration/updates/#apps-changed-outside-catena)).
 - **Only full x.y.z tags are updated automatically.** A tag such as `1.2.3` is eligible; `1.2`, `latest` or `stable` are never touched.
-- **Policy.** Your apps default to patch updates (`1.2.3` to `1.2.9`); infrastructure services default to patch and minor. The per-app label `vps.auto-update=off|patch|minor|major` overrides the default for your apps (see [Configure an app for Catena](/en/configure-apps/)). `off` leaves an app alone.
+- **Policy.** Your apps default to patch updates (`1.2.3` to `1.2.9`); Catena's own services take their patch releases by themselves, and newer minor and major versions arrive with a control panel update (see [Catena's own services](/en/configuration/updates/#catenas-own-services)). The per-app label `vps.auto-update=off|patch|minor|major` overrides the default for your apps (see [Configure an app for Catena](/en/configure-apps/)). `off` leaves an app alone.
 - **Waiting period.** A new version waits 7 days after release by default before it is adopted.
 - **CVE remediation (Catena Pro).** Before an update, the candidate versions are scanned. A version that adds a new high or critical CVE is skipped in favour of a lower clean version, or the update waits. A newer version that removes a CVE from the running one is applied without the 7-day waiting period.
 - **Rollback.** After each change, the server's health is compared with its state before. On a regression the previous version is restored and the failed version is set aside, so the next run tries the next version up. An app with a database gets a dump before the update that is replayed on rollback. An app whose new version upgrades its code, configuration and add-ons in place (Nextcloud) also gets a copy of them, put back on rollback; its users' files stay as they are.
@@ -28,7 +31,7 @@ The panel has its own **Control panel updates** schedule (monthly by default) an
 
 ## What each edition adds
 
-Community has OS patching, restart reporting, version visibility, and manual panel and engine updates; for apps, you change the tag by hand in Portainer. Catena Pro and Catena Business add the schedules, the nightly maintenance, managed app updates, CVE remediation and automatic rollback. See the [edition comparison](https://catena.run/en/#pricing).
+Community has OS patching, restart reporting, version visibility, security alerts for exploited and critical vulnerabilities (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)), and manual panel and engine updates; for apps, no update is offered or applied. Catena Pro and Catena Business add the nightly maintenance and the other schedules, managed app updates, CVE remediation and automatic rollback. See the [edition comparison](https://catena.run/en/#pricing).
 
 ## Limits
 

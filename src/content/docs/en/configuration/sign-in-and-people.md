@@ -14,9 +14,11 @@ In **Settings** > **Sign-in requirements**, **What signing in requires** offers:
 | **Password only** | The default. |
 | **Password and an authenticator app** | Every account must set up an authenticator app. |
 
-The setting applies to every account, existing ones included: each person is asked to set up an authenticator app at the next sign-in and cannot skip it. The section ends with **Save and apply**; the sign-in service restarts briefly.
+The setting applies to every account, existing ones included: each person is asked to set up an authenticator app at the next sign-in and cannot skip it. It covers the administrators of Keycloak's own console too, described below. The section ends with **Save and apply**; the sign-in service restarts briefly.
 
-The realm also keeps these rules on every configuration run: self-registration is off, the email address is the username, duplicate emails are refused, usernames cannot be edited, and brute-force protection is on.
+While the setting is on **Password only**, a notice at the top of every admin page recommends the authenticator app. **Dismiss** hides it for good, and selecting **Password and an authenticator app** hides it too.
+
+The realm also keeps these rules on every configuration run: self-registration is off, the email address is the username, duplicate emails are refused, usernames cannot be edited, and brute-force protection is on. An application's refusal of an account outside its groups is not a failed sign-in for that protection (see [Groups](#groups)).
 
 ## Groups
 
@@ -30,6 +32,8 @@ Access is decided by Keycloak groups.
 | `visitor` | A keyword in an application's access setting meaning "anyone, signed in or not". It is never a real group and never appears in a sign-in token. |
 
 An application lists the groups allowed to open it; `admin` is always allowed. An application opened to a department subgroup admits only that department. See [Configure an app for Catena](/en/configure-apps/) for the labels that set this.
+
+An application that signs in by itself refuses an account outside its groups. This holds for an account that signs in through an identity provider added in Keycloak, including an organization's. The refusal never counts toward the account's lockout (see [Sign-in requirements](#sign-in-requirements)).
 
 A change of group takes effect the next time the person signs in.
 
@@ -47,6 +51,22 @@ People can reset their own password from the sign-in page, edit their profile an
 :::note
 Password reset and invitations send email. With **No outgoing mail** selected, neither works.
 :::
+
+## Keycloak's own administration console
+
+The top-level console at `auth.yourdomain.com/admin` (the master realm) has its own admin account, separate from the people above.
+
+- At your first sign-in there, Keycloak asks you to set up a one-time code in an authenticator app. It asks for that code at every sign-in after.
+- With **Password and an authenticator app** selected in Settings, every other account holding the admin role in that console, such as a recovery account you created, is asked to set up a one-time code at its next sign-in too. The configuration run that **Save and apply** starts asks for it; an account that already has a code is left alone. The automation account the server uses to configure Keycloak is not a person's account and is not asked.
+- After repeated wrong passwords the account locks for a pause that grows with each failure, up to 15 minutes.
+
+## Switching off the sign-in service
+
+If you switch the `vps` realm off in Keycloak, it stays off. Updates and configuration runs never switch it back on, and apps that sign in through it show as waiting on the **Apps** tab until you switch it on again.
+
+## The sign-in page name
+
+The name on the sign-in page follows the server's domain: after a [domain change](/en/configuration/domain/) it takes the new domain. A name you set yourself in the realm settings stays.
 
 ## People panel (Catena Pro)
 

@@ -45,6 +45,8 @@ Pour déplacer une clé vers un autre serveur :
 
 L'ancien serveur l'apprend à sa prochaine vérification horaire : son état devient la phrase "Polar n'accorde pas cette clé" ci-dessous et ses fonctions payantes se verrouillent. Un déplacement fait avec [Restauration et migration](/fr/configuration/restore-and-migrate/) libère automatiquement l'ancienne place et active la clé sur le nouveau serveur.
 
+Une restauration du serveur entier sur une nouvelle machine vérifie la clé à sa fin, par la même vérification que la vérification horaire : la nouvelle machine prend la place de la clé dès la fin de la restauration, sans attente et sans ressaisir la clé. Si l'ancien serveur tient encore la place, Polar refuse la nouvelle machine : libérez la place dans le portail client, puis enregistrez de nouveau la clé.
+
 ## La vérification horaire et le délai de grâce
 
 Chaque serveur interroge Polar au sujet de sa clé une fois par heure, à un décalage fixe qui lui est propre dans l'heure. Un serveur sans clé enregistrée ne demande rien. Entre deux vérifications, les fonctions suivent la dernière réponse, sans réseau.
@@ -73,15 +75,15 @@ La ligne **État** affiche l'une de ces phrases. Le texte entre accolades est re
 Quand Polar cesse d'accorder la clé, ou que le délai de grâce est écoulé :
 
 - Les panneaux payants deviennent des entrées grisées sous **Catena Pro** ou **Catena Business**. Chacune ouvre une explication de la fonction, de l'édition qui la comprend et un bouton **S'abonner**.
-- Tous les horaires sont désactivés, puisque l'activation d'un horaire exige une édition payante. Les choix enregistrés sont conservés et reviennent avec l'abonnement.
+- Tous les horaires sont désactivés, puisque l'activation d'un horaire exige une édition payante, sauf deux : la sauvegarde continue de s'exécuter une fois par semaine et la veille des vulnérabilités une fois par jour, à leur heure par défaut quand l'horaire enregistré était plus fréquent (voir [Lorsque l'abonnement prend fin](/fr/configuration/schedules/#lorsque-labonnement-prend-fin)). Les choix enregistrés sont conservés et reviennent avec l'abonnement.
 - Les actions payantes sont refusées, et les domaines supplémentaires au-delà du domaine principal cessent d'être servis (ils restent enregistrés).
 - Une bannière sur chaque page d'administration mène à la section **Abonnement** et en donne la raison, une entrée s'ajoute au **Journal**, et un courriel part vers votre adresse d'administrateur par le service de courriel configuré (en anglais puis en français). Sans service de courriel, la bannière et l'entrée du journal sont les seuls avis. Voir [Courriel sortant](/fr/configuration/email/).
 
-Ce qui ne se verrouille jamais : les applications et leurs données, les sauvegardes manuelles, les restaurations du serveur entier, les mises à jour lancées à la main, l'authentification unique et la supervision. Une clé absente, refusée ou non confirmée laisse le serveur sur Catena Communauté et n'empêche jamais une installation ni l'accès aux données.
+Ce qui ne se verrouille jamais : les applications et leurs données, la sauvegarde hebdomadaire, les alertes de sécurité (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)), les sauvegardes manuelles, les restaurations du serveur entier, les mises à jour lancées à la main, l'authentification unique et la supervision. Une clé absente, refusée ou non confirmée laisse le serveur sur Catena Communauté et n'empêche jamais une installation ni l'accès aux données.
 
 ## Dépannage
 
 - L'état reste "En attente" : vérifiez que le serveur joint Polar en HTTPS, puis enregistrez de nouveau la clé pour la demander aussitôt.
-- "Refusée" juste après une reconstruction ou une restauration : la nouvelle machine est un autre serveur aux yeux de Polar. Libérez d'abord l'ancienne activation dans le portail client.
+- "Refusée" juste après une reconstruction ou une restauration : la nouvelle machine est un autre serveur aux yeux de Polar et l'ancien serveur tient encore la place. Libérez l'ancienne activation dans le portail client, puis enregistrez de nouveau la clé.
 - Un panneau reste grisé après l'enregistrement : l'édition enregistrée ne le comprend pas. La ligne **Édition** indique ce que la clé accorde.
 - Une ligne **Activation sans réponse** s'affiche : une activation a atteint Polar mais sa réponse s'est perdue, de sorte que Polar peut tenir la place de ce serveur pour prise sans que le serveur le sache. Libérez l'activation de ce serveur, nommée d'après son domaine, dans le portail client de Polar, puis enregistrez de nouveau la clé.

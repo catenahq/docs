@@ -26,16 +26,17 @@ Sign in with the admin email and the admin password shown once at install. See [
 - A value the section cannot accept is refused as a whole: "Nothing was saved. Correct the fields marked below."
 - Sections that end with **Save and apply** (Infrastructure app subdomains, Outgoing mail, Alerts and missed-job reporting, Sign-in requirements, Time zone and locale) bring the server up to date right away. The note under the button reads: "Saving applies these settings right away: the services that use them restart and are briefly unavailable." Progress shows in **Server configuration**, further down the page.
 - Other sections have their own action: **Apply** for **Domain**, the join for **Admin access tunnel**, and a plain **Save** for the rest. Backup values are read by the backup itself and need no restart.
-- If applying cannot start, the section reports: "Saved, but applying it did not start, most likely because the server is already updating its configuration." Run **Bring this server up to date** once the other work finishes to apply the saved values. See [Server settings](/en/configuration/server/).
+- If the server is already updating its configuration, the section reports: "Saved. The server is already updating its configuration, and will apply this change as soon as that finishes." The server applies the saved values in one more run right after the running one; there is nothing to repeat.
+- If applying can neither start nor be queued, the section reports: "Saved, but applying it did not start, most likely because the server is already updating its configuration." Run **Bring this server up to date** once the other work finishes to apply the saved values. See [Server settings](/en/configuration/server/).
 
 ## First-time setup order
 
 The order below avoids dead ends: later steps rely on earlier ones.
 
-1. [Subscription](/en/configuration/subscription/), if you bought a Catena Pro or Catena Business key. Saving the key first lets the later steps use the features it unlocks, such as schedules and extra domains.
+1. [Subscription](/en/configuration/subscription/), if you bought a Catena Pro or Catena Business key. Saving the key first lets the later steps use the features it unlocks, such as faster schedules and extra domains.
 2. [Domain and Cloudflare](/en/configuration/domain/): the Cloudflare API token, the domain, then **Apply**. Until you do this, the server runs without public addresses.
 3. [Backups and S3 storage](/en/configuration/backups/): the repository and its keys, then **Generate backup encryption password**, then save the disaster-recovery keyset in a password manager.
-4. [Schedules](/en/configuration/schedules/): turning on the backup and maintenance schedules (Catena Pro or Catena Business).
+4. [Schedules](/en/configuration/schedules/): turning on the backup schedule, at most once a week on every edition, and the maintenance schedules (Catena Pro or Catena Business).
 5. [Outgoing email](/en/configuration/email/): the mail service used for password resets, invitations and alerts.
 6. [Admin access and tailnet](/en/configuration/admin-access/): the private network, then optionally **Close SSH on public port 22**.
 7. [Alerts](/en/configuration/alerts/): the off-site heartbeat address and notification channels.
@@ -45,7 +46,7 @@ The order below avoids dead ends: later steps rely on earlier ones.
 ## Other configuration pages
 
 - [Updates](/en/configuration/updates/): the control panel version and how applications are kept current.
-- [Vulnerabilities](/en/configuration/vulnerabilities/): what is scanned and how findings are shown.
+- [Vulnerabilities](/en/configuration/vulnerabilities/): the security alerts every edition gets, what is scanned and how findings are shown.
 - [Restore and migrate](/en/configuration/restore-and-migrate/): restoring from a backup and moving to another server.
 - [Configure an app for Catena](/en/configure-apps/): wiring an application into sign-in and the dashboard.
 

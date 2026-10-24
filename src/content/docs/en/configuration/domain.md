@@ -37,6 +37,12 @@ The warning reads: "Applying replaces this server's Cloudflare tunnel with a new
 
 The same **Apply** repairs a leaked or broken tunnel: press it with the domain already in use to create a fresh tunnel and drop the old one.
 
+### What moves to the new domain
+
+The panel and the applications whose address the panel manages move to the new domain. An application that has its address built in, typed in its own settings, stays on its old name until you move it.
+
+The mail server application is one of these. It keeps its own name until you move it, and its certificate and its DNS records stay with that name: its certificate is issued for it, and its address record (A) and its MTA-STS and TLS-RPT records are published under the zones of that name when the Cloudflare token reaches them. When the token does not reach a zone, Catena keeps the certificate or records that exist and reports the name it left alone. Webmail checks the mail server's certificate against this name, so it keeps working after the domain change.
+
 ### Messages
 
 | Message | Meaning |
@@ -47,13 +53,16 @@ The same **Apply** repairs a leaked or broken tunnel: press it with the domain a
 | "The Cloudflare token cannot reach that domain. Choose one from the list." | The selected domain is not among the domains the token reaches. |
 | "A domain name such as example.com." | The domain is not a valid name. |
 
+### The sign-in page name
+
+After a domain change, the name shown on the sign-in page at `auth.yourdomain.com` follows the new domain. If you renamed the sign-in page by hand in Keycloak's realm settings, your name stays and is never replaced. See [Sign-in and people](/en/configuration/sign-in-and-people/).
+
 ## Infrastructure app subdomains
 
 **Settings** > **Infrastructure app subdomains** sets the name each of the server's own services answers on, under the domain. Each field shows the name in use.
 
 | Field | Service | Default | Address |
 |---|---|---|---|
-| **Portainer (application manager)** | Portainer | `portainer` | `portainer.yourdomain.com` |
 | **Keycloak (sign-in)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (this panel)** | This panel | `dash` | `dash.yourdomain.com` |
 | **Gatus (status page)** | Gatus | `gatus` | `gatus.yourdomain.com` |

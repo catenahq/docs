@@ -71,6 +71,8 @@ A refusal leaves port 22 open and the reason in the attempt log. On success the 
 
 If the tailnet stays down for more than 5 minutes after closing, the server reopens port 22 on its own so the key over public SSH works again.
 
+Once public SSH is closed, a [move to another server](/en/configuration/restore-and-migrate/#migrate-to-another-server) reaches this server over the private network: enter its private-network address on the new server.
+
 :::caution
 Before you close it, confirm from a second device that SSH over the tailnet address works. Prove the tailnet before you remove the old path.
 :::
@@ -86,7 +88,7 @@ The administration account is `ops`, which you reach with the SSH key you gave t
 - While public port 22 is open: `ssh ops@<server-public-ip>`
 - After it is closed: `ssh ops@<tailnet-ip>`, from a device on the same tailnet.
 
-`ops` has passwordless sudo. A separate `panel` account exists only to forward the panel and Portainer ports and cannot open a shell.
+`ops` has passwordless sudo. A separate `panel` account exists only to forward the panel's port and cannot open a shell.
 
 ### Add an SSH key for ops
 

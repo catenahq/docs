@@ -14,9 +14,11 @@ Dans **Paramètres** > **Exigences de connexion**, **Ce qu'exige la connexion** 
 | **Mot de passe seulement** | La valeur par défaut. |
 | **Mot de passe et application d'authentification** | Chaque compte doit configurer une application d'authentification. |
 
-Le réglage s'applique à tous les comptes, y compris ceux qui existent déjà : chaque personne doit configurer une application d'authentification à sa prochaine connexion, sans possibilité de reporter. La section se termine par **Enregistrer et appliquer**; le service de connexion redémarre brièvement.
+Le réglage s'applique à tous les comptes, y compris ceux qui existent déjà : chaque personne doit configurer une application d'authentification à sa prochaine connexion, sans possibilité de reporter. Il couvre aussi les administrateurs de la console propre à Keycloak, décrite plus bas. La section se termine par **Enregistrer et appliquer**; le service de connexion redémarre brièvement.
 
-À chaque configuration, le domaine de sécurité maintient aussi ces règles : l'inscription libre est désactivée, le courriel sert d'identifiant, les courriels en double sont refusés, les noms d'utilisateur ne sont pas modifiables et la protection contre les attaques par force brute est active.
+Tant que le réglage est sur **Mot de passe seulement**, un avis en haut de chaque page d'administration recommande l'application d'authentification. **Fermer** le masque définitivement, et choisir **Mot de passe et application d'authentification** le masque aussi.
+
+À chaque configuration, le domaine de sécurité maintient aussi ces règles : l'inscription libre est désactivée, le courriel sert d'identifiant, les courriels en double sont refusés, les noms d'utilisateur ne sont pas modifiables et la protection contre les attaques par force brute est active. Le refus d'un compte hors des groupes d'une application n'est pas une connexion échouée pour cette protection (voir [Groupes](#groupes)).
 
 ## Groupes
 
@@ -30,6 +32,8 @@ L'accès est décidé par les groupes Keycloak.
 | `visitor` | Un mot-clé dans le réglage d'accès d'une application, qui signifie "tout le monde, connecté ou non". Ce n'est jamais un vrai groupe et il n'apparaît jamais dans un jeton de connexion. |
 
 Une application liste les groupes autorisés à l'ouvrir; `admin` l'est toujours. Une application ouverte à un sous-groupe de département n'admet que ce département. Voir [Configurer une application pour Catena](/fr/configure-apps/) pour les étiquettes qui fixent cela.
+
+Une application qui gère elle-même la connexion refuse un compte hors de ses groupes. Cela vaut aussi pour un compte qui se connecte par un fournisseur d'identité ajouté dans Keycloak, y compris celui d'une organisation. Ce refus ne compte jamais dans le verrouillage du compte (voir [Exigences de connexion](#exigences-de-connexion)).
 
 Un changement de groupe prend effet à la prochaine connexion de la personne.
 
@@ -47,6 +51,22 @@ Chaque personne peut réinitialiser son mot de passe depuis la page de connexion
 :::note
 La réinitialisation de mot de passe et les invitations envoient du courriel. Avec **Aucun courriel sortant**, ni l'une ni l'autre ne fonctionne.
 :::
+
+## La console d'administration propre à Keycloak
+
+La console de premier niveau à `auth.yourdomain.com/admin` (le domaine de sécurité master) a son propre compte administrateur, distinct des personnes ci-dessus.
+
+- À votre première connexion, Keycloak vous demande de configurer un code à usage unique dans une application d'authentification. Il vous le demande ensuite à chaque connexion.
+- Avec **Mot de passe et application d'authentification** choisi dans les Paramètres, tout autre compte qui détient le rôle d'administrateur dans cette console, comme un compte de secours que vous avez créé, doit lui aussi configurer un code à usage unique à sa prochaine connexion. La configuration que lance **Enregistrer et appliquer** le lui demande; un compte qui a déjà un code est laissé tel quel. Le compte d'automatisation que le serveur utilise pour configurer Keycloak n'est pas le compte d'une personne et n'est pas sollicité.
+- Après plusieurs mots de passe erronés, le compte est verrouillé pour une pause qui s'allonge à chaque échec, jusqu'à 15 minutes.
+
+## Désactiver le service de connexion
+
+Si vous désactivez le domaine de sécurité `vps` dans Keycloak, il reste désactivé. Les mises à jour et les configurations ne le réactivent jamais, et les applications qui se connectent par lui apparaissent en attente dans l'onglet **Applications** jusqu'à ce que vous le réactiviez.
+
+## Le nom de la page de connexion
+
+Le nom de la page de connexion suit le domaine du serveur : après un [changement de domaine](/fr/configuration/domain/), il prend le nouveau domaine. Un nom que vous avez défini vous-même dans les paramètres du domaine de sécurité reste.
 
 ## Panneau Personnes (Catena Pro)
 
