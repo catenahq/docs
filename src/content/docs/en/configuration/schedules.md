@@ -1,6 +1,6 @@
 ---
 title: "Schedules"
-description: "The nine scheduled jobs of a Catena server, their default times, the schedule syntax, the nightly maintenance chain, and backup retention."
+description: "The nine scheduled jobs of a Catena server, the schedule syntax, the nightly maintenance chain, and backup retention."
 ---
 
 The **Schedules** page sets when the server does its scheduled work. Apart from the **Vulnerability watch** on a server that has never saved its schedules, nothing runs on a schedule until you turn it on here. You can also run every job by hand from the **Actions** page, in every edition.
@@ -14,19 +14,19 @@ Saving a job that the subscription does not cover is refused with "scheduling th
 
 ## The jobs
 
-Every job ships switched off, except the **Vulnerability watch** on a server that has never saved its schedules: it is on from the start. The time shown is the pre-filled schedule, which runs only once the job is on.
+Every job ships switched off, except the **Vulnerability watch** on a server that has never saved its schedules: it is on from the start.
 
-| Job | Default schedule | What it does |
-|---|---|---|
-| **Backup** | `Sun *-*-* 03:00:00` (Sundays, 3 AM) | Takes a snapshot of the server and sends it to the configured backup storage. Available on every edition: without a paid subscription it runs at most once a week, on any day and time you choose, and Catena Pro adds daily and custom schedules. |
-| **Nightly maintenance** | `*-*-* 03:00:00` (every day, 3 AM) | Backs up, checks the backup, copies it offsite, then moves the server's own components and the deployed applications to newer versions behind those checks. You choose which steps it runs (see [Choosing the steps](#choosing-the-steps)). |
-| **Offsite copy** | `*-*-* 04:30:00` (every day, 4:30 AM) | Copies every declared bucket to the write-once storage at the second provider (see [Offsite copies](/en/configuration/backups/#offsite-copies)). Needs Catena Business. |
-| **Backup integrity check** | `Sun *-*-* 04:15:00` (Sundays, 4:15 AM) | Reads a sample of the backup repository end to end, which catches silent storage corruption between snapshots. |
-| **Restore test** | `Sun *-*-* 05:00:00` (Sundays, 5 AM) | Restores the latest backup into a scratch area and checks what came back, which proves a backup can be restored. It downloads as much as the backup holds and needs as much free disk, so it ships off and runs weekly once on. Turn it on when the server has the room. It reports to its own Healthchecks check, so a test that fails or does not run raises an alert (see [Alerts](/en/configuration/alerts/)). Needs Catena Pro. It can instead run as a step of the nightly maintenance (see [Choosing the steps](#choosing-the-steps)). |
-| **Control panel updates** | `monthly` | Moves the control panel to a newer version, and puts the previous one back if the new one makes the server less healthy. The panel is unavailable for about a minute. |
-| **Server configuration** | `*-*-* 04:20:00` (every day, 4:20 AM) | Brings the server back to the configuration its control panel carries. Anything that drifted is put back, and anything already correct is left alone. |
-| **Off-site heartbeat** | `*:0/5` (every 5 minutes) | Checks that the status page, job monitor and resource monitor answer, then calls the off-site heartbeat address saved in **Settings** > **Alerts and missed-job reporting** (see [Alerts](/en/configuration/alerts/)). Needs that address and Catena Pro. Its section shows the period and grace time to set on the outside check. |
-| **Vulnerability watch** | `*-*-* 01,07,13,19:00:00` (every 6 hours, from 1 AM); `*-*-* 01:00:00` (every day, 1 AM) without a paid subscription | Checks the software of every application and service against a fresh vulnerability database and CISA's list of exploited vulnerabilities, and alerts on each one that is exploited, or critical, published in the last 30 days and fixed (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). Available on every edition: without a paid subscription it runs at most once a day. On Catena Pro or Catena Business it can instead run inside the nightly maintenance, after the night's updates (see [Choosing the steps](#choosing-the-steps)). |
+| Job | What it does |
+|---|---|
+| **Backup** | Takes a snapshot of the server and sends it to the configured backup storage. Available on every edition: without a paid subscription it runs at most once a week, on any day and time you choose, and Catena Pro adds daily and custom schedules. |
+| **Nightly maintenance** | Backs up, checks the backup, copies it offsite, then moves the server's own components and the deployed applications to newer versions behind those checks. You choose which steps it runs (see [Choosing the steps](#choosing-the-steps)). |
+| **Offsite copy** | Copies every declared bucket to the write-once storage at the second provider (see [Offsite copies](/en/configuration/backups/#offsite-copies)). Needs Catena Business. |
+| **Backup integrity check** | Reads a sample of the backup repository end to end, which catches silent storage corruption between snapshots. |
+| **Restore test** | Restores the latest backup into a scratch area and checks what came back, which proves a backup can be restored. It downloads as much as the backup holds and needs as much free disk, so it ships off and runs weekly once on. Turn it on when the server has the room. It reports to its own Healthchecks check, so a test that fails or does not run raises an alert (see [Alerts](/en/configuration/alerts/)). Needs Catena Pro. It can instead run as a step of the nightly maintenance (see [Choosing the steps](#choosing-the-steps)). |
+| **Control panel updates** | Moves the control panel to a newer version, and puts the previous one back if the new one makes the server less healthy. The panel is unavailable for about a minute. |
+| **Server configuration** | Brings the server back to the configuration its control panel carries. Anything that drifted is put back, and anything already correct is left alone. |
+| **Off-site heartbeat** | Checks that the status page, job monitor and resource monitor answer, then calls the off-site heartbeat address saved in **Settings** > **Alerts and missed-job reporting** (see [Alerts](/en/configuration/alerts/)). Needs that address and Catena Pro. Its section shows the period and grace time to set on the outside check. |
+| **Vulnerability watch** | Checks the software of every application and service against a fresh vulnerability database and CISA's list of exploited vulnerabilities, and alerts on each one that is exploited, or critical, published in the last 30 days and fixed (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). Available on every edition: without a paid subscription it runs at most once a day. On Catena Pro or Catena Business it can instead run inside the nightly maintenance, after the night's updates (see [Choosing the steps](#choosing-the-steps)). |
 
 Each job starts at its set time. A run still going at the next set time is not doubled: the job starts again at the first set time after it ends. A job missed because the server was off or restarting runs when the server starts again.
 
