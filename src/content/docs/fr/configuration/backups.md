@@ -155,12 +155,12 @@ Les copies s'exécutent selon la tâche **Copie hors site** de la page [Horaires
 
 Inclus :
 
-- les données de chaque application, y compris ses volumes Docker et les dossiers rangés dans l'espace de stockage des applications du serveur;
+- les données de chaque application, y compris ses volumes Docker et les dossiers rangés dans l'espace de stockage des applications du serveur, et l'historique de la page d'état, du moniteur de signalement et du moniteur de ressources;
 - un export de chaque base de données, fait juste avant l'instantané (voir plus bas);
 - la configuration propre au serveur : fichiers système, réglages SSH et pare-feu, réglages et secrets conservés par Catena, et journal administratif;
 - chaque dossier listé sous **Autres dossiers à sauvegarder (séparés par des virgules)**.
 
-Exclus : les couches d'images de conteneurs (elles sont retéléchargées), l'historique de la page d'état, du moniteur de signalement et du moniteur de ressources, les bases de signatures de l'antivirus, les journaux et les dossiers temporaires.
+Exclus : les couches d'images de conteneurs (elles sont retéléchargées), les bases de signatures de l'antivirus, les journaux et les dossiers temporaires.
 
 Non inclus : les fichiers qu'une application garde dans son propre compartiment de stockage, comme celui de Nextcloud. Leurs états antérieurs reviennent de la copie hors site de ce compartiment, tels qu'ils étaient à sa dernière copie (voir [Remettre un compartiment en place depuis sa copie hors site](/fr/configuration/restore-and-migrate/#remettre-un-compartiment-en-place-depuis-sa-copie-hors-site)).
 

@@ -155,12 +155,12 @@ The copies run on the **Offsite copy** job of the [Schedules](/en/configuration/
 
 Included:
 
-- the data of every application, including its Docker volumes and the folders kept under the server's application storage;
+- the data of every application, including its Docker volumes and the folders kept under the server's application storage, and the history kept by the status page, the heartbeat monitor and the resource monitor;
 - an export of each database taken just before the snapshot (below);
 - the server's own configuration: system files, SSH and firewall settings, the settings and secrets stored by Catena, and the administrative log;
 - every folder listed under **Other folders to back up**.
 
-Excluded: container image layers (they are pulled again), the history kept by the status page, the heartbeat monitor and the resource monitor, antivirus signature databases, logs and temporary folders.
+Excluded: container image layers (they are pulled again), antivirus signature databases, logs and temporary folders.
 
 Not included: the files an application keeps in its own storage bucket, such as Nextcloud's. Their earlier states come back from that bucket's offsite copy, as of its last copy (see [Put a bucket back from its offsite copy](/en/configuration/restore-and-migrate/#put-a-bucket-back-from-its-offsite-copy)).
 
