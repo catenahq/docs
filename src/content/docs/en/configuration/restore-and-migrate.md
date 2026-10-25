@@ -22,6 +22,8 @@ The restore replaces data and nothing else. Applications are stopped while their
    - **Everything on this server** returns every application to the selected backup.
    - **Only the applications selected below** (Catena Pro) returns only the ticked applications. Only those are stopped; every other application, the sign-in and the panel keep running. An application comes back with the data and the version recorded in the backup. Its settings are not rolled back, because they are shared with the rest of the server.
 
+   When you choose a backup, the list also shows, under **Removed from this server**, the applications that backup holds and this server does not run, such as one you removed together with its data. Tick one to bring it back with its data and the version recorded in the backup, as for any other application. Nothing is listed when the backup holds no application that is missing from the server. A name the server does not run and the backup does not hold is refused before anything changes.
+
    Without a Pro subscription the scope choice is not shown, and a single-application request is refused with "Restoring a single application is not available on this plan."
 5. Under **Start the restore**, tick "I understand my applications will be unavailable during the restore." The duration scales with the amount of data.
 6. Press **Restore the selected backup**.
@@ -250,6 +252,10 @@ After a completed move the old server is stopped, not erased. Its data and backu
 | "Choose a backup to restore." | You have not selected a row. |
 | "Confirm that applications may be unavailable before starting." | You have not ticked the confirmation box. |
 | "Select at least one application, or choose to restore everything." | The scope is limited to applications and you have ticked none. |
+| "Choose a backup to restore." followed by a name and "is neither an application on this server nor in this backup" | You ticked or named an application that this server does not run and the chosen backup does not hold. The reason is shown in English. Choose the backup that holds it, or tick an application from the list. Nothing was changed. |
+| "The applications this backup holds could not be read, so nothing was changed." | The server could not read the chosen backup to check an application it does not run. The reason follows, in English. Fix the cause, such as an unreachable repository, then start the restore again. |
+| "The applications this backup holds could not be listed." under **How much to put back** | The same read failed when you chose a backup, so **Removed from this server** shows nothing. The reason follows, in English. Fix the cause, then choose the backup again. |
+| "Bringing back an application removed from this server is not available yet: its installed components are older than this panel. Bring this server up to date in Settings, under Server configuration, then try again." | The server's installed components predate the feature. Open **Settings**, go to **Server configuration**, press **Bring this server up to date**, and try again once it finishes. |
 | "A restore is running on this server. Wait for it to finish before moving another server here." | A migration cannot start during a restore. |
 | "A move is already running on this server." | Wait for it, or use **Forget this move** if it is unfinished. |
 | "The move could not be started." | The request was not accepted. Check the ticket, the pairing code and the address (an IP address, not a name), and that the window is open on the old server. |
