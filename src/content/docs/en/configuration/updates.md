@@ -40,7 +40,7 @@ Open **Settings** > **Control panel version**.
 3. Tick "I understand the panel restarts and is briefly unavailable."
 4. Press **Update this panel**.
 
-The section follows the update through Downloading (with a layer count), Installing, Restarting, Checking health and Applying its configuration. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if you close the page. Everything else keeps running.
+The section follows the update through Downloading, Installing, Restarting, Checking health and Applying its configuration. While it downloads, the section shows the layers done and the MiB downloaded, refreshed every 5 seconds. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if you close the page. Everything else keeps running.
 
 An update brings the newer versions of Catena's own services that were tested together with it (see [Catena's own services](#catenas-own-services)). It checks the server's health again after applying its configuration, and one that makes the server less healthy than before is put back automatically, along with the data copied for it (see [Rollback and quarantine](#rollback-and-quarantine)). The section then reads "The last attempt did not finish. This server put the previous version back and is running normally on it, one version behind." with the server's log of the attempt folded below.
 
@@ -91,7 +91,7 @@ You add an application from a repository on the server's list (see [Add an app f
 
 1. **Waiting period.** A tag is taken only after Catena has seen it for the waiting period (7 days by default, the same setting as for images: see [Waiting period and vulnerability gate](#waiting-period-and-vulnerability-gate)). The count starts the night Catena first sees the tag. When the newest tag has not waited long enough, the newest one that has is taken.
 2. **Trusted repository.** The update applies by itself. Catena's catalog is trusted. A repository you add is trusted only if you tick **Trusted: apply its updates by themselves**.
-3. **Repository that is not trusted.** The update is offered and waits for you. The application's card on the **Apps** page reads "Version `<tag>` is available (now `<current>`)." and the tile shows "Update `<tag>` offered". Tick "Move to version `<tag>` now" and press **Update**. The update then runs as a night's would, without the waiting period.
+3. **Repository that is not trusted.** The update is offered and waits for you. The application's card on the **Apps** page reads "Version `<tag>` is available (now `<current>`)." and the tile shows "Update `<tag>` offered". Tick "Move to version `<tag>` now" and press **Update**. The update then runs as a night's would, without the waiting period, and **Progress** opens under the form as it does when you add an app (see [Add an app from a repository](/en/configure-apps/#add-an-app-from-a-repository)).
 4. **Version older than 12 months.** When the version an application runs dates from more than 12 months ago, an update to a newer one is only offered, even from a trusted repository.
 
 A version whose content changes after Catena first saw it is refused and set aside. When the application declares versions it must pass through, the update goes through each of them in turn.

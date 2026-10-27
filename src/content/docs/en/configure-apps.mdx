@@ -27,7 +27,7 @@ An app comes from a git repository on the server's list. Catena's catalog is on 
 4. Optionally enter **Name on this server**: lower-case letters, digits and hyphens. Without it, the app keeps its own name. A name that is already a folder or an app on the server is refused.
 5. Press **Add**.
 
-Catena fetches the app at that version, checks its compose file (see [Check an app with the panel](#check-an-app-with-the-panel)), writes the folder and deploys it. A file with an error in the check is refused and not kept; warnings and notes do not stop the deploy. The page then reads "`<app>` was added." and the app's tile appears once Catena has picked the app up, within seconds. A refusal shows the server's answer under the notice.
+Catena fetches the app at that version, checks its compose file (see [Check an app with the panel](#check-an-app-with-the-panel)), writes the folder and deploys it. **Progress** opens under the form and shows each image's download, with the layers done and the MiB received, then the deploy and its outcome. You can close the page: the add carries on and its result stays readable for 10 minutes. A download that receives no data for 3 minutes ends the add, and so does one that is still not done after an hour in all. The server keeps the layers it finished. A file with an error in the check is refused and not kept; warnings and notes do not stop the deploy. The page then reads "`<app>` was added." and the app's tile appears once Catena has picked the app up, within seconds. A refusal shows the server's answer under the notice.
 
 ### Settings, start, stop and remove
 
