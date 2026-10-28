@@ -43,6 +43,8 @@ Only the fields the chosen option needs are shown:
 
 The secret is stored and never shown again; a blank field keeps it. The provider choice is the only value the panel validates ("Choose one of the options offered."). The section ends with **Save and apply**: the services that send mail restart briefly.
 
+Saving also signs in to the mail service with the saved values and sends nothing. When the login is refused, or the service cannot be reached, the section says so beside the button; the values stay saved. **Test the mail login** repeats that check at any time on the saved values, and the section's badge follows its answer. **Send a test email** sends one real message to the admin email address and shows the address it went to. Both are refused until a mail service is saved.
+
 Mail settings changed in the sign-in service's own Email tab (in the Keycloak admin console) stay, and this section no longer changes them. The exception is the password alone: a new password entered only there cannot be detected, so the next time the server's configuration is applied this section's password replaces it.
 
 ## Account-side steps
@@ -66,7 +68,9 @@ Enter the relay's host and port, its username and password, and a sender address
 
 ## Check that it works
 
-After you save, **Forgot password** on the sign-in page at `auth.yourdomain.com` sends a reset email to an existing account. If nothing arrives, check the spam folder, then the sender domain's verification state at the provider. The **Test** button of the admin email integration in Healthchecks (`healthchecks.yourdomain.com` > **Integrations**) sends a test alert.
+Press **Send a test email** in **Settings** > **Outgoing mail**. If nothing arrives at the admin address, check the spam folder, then the sender domain's verification state at the provider. A refusal by the service is shown beside the button in the service's own words.
+
+To test the sign-in service's own use of the mail service, **Forgot password** on the sign-in page at `auth.yourdomain.com` sends a reset email to an existing account. If nothing arrives, check the spam folder, then the sender domain's verification state at the provider. The **Test** button of the admin email integration in Healthchecks (`healthchecks.yourdomain.com` > **Integrations**) sends a test alert.
 
 ## Troubleshooting
 

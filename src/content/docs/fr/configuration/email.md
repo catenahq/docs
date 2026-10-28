@@ -43,6 +43,8 @@ Seuls les champs dont l'option choisie a besoin sont affichés :
 
 Le secret est stocké et jamais réaffiché; un champ vide le conserve. Le choix du service est la seule valeur que le panneau valide ("Choisissez l'une des options proposées."). La section se termine par **Enregistrer et appliquer** : les services qui expédient du courriel redémarrent brièvement.
 
+L'enregistrement ouvre aussi une session auprès du service de courriel avec les valeurs enregistrées et n'envoie rien. Si la connexion est refusée, ou si le service est injoignable, la section l'indique à côté du bouton; les valeurs restent enregistrées. **Tester la connexion au courrier** répète cette vérification en tout temps sur les valeurs enregistrées, et le badge de la section suit sa réponse. **Envoyer un courriel de test** envoie un vrai message à l'adresse courriel de l'administrateur et indique l'adresse visée. Les deux sont refusés tant qu'aucun service de courriel n'est enregistré.
+
 Les réglages de courriel modifiés dans l'onglet Courriel propre au service de connexion (dans la console d'administration de Keycloak) restent, et cette section ne les modifie plus. L'exception est le mot de passe seul : un nouveau mot de passe saisi uniquement à cet endroit ne peut pas être détecté, de sorte que le mot de passe de cette section le remplace la prochaine fois que la configuration du serveur est appliquée.
 
 ## Étapes côté compte
@@ -66,7 +68,9 @@ Saisissez l'hôte et le port du relais, son nom d'utilisateur et son mot de pass
 
 ## Vérifier le fonctionnement
 
-Après l'enregistrement, le lien de mot de passe oublié de la page de connexion, sur `auth.yourdomain.com`, envoie un courriel de réinitialisation à un compte existant. Si rien n'arrive, vérifiez le dossier des pourriels, puis l'état de vérification du domaine d'envoi chez le fournisseur. Le bouton **Test** de l'intégration de courriel de l'administrateur dans Healthchecks (`healthchecks.yourdomain.com` > **Integrations**) envoie une alerte d'essai.
+Appuyez sur **Envoyer un courriel de test** dans **Paramètres** > **Courriel sortant**. Si rien n'arrive à l'adresse de l'administrateur, vérifiez le dossier des pourriels, puis l'état de vérification du domaine d'envoi chez le fournisseur. Un refus du service s'affiche à côté du bouton, dans les mots du service.
+
+Pour essayer l'usage du service de courriel par le service de connexion lui-même, le lien de mot de passe oublié de la page de connexion, sur `auth.yourdomain.com`, envoie un courriel de réinitialisation à un compte existant. Si rien n'arrive, vérifiez le dossier des pourriels, puis l'état de vérification du domaine d'envoi chez le fournisseur. Le bouton **Test** de l'intégration de courriel de l'administrateur dans Healthchecks (`healthchecks.yourdomain.com` > **Integrations**) envoie une alerte d'essai.
 
 ## Dépannage
 

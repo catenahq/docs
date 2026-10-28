@@ -15,6 +15,8 @@ Alerts come from three on-server tools: Gatus (is each service answering), Healt
 
 A monitor on the server cannot report an outage that takes the whole server down. The off-site heartbeat closes that gap: on its schedule, the server checks that its status page, job monitor and resource monitor answer, then calls the off-site address. A plain call means all is well; a failure call names the monitors that stopped answering; no call at all means the server is down, and the outside service raises the alert. Saving the address alone sends nothing: the heartbeat runs once you turn it on in [Schedules](/en/configuration/schedules/), where its section shows the period and grace time to set on the outside check. When your subscription ends, the calls stop, so pause the outside check then.
 
+**Send a test heartbeat** runs the heartbeat once now, on the saved address, and shows beside the button whether the outside service took the call, or which monitor on the server did not answer. It needs Catena Pro: without it, the address and the button are shown locked, with a notice, and the heartbeat does not run.
+
 Alerts also reach your admin email, through the service chosen in [Outgoing email](/en/configuration/email/): while outgoing mail is set, the server keeps an email channel to your admin address in Healthchecks, attached to every check when the channel is created. A channel detached from a check in Healthchecks stays detached. With **No outgoing mail**, the channel is removed and alerts reach only the channels you add in Healthchecks.
 
 The section ends with **Save and apply**; the services that use these values restart briefly.
