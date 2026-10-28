@@ -127,7 +127,7 @@ Pour remplacer une clé : saisissez la nouvelle dans la ligne, attendez qu'une e
 
 ### Étapes
 
-1. Ouvrez **Paramètres** > **Copies hors site**.
+1. Ouvrez **Paramètres** > **Copies hors site**. La section demande Catena Business. Sans cette édition, elle indique "Disponible avec une licence Catena Business." avec un lien vers **Abonnement**, et n'affiche aucun formulaire. Lorsque des copies sont déjà déclarées, elle en donne le nombre, et elles reprennent dès que la licence inclut Business.
 2. Sous **Ajouter une copie**, remplissez une ligne :
 
 | Champ | Contenu |

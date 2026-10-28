@@ -127,7 +127,7 @@ To replace a key: enter the new one in the row, wait for one scheduled run to su
 
 ### Steps
 
-1. Open **Settings** > **Offsite copies**.
+1. Open **Settings** > **Offsite copies**. The section needs Catena Business. Without it the section reads "Available with a Catena Business licence." with a link to **Subscription**, and shows no form. When copies are already declared, it says how many, and they run again once the licence includes Business.
 2. Under **Add a copy**, fill in one row:
 
 | Field | Content |
