@@ -92,8 +92,8 @@ Apps run on Docker Swarm, which refuses some compose keys outright and silently 
 - **Published ports in long form** with `mode: host`, which keeps the real client address (the default mode replaces it). See [step 4](#step-4-label-the-front-door) for the label that opens them in the firewall.
 - **Refused keys**, which make swarm reject the whole file: `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Limits go in `deploy.resources.limits`, the replica count in `deploy.replicas`.
 - **Dropped keys**, with no effect: `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, `security_opt`, `shm_size`. Images are built and published elsewhere; swarm only pulls them.
-- **Server access keys.** Swarm also drops `privileged`, `pid` and `devices`, so the app runs without what it asked for. The panel's App check reports `privileged: true`, `pid: host` and `devices` as errors ([X1](#x1), [X3](#x3), [X5](#x5)): the file asks for control of the server. The corrected file keeps the key, so you decide.
-- **No raw network access on `catena-network`.** Docker gives every container the right to send raw network packets, which lets a container on `catena-network` forge traffic to Catena's own services. Every service that joins `catena-network` has `cap_drop: [NET_RAW]`. An app that needs raw packets (a network scanner, for example) adds `cap_add: [NET_RAW]` instead. The panel's App check reports a service that keeps it ([X11](#x11)), and the corrected file carries the drop. An app already deployed keeps the access until you publish the corrected file as a new version.
+- **Server access keys.** Swarm also drops `privileged`, `pid` and `devices`, so the app runs without what it asked for. The panel's Compose checker reports `privileged: true`, `pid: host` and `devices` as errors ([X1](#x1), [X3](#x3), [X5](#x5)): the file asks for control of the server. The corrected file keeps the key, so you decide.
+- **No raw network access on `catena-network`.** Docker gives every container the right to send raw network packets, which lets a container on `catena-network` forge traffic to Catena's own services. Every service that joins `catena-network` has `cap_drop: [NET_RAW]`. An app that needs raw packets (a network scanner, for example) adds `cap_add: [NET_RAW]` instead. The panel's Compose checker reports a service that keeps it ([X11](#x11)), and the corrected file carries the drop. An app already deployed keeps the access until you publish the corrected file as a new version.
 - **Full version tags.** Every image carries a full version tag, such as `1.2.3` or `1.2.3-alpine`. Only those are updated automatically: `latest`, `stable`, `1.2` or `1` are never touched.
 
 ## Step 3: Connect the front door
@@ -331,9 +331,9 @@ The command creates the provider or updates it, so you can repeat it. Nextcloud'
 
 ## Check an app with the panel
 
-The **App check** tab reads a compose file the way Docker Swarm and your server will, before you deploy it. Only administrators see the tab; staff do not.
+The **Compose checker** reads a compose file the way Docker Swarm and your server will, before you deploy it. It is the last entry in the menu at the right of the **Apps** page. Only administrators see it; staff do not.
 
-1. Open **App check**.
+1. Open **Apps**, then **Compose checker** in the menu at the right.
 2. In **App name**, enter the name you will give the app (step 1). Its own address and ports then do not count as taken by another app.
 3. Paste the compose file in **Compose file** and select **Check**.
 4. Read the findings. Each one carries its level (**error**, **warning** or **note**), its rule, the service it concerns and what to change. **What this means** opens the rule in the lists below.
@@ -341,7 +341,7 @@ The **App check** tab reads a compose file the way Docker Swarm and your server 
 
 Nothing is deployed from this tab. The check compares your file with what your server holds: its other apps' addresses and ports, the domains it serves, the groups you sign in with and the folders added to the backup. A part the server cannot read is named under the counts, and the checks that depend on it are left out.
 
-Your server also checks the file of each app on the **Apps** page every hour and after each deploy. On the **Apps** tab, an administrator sees on a tile with at least one error or warning a link such as **App check: errors 1, warnings 2**. Notes are not counted. The link opens **App check** with that app's findings. The server does not show the deployed file: paste the app's compose file to see the corrected file. The tile has no link when nothing was found.
+Your server also checks the file of each app on the **Apps** page every hour and after each deploy. On the **Apps** tab, an administrator sees on a tile with at least one error or warning a link such as **Compose checker: errors 1, warnings 2**. Notes are not counted. The link opens the **Compose checker** with that app's findings. The server does not show the deployed file: paste the app's compose file to see the corrected file. The tile has no link when nothing was found.
 
 A finding is an **error** when the deploy fails, data is lost, the app cannot be reached or it gets control of the server. It is a **warning** when a setting does not do what the file says. A **note** is worth knowing.
 
