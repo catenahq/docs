@@ -28,7 +28,7 @@ An app comes from a git repository on the server's list. Catena's catalog is on 
 4. Optionally enter **Name on this server**: lower-case letters, digits and hyphens. Without it, the app keeps its own name. A name that is already a folder or an app on the server is refused.
 5. Press **Add**.
 
-Catena fetches the app at that version, checks its compose file (see [Check an app with the panel](#check-an-app-with-the-panel)), writes its folder with its settings file and leaves it stopped: nothing of it runs yet, and nothing starts it by itself. A file with an error in the check is refused and not kept; warnings and notes do not stop the add. The page then reads "`<app>` was added and is stopped. Check its settings, then press Start." and the app's card appears under **Manage applications**. A refusal shows the server's answer under the notice.
+Catena fetches the app at that version, checks its compose file (see [Check an app with the panel](#check-an-app-with-the-panel)), writes its folder with its settings file and leaves it stopped: nothing of it runs yet, and nothing starts it by itself. A file with an error in the check is refused and not kept; warnings and notes do not stop the add. The add runs in a console under the button, and the page stays where it is. When it ends well, the app's card appears under **Manage applications** without reloading the page, stopped, with its settings and a **Start** button. A refusal shows the server's answer in the console.
 
 On the app's card, enter its settings (see [Settings, start, stop and remove](#settings-start-stop-and-remove)), then press **Start**: this is the app's first deploy. **Progress** opens under the card and shows each image's download, with the layers done and the MiB received, then the deploy and its outcome. You can close the page: the start carries on and its result stays readable for 10 minutes. A download that receives no data for 3 minutes ends the start, and so does one that is still not done after an hour in all. The server keeps the layers it finished. The app's tile appears once Catena has picked the app up, within seconds.
 
@@ -163,7 +163,6 @@ A backup does not pause an app added by hand unless the file declares a backup m
 3. Under **Repositories** on the **Apps** page, save the repository's address, with an access token when it is private (see [Repositories](#repositories)).
 4. Under **Add an application**, choose the repository, enter `<app>`, choose the version and press **Add** (see [Add an app from a repository](#add-an-app-from-a-repository)).
 5. Enter passwords and keys as the app's settings (see [Declare the settings](#declare-the-settings-optional)). They stay out of the file, so you can rotate them without publishing a new version.
-6. Press **Start** on the app's card.
 6. Press **Start** on the app's card.
 
 To change the app later, publish a new tag; the app moves to it as described in [Apps added from a repository](/en/configuration/updates/#apps-added-from-a-repository).
