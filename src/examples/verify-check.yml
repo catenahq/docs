@@ -1,0 +1,15 @@
+x-catena:
+  schema: 2
+  hooks:
+    service: web
+    timeout_seconds: 60
+    verify:
+      - - sh
+        - -c
+        - |
+          if wget -q -O /dev/null -T 10 http://localhost:3000/health; then
+            echo "the app answers on port 3000"
+          else
+            echo "the app does not answer on port 3000" >&2
+            exit 1
+          fi

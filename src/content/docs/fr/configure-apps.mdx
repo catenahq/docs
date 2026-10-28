@@ -8,6 +8,7 @@ import appSkeleton from "../../../examples/app-skeleton.yml?raw";
 import publishedPort from "../../../examples/published-port.yml?raw";
 import secondAddress from "../../../examples/second-address.yml?raw";
 import appDeclaration from "../../../examples/app-declaration.yml?raw";
+import verifyCheck from "../../../examples/verify-check.yml?raw";
 import nextcloudCompose from "../../../examples/nextcloud-compose.yml?raw";
 import nextcloudOidcProvider from "../../../examples/nextcloud-oidc-provider.sh?raw";
 
@@ -231,6 +232,8 @@ Commencez le bloc par `schema: 1`. Chaque commande est une liste de mots (`["yar
   - `migrate` s'exécute quand une mise à jour change l'image de `service`, et après une restauration du serveur entier une fois les bases de données remises en place. Si elle échoue après une mise à jour, la mise à jour est annulée, image et base de données.
   - `versioned_volumes` liste les volumes nommés de l'application que la nouvelle version transforme sur place et que la version précédente ne sait plus lire. Le serveur copie chacun avant une mise à jour qui change `service` et remet la copie en place si la mise à jour est annulée. Un volume que monte une base de données ou un service qui ne s'exécute qu'une fois ne peut pas figurer dans la liste.
 
+- **`hooks.verify`** est la vérification qui indique au serveur que l'application fonctionne (voir [Déclarer une vérification](#déclarer-une-vérification-facultatif)).
+
 Les mises à jour elles-mêmes s'exécutent pendant l'entretien nocturne, qui exige Catena Pro ou Catena Business (voir [Mises à jour](/fr/configuration/updates/)).
 
 Le serveur refuse les mises à jour de l'application quand le bloc ne tient pas pour son fichier. Les règles :
@@ -242,6 +245,28 @@ Le serveur refuse les mises à jour de l'application quand le bloc ne tient pas 
 - Un format plus récent que celui que le serveur lit est refusé tant que le serveur n'est pas mis à jour.
 
 [Vérifiez le fichier avec le panneau](#vérifier-une-application-avec-le-panneau) avant de déployer : la règle [K17](#k17) signale chacun de ces cas et liste les commandes que le bloc fait exécuter par le serveur.
+
+## Déclarer une vérification (facultatif)
+
+Une vérification est une commande que le serveur exécute pour savoir si l'application fonctionne. C'est la liste `hooks.verify` du bloc `x-catena`, qui commence par `schema: 2` :
+
+<Code code={verifyCheck} lang="yaml" />
+
+- `service` est le service dans lequel la vérification s'exécute, et `user` (facultatif) le compte sous lequel elle s'exécute. Le serveur l'exécute dans un conteneur en marche de ce service, avec les valeurs des réglages de l'application dans son environnement. Un service sans conteneur en marche est attendu jusqu'à 2 minutes.
+- `verify` est une liste de commandes, chacune une liste de mots, exécutées dans l'ordre sans interpréteur de commandes, sauf si une commande en nomme un, comme dans l'exemple. Écrivez chaque `$` sous la forme `$$` : Docker lit un `$` seul comme une variable quand il déploie le fichier.
+- `timeout_seconds` limite chaque commande : 5 minutes si le bloc n'en indique pas, 3600 secondes au plus.
+
+La vérification réussit quand chaque commande se termine avec le code 0. Le serveur l'exécute :
+
+- toutes les heures, pour chaque application qui en déclare une et qui n'est pas arrêtée. Un échec va une seule fois au journal de maintenance, avec la dernière ligne imprimée par la vérification comme motif, jusqu'à ce que la vérification réussisse de nouveau;
+- après qu'une mise à jour a migré l'application, avant que la mise à jour soit conservée. Une vérification qui échoue annule la mise à jour, image et base de données. Tant que la commande `ready` de l'application (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)) ne répond pas, le serveur attend et pose de nouveau la question, jusqu'au `timeout_seconds` de `lifecycle` du bloc; ensuite, la mise à jour est annulée.
+
+Une bonne vérification :
+
+1. Fait répondre le serveur de l'application sur le chemin qu'empruntent les gens. Envoyez une requête HTTP au port de l'application depuis le service de la vérification, avec un client que l'image contient : la commande d'un contrôle de santé existant, l'environnement d'exécution de l'application (PHP, Node.js, Python, Ruby), ou `curl` ou `wget` quand l'image en contient un. La commande de santé propre à l'application convient aussi quand elle interroge le serveur en marche.
+2. Pour chaque fonction que le nom ou la description de l'application annonce et que son serveur fournit (un stockage d'objets, un éditeur, un analyseur, un relais d'appels, le courriel), confirme qu'elle est branchée et qu'elle répond.
+3. N'écrit rien, se termine bien en deçà de `timeout_seconds`, imprime une seule ligne qui dit ce qui a échoué et se termine avec le code 0 seulement quand toutes les vérifications tiennent.
+4. Répond ok tant qu'un mode maintenance que retient une sauvegarde ou une mise à jour est actif, de sorte qu'une sauvegarde ou une mise à jour ne déclenche jamais d'échec.
 
 ## Référence des étiquettes
 

@@ -8,6 +8,7 @@ import appSkeleton from "../../../examples/app-skeleton.yml?raw";
 import publishedPort from "../../../examples/published-port.yml?raw";
 import secondAddress from "../../../examples/second-address.yml?raw";
 import appDeclaration from "../../../examples/app-declaration.yml?raw";
+import verifyCheck from "../../../examples/verify-check.yml?raw";
 import nextcloudCompose from "../../../examples/nextcloud-compose.yml?raw";
 import nextcloudOidcProvider from "../../../examples/nextcloud-oidc-provider.sh?raw";
 
@@ -231,6 +232,8 @@ Start the block with `schema: 1`. Each command is a list of words (`["yarn", "db
   - `migrate` runs when an update moves the image of `service`, and after a restore of the whole server once the databases are put back. When it fails after an update, the update is rolled back, image and database.
   - `versioned_volumes` lists the app's own named volumes that the new version upgrades in place and the previous version cannot read. The server copies each one before an update that moves `service` and puts the copy back when the update rolls back. A volume that a database or a one-shot service mounts cannot be listed.
 
+- **`hooks.verify`** is the check that tells the server the app works (see [Declare a verify check](#declare-a-verify-check-optional)).
+
 The updates themselves run in the nightly maintenance, which needs Catena Pro or Catena Business (see [Updates](/en/configuration/updates/)).
 
 The server refuses the app's updates when the block does not hold for its file. The rules:
@@ -242,6 +245,28 @@ The server refuses the app's updates when the block does not hold for its file. 
 - A format newer than the server reads is refused until the server is updated.
 
 [Check the file with the panel](#check-an-app-with-the-panel) before you deploy: rule [K17](#k17) reports each of these and lists the commands the block has the server run.
+
+## Declare a verify check (optional)
+
+A verify check is a command the server runs to learn whether the app works. It is the `hooks.verify` list of the `x-catena` block, which starts with `schema: 2`:
+
+<Code code={verifyCheck} lang="yaml" />
+
+- `service` is the service the check runs in, and `user` (optional) the account it runs as. The server runs the check in a running container of that service, with the values of the app's settings in its environment. A service with no running container is waited for up to 2 minutes.
+- `verify` is a list of commands, each a list of words, run in order with no shell unless a command names one, as in the example. Write each `$` as `$$`: Docker reads a single `$` as a variable when it deploys the file.
+- `timeout_seconds` limits each command: 5 minutes when the block sets none, 3600 seconds at most.
+
+The check passes when every command exits 0. The server runs it:
+
+- every hour, for each app that declares one and is not stopped. A failure goes to the maintenance log once, with the last line the check printed as its reason, until the check passes again;
+- after an update has migrated the app, before the update is kept. A check that fails rolls the update back, image and database. While the app's `ready` command (see [Declare the backup mode and update steps](#declare-the-backup-mode-and-update-steps-optional)) does not answer, the server waits and asks again, up to the block's `timeout_seconds` for `lifecycle`; after that the update is rolled back.
+
+A good check:
+
+1. Makes the app's own server answer on the path people use. Send an HTTP request to the app's port from inside the check's service, with a client the image has: the command of an existing health check, the app's own runtime (PHP, Node.js, Python, Ruby), or `curl` or `wget` when the image ships one. The app's own health command also counts when it asks the running server.
+2. For each feature the app's name or description claims and its server provides (an object store, an editor, a scanner, a call relay, mail), confirms that it is wired and answers.
+3. Writes nothing, finishes well inside `timeout_seconds`, prints one line that says what failed, and exits 0 only when every check holds.
+4. Answers ok while a maintenance mode that a backup or an update holds is on, so that a backup or an update never raises a failure.
 
 ## Label reference
 
