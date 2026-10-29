@@ -7,7 +7,7 @@ An installed server asks for nothing beyond how to reach it. You set the domain,
 
 ## Where Settings lives
 
-**Settings** is in the left rail of the admin panel and is visible to administrators only. You reach the panel at:
+**Settings** is in the left menu of the admin panel and is visible to administrators only. You reach the panel at:
 
 - `https://dash.yourdomain.com` once you apply a domain;
 - `http://localhost:9010` before that, through the SSH forward the installer keeps open (or reopens with `uvx catena-installer connect --inventory <name>`). Without the installer, the forward is:
@@ -20,7 +20,7 @@ Sign in with the admin email and the admin password shown once at install. See [
 
 ## How a save works
 
-- **Settings** shows one section at a time. Choose it from the **On this page** list at the right of the page; the first section shows until you do.
+- **Settings** shows one section at a time. Choose it from the **On this page** card at the right of the page (a list above the section on a narrow screen); the first section shows until you do.
 - Each section of **Settings** is its own form with its own button. Saving one section never touches another.
 - Every value is stored on the server and is part of every backup.
 - A blank field keeps the stored value. Typing a value replaces it. Secrets already stored carry a **set** badge and are never shown again; fields that must be filled carry a **required** badge.

@@ -20,7 +20,7 @@ Connectez-vous avec le courriel de l'administrateur et le mot de passe administr
 
 ## Comment fonctionne un enregistrement
 
-- **Paramètres** n'affiche qu'une section à la fois. Choisissez-la dans la liste **Sur cette page**, à droite de la page; la première section s'affiche tant que vous n'en choisissez pas une autre.
+- **Paramètres** n'affiche qu'une section à la fois. Choisissez-la dans la carte **Sur cette page**, à droite de la page (une liste au-dessus de la section sur un écran étroit); la première section s'affiche tant que vous n'en choisissez pas une autre.
 - Chaque section de **Paramètres** est un formulaire distinct, avec son propre bouton. Enregistrer une section ne touche jamais une autre.
 - Chaque valeur est stockée sur le serveur et fait partie de chaque sauvegarde.
 - Un champ laissé vide conserve la valeur stockée. Saisir une valeur la remplace. Un secret déjà stocké porte l'étiquette **défini** et n'est jamais réaffiché; les champs obligatoires portent l'étiquette **requis**.
