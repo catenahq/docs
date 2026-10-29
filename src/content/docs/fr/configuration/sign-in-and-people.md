@@ -37,6 +37,10 @@ Une application qui gère elle-même la connexion refuse un compte hors de ses g
 
 Un changement de groupe prend effet à la prochaine connexion de la personne.
 
+## Se connecter avec un code envoyé par courriel
+
+La page de connexion tient sur un seul écran : une adresse ou un nom d'utilisateur, et un mot de passe. Un client qui préfère un code choisit **Essayer une autre méthode**, puis le code envoyé par courriel, saisit son adresse et reçoit un code valable 10 minutes. Le personnel et les administrateurs se connectent avec leur mot de passe. La page répond de la même façon pour toutes les adresses : elle ne révèle donc jamais si un compte existe. Personne ne reçoit de code tant que le serveur n'a pas de [Courriel sortant](/fr/configuration/email/).
+
 ## Gérer les personnes dans Keycloak (toutes les éditions)
 
 Vous gérez tout en vous connectant à `auth.yourdomain.com` (domaine de sécurité `vps`) avec un compte administrateur. Dans la console d'administration :
@@ -72,7 +76,11 @@ Le nom de la page de connexion suit le domaine du serveur : après un [changemen
 
 Le panneau **Personnes** du menu gère les comptes et les groupes depuis le panneau d'administration. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).
 
-Il affiche **Groupes**, avec les applications que chacun ouvre, et **Personnes**, avec le nom d'utilisateur, le courriel et la mention "désactivé" pour les comptes désactivés. Il permet de créer, renommer et supprimer des groupes, d'y ajouter des personnes et de désactiver des comptes.
+Il affiche **Groupes**, avec les applications que chacun ouvre, et **Personnes**, avec le nom d'utilisateur, le courriel et la mention "désactivé" pour les comptes désactivés. Il permet d'inviter des personnes, de créer, renommer et supprimer des groupes, d'y ajouter des personnes et de désactiver des comptes.
+
+**Inviter une personne** demande une adresse courriel, un prénom, un nom et un groupe, et pour un client l'accès aux applications à donner. La personne reçoit un courriel du service de connexion avec un lien pour confirmer l'adresse et choisir un mot de passe; le lien fonctionne pendant 3 jours. **Envoyer un lien de mot de passe**, sur la ligne de la personne, en envoie un nouveau. Les invitations exigent un [Courriel sortant](/fr/configuration/email/).
+
+L'accès aux applications est réservé aux clients; les rôles du personnel se donnent dans l'application. Retirer l'accès de quelqu'un ferme l'application pour cette personne à sa prochaine connexion.
 
 Avant qu'un groupe soit renommé ou supprimé, le panneau affiche "Ce que ce changement touche" : les "Applications protégées par ce groupe" et les "Personnes actuellement dans ce groupe". Les applications qui n'auraient plus de groupe ne seraient ouvertes qu'aux administrateurs : "Ces applications ne seraient plus ouvertes qu'aux administrateurs. Elles continuent de fonctionner et cessent discrètement d'admettre tout le monde." La confirmation applique exactement le changement qui a été montré; si la liste a changé entre-temps, le panneau vous demande de la relire.
 

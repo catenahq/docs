@@ -37,6 +37,10 @@ An application that signs in by itself refuses an account outside its groups. Th
 
 A change of group takes effect the next time the person signs in.
 
+## Sign in with an emailed code
+
+The sign-in page is one screen: an address or username, and a password. A client who prefers a code chooses **Try another way**, then the emailed code, types their address and receives a code that works for 10 minutes. Staff and administrators sign in with their password. The page answers every address the same way, so it never tells whether an account exists. Nobody receives a code while the server has no [Outgoing email](/en/configuration/email/).
+
 ## Manage people in Keycloak (every edition)
 
 You manage everyone by signing in to `auth.yourdomain.com` (realm `vps`) with an admin account. From the administration console:
@@ -72,7 +76,11 @@ The name on the sign-in page follows the server's domain: after a [domain change
 
 The **People** panel in the menu manages accounts and groups from the admin panel. The editions are compared at [catena.run](https://catena.run/en/#pricing).
 
-It shows **Groups**, with the applications each one opens, and **People**, with username, email and a "disabled" marker for disabled accounts. It can create, rename and delete groups, add people to groups and disable accounts.
+It shows **Groups**, with the applications each one opens, and **People**, with username, email and a "disabled" marker for disabled accounts. It can invite people, create, rename and delete groups, add people to groups and disable accounts.
+
+**Invite a person** takes an email address, a first name, a last name and a group, and for a client the app access to give. The person gets an email from the sign-in service with a link to confirm the address and choose a password; the link works for 3 days. **Email a password link**, on the person's row, sends a new one. Invitations need [Outgoing email](/en/configuration/email/).
+
+App access is for clients only; staff roles are given inside the app. Removing someone's access closes the app to them at their next sign-in.
 
 Before a group is renamed or deleted, the panel shows "What this change affects": the "Applications gated on this group" and the "People currently in this group". Applications left with no group would be open to administrators only: "These applications would be left open to administrators only. They keep running, and quietly stop admitting everyone else." Confirming applies exactly the change that was shown; if the list changed in the meantime, the panel asks you to read it again.
 
