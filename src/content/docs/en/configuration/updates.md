@@ -3,13 +3,13 @@ title: "Updates"
 description: "What a Catena server updates on its own, what needs a decision, and how an update is gated, rolled back and recorded."
 ---
 
-A Catena server has five layers that update independently: the operating system, the control panel, the Docker engine, Catena's own services and the applications. This page lists what moves on its own, what needs a click, and what Catena Pro adds.
+A Catena server has five layers that each update their own way: the operating system, the control panel, the Docker engine, Catena's own services and the applications. This page lists what moves on its own, what needs a click, and what Catena Pro adds.
 
 | Layer | How it updates | Edition |
 |---|---|---|
 | Operating system | Security updates apply automatically; the restart is a decision. | All |
 | Control panel | **Update this panel**, or the monthly **Control panel updates** job. | Button: all. Job: Catena Pro or Catena Business |
-| Docker engine | **Upgrade Docker**, or a step of the nightly maintenance. | Button: all. Step: Catena Pro or Catena Business |
+| Docker engine | The control panel update moves it to the version the release carries; the nightly maintenance also moves it within the current major version (see [Docker engine](#docker-engine)). | Control panel update: all. Nightly step: Catena Pro or Catena Business |
 | Catena's own services | Patch releases by the nightly maintenance; newer versions arrive with a control panel update (see [Catena's own services](#catenas-own-services)). | Catena Pro or Catena Business |
 | Applications | The nightly maintenance, behind a waiting period, a vulnerability check and a rollback. | Catena Pro or Catena Business |
 
@@ -37,10 +37,10 @@ Open **Settings** > **Control panel version**.
 
 1. **Running now** shows the version the server runs.
 2. Pick the target under **Version to install**. The list holds the published versions of this same panel. When the list cannot be fetched, the field becomes a text box and you type the version (for example `v1.2.3`); only a version of this same panel is accepted.
-3. Tick "I understand the panel restarts and is briefly unavailable."
+3. Tick "I understand the panel restarts, and every application restarts for about a minute if Docker changes version."
 4. Press **Update this panel**.
 
-The section follows the update through Downloading, Installing, Restarting, Checking health and Applying its configuration. While it downloads, the section shows the layers done and the MiB downloaded, refreshed every 5 seconds. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if you close the page. Everything else keeps running.
+The section follows the update through Downloading, Installing, Restarting, Checking health and Applying its configuration. While it downloads, the section shows the layers done and the MiB downloaded, refreshed every 5 seconds. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if you close the page. Everything else keeps running, until the update moves Docker to the version the release carries: every application then restarts for about a minute (see [Docker engine](#docker-engine)).
 
 An update brings the newer versions of Catena's own services that were tested together with it (see [Catena's own services](#catenas-own-services)). It checks the server's health again after applying its configuration, and one that makes the server less healthy than before is put back automatically, along with the data copied for it (see [Rollback and quarantine](#rollback-and-quarantine)). The section then reads "The last attempt did not finish. This server put the previous version back and is running normally on it, one version behind." with the server's log of the attempt folded below.
 
@@ -58,14 +58,13 @@ The server moves to that release with that release's own code, the same end stat
 
 ## Docker engine
 
-Open **System** > **Docker engine**.
+Docker follows the Catena release. In every edition, the [control panel update](#control-panel-version) moves Docker to the version the release carries once the update has applied the server's configuration and passed its checks. Every application restarts for about a minute during the move. The server then checks that every service came back, and puts the previous Docker version back if one did not. A move that does not hold never undoes the control panel update: the panel stays on its new version and the server runs normally.
 
-1. Tick "I understand every application restarts for about a minute."
-2. Press **Upgrade Docker**.
+A release that carries a new major version of Docker moves Docker across it too.
 
-This moves Docker to the version the panel carries, then checks that every service came back; if one did not, the previous version is put back. A new major version is not installed by that button. When the panel carries one, a second box appears: tick "I understand this moves Docker to a new major version, and every application restarts." and press **Upgrade to the new major version**.
+Open **System** > **Docker** to read the result. The **Last move** line says whether the move was done, did not hold and was put back, or was not started.
 
-The nightly maintenance upgrades Docker the same way within the current major version. The result shows in the **Last upgrade** line of the section.
+On Catena Pro and Catena Business, the **Docker engine upgrade** step of the nightly maintenance (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)) moves Docker the same way within the current major version.
 
 ## Catena's own services
 

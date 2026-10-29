@@ -3,13 +3,13 @@ title: "Mises à jour"
 description: "Ce qu'un serveur Catena met à jour seul, ce qui demande une décision, et comment une mise à jour est encadrée, annulée au besoin et consignée."
 ---
 
-Un serveur Catena compte cinq couches qui se mettent à jour indépendamment : le système d'exploitation, le panneau de contrôle, le moteur Docker, les services propres à Catena et les applications. Cette page indique ce qui avance seul, ce qui demande un clic et ce qu'ajoute Catena Pro.
+Un serveur Catena compte cinq couches qui se mettent à jour chacune à sa façon : le système d'exploitation, le panneau de contrôle, le moteur Docker, les services propres à Catena et les applications. Cette page indique ce qui avance seul, ce qui demande un clic et ce qu'ajoute Catena Pro.
 
 | Couche | Mode de mise à jour | Édition |
 |---|---|---|
 | Système d'exploitation | Les mises à jour de sécurité s'appliquent automatiquement; le redémarrage est une décision. | Toutes |
 | Panneau de contrôle | **Mettre à jour ce panneau**, ou la tâche mensuelle **Mises à jour du panneau de contrôle**. | Bouton : toutes. Tâche : Catena Pro ou Catena Business |
-| Moteur Docker | **Mettre à niveau Docker**, ou une étape de l'entretien nocturne. | Bouton : toutes. Étape : Catena Pro ou Catena Business |
+| Moteur Docker | La mise à jour du panneau de contrôle le fait passer à la version qu'apporte la version de Catena; l'entretien nocturne le fait aussi passer au sein de la version majeure en cours (voir [Moteur Docker](#moteur-docker)). | Mise à jour du panneau de contrôle : toutes. Étape nocturne : Catena Pro ou Catena Business |
 | Services propres à Catena | Les versions correctives par l'entretien nocturne; les versions plus récentes arrivent avec une mise à jour du panneau de contrôle (voir [Services propres à Catena](#services-propres-à-catena)). | Catena Pro ou Catena Business |
 | Applications | L'entretien nocturne, derrière un délai d'attente, une vérification des vulnérabilités et un retour arrière. | Catena Pro ou Catena Business |
 
@@ -37,10 +37,10 @@ Ouvrez **Paramètres** > **Version du panneau de contrôle**.
 
 1. **En cours d'exécution** indique la version que fait tourner le serveur.
 2. Choisissez la cible sous **Version à installer**. La liste contient les versions publiées de ce même panneau. Lorsque la liste ne peut pas être obtenue, le champ devient une zone de texte et vous saisissez la version (par exemple `v1.2.3`); seule une version de ce même panneau est acceptée.
-3. Cochez "Je comprends que le panneau redémarre et sera brièvement indisponible."
+3. Cochez "Je comprends que le panneau redémarre, et que toutes les applications redémarrent pendant environ une minute si Docker change de version."
 4. Appuyez sur **Mettre à jour ce panneau**.
 
-La section suit la mise à jour à travers Téléchargement, Installation, Redémarrage, Vérification de l'état et Application de sa configuration. Pendant le téléchargement, la section montre les couches terminées et les Mio téléchargés, rafraîchis toutes les 5 secondes. Le panneau est inaccessible environ une minute pendant son redémarrage et revient de lui-même; la mise à jour se poursuit sur le serveur même si vous fermez la page. Tout le reste continue de fonctionner.
+La section suit la mise à jour à travers Téléchargement, Installation, Redémarrage, Vérification de l'état et Application de sa configuration. Pendant le téléchargement, la section montre les couches terminées et les Mio téléchargés, rafraîchis toutes les 5 secondes. Le panneau est inaccessible environ une minute pendant son redémarrage et revient de lui-même; la mise à jour se poursuit sur le serveur même si vous fermez la page. Tout le reste continue de fonctionner, jusqu'à ce que la mise à jour fasse passer Docker à la version qu'apporte la version de Catena : toutes les applications redémarrent alors pendant environ une minute (voir [Moteur Docker](#moteur-docker)).
 
 Une mise à jour apporte les versions plus récentes des services propres à Catena qui ont été testées avec elle (voir [Services propres à Catena](#services-propres-à-catena)). Elle vérifie de nouveau la santé du serveur après avoir appliqué sa configuration, et une mise à jour qui rend le serveur moins sain qu'avant est remise en arrière automatiquement, avec les données copiées pour elle (voir [Retour arrière et quarantaine](#retour-arrière-et-quarantaine)). La section indique alors "La dernière tentative n'a pas abouti. Ce serveur a remis la version précédente et fonctionne normalement avec celle-ci, avec une version de retard.", avec le journal de la tentative replié en dessous.
 
@@ -58,14 +58,13 @@ Le serveur passe à cette version avec le code de cette version, pour le même �
 
 ## Moteur Docker
 
-Ouvrez **Système** > **Moteur Docker**.
+Docker suit la version de Catena. Dans toutes les éditions, la [mise à jour du panneau de contrôle](#version-du-panneau-de-contrôle) fait passer Docker à la version qu'apporte la version de Catena, une fois que la mise à jour a appliqué la configuration du serveur et franchi ses vérifications. Toutes les applications redémarrent pendant environ une minute durant le changement. Le serveur vérifie ensuite que chaque service est revenu, et remet la version précédente de Docker si l'un d'eux ne l'est pas. Un changement qui ne tient pas n'annule jamais la mise à jour du panneau de contrôle : le panneau reste sur sa nouvelle version et le serveur fonctionne normalement.
 
-1. Cochez "Je comprends que toutes les applications redémarrent pendant environ une minute."
-2. Appuyez sur **Mettre à niveau Docker**.
+Une version de Catena qui apporte une nouvelle version majeure de Docker fait aussi passer Docker à celle-ci.
 
-Docker passe à la version que porte le panneau, puis le serveur vérifie que chaque service est revenu; sinon, la version précédente est remise en place. Une nouvelle version majeure n'est pas installée par ce bouton. Lorsque le panneau en porte une, une seconde case apparaît : cochez "Je comprends que Docker passe à une nouvelle version majeure et que toutes les applications redémarrent." et appuyez sur **Passer à la nouvelle version majeure**.
+Ouvrez **Système** > **Docker** pour lire le résultat. La ligne **Dernier changement de version** indique si le changement a été fait, s'il n'a pas tenu et a été annulé, ou s'il n'a pas été lancé.
 
-L'entretien nocturne met Docker à niveau de la même façon au sein de la version majeure en cours. Le résultat s'affiche à la ligne **Dernière mise à niveau** de la section.
+Avec Catena Pro et Catena Business, l'étape **Mise à niveau du moteur Docker** de l'entretien nocturne (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)) fait passer Docker de la même façon au sein de la version majeure en cours.
 
 ## Services propres à Catena
 

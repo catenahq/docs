@@ -27,7 +27,7 @@ Sur Catena Pro et Catena Business, **Horaires** > **Entretien nocturne** (désac
 
 ## Panneau et moteur Docker
 
-Le panneau a son propre horaire **Mises à jour du panneau de contrôle** (mensuel par défaut) et un bouton manuel **Mettre à jour ce panneau** dans **Paramètres** > **Version du panneau de contrôle**, qui fonctionne dans toutes les éditions. Le panneau est indisponible environ une minute, et une mise à jour qui échoue est annulée. Le moteur Docker est maintenu à sa version. **Système** > **Moteur Docker** (**Mettre à niveau Docker**) et l'entretien nocturne le font avancer au sein de sa version majeure et remettent la précédente si les services ne reviennent pas; une nouvelle version majeure exige une confirmation distincte.
+Le panneau a son propre horaire **Mises à jour du panneau de contrôle** (mensuel par défaut) et un bouton manuel **Mettre à jour ce panneau** dans **Paramètres** > **Version du panneau de contrôle**, qui fonctionne dans toutes les éditions. Le panneau est indisponible environ une minute, et une mise à jour qui échoue est annulée. Le moteur Docker est maintenu à sa version. Une mise à jour du panneau de contrôle le fait passer à la version qu'apporte sa version de Catena, dans toutes les éditions, et l'entretien nocturne le fait avancer au sein de sa version majeure; l'un et l'autre remettent la précédente si les services ne reviennent pas (voir [Moteur Docker](/fr/configuration/updates/#moteur-docker)).
 
 ## Ce qu'ajoute chaque édition
 

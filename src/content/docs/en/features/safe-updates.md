@@ -27,7 +27,7 @@ On Catena Pro and Catena Business, **Schedules** > **Nightly maintenance** (off 
 
 ## Panel and Docker engine
 
-The panel has its own **Control panel updates** schedule (monthly by default) and a manual **Update this panel** button in **Settings** > **Control panel version**, which works on every edition. The panel is unavailable for about a minute, and a failed update is rolled back. The Docker engine is held at its version. **System** > **Docker engine** (**Upgrade Docker**) and the nightly maintenance move it within its major version and put the previous one back if services do not return; a new major version needs a separate confirmation.
+The panel has its own **Control panel updates** schedule (monthly by default) and a manual **Update this panel** button in **Settings** > **Control panel version**, which works on every edition. The panel is unavailable for about a minute, and a failed update is rolled back. The Docker engine is held at its version. A control panel update moves it to the version its release carries, on every edition, and the nightly maintenance moves it within its major version; both put the previous one back if services do not return (see [Docker engine](/en/configuration/updates/#docker-engine)).
 
 ## What each edition adds
 
