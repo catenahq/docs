@@ -7,7 +7,7 @@ A server reports known vulnerabilities (published CVEs) in two places: the softw
 
 ## Prerequisites
 
-- The security alerts run on every edition (see [Security alerts](#security-alerts-every-edition)).
+- The security alerts and the [Vulnerabilities page](#vulnerabilities-page) run on every edition (see [Security alerts](#security-alerts-every-edition)). A check on request, the one-step patch, the automatic patch and the software inventory need Catena Pro.
 - The image and package scans run as part of the nightly maintenance, which needs Catena Pro or Catena Business (see [Schedules](/en/configuration/schedules/) and the [edition comparison](https://catena.run/en/#pricing)). Until a scan has run, the figures of the **Known vulnerabilities** card read "Not measured yet".
 - The scanner ships with the server. If the scan reports it missing, run **Install managed engines on this server** (see [Updates](/en/configuration/updates/#managed-updates-panel)) to restore it.
 
@@ -29,7 +29,8 @@ The **Log** page records changes in the advisories, from both scans:
 | Security advisories in host packages cleared. | Operating system packages |
 | `<count>` security advisory(ies) flagged in application images; tracked for the next update cycle. | Application images |
 | Security advisories in application images cleared. | Application images |
-| `<app>` carries `<vulnerability>` (`<severity>`) in `<packages>`, which the vulnerability watch alerts on. | Vulnerability watch |
+| `<app>` (`<images>`) carries `<vulnerability>` (`<severity>`) in `<packages>`; `<version>` or later fixes it. | Vulnerability watch |
+| `<app>` (`<images>`) carries `<vulnerability>` (`<severity>`) in `<packages>`; no fix is published yet: limit access to `<app>` or stop it. | Vulnerability watch |
 | `<app>` no longer carries `<vulnerability>`. | Vulnerability watch |
 | `<app>` was moved from `<from>` to `<to>` to patch `<vulnerability>`. | Patch |
 | The patch of `<app>` to `<version>` against `<vulnerability>` did not hold and was rolled back. | Patch |
@@ -70,29 +71,31 @@ The watch raises one alert for each vulnerability that is:
 
 A critical vulnerability that is not exploited and has no fixed version stays silent until a fix is published. An alert lasts, whatever the age of the vulnerability, while anything on the server carries it, and resolves when nothing does. It is one alert per vulnerability, however many applications carry it.
 
-The alert email names the vulnerability, the application, the package and the fixed version. When no fix is published yet, it says so and tells you to limit access to the application or stop it until one is. A fix published after the alert sends no second email. Update the application to the fixed version (see [Updates](/en/configuration/updates/)): the alert resolves once the watch no longer finds the vulnerability.
+The alert email names the vulnerability, each application that carries it with its image, the package and installed version, and the version that fixes it, "or later". When no fix is published yet, it says so and tells you to limit access to the application or stop it until one is. A fix published after the alert sends no second email. Update the application to the fixed version (see [Updates](/en/configuration/updates/)): the alert resolves once the watch no longer finds the vulnerability.
 
 The email goes to the admin address through the outgoing mail you set in **Settings** > **Outgoing mail** (see [Outgoing email](/en/configuration/email/)). With no outgoing mail, the alert shows in Healthchecks and under **System** only, and the **System** page reads "No email can be sent: set outgoing mail in Settings." You add other channels in Healthchecks (see [Alerts](/en/configuration/alerts/)).
 
-Once the watch has run, the **Known vulnerabilities** card of the **System** page shows its line on every edition: the number of exploited vulnerabilities in the software running there, the number of fixes available for what raises an alert, and when the watch last checked. On Catena Pro, the line links to the Vulnerabilities page; otherwise it reads "Details and one-step patching are part of Catena Pro."
+Once the watch has run, the **Known vulnerabilities** card of the **System** page shows its line on every edition: the number of exploited vulnerabilities in the software running there, the number of fixes available for what raises an alert, and when the watch last checked. On every edition, the line links to the [Vulnerabilities page](#vulnerabilities-page); without Catena Pro it adds "One-step patching is part of Catena Pro."
 
-Catena Pro adds the Vulnerabilities page, the one-step patch, the automatic patch and the software inventory, described below.
+Catena Pro adds a check on request, the one-step patch, the automatic patch and the software inventory, described below.
 
-## Vulnerabilities page (Catena Pro)
+## Vulnerabilities page
 
 The vulnerability watch (see [Security alerts](#security-alerts-every-edition)) refreshes its vulnerability database when the one in use is six hours old.
 
 **Vulnerabilities** lists, per application, each high or critical known vulnerability and each one CISA lists as exploited, with its package, installed and fixed version, and when it was first seen. A vulnerability CISA lists carries an "exploited" badge with the dates CISA gives and, when it applies, a "ransomware" badge. A vulnerability with no fixed version reads "no fix published yet".
 
-To open the page, open the **Managed updates** panel and follow **Vulnerabilities**. It needs Catena Pro and an administrator account. An application's tile on the **Apps** tab shows administrators "Vulnerabilities to act on" and, when CISA lists some, "Exploited by attackers" counts, and the watch's line on the **Known vulnerabilities** card of **System** links here.
+To open the page, follow **Vulnerabilities** on the **Known vulnerabilities** card of **System**. It needs an administrator account and no paid subscription. An application's tile on the **Apps** tab shows administrators "Vulnerabilities to act on" and, when CISA lists some, "Exploited by attackers" counts, and the watch's line on the **Known vulnerabilities** card of **System** links here.
 
 The page shows when the findings were made, the age of the vulnerability database and the version of CISA's list in use. It warns when the watch cannot do its job: no scanner installed, no database yet, a database over 48 hours old, CISA's list not read for over 7 days, or the list of running images unreadable. Findings not renewed for over 32 hours are marked "out of date" and offer no patch. Running services whose image has no software list yet appear under **Not checked**.
 
 ### Turn the watch on
 
-The watch is the scheduled job **Vulnerability watch** (see [Schedules](/en/configuration/schedules/)). It runs in one of two places, never both: on its own schedule, or, on Catena Pro or Catena Business, as a step of the nightly maintenance, after the night's updates, so that it alerts only on what the updates did not fix (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). While it runs in neither, the page says so and its findings are renewed only when you press **Check now**.
+The watch is the scheduled job **Vulnerability watch** (see [Schedules](/en/configuration/schedules/)). It runs in one of two places, never both: on its own schedule, or, on Catena Pro or Catena Business, as a step of the nightly maintenance, after the night's updates, so that it alerts only on what the updates did not fix (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). While it runs in neither, the page says so and its findings are renewed only when a check is started.
 
-**Check now** runs the watch in the background: a fresh database when the one in use is six hours old, CISA's list, then a check of every application. The page shows the findings a few minutes later.
+### Check now (Catena Pro)
+
+On Catena Pro, **Check now** runs the watch in the background: a fresh database when the one in use is six hours old, CISA's list, then a check of every application. The page shows the findings a few minutes later. Without Catena Pro, the page reads that a check on request, one-step patching and the software inventory are part of Catena Pro.
 
 ### Alerts
 
@@ -101,6 +104,8 @@ The alerts follow the rule in [Security alerts](#security-alerts-every-edition).
 A second alert, **CVE watch**, fires when the watch itself cannot check: the same causes the page warns about.
 
 ### Patch a vulnerability
+
+The patch needs Catena Pro.
 
 1. On **Vulnerabilities**, press **Patch** beside the vulnerability.
 2. Read the page **Patch a vulnerability**. It lists the application services carrying it and what the patch does. A patch moves at most 20 services; the others stay listed for the next one. The server's own infrastructure services are listed apart: its updates move them, so they are not patched from here.

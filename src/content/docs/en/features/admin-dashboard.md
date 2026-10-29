@@ -25,7 +25,7 @@ The admin dashboard is one panel for status, apps, backups, restores, schedules 
 
 ## What each edition adds
 
-Community has Apps (with the Compose checker), System, Actions, Restore, Schedules (the weekly backup and the vulnerability watch), Log and Settings. Catena Pro adds **Managed updates**, **Domains**, **People**, **Migration** and **Restore report**. Catena Business adds **Audit log**, **Compliance report** and **Monthly report**. See the [edition comparison](https://catena.run/en/#pricing).
+Community has Apps (with the Compose checker), System, Actions, Restore, Schedules (the weekly backup and the vulnerability watch), Log, Settings and the Vulnerabilities page (see [Vulnerabilities page](/en/configuration/vulnerabilities/#vulnerabilities-page)). Catena Pro adds **Managed updates**, **Domains**, **People**, **Migration** and **Restore report**. Catena Business adds **Audit log**, **Compliance report** and **Monthly report**. See the [edition comparison](https://catena.run/en/#pricing).
 
 ## Monthly report (Catena Business)
 

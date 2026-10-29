@@ -25,7 +25,7 @@ Le tableau de bord d'administration est un panneau unique pour l'état, les appl
 
 ## Ce qu'ajoute chaque édition
 
-Communauté offre Applications (avec le Vérificateur Compose), Système, Actions, Restauration, Horaires (la sauvegarde hebdomadaire et la veille des vulnérabilités), Journal et Paramètres. Catena Pro ajoute **Mises à jour gérées**, **Domaines**, **Personnes**, **Migration** et **Rapport de restauration**. Catena Business ajoute **Journal d'audit**, **Rapport de conformité** et **Rapport mensuel**. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté offre Applications (avec le Vérificateur Compose), Système, Actions, Restauration, Horaires (la sauvegarde hebdomadaire et la veille des vulnérabilités), Journal, Paramètres et la page Vulnérabilités (voir [Page Vulnérabilités](/fr/configuration/vulnerabilities/#page-vulnérabilités)). Catena Pro ajoute **Mises à jour gérées**, **Domaines**, **Personnes**, **Migration** et **Rapport de restauration**. Catena Business ajoute **Journal d'audit**, **Rapport de conformité** et **Rapport mensuel**. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Rapport mensuel (Catena Business)
 
