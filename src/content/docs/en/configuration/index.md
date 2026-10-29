@@ -20,7 +20,8 @@ Sign in with the admin email and the admin password shown once at install. See [
 
 ## How a save works
 
-- **Settings** shows one section at a time. Choose it from the **On this page** card at the right of the page (a list above the section on a narrow screen); the first section shows until you do.
+- **Settings** shows one section at a time. Choose it from the **On this page** card at the right of the page (a list above the section on a narrow screen); the **Setup guide** shows until you do.
+- A section whose badge is **Pending** or **Failed** carries a short hint at the top saying the next action. The close button at its end hides it in that browser; it shows again if the section's state changes.
 - Each section of **Settings** is its own form with its own button. Saving one section never touches another.
 - Every value is stored on the server and is part of every backup.
 - A blank field keeps the stored value. Typing a value replaces it. Secrets already stored carry a **set** badge and are never shown again; fields that must be filled carry a **required** badge.
@@ -32,7 +33,7 @@ Sign in with the admin email and the admin password shown once at install. See [
 
 ## First-time setup order
 
-The order below avoids dead ends: later steps rely on earlier ones.
+The order below avoids dead ends: later steps rely on earlier ones. The **Setup guide**, the first section of **Settings**, lists the same steps with the badge of each and a link to its section, and marks the next one to do. The domain, the backups and the disaster-recovery keyset are the required steps; once all three are applied, the guide shrinks to one line that opens the list.
 
 1. [Subscription](/en/configuration/subscription/), if you bought a Catena Pro or Catena Business key. Saving the key first lets the later steps use the features it unlocks, such as faster schedules and extra domains.
 2. [Domain and Cloudflare](/en/configuration/domain/): the Cloudflare API token, the domain, then **Apply**. Until you do this, the server runs without public addresses.

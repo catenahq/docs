@@ -20,7 +20,8 @@ Connectez-vous avec le courriel de l'administrateur et le mot de passe administr
 
 ## Comment fonctionne un enregistrement
 
-- **Paramètres** n'affiche qu'une section à la fois. Choisissez-la dans la carte **Sur cette page**, à droite de la page (une liste au-dessus de la section sur un écran étroit); la première section s'affiche tant que vous n'en choisissez pas une autre.
+- **Paramètres** n'affiche qu'une section à la fois. Choisissez-la dans la carte **Sur cette page**, à droite de la page (une liste au-dessus de la section sur un écran étroit); le **Guide de configuration** s'affiche tant que vous n'en choisissez pas une autre.
+- Une section dont l'étiquette est **En attente** ou **Échec** porte en haut un court indice qui dit la prochaine action. Le bouton de fermeture, à son extrémité, le cache dans ce navigateur; il réapparaît si l'état de la section change.
 - Chaque section de **Paramètres** est un formulaire distinct, avec son propre bouton. Enregistrer une section ne touche jamais une autre.
 - Chaque valeur est stockée sur le serveur et fait partie de chaque sauvegarde.
 - Un champ laissé vide conserve la valeur stockée. Saisir une valeur la remplace. Un secret déjà stocké porte l'étiquette **défini** et n'est jamais réaffiché; les champs obligatoires portent l'étiquette **requis**.
@@ -32,7 +33,7 @@ Connectez-vous avec le courriel de l'administrateur et le mot de passe administr
 
 ## Ordre de la première configuration
 
-L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précédentes.
+L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précédentes. Le **Guide de configuration**, première section de **Paramètres**, liste les mêmes étapes avec l'étiquette de chacune et un lien vers sa section, et marque la prochaine à faire. Le domaine, les sauvegardes et la trousse de reprise après sinistre sont les étapes obligatoires; une fois les trois appliquées, le guide se réduit à une ligne qui ouvre la liste.
 
 1. [Abonnement](/fr/configuration/subscription/), si vous avez acheté une clé Catena Pro ou Catena Business. Enregistrer la clé en premier permet aux étapes suivantes d'utiliser ce qu'elle débloque, comme les horaires plus fréquents et les domaines supplémentaires.
 2. [Domaine et Cloudflare](/fr/configuration/domain/) : le jeton d'API Cloudflare, le domaine, puis **Appliquer**. Tant que vous ne l'avez pas faite, le serveur fonctionne sans adresses publiques.
