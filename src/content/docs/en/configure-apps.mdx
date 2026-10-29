@@ -38,6 +38,7 @@ Each app has a page of its own, opened with the gear on the app's card. The **On
 
 - **Overview.** The version and the repository the app came from, whether the app is still as Catena deployed it, the update waiting for you, where the app keeps its files, and **Open the application**. An app whose files can go to a storage bucket reads "Files: in bucket `<bucket>` at `<host>`" when its settings name a bucket, and "Files: on this server's disk, backed up with it" when they name none.
 - **Settings.** The values the app lets you change, each with its default. Type the values and press **Save settings**: a running app is deployed again once with all of them; a stopped app, or one added and not started yet, takes them when you start it. Only the values you changed are written, and a value that another administrator changed since the page opened is refused as out of date. A value that spans several lines is shown but not editable here. A value that the app takes only before its first start, such as the storage bucket of an app whose files can go to one, reads "Set before the first start" while the app has never run, and is locked once it has run: it shows its value read-only, and a save that changes it is refused. Set such a value before you press **Start application**. When that fails, the page reads "The settings were saved, but `<app>` did not restart with them. Start it again to apply them." A secret value is never shown again: its field reads "A value is set" or "No value is set", and you type a new value in its own field and press **Save** to replace it. Values Catena generates, or keeps set itself, are listed by name and are read-only. A value is stored as plain text; neither Docker nor a shell runs it as a command.
+- **Passwords.** Shown only for an app whose package marks a generated password for signing in. The page names the password and does not hold it: press **Show password** and the answer shows it in a read-only field, with a note that if you changed the password inside the app, this one no longer works. **Hide password** closes it, and so does leaving the page; the page never keeps the password, and reloading the answer asks again. Each look is recorded in the audit trail with who asked and when, and never with the password. Generated passwords the package does not mark, such as a database password, stay hidden.
 - **Update.** Shown while an update waits for your decision or the previous version can be put back (see [Apps added from a repository](/en/configuration/updates/#apps-added-from-a-repository)).
 - **Start, stop and delete.** Three buttons, each on only when it applies. **Start application** is on while the app is stopped and deploys it, with **Progress** at the bottom of the page; for an app just added it is the first deploy. **Stop application** is on while the app runs, needs no confirmation and keeps the app's data. **Delete application and data** is on while the app is stopped: it erases the app and all its data from this server. Before it deletes, the page looks for the latest backup that holds the app and says its date, with the way back on the [Restore](/en/features/backup-restore-migrate/) page; a tick on the confirmation box then deletes. When no backup holds the app, or the backups cannot be read, the page warns that nothing can bring the app back and asks you to type the app's name instead. A running app is never deleted: the server refuses it, so stop the app first.
 
@@ -219,6 +220,13 @@ x-catena:
         label: { en: "Address", fr: "Adresse" }
     DB_PASSWORD:
       generated: { length: 32, alphabet: alnum }
+```
+
+Add `reveal: true` to a generated secret that a person signs in with, such as an administrator password the app creates on its first start, and the app's page offers **Show password** for it (see [Settings, start, stop and delete](#settings-start-stop-and-delete)). Mark no other secret: a database password, a signing key and a setting whose name ends in `_PASSWORD`, `_SECRET`, `_TOKEN` or `_KEY` stay hidden whatever the file says, and `reveal` on anything but a generated secret is refused.
+
+```yaml
+    ADMIN_PASSWORD:
+      generated: { length: 24, alphabet: alnum, reveal: true }
 ```
 
 A variable that is neither declared nor written by Catena, as the sign-in values are, reads as empty.
