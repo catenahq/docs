@@ -28,6 +28,8 @@ Every job ships switched off, except the **Vulnerability watch** on a server tha
 | **Off-site heartbeat** | Checks that the status page, job monitor and resource monitor answer, then calls the off-site heartbeat address saved in **Settings** > **Alerts and missed-job reporting** (see [Alerts](/en/configuration/alerts/)). Needs that address and Catena Pro. Its section shows the period and grace time to set on the outside check. |
 | **Vulnerability watch** | Checks the software of every application and service against a fresh vulnerability database and CISA's list of exploited vulnerabilities, and alerts on each one that is exploited, or critical, published in the last 30 days and fixed (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). Available on every edition: without a paid subscription it runs at most once a day. On Catena Pro or Catena Business it can instead run inside the nightly maintenance, after the night's updates (see [Choosing the steps](#choosing-the-steps)). |
 
+A job that needs Catena Pro or Catena Business carries a **Pro** or **Business** badge beside its name, in the index at the right of the page and in its own section. The badge is gray while the subscription does not include the job and green once it does; selecting a gray badge opens the page that explains the edition. A gray job stays visible with its controls greyed out.
+
 Each job starts at its set time. A run still going at the next set time is not doubled: the job starts again at the first set time after it ends. A job missed because the server was off or restarting runs when the server starts again.
 
 ### Nightly maintenance
@@ -56,7 +58,7 @@ A configured backup that fails, or fails its repository check (or its restore te
 
 ### Choosing the steps
 
-Under **Steps**, in the **Nightly maintenance** section, each step of the chain is a box with a one-line summary, in the order it runs:
+Under **Steps**, in the **Nightly steps** section, each step of the chain is a box with a one-line summary, in the order it runs:
 
 1. **Backup**
 2. **Restore test**
@@ -77,7 +79,7 @@ Some choices are held or refused:
 
 - While the offsite copy is on and an offsite copy is declared (see [Offsite copies](/en/configuration/backups/#offsite-copies)), **Backup repository check** stays ticked and greyed, with the reason "This step stays on while the offsite copy is on: the copy goes to storage nothing can delete from, so it runs only after the backup repository has passed its check." Once saved, it stays ticked after the offsite copy is off, until you untick it and save again.
 - The restore test runs either as a step or on its own schedule, never both. Ticking **Restore test** while its own schedule is on, or turning that schedule on while the step is ticked, is refused with "The restore test runs either every night in the nightly maintenance or on its own schedule, not both. Turn one of them off." Turn one of the two off and save again.
-- On Catena Pro, **Offsite copy** and **Offsite copy check** are greyed with "Needs Catena Business: without it the offsite copy does not run, on a schedule or by hand."
+- On Catena Pro, **Offsite copy** and **Offsite copy check** are greyed, because the offsite copy needs Catena Business.
 - With no offsite copy declared, **Offsite copy** shows the hint "No offsite copy is declared in Settings, so this step copies nothing."
 - The vulnerability watch runs either as a step or on its own schedule, never both. Ticking **Vulnerability watch** while its own schedule is on, or turning that schedule on while the step is ticked, is refused with "The vulnerability watch runs either every night in the nightly maintenance or on its own schedule, not both. Turn one of them off." and the page reads "Nothing was saved. The steps of the nightly maintenance below say why." Turn one of the two off and save again.
 

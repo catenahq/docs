@@ -28,6 +28,8 @@ Chaque tâche est livrée désactivée, sauf la **Veille des vulnérabilités** 
 | **Signal de vie hors site** | Vérifie que la page d'état, le moniteur de tâches et le moniteur de ressources répondent, puis appelle l'adresse du signal de vie hors site enregistrée dans **Paramètres** > **Alertes et signalement des tâches manquées** (voir [Alertes](/fr/configuration/alerts/)). Demande cette adresse et Catena Pro. Sa section indique la période et le délai de grâce à régler sur la vérification externe. |
 | **Veille des vulnérabilités** | Vérifie les logiciels de chaque application et service à l'aide d'une base de vulnérabilités fraîche et de la liste de la CISA des vulnérabilités exploitées, et alerte pour chacune qui est exploitée, ou critique, publiée dans les 30 derniers jours et corrigée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). Offerte dans toutes les éditions : sans abonnement payant, elle s'exécute au plus une fois par jour. Avec Catena Pro ou Catena Business, elle peut plutôt s'exécuter dans l'entretien nocturne, après les mises à jour de la nuit (voir [Choisir les étapes](#choisir-les-étapes)). |
 
+Une tâche qui demande Catena Pro ou Catena Business porte un badge **Pro** ou **Business** à côté de son nom, dans l'index à droite de la page et dans sa propre section. Le badge est gris tant que l'abonnement n'inclut pas la tâche et vert dès qu'il l'inclut; sélectionner un badge gris ouvre la page qui explique l'édition. Une tâche grise reste visible, ses commandes grisées.
+
 Chaque tâche démarre à son heure réglée. Une exécution encore en cours à l'heure réglée suivante n'est pas doublée : la tâche redémarre à la première heure réglée après sa fin. Une tâche manquée parce que le serveur était éteint ou en redémarrage s'exécute quand le serveur redémarre.
 
 ### Entretien nocturne
@@ -56,7 +58,7 @@ Une sauvegarde configurée qui échoue, ou dont la vérification du dépôt (ou 
 
 ### Choisir les étapes
 
-Sous **Étapes**, dans la section **Entretien nocturne**, chaque étape de la chaîne est une case accompagnée d'un résumé d'une ligne, dans l'ordre où elle s'exécute :
+Sous **Étapes**, dans la section **Étapes de la nuit**, chaque étape de la chaîne est une case accompagnée d'un résumé d'une ligne, dans l'ordre où elle s'exécute :
 
 1. **Sauvegarde**
 2. **Test de restauration**
@@ -77,7 +79,7 @@ Certains choix sont imposés ou refusés :
 
 - Tant que la copie hors site est activée et qu'une copie hors site est déclarée (voir [Copies hors site](/fr/configuration/backups/#copies-hors-site)), **Vérification du dépôt de sauvegarde** reste cochée et grisée, avec la raison "Cette étape reste active tant que la copie hors site l'est : la copie va vers un stockage dont rien ne peut être supprimé, elle ne s'exécute donc qu'après la réussite de la vérification du dépôt de sauvegarde." Une fois enregistrée, elle reste cochée après la désactivation de la copie hors site, jusqu'à ce que vous la décochiez et enregistriez de nouveau.
 - Le test de restauration s'exécute soit comme étape, soit selon son propre horaire, jamais les deux. Cocher **Test de restauration** alors que son propre horaire est activé, ou activer cet horaire alors que l'étape est cochée, est refusé avec "Le test de restauration s'exécute soit chaque nuit dans l'entretien nocturne, soit selon son propre horaire, pas les deux. Désactiver l'un des deux." Désactivez l'un des deux et enregistrez de nouveau.
-- Avec Catena Pro, **Copie hors site** et **Vérification de la copie hors site** sont grisées, avec "Exige Catena Business : sans elle, la copie hors site ne s'exécute pas, ni selon un horaire ni à la main."
+- Avec Catena Pro, **Copie hors site** et **Vérification de la copie hors site** sont grisées, parce que la copie hors site demande Catena Business.
 - Sans copie hors site déclarée, **Copie hors site** affiche l'indication "Aucune copie hors site n'est déclarée dans Paramètres : cette étape ne copie donc rien."
 - La veille des vulnérabilités s'exécute soit comme étape, soit selon son propre horaire, jamais les deux. Cocher **Veille des vulnérabilités** alors que son propre horaire est activé, ou activer cet horaire alors que l'étape est cochée, est refusé avec "La veille des vulnérabilités s'exécute soit chaque nuit dans l'entretien nocturne, soit selon son propre horaire, pas les deux. Désactiver l'un des deux." et la page indique "Rien n'a été enregistré. Les étapes de l'entretien nocturne, plus bas, en donnent la raison." Désactivez l'un des deux et enregistrez de nouveau.
 
