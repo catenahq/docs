@@ -18,23 +18,23 @@ When the software is in Catena's catalog, the catalog entry is the shorter route
 
 ## Add an app from a repository
 
-Administrators add apps under **Add an application** and configure and delete them from each app's page, opened with **Open settings** under **Manage applications**, below the tiles of the **Apps** page, or on the app's tile. Each app lives in its own folder on the server: its compose file, a settings file and a note of where it came from. The folder is in every backup and runs the app without Catena (see [Restore one app on any machine](/en/features/backup-restore-migrate/#restore-one-app-on-any-machine)).
+Administrators add apps with **Add an application**, above the cards of the **Apps** page, and configure and delete them from each app's page, opened with the gear on the app's card. Each app lives in its own folder on the server: its compose file, a settings file and a note of where it came from. The folder is in every backup and runs the app without Catena (see [Restore one app on any machine](/en/features/backup-restore-migrate/#restore-one-app-on-any-machine)).
 
 An app comes from a git repository on the server's list. Catena's catalog is on the list from the start and is trusted. To add an app:
 
-1. Open **Apps** and go to **Add an application**.
+1. Open **Apps** and press **Add an application**.
 2. Choose the **Repository**, enter the **Application** name and press **Show versions**.
 3. Choose a **Version**. The list holds the newest ten. A version is a tag the repository published for the app.
 4. Optionally enter **Name on this server**: lower-case letters, digits and hyphens. Without it, the app keeps its own name. A name that is already a folder or an app on the server is refused.
 5. Press **Add**.
 
-Catena fetches the app at that version, checks its compose file (see [Check an app with the panel](#check-an-app-with-the-panel)), writes its folder with its settings file and leaves it stopped: nothing of it runs yet, and nothing starts it by itself. A file with an error in the check is refused and not kept; warnings and notes do not stop the add. The add runs in a console under the button, and the page stays where it is. When it ends well, the app appears under **Manage applications** without reloading the page, stopped, with an **Open settings** button. A refusal shows the server's answer in the console.
+Catena fetches the app at that version, checks its compose file (see [Check an app with the panel](#check-an-app-with-the-panel)), writes its folder with its settings file and leaves it stopped: nothing of it runs yet, and nothing starts it by itself. A file with an error in the check is refused and not kept; warnings and notes do not stop the add. The add runs in a console under the button, and the page stays where it is. When it ends well, the app is on the **Apps** page as a stopped card with its gear. A refusal shows the server's answer in the console.
 
-Press **Open settings**, enter the app's settings (see [Settings, start, stop and delete](#settings-start-stop-and-delete)), then open **Start, stop and delete** and press **Start application**: this is the app's first deploy. **Progress** opens at the bottom of the page and shows each image's download, with the layers done and the MiB received, then the deploy and its outcome. You can close the page: the start carries on and its result stays readable for 10 minutes. A download that receives no data for 3 minutes ends the start, and so does one that is still not done after an hour in all. The server keeps the layers it finished. The app's tile appears once Catena has picked the app up, within seconds.
+Press the gear on its card, enter the app's settings (see [Settings, start, stop and delete](#settings-start-stop-and-delete)), then open **Start, stop and delete** and press **Start application**: this is the app's first deploy. **Progress** opens at the bottom of the page and shows each image's download, with the layers done and the MiB received, then the deploy and its outcome. You can close the page: the start carries on and its result stays readable for 10 minutes. A download that receives no data for 3 minutes ends the start, and so does one that is still not done after an hour in all. The server keeps the layers it finished. The app's tile appears once Catena has picked the app up, within seconds.
 
 ### Settings, start, stop and delete
 
-Each app has a page of its own, opened with **Open settings**, under **Manage applications** or on the app's tile. The **On this page** card at the right opens one part at a time:
+Each app has a page of its own, opened with the gear on the app's card. The **On this page** card at the right opens one part at a time:
 
 - **Overview.** The version and the repository the app came from, whether the app is still as Catena deployed it, the update waiting for you, where the app keeps its files, and **Open the application**. An app whose files can go to a storage bucket reads "Files: in bucket `<bucket>` at `<host>`" when its settings name a bucket, and "Files: on this server's disk, backed up with it" when they name none.
 - **Settings.** The values the app lets you change, each with its default. Type the values and press **Save settings**: a running app is deployed again once with all of them; a stopped app, or one added and not started yet, takes them when you start it. Only the values you changed are written, and a value that another administrator changed since the page opened is refused as out of date. A value that spans several lines is shown but not editable here. A value that the app takes only before its first start, such as the storage bucket of an app whose files can go to one, reads "Set before the first start" while the app has never run, and is locked once it has run: it shows its value read-only, and a save that changes it is refused. Set such a value before you press **Start application**. When that fails, the page reads "The settings were saved, but `<app>` did not restart with them. Start it again to apply them." A secret value is never shown again: its field reads "A value is set" or "No value is set", and you type a new value in its own field and press **Save** to replace it. Values Catena generates, or keeps set itself, are listed by name and are read-only. A value is stored as plain text; neither Docker nor a shell runs it as a command.
@@ -43,7 +43,7 @@ Each app has a page of its own, opened with **Open settings**, under **Manage ap
 
 The outcome of each change shows in a banner at the top of the page, and the page opens again on the part you used.
 
-A badge on the app's page and on its line under **Manage applications** says whether the app is still as Catena deployed it, and the page shows an update waiting for you. An app you changed by hand, or through another container manager, is not updated, and its badge says so. The badges, the **Outside Catena** list and the optional Portainer and Arcane apps of the catalog are covered in [Apps changed outside Catena](/en/configuration/updates/#apps-changed-outside-catena).
+A badge on the app's page and on its card says whether the app is still as Catena deployed it, and the page shows an update waiting for you. An app you changed by hand, or through another container manager, is not updated, and its badge says so. The badges, the **Outside Catena** list and the optional Portainer and Arcane apps of the catalog are covered in [Apps changed outside Catena](/en/configuration/updates/#apps-changed-outside-catena).
 
 ### Repositories
 
