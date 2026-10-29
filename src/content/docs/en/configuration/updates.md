@@ -91,7 +91,7 @@ You add an application from a repository on the server's list (see [Add an app f
 
 1. **Waiting period.** A tag is taken only after Catena has seen it for the waiting period (7 days by default, the same setting as for images: see [Waiting period and vulnerability gate](#waiting-period-and-vulnerability-gate)). The count starts the night Catena first sees the tag. When the newest tag has not waited long enough, the newest one that has is taken.
 2. **Trusted repository.** The update applies by itself. Catena's catalog is trusted. A repository you add is trusted only if you tick **Trusted: apply its updates by themselves**.
-3. **Repository that is not trusted.** The update is offered and waits for you. The application's card on the **Apps** page reads "Version `<tag>` is available (now `<current>`)." and the tile shows "Update `<tag>` offered". Tick "Move to version `<tag>` now" and press **Update**. The update then runs as a night's would, without the waiting period, and **Progress** opens under the form as it does when you start an app (see [Add an app from a repository](/en/configure-apps/#add-an-app-from-a-repository)).
+3. **Repository that is not trusted.** The update is offered and waits for you. The application's page, opened with **Open settings** under **Manage applications** on the **Apps** page, reads "Version `<tag>` is available (now `<current>`)." and the tile shows "Update `<tag>` offered". Tick "Move to version `<tag>` now" and press **Update**. The update then runs as a night's would, without the waiting period, and **Progress** opens under the form as it does when you start an app (see [Add an app from a repository](/en/configure-apps/#add-an-app-from-a-repository)).
 4. **Version older than 12 months.** When the version an application runs dates from more than 12 months ago, an update to a newer one is only offered, even from a trusted repository.
 
 A version whose content changes after Catena first saw it is refused and set aside. When the application declares versions it must pass through, the update goes through each of them in turn.
@@ -102,7 +102,7 @@ Every update first holds the application: its address answers a bare 503 (servic
 
 After an update stands, Catena keeps the application's previous files and the copies of its data for 14 days and until a backup taken after the update has succeeded, whichever is later. While they exist, an administrator can put the application back as it was before the update, on every edition:
 
-1. On the **Apps** page, find the application's card. While the copies exist it offers "Put back the previous version", with a note that the files and data go back to how they were before the update.
+1. On the **Apps** page, open the application's page with **Open settings**. While the copies exist, its **Update** part offers "Put back the previous version", with a note that the files and data go back to how they were before the update.
 2. Tick "Put `<app>` back to what it ran before its last update".
 3. Press **Put back the previous version**.
 
@@ -110,7 +110,7 @@ The revert stops the application, puts back its previous files and data and star
 
 ### Apps changed outside Catena
 
-Catena updates an application only while its files and its services are what Catena last deployed. The **Apps** page says when they are not, with a badge on the application's card:
+Catena updates an application only while its files and its services are what Catena last deployed. The **Apps** page says when they are not, with a badge on the application's page and on its line under **Manage applications**:
 
 | Badge | Meaning |
 |---|---|
@@ -216,5 +216,5 @@ Without the nightly maintenance, Catena looks for no newer version of your appli
 | "The last attempt did not finish." under **Control panel version** | The update was put back. Read the log in the section, then retry. |
 | The restart banner stays | Restart from **System** > **Restart**, or let the nightly maintenance do it. |
 | The version list is replaced by a text box | The registry could not be reached; type the version. |
-| An application is never updated, though its repository has newer versions | The **Apps** page shows why on its card: a badge such as **Files changed by hand** (see [Apps changed outside Catena](#apps-changed-outside-catena)), or an offer waiting for you because the repository is not trusted. |
+| An application is never updated, though its repository has newer versions | The application's page shows why: a badge such as **Files changed by hand** (see [Apps changed outside Catena](#apps-changed-outside-catena)), or an offer waiting for you because the repository is not trusted. |
 | The nightly update leaves an application alone | Fix the service that is down. The next nightly update takes the application again once every service runs. |

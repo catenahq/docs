@@ -18,7 +18,7 @@ When the software is in Catena's catalog, the catalog entry is the shorter route
 
 ## Add an app from a repository
 
-Administrators add, configure and remove apps in **Manage applications**, below the tiles of the **Apps** page. Each app lives in its own folder on the server: its compose file, a settings file and a note of where it came from. The folder is in every backup and runs the app without Catena (see [Restore one app on any machine](/en/features/backup-restore-migrate/#restore-one-app-on-any-machine)).
+Administrators add apps under **Add an application** and configure and remove them from each app's page, opened with **Open settings** under **Manage applications**, below the tiles of the **Apps** page, or on the app's tile. Each app lives in its own folder on the server: its compose file, a settings file and a note of where it came from. The folder is in every backup and runs the app without Catena (see [Restore one app on any machine](/en/features/backup-restore-migrate/#restore-one-app-on-any-machine)).
 
 An app comes from a git repository on the server's list. Catena's catalog is on the list from the start and is trusted. To add an app:
 
@@ -28,19 +28,22 @@ An app comes from a git repository on the server's list. Catena's catalog is on 
 4. Optionally enter **Name on this server**: lower-case letters, digits and hyphens. Without it, the app keeps its own name. A name that is already a folder or an app on the server is refused.
 5. Press **Add**.
 
-Catena fetches the app at that version, checks its compose file (see [Check an app with the panel](#check-an-app-with-the-panel)), writes its folder with its settings file and leaves it stopped: nothing of it runs yet, and nothing starts it by itself. A file with an error in the check is refused and not kept; warnings and notes do not stop the add. The add runs in a console under the button, and the page stays where it is. When it ends well, the app's card appears under **Manage applications** without reloading the page, stopped, with its settings and a **Start** button. A refusal shows the server's answer in the console.
+Catena fetches the app at that version, checks its compose file (see [Check an app with the panel](#check-an-app-with-the-panel)), writes its folder with its settings file and leaves it stopped: nothing of it runs yet, and nothing starts it by itself. A file with an error in the check is refused and not kept; warnings and notes do not stop the add. The add runs in a console under the button, and the page stays where it is. When it ends well, the app appears under **Manage applications** without reloading the page, stopped, with an **Open settings** button. A refusal shows the server's answer in the console.
 
-On the app's card, enter its settings (see [Settings, start, stop and remove](#settings-start-stop-and-remove)), then press **Start**: this is the app's first deploy. **Progress** opens under the card and shows each image's download, with the layers done and the MiB received, then the deploy and its outcome. You can close the page: the start carries on and its result stays readable for 10 minutes. A download that receives no data for 3 minutes ends the start, and so does one that is still not done after an hour in all. The server keeps the layers it finished. The app's tile appears once Catena has picked the app up, within seconds.
+Press **Open settings**, enter the app's settings (see [Settings, start, stop and remove](#settings-start-stop-and-remove)), then open **Start, stop and remove** and press **Start application**: this is the app's first deploy. **Progress** opens at the bottom of the page and shows each image's download, with the layers done and the MiB received, then the deploy and its outcome. You can close the page: the start carries on and its result stays readable for 10 minutes. A download that receives no data for 3 minutes ends the start, and so does one that is still not done after an hour in all. The server keeps the layers it finished. The app's tile appears once Catena has picked the app up, within seconds.
 
 ### Settings, start, stop and remove
 
-Each app has a card under **Manage applications**:
+Each app has a page of its own, opened with **Open settings**, under **Manage applications** or on the app's tile. The **On this page** card at the right opens one part at a time:
 
+- **Overview.** The version and the repository the app came from, whether the app is still as Catena deployed it, the update waiting for you, and **Open the application**.
 - **Settings.** The values the app lets you change, each with its default. Type the values and press **Save settings**: a running app is deployed again once with all of them; a stopped app, or one added and not started yet, takes them when you start it. Only the values you changed are written, and a value that another administrator changed since the page opened is refused as out of date. A value that spans several lines is shown but not editable here. When that fails, the page reads "The settings were saved, but `<app>` did not restart with them. Start it again to apply them." A secret value is never shown again: its field reads "A value is set" or "No value is set", and you type a new value in its own field and press **Save** to replace it. Values Catena generates, or keeps set itself, are listed by name and are read-only. A value is stored as plain text; neither Docker nor a shell runs it as a command.
-- **Start** and **Stop.** **Start** deploys the app, with **Progress** under the card; for an app just added it is the first deploy. **Stop** needs a tick on the confirmation box and keeps the app's data.
-- **Remove.** Needs a tick on the confirmation box. Tick **Also delete its data (cannot be undone)** to delete the app's data as well; without it, the data stays.
+- **Update.** Shown while an update waits for your decision or the previous version can be put back (see [Apps added from a repository](/en/configuration/updates/#apps-added-from-a-repository)).
+- **Start, stop and remove.** Four buttons, each on only when it applies. **Start application** is on while the app is stopped and deploys it, with **Progress** at the bottom of the page; for an app just added it is the first deploy. **Stop application** is on while the app runs, needs no confirmation and keeps the app's data. **Remove application** is on while the app is stopped: it takes the app off this server and keeps its data on the disk. **Delete application and data** is on while the app is stopped and needs a tick on the confirmation box: it erases the app and all its data from this server, and the backups keep their copy. A running app is never removed or deleted: the server refuses it, so stop the app first.
 
-A badge on the card says whether the app is still as Catena deployed it, and the card shows an update waiting for you. An app you changed by hand, or through another container manager, is not updated, and its badge says so. The badges, the **Outside Catena** list and the optional Portainer and Arcane apps of the catalog are covered in [Apps changed outside Catena](/en/configuration/updates/#apps-changed-outside-catena).
+The outcome of each change shows in a banner at the top of the page, and the page opens again on the part you used.
+
+A badge on the app's page and on its line under **Manage applications** says whether the app is still as Catena deployed it, and the page shows an update waiting for you. An app you changed by hand, or through another container manager, is not updated, and its badge says so. The badges, the **Outside Catena** list and the optional Portainer and Arcane apps of the catalog are covered in [Apps changed outside Catena](/en/configuration/updates/#apps-changed-outside-catena).
 
 ### Repositories
 
@@ -48,7 +51,7 @@ A badge on the card says whether the app is still as Catena deployed it, and the
 
 1. Enter its **Repository address**: an `https://` address with no password, query or fragment.
 2. For a private repository, enter an **Access token**. It is saved on the server and never shown again; the list only says "Token saved". To replace it, enter a new one. To delete it, tick **Delete the saved token**.
-3. Tick **Trusted: apply its updates by themselves** only for a repository whose author you trust. Updates from a trusted repository apply by themselves in the nightly maintenance; for the others, each update waits for you on the app's card (see [Apps added from a repository](/en/configuration/updates/#apps-added-from-a-repository)).
+3. Tick **Trusted: apply its updates by themselves** only for a repository whose author you trust. Updates from a trusted repository apply by themselves in the nightly maintenance; for the others, each update waits for you on the app's page (see [Apps added from a repository](/en/configuration/updates/#apps-added-from-a-repository)).
 4. Press **Save repository**.
 
 Saving an address already on the list changes its trust and its token. **Remove** takes a repository off the list, with its token; the apps already added from it stay.
@@ -163,7 +166,7 @@ A backup does not pause an app added by hand unless the file declares a backup m
 3. Under **Repositories** on the **Apps** page, save the repository's address, with an access token when it is private (see [Repositories](#repositories)).
 4. Under **Add an application**, choose the repository, enter `<app>`, choose the version and press **Add** (see [Add an app from a repository](#add-an-app-from-a-repository)).
 5. Enter passwords and keys as the app's settings (see [Declare the settings](#declare-the-settings-optional)). They stay out of the file, so you can rotate them without publishing a new version.
-6. Press **Start** on the app's card.
+6. Press **Start application** on the app's page.
 
 To change the app later, publish a new tag; the app moves to it as described in [Apps added from a repository](/en/configuration/updates/#apps-added-from-a-repository).
 
@@ -194,7 +197,7 @@ Catena only changes entries it made. An entry with the same name that you made b
 
 To check that it worked:
 
-- On the **Apps** tab, an administrator sees on the app's tile **sign-in ready**, **sign-in waiting** or **sign-in failed**, with the reason, in place of the OIDC badge. Staff see the OIDC badge.
+- On the **Apps** tab, an administrator sees on the app's tile **sign-in ready**, **sign-in waiting** or **sign-in failed**, with the reason, in place of the OIDC badge. Staff see no badge.
 - Waiting means Catena tries again on its own. Failed means something needs fixing, and the tile says what. The **Log** tab also names the app and the reason.
 
 See [Single sign-on](/en/features/single-sign-on/) for how sign-in works across apps.
@@ -203,7 +206,7 @@ See [Single sign-on](/en/features/single-sign-on/) for how sign-in works across 
 
 The values an app's file reads as `${VARIABLE}` come from its settings file. Declare each one in the `x-catena` block, with `schema: 2`, as one of:
 
-- a **setting** you change on the app's card, with a default and a label in English and in French;
+- a **setting** you change on the app's page, with a default and a label in English and in French;
 - a **generated** secret that Catena makes when you add the app, with its length and its alphabet (`alnum` or `hex`).
 
 ```yaml
@@ -298,7 +301,7 @@ On the main address's service only. On any other service these labels are ignore
 |---|---|---|---|
 | `vps.route.main` | `true`, `false` | `false` | Marks the main address. Needed only when the app has two or more addresses, on exactly one service. With none or several marked, the app has no route. |
 | `vps.auth.protected` | `true`, `false` | `false` | `true` marks an app that must not be public: when its labels make it public anyway, its tile on **Apps** carries the badge "should require sign-in", shown to administrators only. |
-| `vps.auth.oidc` | `true`, `false` | `false` | Catena creates the app's own sign-in entry in Keycloak and puts `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` and `OIDC_ISSUER_URL` in the app's settings. Staff see an OIDC badge on the tile; administrators see the state of the sign-in. |
+| `vps.auth.oidc` | `true`, `false` | `false` | Catena creates the app's own sign-in entry in Keycloak and puts `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` and `OIDC_ISSUER_URL` in the app's settings. Administrators see an OIDC badge on the tile, replaced by the state of the sign-in once there is one. |
 | `vps.auth.oidc.redirect_uris` | Addresses, comma-separated | none | Return addresses of the sign-in entry. Required with `vps.auth.oidc`. See [Sign in with Catena accounts](#sign-in-with-catena-accounts-optional). |
 | `vps.auth.oidc.public` | `true`, `false` | `false` | `true` for an app that sends no secret: the entry has no secret and requires PKCE. |
 | `vps.display-name` | Text | the main address | Title of the main address's card on the status page. The other addresses' cards are titled by their address. |
@@ -332,7 +335,7 @@ The catalog entry for Nextcloud is the recommended way to run it: it carries mor
 
 <Code code={nextcloudCompose} lang="yaml" />
 
-You declare the variables (`NEXTCLOUD_HOSTNAME`, `NEXTCLOUD_ADMIN_USER`, `NEXTCLOUD_ADMIN_PASSWORD`, `DB_PASSWORD` and the `S3_*` values) as settings (see [Declare the settings](#declare-the-settings-optional)) and enter them on the app's card before you start it. `NEXTCLOUD_HOSTNAME` is `nextcloud.yourdomain.com`. Catena fills the `OIDC_*` values itself (see below).
+You declare the variables (`NEXTCLOUD_HOSTNAME`, `NEXTCLOUD_ADMIN_USER`, `NEXTCLOUD_ADMIN_PASSWORD`, `DB_PASSWORD` and the `S3_*` values) as settings (see [Declare the settings](#declare-the-settings-optional)) and enter them on the app's page before you start it. `NEXTCLOUD_HOSTNAME` is `nextcloud.yourdomain.com`. Catena fills the `OIDC_*` values itself (see below).
 
 ### Why each part is there
 
@@ -435,7 +438,7 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | Backup failed on a bind mount | The mount is outside the apps area. Move the data to a named volume, or list the folder under **Settings** > **Backup repository** > **Other folders to back up (separated by commas)**. |
 | Backup failed on a database | The dump failed. A MariaDB or MySQL container needs `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD`; a Postgres container needs a valid `POSTGRES_USER`. |
 | Update skipped | The image tag is not a full version (`latest`, `1.2`), `vps.auto-update` is `off`, or the move exceeds the label (a major release under `patch`). The newest release may also be held back by the vulnerability or waiting-period checks, or the app is held because it was changed outside Catena (see [Apps changed outside Catena](/en/configuration/updates/#apps-changed-outside-catena)). |
-| An added app does not run | An app stays stopped after **Add** until you press **Start** on its card. |
+| An added app does not run | An app stays stopped after **Add** until you press **Start application** on its page. |
 | Adding an app is refused | The name is already a folder or an app on the server, the version is not a tag of that app in the repository, the repository is not on the list, or the compose file has an error in the check (see [Check an app with the panel](#check-an-app-with-the-panel)). |
 | Service restarts in a loop at first deploy | Nothing waits for the database. The service's entrypoint waits for it, as in the Nextcloud example. |
 | Data missing after a node change | A service with a volume lacked `node.labels.catena.role==data` and started on another node with an empty volume. |

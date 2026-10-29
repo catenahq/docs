@@ -18,7 +18,7 @@ Quand le logiciel figure au catalogue de Catena, l'entrée du catalogue est le c
 
 ## Ajouter une application depuis un dépôt
 
-Les administrateurs ajoutent, configurent et suppriment les applications sous **Gérer les applications**, sous les tuiles de la page **Applications**. Chaque application vit dans son propre dossier sur le serveur : son fichier compose, un fichier de réglages et une note sur sa provenance. Le dossier figure dans chaque sauvegarde et fait tourner l'application sans Catena (voir [Restaurer une application sur n'importe quelle machine](/fr/features/backup-restore-migrate/#restaurer-une-application-sur-nimporte-quelle-machine)).
+Les administrateurs ajoutent les applications sous **Ajouter une application** et les configurent et les retirent depuis la page de chaque application, qu'ouvre **Ouvrir les réglages** sous **Gérer les applications**, sous les tuiles de la page **Applications**, ou sur la tuile de l'application. Chaque application vit dans son propre dossier sur le serveur : son fichier compose, un fichier de réglages et une note sur sa provenance. Le dossier figure dans chaque sauvegarde et fait tourner l'application sans Catena (voir [Restaurer une application sur n'importe quelle machine](/fr/features/backup-restore-migrate/#restaurer-une-application-sur-nimporte-quelle-machine)).
 
 Une application vient d'un dépôt git de la liste du serveur. Le catalogue de Catena figure d'emblée sur la liste et est de confiance. Pour ajouter une application :
 
@@ -28,19 +28,22 @@ Une application vient d'un dépôt git de la liste du serveur. Le catalogue de C
 4. Au besoin, saisissez **Nom sur ce serveur** : lettres minuscules, chiffres et traits d'union. Sans nom, l'application garde le sien. Un nom qui est déjà un dossier ou une application du serveur est refusé.
 5. Appuyez sur **Ajouter**.
 
-Catena récupère l'application à cette version, vérifie son fichier compose (voir [Vérifier une application avec le panneau](#vérifier-une-application-avec-le-panneau)), écrit son dossier avec son fichier de réglages et la laisse arrêtée : rien d'elle ne tourne encore, et rien ne la démarre d'elle-même. Un fichier qui comporte une erreur à la vérification est refusé et n'est pas conservé; les avertissements et les notes n'arrêtent pas l'ajout. L'ajout s'exécute dans une console sous le bouton, et la page reste où elle est. Quand il se termine bien, la fiche de l'application apparaît sous **Gérer les applications** sans recharger la page, arrêtée, avec ses réglages et un bouton **Démarrer**. Un refus affiche la réponse du serveur dans la console.
+Catena récupère l'application à cette version, vérifie son fichier compose (voir [Vérifier une application avec le panneau](#vérifier-une-application-avec-le-panneau)), écrit son dossier avec son fichier de réglages et la laisse arrêtée : rien d'elle ne tourne encore, et rien ne la démarre d'elle-même. Un fichier qui comporte une erreur à la vérification est refusé et n'est pas conservé; les avertissements et les notes n'arrêtent pas l'ajout. L'ajout s'exécute dans une console sous le bouton, et la page reste où elle est. Quand il se termine bien, l'application apparaît sous **Gérer les applications** sans recharger la page, arrêtée, avec un bouton **Ouvrir les réglages**. Un refus affiche la réponse du serveur dans la console.
 
-Sur la fiche de l'application, saisissez ses réglages (voir [Réglages, démarrage, arrêt et suppression](#réglages-démarrage-arrêt-et-suppression)), puis appuyez sur **Démarrer** : c'est le premier déploiement de l'application. **Progression** s'ouvre sous la fiche et montre le téléchargement de chaque image, avec les couches terminées et les Mio reçus, puis le déploiement et son issue. Vous pouvez fermer la page : le démarrage se poursuit et son résultat reste lisible pendant 10 minutes. Un téléchargement qui ne reçoit aucune donnée pendant 3 minutes met fin au démarrage, tout comme un téléchargement qui n'est toujours pas terminé après une heure en tout. Le serveur garde les couches qu'il a terminées. La tuile de l'application apparaît dès que Catena l'a prise en compte, en quelques secondes.
+Appuyez sur **Ouvrir les réglages**, saisissez les réglages de l'application (voir [Réglages, démarrage, arrêt et suppression](#réglages-démarrage-arrêt-et-suppression)), puis ouvrez **Démarrer, arrêter et retirer** et appuyez sur **Démarrer l'application** : c'est le premier déploiement de l'application. **Progression** s'ouvre au bas de la page et montre le téléchargement de chaque image, avec les couches terminées et les Mio reçus, puis le déploiement et son issue. Vous pouvez fermer la page : le démarrage se poursuit et son résultat reste lisible pendant 10 minutes. Un téléchargement qui ne reçoit aucune donnée pendant 3 minutes met fin au démarrage, tout comme un téléchargement qui n'est toujours pas terminé après une heure en tout. Le serveur garde les couches qu'il a terminées. La tuile de l'application apparaît dès que Catena l'a prise en compte, en quelques secondes.
 
 ### Réglages, démarrage, arrêt et suppression
 
-Chaque application a une fiche sous **Gérer les applications** :
+Chaque application a une page propre, qu'ouvre **Ouvrir les réglages**, sous **Gérer les applications** ou sur la tuile de l'application. La carte **Sur cette page**, à droite, ouvre une partie à la fois :
 
+- **Aperçu.** La version et le dépôt d'où vient l'application, si elle est toujours telle que Catena l'a déployée, la mise à jour qui attend votre décision, et **Ouvrir l'application**.
 - **Réglages.** Les valeurs que l'application vous laisse changer, chacune avec sa valeur par défaut. Saisissez les valeurs et appuyez sur **Enregistrer les réglages** : une application en marche est déployée de nouveau une seule fois avec toutes ces valeurs; une application arrêtée, ou ajoutée et pas encore démarrée, les prend quand vous la démarrez. Seules les valeurs que vous avez modifiées sont écrites, et une valeur qu'un autre administrateur a changée depuis l'ouverture de la page est refusée comme périmée. Une valeur sur plusieurs lignes est affichée mais n'est pas modifiable ici. Si cela échoue, la page indique "Les réglages ont été enregistrés, mais `<application>` n'a pas redémarré avec eux. La démarrer de nouveau pour les appliquer." Une valeur secrète n'est jamais réaffichée : son champ indique "Une valeur est définie" ou "Aucune valeur définie", et vous saisissez une nouvelle valeur dans son propre champ puis appuyez sur **Enregistrer** pour la remplacer. Les valeurs que Catena génère ou garde elle-même sont listées par nom et en lecture seule. Une valeur est stockée en texte brut; ni Docker ni un shell ne l'exécute comme une commande.
-- **Démarrer** et **Arrêter.** **Démarrer** déploie l'application, avec **Progression** sous la fiche; pour une application tout juste ajoutée, c'est le premier déploiement. **Arrêter** demande de cocher la case de confirmation et garde les données de l'application.
-- **Supprimer.** Demande de cocher la case de confirmation. Cochez **Supprimer aussi ses données (irréversible)** pour supprimer aussi les données de l'application; sans cela, les données restent.
+- **Mise à jour.** Affichée tant qu'une mise à jour attend votre décision ou que la version précédente peut être remise (voir [Applications ajoutées depuis un dépôt](/fr/configuration/updates/#applications-ajoutées-depuis-un-dépôt)).
+- **Démarrer, arrêter et retirer.** Quatre boutons, chacun actif seulement quand il s'applique. **Démarrer l'application** est actif tant que l'application est arrêtée et la déploie, avec **Progression** au bas de la page; pour une application tout juste ajoutée, c'est le premier déploiement. **Arrêter l'application** est actif tant que l'application tourne, ne demande aucune confirmation et garde les données de l'application. **Retirer l'application** est actif tant que l'application est arrêtée : il la retire de ce serveur et garde ses données sur le disque. **Supprimer l'application et ses données** est actif tant que l'application est arrêtée et demande de cocher la case de confirmation : il efface l'application et toutes ses données de ce serveur, et les sauvegardes en gardent une copie. Une application en marche n'est jamais retirée ni supprimée : le serveur le refuse, il faut donc d'abord l'arrêter.
 
-Un badge sur la fiche indique si l'application est toujours telle que Catena l'a déployée, et la fiche montre une mise à jour qui attend votre décision. Une application que vous avez modifiée à la main, ou par un autre gestionnaire de conteneurs, n'est pas mise à jour, et son badge le dit. Les badges, la liste **Hors de Catena** et les applications facultatives Portainer et Arcane du catalogue sont expliqués sous [Applications modifiées hors de Catena](/fr/configuration/updates/#applications-modifiées-hors-de-catena).
+Le résultat de chaque changement s'affiche dans une bannière en haut de la page, et la page se rouvre sur la partie utilisée.
+
+Un badge sur la page de l'application et sur sa ligne sous **Gérer les applications** indique si l'application est toujours telle que Catena l'a déployée, et la page montre une mise à jour qui attend votre décision. Une application que vous avez modifiée à la main, ou par un autre gestionnaire de conteneurs, n'est pas mise à jour, et son badge le dit. Les badges, la liste **Hors de Catena** et les applications facultatives Portainer et Arcane du catalogue sont expliqués sous [Applications modifiées hors de Catena](/fr/configuration/updates/#applications-modifiées-hors-de-catena).
 
 ### Dépôts
 
@@ -48,7 +51,7 @@ Un badge sur la fiche indique si l'application est toujours telle que Catena l'a
 
 1. Saisissez son **Adresse du dépôt** : une adresse `https://` sans mot de passe, sans paramètres de requête et sans fragment.
 2. Pour un dépôt privé, saisissez un **Jeton d'accès**. Il est enregistré sur le serveur et jamais réaffiché; la liste indique seulement "Jeton enregistré". Pour le remplacer, saisissez-en un nouveau. Pour le supprimer, cochez **Supprimer le jeton enregistré**.
-3. Cochez **De confiance : appliquer ses mises à jour d'elles-mêmes** seulement pour un dépôt dont vous faites confiance à l'auteur. Les mises à jour d'un dépôt de confiance s'appliquent d'elles-mêmes à l'entretien nocturne; pour les autres, chaque mise à jour attend votre décision sur la fiche de l'application (voir [Applications ajoutées depuis un dépôt](/fr/configuration/updates/#applications-ajoutées-depuis-un-dépôt)).
+3. Cochez **De confiance : appliquer ses mises à jour d'elles-mêmes** seulement pour un dépôt dont vous faites confiance à l'auteur. Les mises à jour d'un dépôt de confiance s'appliquent d'elles-mêmes à l'entretien nocturne; pour les autres, chaque mise à jour attend votre décision sur la page de l'application (voir [Applications ajoutées depuis un dépôt](/fr/configuration/updates/#applications-ajoutées-depuis-un-dépôt)).
 4. Appuyez sur **Enregistrer le dépôt**.
 
 Enregistrer une adresse déjà sur la liste change sa confiance et son jeton. **Retirer** enlève un dépôt de la liste, avec son jeton; les applications déjà ajoutées depuis lui restent.
@@ -163,7 +166,7 @@ Une sauvegarde ne met pas en pause une application ajoutée à la main, sauf si 
 3. Sous **Dépôts**, sur la page **Applications**, enregistrez l'adresse du dépôt, avec un jeton d'accès s'il est privé (voir [Dépôts](#dépôts)).
 4. Sous **Ajouter une application**, choisissez le dépôt, saisissez `<application>`, choisissez la version et appuyez sur **Ajouter** (voir [Ajouter une application depuis un dépôt](#ajouter-une-application-depuis-un-dépôt)).
 5. Saisissez les mots de passe et les clés comme réglages de l'application (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif)). Ils restent hors du fichier et vous pouvez les renouveler sans publier de nouvelle version.
-6. Appuyez sur **Démarrer** sur la fiche de l'application.
+6. Appuyez sur **Démarrer l'application** sur la page de l'application.
 
 Pour modifier l'application plus tard, publiez une nouvelle étiquette; l'application y passe comme l'explique [Applications ajoutées depuis un dépôt](/fr/configuration/updates/#applications-ajoutées-depuis-un-dépôt).
 
@@ -194,7 +197,7 @@ Catena ne modifie que les entrées qu'elle a créées. Une entrée de même nom 
 
 Pour vérifier que cela a fonctionné :
 
-- Dans l'onglet **Applications**, un administrateur voit sur la tuile de l'application **connexion prête**, **connexion en attente** ou **connexion en échec**, avec la raison, à la place du badge OIDC. Le personnel voit le badge OIDC.
+- Dans l'onglet **Applications**, un administrateur voit sur la tuile de l'application **connexion prête**, **connexion en attente** ou **connexion en échec**, avec la raison, à la place du badge OIDC. Le personnel ne voit aucun badge.
 - En attente signifie que Catena réessaie d'elle-même. En échec signifie que quelque chose est à corriger, et la tuile dit quoi. L'onglet **Journal** nomme aussi l'application et la raison.
 
 Voir [Authentification unique](/fr/features/single-sign-on/) pour le fonctionnement de la connexion entre applications.
@@ -203,7 +206,7 @@ Voir [Authentification unique](/fr/features/single-sign-on/) pour le fonctionnem
 
 Les valeurs que le fichier d'une application lit sous la forme `${VARIABLE}` viennent de son fichier de réglages. Déclarez chacune dans le bloc `x-catena`, avec `schema: 2`, comme l'un des deux :
 
-- un **réglage** que vous changez sur la fiche de l'application, avec une valeur par défaut et une étiquette en anglais et en français;
+- un **réglage** que vous changez sur la page de l'application, avec une valeur par défaut et une étiquette en anglais et en français;
 - un secret **généré** que Catena produit quand vous ajoutez l'application, avec sa longueur et son alphabet (`alnum` ou `hex`).
 
 ```yaml
@@ -298,7 +301,7 @@ Sur le service de l'adresse principale seulement. Sur tout autre service, ces é
 |---|---|---|---|
 | `vps.route.main` | `true`, `false` | `false` | Marque l'adresse principale. Nécessaire seulement quand l'application a deux adresses ou plus, sur un seul service exactement. Avec aucune ou plusieurs marquées, l'application n'a aucune route. |
 | `vps.auth.protected` | `true`, `false` | `false` | `true` désigne une application qui ne doit pas être publique : si ses étiquettes la rendent publique quand même, sa tuile dans **Applications** porte le badge "devrait exiger une connexion", visible des administrateurs seulement. |
-| `vps.auth.oidc` | `true`, `false` | `false` | Catena crée l'entrée de connexion propre à l'application dans Keycloak et place `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` dans les réglages de l'application. Le personnel voit un badge OIDC sur la tuile; les administrateurs voient l'état de la connexion. |
+| `vps.auth.oidc` | `true`, `false` | `false` | Catena crée l'entrée de connexion propre à l'application dans Keycloak et place `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` dans les réglages de l'application. Les administrateurs voient un badge OIDC sur la tuile, remplacé par l'état de la connexion une fois qu'il y en a un. |
 | `vps.auth.oidc.redirect_uris` | Adresses, séparées par des virgules | aucun | Adresses de retour de l'entrée de connexion. Obligatoire avec `vps.auth.oidc`. Voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif). |
 | `vps.auth.oidc.public` | `true`, `false` | `false` | `true` pour une application qui n'envoie aucun secret : l'entrée n'a aucun secret et exige PKCE. |
 | `vps.display-name` | Texte | l'adresse principale | Titre de la carte de l'adresse principale sur la page d'état. Les cartes des autres adresses portent leur adresse pour titre. |
@@ -332,7 +335,7 @@ L'entrée du catalogue pour Nextcloud est la façon recommandée de l'exploiter 
 
 <Code code={nextcloudCompose} lang="yaml" />
 
-Vous déclarez les variables (`NEXTCLOUD_HOSTNAME`, `NEXTCLOUD_ADMIN_USER`, `NEXTCLOUD_ADMIN_PASSWORD`, `DB_PASSWORD` et les valeurs `S3_*`) comme réglages (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif)) et vous les saisissez sur la fiche de l'application avant de la démarrer. `NEXTCLOUD_HOSTNAME` vaut `nextcloud.yourdomain.com`. Catena remplit elle-même les valeurs `OIDC_*` (voir ci-dessous).
+Vous déclarez les variables (`NEXTCLOUD_HOSTNAME`, `NEXTCLOUD_ADMIN_USER`, `NEXTCLOUD_ADMIN_PASSWORD`, `DB_PASSWORD` et les valeurs `S3_*`) comme réglages (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif)) et vous les saisissez sur la page de l'application avant de la démarrer. `NEXTCLOUD_HOSTNAME` vaut `nextcloud.yourdomain.com`. Catena remplit elle-même les valeurs `OIDC_*` (voir ci-dessous).
 
 ### Pourquoi chaque élément
 
@@ -435,7 +438,7 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | Sauvegarde échouée sur un montage lié | Le montage est hors de la zone des applications. Déplacez les données vers un volume nommé, ou inscrivez le dossier sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. |
 | Sauvegarde échouée sur une base de données | La copie a échoué. Un conteneur MariaDB ou MySQL exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD`; un conteneur Postgres exige un `POSTGRES_USER` valide. |
 | Mise à jour ignorée | L'étiquette d'image n'est pas une version complète (`latest`, `1.2`), `vps.auto-update` vaut `off`, ou le saut dépasse l'étiquette (une version majeure sous `patch`). La version la plus récente peut aussi être retenue par les contrôles de vulnérabilités ou le délai d'attente, ou l'application est retenue parce qu'elle a été modifiée hors de Catena (voir [Applications modifiées hors de Catena](/fr/configuration/updates/#applications-modifiées-hors-de-catena)). |
-| Une application ajoutée ne tourne pas | Une application reste arrêtée après **Ajouter** jusqu'à ce que vous appuyiez sur **Démarrer** sur sa fiche. |
+| Une application ajoutée ne tourne pas | Une application reste arrêtée après **Ajouter** jusqu'à ce que vous appuyiez sur **Démarrer l'application** sur sa page. |
 | L'ajout d'une application est refusé | Le nom est déjà un dossier ou une application du serveur, la version n'est pas une étiquette de cette application dans le dépôt, le dépôt n'est pas sur la liste, ou le fichier compose comporte une erreur à la vérification (voir [Vérifier une application avec le panneau](#vérifier-une-application-avec-le-panneau)). |
 | Redémarrages en boucle au premier déploiement | Rien n'attend la base de données. L'entrypoint du service l'attend, comme dans l'exemple Nextcloud. |
 | Données absentes après un changement de nœud | Un service avec volume n'avait pas `node.labels.catena.role==data` et a démarré sur un autre nœud avec un volume vide. |
