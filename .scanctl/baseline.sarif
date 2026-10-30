@@ -57,7 +57,25 @@
                   "uri": "renovate.json"
                 },
                 "region": {
-                  "startLine": 24
+                  "startLine": 19
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "package_managers.renovate.renovate-missing-minimum-release-age.renovate-missing-minimum-release-age",
+          "message": {
+            "text": "This Renovate configuration does not set a minimum release age. Newly published packages can be malicious or unstable. Add `\"minimumReleaseAge\": \"7 days\"` within a `packageRules` entry to wait 7 days before proposing updates to newly published package versions. Set `\"minimumReleaseAge\": false` to set an exception for minimal release age for the package rule. Added in: v42"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "renovate.json"
+                },
+                "region": {
+                  "startLine": 25
                 }
               }
             }
