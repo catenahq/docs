@@ -37,7 +37,7 @@ Sign in with the admin email and the admin password shown once at install. See [
 
 ## First-time setup order
 
-The order below avoids dead ends: later steps rely on earlier ones. The **Setup guide**, the first section of **Settings**, lists the same steps with the badge of each and a link to its section, and marks the next one to do. The domain, the backups and the disaster-recovery keyset are the required steps; once all three are applied, the guide shrinks to one line that opens the list.
+The order below avoids dead ends: later steps rely on earlier ones. The **Setup guide**, the first section of **Settings**, lists the same steps with the badge of each and a link to its section, and marks the next one to do. The domain, the backups, the backup schedule and the disaster-recovery keyset are the required steps; the **Backup schedule** step links to the **Backup** section of **Schedules** and shows its state, **On**, **Slower**, **Refused** or **To do** while it is off. Once all four are applied, the guide shrinks to one line that opens the list.
 
 1. [Subscription](/en/configuration/subscription/), if you bought a Catena Pro or Catena Business key. Saving the key first lets the later steps use the features it unlocks, such as faster schedules and extra domains.
 2. [Domain and Cloudflare](/en/configuration/domain/): the Cloudflare API token, the domain, then **Apply**. Until you do this, the server runs without public addresses.
@@ -53,7 +53,7 @@ The order below avoids dead ends: later steps rely on earlier ones. The **Setup 
 
 - [Updates](/en/configuration/updates/): the control panel version and how applications are kept current.
 - [Vulnerabilities](/en/configuration/vulnerabilities/): the security alerts every edition gets, what is scanned and how findings are shown.
-- [Restore and migrate](/en/configuration/restore-and-migrate/): restoring from a backup and moving to another server.
+- [Restore and migrate](/en/configuration/restore-and-migrate/): restoring from a backup and migrating to another server.
 - [Configure an app for Catena](/en/configure-apps/): wiring an application into sign-in and the dashboard.
 
 ## Paid panels

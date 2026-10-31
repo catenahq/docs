@@ -37,7 +37,7 @@ Connectez-vous avec le courriel de l'administrateur et le mot de passe administr
 
 ## Ordre de la première configuration
 
-L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précédentes. Le **Guide de configuration**, première section de **Paramètres**, liste les mêmes étapes avec l'étiquette de chacune et un lien vers sa section, et marque la prochaine à faire. Le domaine, les sauvegardes et la trousse de reprise après sinistre sont les étapes obligatoires; une fois les trois appliquées, le guide se réduit à une ligne qui ouvre la liste.
+L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précédentes. Le **Guide de configuration**, première section de **Paramètres**, liste les mêmes étapes avec l'étiquette de chacune et un lien vers sa section, et marque la prochaine à faire. Le domaine, les sauvegardes, l'horaire des sauvegardes et la trousse de reprise après sinistre sont les étapes obligatoires; l'étape **Horaire des sauvegardes** mène à la section **Sauvegarde** de **Horaires** et en montre l'état, **Actif**, **Plus lent** ou **Refusé**, ou **À faire** tant qu'elle est désactivée. Une fois les quatre appliquées, le guide se réduit à une ligne qui ouvre la liste.
 
 1. [Abonnement](/fr/configuration/subscription/), si vous avez acheté une clé Catena Pro ou Catena Business. Enregistrer la clé en premier permet aux étapes suivantes d'utiliser ce qu'elle débloque, comme les horaires plus fréquents et les domaines supplémentaires.
 2. [Domaine et Cloudflare](/fr/configuration/domain/) : le jeton d'API Cloudflare, le domaine, puis **Appliquer**. Tant que vous ne l'avez pas faite, le serveur fonctionne sans adresses publiques.
@@ -53,7 +53,7 @@ L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précéd
 
 - [Mises à jour](/fr/configuration/updates/) : la version du panneau de contrôle et la mise à jour des applications.
 - [Vulnérabilités](/fr/configuration/vulnerabilities/) : les alertes de sécurité que toutes les éditions reçoivent, ce qui est analysé et comment les constats s'affichent.
-- [Restauration et migration](/fr/configuration/restore-and-migrate/) : restaurer depuis une sauvegarde et passer à un autre serveur.
+- [Restauration et migration](/fr/configuration/restore-and-migrate/) : restaurer depuis une sauvegarde et migrer vers un autre serveur.
 - [Configurer une application pour Catena](/fr/configure-apps/) : raccorder une application à la connexion et au tableau de bord.
 
 ## Panneaux payants
