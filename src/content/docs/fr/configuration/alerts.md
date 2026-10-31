@@ -66,7 +66,7 @@ Les canaux par courriel exigent [Courriel sortant](/fr/configuration/email/).
 - `https://gatus.yourdomain.com` : la page d'état de Gatus.
 - `https://healthchecks.yourdomain.com` : Healthchecks, avec le dernier signal de chaque tâche.
 - `https://beszel.yourdomain.com` : Beszel, avec les graphiques de ressources du serveur.
-- La page **Système** du panneau d'administration montre les alertes actives et les tâches qui ne se sont pas encore signalées.
+- La page **Système** du panneau d'administration ouvre ces outils depuis le titre de ses cartes : **Ressources** ouvre Beszel, **Surveillance** ouvre Gatus, et **Tâches planifiées** et **Alertes** ouvrent Healthchecks. La carte **Alertes** liste ce dont Healthchecks avertit en ce moment, et "Aucune alerte" quand il n'y a rien; la carte **Tâches planifiées** nomme chaque tâche, avec un point gris pour celle qui ne s'est pas encore signalée.
 
 Vous pouvez changer les noms de sous-domaines dans [Domaine et Cloudflare](/fr/configuration/domain/).
 

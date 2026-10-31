@@ -66,7 +66,7 @@ Email channels need [Outgoing email](/en/configuration/email/).
 - `https://gatus.yourdomain.com`: the Gatus status page.
 - `https://healthchecks.yourdomain.com`: Healthchecks, with each job's last ping.
 - `https://beszel.yourdomain.com`: Beszel, with the server's resource graphs.
-- The **System** page of the admin panel shows active alerts and jobs not reporting yet.
+- The **System** page of the admin panel opens these tools from the titles of its cards: **Resources** opens Beszel, **Monitoring** opens Gatus, and **Scheduled jobs** and **Alerts** open Healthchecks. The **Alerts** card lists what Healthchecks is warning about now, and "No alert" when there is nothing; the **Scheduled jobs** card names each job, with a grey dot for one that has not reported yet.
 
 You can change the subdomain names in [Domain and Cloudflare](/en/configuration/domain/).
 
