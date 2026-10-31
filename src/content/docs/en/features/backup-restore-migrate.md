@@ -1,9 +1,9 @@
 ---
 title: "Backup, restore, and migrate"
-description: "Encrypted backups to storage you own, restores from the panel, moving to another server, and leaving Catena with standard tools."
+description: "Encrypted backups to storage you own, restores from the panel, migrating to another server, and leaving Catena with standard tools."
 ---
 
-Encrypted copies of all app data and of the server's own configuration go to S3 storage you own. You can rebuild a lost server on a new machine from the backup address, the storage keys and the backup password alone. You can roll back a running server from the panel, and move a whole server to another with minutes of downtime.
+Encrypted copies of all app data and of the server's own configuration go to S3 storage you own. You can rebuild a lost server on a new machine from the backup address, the storage keys and the backup password alone. You can roll back a running server from the panel, and migrate a whole server to another with minutes of downtime.
 
 ## How backups work
 
@@ -16,11 +16,11 @@ Encrypted copies of all app data and of the server's own configuration go to S3 
 
 ## Restore
 
-The **Restore** page restores everything from this server's backups, or from another backup repository (another server's, or a copy such as the offsite copy), given its address, backup password and storage keys, held in memory only. The panel, sign-in and the connection stay up while applications are replaced. You can resume an interrupted restore with the same backup. A backup newer than the running version is refused. The applications a restore brings back stay stopped until you start them from the **Restore** page, and a move starts them with the server. After a rebuild or a move, the previous server's audit trail is kept beside the new one, and every export carries it. See [Restore and migrate](/en/configuration/restore-and-migrate/).
+The **Restore** page has a section for each source. **Restore a previous version of this server** restores everything from this server's backups. **Restore another server's backup** restores from another server's backups, or from a copy such as the offsite copy, given its address, backup password and storage keys, held in memory only. The panel, sign-in and the connection stay up while applications are replaced. You can resume an interrupted restore with the same backup. A backup newer than the running version is refused. The applications a restore brings back stay stopped until you start them from the **Restore** page, and a migration starts them with the server. After a rebuild or a migration, the previous server's audit trail is kept beside the new one, and every export carries it. See [Restore and migrate](/en/configuration/restore-and-migrate/).
 
 ## Migration
 
-A new server pulls from the old one with **Move another server here**. The old server's **Migration** panel opens a 4-hour window and shows a one-time migration ticket and pairing code, and the new server reaches the old one over SSH with them. Most data is copied while the old server keeps serving. Up to the final backup check you can call off the move and the old server puts itself back in service. Both servers must run the same version. The subscription key moves with the data.
+A new server pulls from the old one with **Migrate a live server here**. The old server's **Migration** panel opens a 4-hour window and shows a one-time migration ticket and pairing code, and the new server reaches the old one over SSH with them. Most data is copied while the old server keeps serving. Up to the final backup check you can call off the migration and the old server puts itself back in service. Both servers must run the same version. The subscription key moves with the data.
 
 ## Offsite copies
 

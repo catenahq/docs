@@ -1,9 +1,9 @@
 ---
 title: "Sauvegarde, restauration et migration"
-description: "Sauvegardes chiffrées vers un stockage qui vous appartient, restauration depuis le panneau, déplacement vers un autre serveur et départ de Catena avec des outils standards."
+description: "Sauvegardes chiffrées vers un stockage qui vous appartient, restauration depuis le panneau, migration vers un autre serveur et départ de Catena avec des outils standards."
 ---
 
-Des copies chiffrées de toutes les données des applications et de la configuration du serveur vont vers un stockage S3 qui vous appartient. Vous pouvez reconstruire un serveur perdu sur une nouvelle machine à partir de la seule adresse de sauvegarde, des clés de stockage et du mot de passe de sauvegarde. Vous pouvez ramener en arrière un serveur en marche depuis le panneau, et déplacer un serveur entier vers un autre avec quelques minutes d'indisponibilité.
+Des copies chiffrées de toutes les données des applications et de la configuration du serveur vont vers un stockage S3 qui vous appartient. Vous pouvez reconstruire un serveur perdu sur une nouvelle machine à partir de la seule adresse de sauvegarde, des clés de stockage et du mot de passe de sauvegarde. Vous pouvez ramener en arrière un serveur en marche depuis le panneau, et migrer un serveur entier vers un autre avec quelques minutes d'indisponibilité.
 
 ## Fonctionnement des sauvegardes
 
@@ -16,11 +16,11 @@ Des copies chiffrées de toutes les données des applications et de la configura
 
 ## Restauration
 
-La page **Restauration** restaure tout à partir des sauvegardes de ce serveur, ou d'un autre dépôt de sauvegarde (celui d'un autre serveur, ou une copie comme la copie hors site), à partir de son adresse, du mot de passe de sauvegarde et des clés de stockage, conservés en mémoire seulement. Le panneau, la connexion et l'authentification restent accessibles pendant le remplacement des applications. Vous pouvez reprendre une restauration interrompue avec la même sauvegarde. Une sauvegarde plus récente que la version en marche est refusée. Les applications qu'une restauration ramène restent à l'arrêt jusqu'à ce que vous les démarriez depuis la page **Restauration**, et un déplacement les démarre avec le serveur. Après une reconstruction ou un déplacement, la piste d'audit du serveur précédent est conservée à côté de celle du nouveau, et chaque exportation la contient. Voir [Restauration et migration](/fr/configuration/restore-and-migrate/).
+La page **Restauration** a une section pour chaque source. **Restaurer une version précédente de ce serveur** restaure tout à partir des sauvegardes de ce serveur. **Restaurer la sauvegarde d'un autre serveur** restaure à partir des sauvegardes d'un autre serveur, ou d'une copie comme la copie hors site, à partir de son adresse, du mot de passe de sauvegarde et des clés de stockage, conservés en mémoire seulement. Le panneau, la connexion et l'authentification restent accessibles pendant le remplacement des applications. Vous pouvez reprendre une restauration interrompue avec la même sauvegarde. Une sauvegarde plus récente que la version en marche est refusée. Les applications qu'une restauration ramène restent à l'arrêt jusqu'à ce que vous les démarriez depuis la page **Restauration**, et une migration les démarre avec le serveur. Après une reconstruction ou une migration, la piste d'audit du serveur précédent est conservée à côté de celle du nouveau, et chaque exportation la contient. Voir [Restauration et migration](/fr/configuration/restore-and-migrate/).
 
 ## Migration
 
-Un nouveau serveur tire depuis l'ancien avec **Déplacer un autre serveur ici**. Le panneau **Migration** de l'ancien serveur ouvre une fenêtre de 4 heures et affiche un billet de déplacement et un code d'appairage à usage unique, avec lesquels le nouveau serveur joint l'ancien par SSH. L'essentiel des données est copié pendant que l'ancien serveur continue de servir. Jusqu'à la vérification de la sauvegarde finale, vous pouvez annuler le déplacement et l'ancien serveur se remet en service de lui-même. Les deux serveurs doivent exécuter la même version. La clé d'abonnement suit les données.
+Un nouveau serveur tire depuis l'ancien avec **Migrer ici un serveur en service**. Le panneau **Migration** de l'ancien serveur ouvre une fenêtre de 4 heures et affiche un billet de migration et un code d'appairage à usage unique, avec lesquels le nouveau serveur joint l'ancien par SSH. L'essentiel des données est copié pendant que l'ancien serveur continue de servir. Jusqu'à la vérification de la sauvegarde finale, vous pouvez annuler la migration et l'ancien serveur se remet en service de lui-même. Les deux serveurs doivent exécuter la même version. La clé d'abonnement suit les données.
 
 ## Copies hors site
 
