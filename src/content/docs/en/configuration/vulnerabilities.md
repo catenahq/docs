@@ -73,7 +73,7 @@ A critical vulnerability that is not exploited and has no fixed version stays si
 
 The alert email names the vulnerability, each application that carries it with its image, the package and installed version, and the version that fixes it, "or later". When no fix is published yet, it says so and tells you to limit access to the application or stop it until one is. A fix published after the alert sends no second email. Update the application to the fixed version (see [Updates](/en/configuration/updates/)): the alert resolves once the watch no longer finds the vulnerability.
 
-The email goes to the admin address through the outgoing mail you set in **Settings** > **Outgoing mail** (see [Outgoing email](/en/configuration/email/)). With no outgoing mail, the alert shows in Healthchecks and on the **Known vulnerabilities** card of **System** only, and the card reads "No email can be sent: set outgoing mail in Settings." You add other channels in Healthchecks (see [Alerts](/en/configuration/alerts/)).
+The email goes to the admin address through the outgoing mail you set in **Settings** > **Outgoing mail** (see [Outgoing email](/en/configuration/email/)). With no outgoing mail, the alert shows in Healthchecks (installed by default as an application) and on the **Known vulnerabilities** card of **System** only, and the card reads "No email can be sent: set outgoing mail in Settings." You add other channels in Healthchecks (see [Alerts](/en/configuration/alerts/)).
 
 Once the watch has run, the **Known vulnerabilities** card of the **System** page shows what it found, on every edition: the number of applications to update, when the watch last checked and a link to the [Vulnerabilities page](#vulnerabilities-page) (see [Known vulnerabilities card](#known-vulnerabilities-card)).
 
@@ -101,7 +101,7 @@ On Catena Pro, **Check now** runs the watch in the background: a fresh database 
 
 ### Alerts
 
-The alerts follow the rule in [Security alerts](#security-alerts-every-edition). They go to the admin email and to every channel set up in Healthchecks (see [Alerts](/en/configuration/alerts/)). The text of an alert is updated when another application comes to carry the vulnerability.
+The alerts follow the rule in [Security alerts](#security-alerts-every-edition). They go to the admin email and to every channel set up in Healthchecks (see [Alerts](/en/configuration/alerts/)). A Healthchecks you removed is not installed again, and no alert is raised for it (see [Monitoring and alerts](/en/features/monitoring-alerts/)). The text of an alert is updated when another application comes to carry the vulnerability.
 
 A second alert, **CVE watch**, fires when the watch itself cannot check: the same causes the page warns about.
 

@@ -73,7 +73,7 @@ Une vulnérabilité critique qui n'est pas exploitée et n'a pas de version corr
 
 Le courriel d'alerte nomme la vulnérabilité, chaque application qui en est atteinte avec son image, le paquet et sa version installée, et la version qui la corrige, "ou une plus récente". Quand aucun correctif n'est encore publié, il le dit et vous demande de limiter l'accès à l'application ou de l'arrêter jusqu'à la publication d'un correctif. Un correctif publié après l'alerte n'envoie pas de second courriel. Mettez l'application à la version corrigée (voir [Mises à jour](/fr/configuration/updates/)) : l'alerte est levée quand la veille ne trouve plus la vulnérabilité.
 
-Le courriel va à l'adresse de l'administrateur par le courriel sortant réglé dans **Paramètres** > **Courriel sortant** (voir [Courriel sortant](/fr/configuration/email/)). Sans courriel sortant, l'alerte n'apparaît que dans Healthchecks et sur la carte **Vulnérabilités connues** de **Système**, et la carte indique "Aucun courriel ne peut être envoyé : réglez le courrier sortant dans Paramètres." Vous ajoutez d'autres canaux dans Healthchecks (voir [Alertes](/fr/configuration/alerts/)).
+Le courriel va à l'adresse de l'administrateur par le courriel sortant réglé dans **Paramètres** > **Courriel sortant** (voir [Courriel sortant](/fr/configuration/email/)). Sans courriel sortant, l'alerte n'apparaît que dans Healthchecks (installé par défaut comme application) et sur la carte **Vulnérabilités connues** de **Système**, et la carte indique "Aucun courriel ne peut être envoyé : réglez le courrier sortant dans Paramètres." Vous ajoutez d'autres canaux dans Healthchecks (voir [Alertes](/fr/configuration/alerts/)).
 
 Une fois la veille exécutée, la carte **Vulnérabilités connues** de la page **Système** affiche ce qu'elle a trouvé, dans toutes les éditions : le nombre d'applications à mettre à jour, le moment de la dernière vérification et un lien vers la [page Vulnérabilités](#page-vulnérabilités) (voir [Carte Vulnérabilités connues](#carte-vulnérabilités-connues)).
 
@@ -101,7 +101,7 @@ Avec Catena Pro, **Vérifier maintenant** lance la veille en arrière-plan : une
 
 ### Alertes
 
-Les alertes suivent la règle des [Alertes de sécurité](#alertes-de-sécurité-toutes-les-éditions). Elles vont au courriel administrateur et à chaque canal configuré dans Healthchecks (voir [Alertes](/fr/configuration/alerts/)). Le texte d'une alerte est mis à jour lorsqu'une autre application est atteinte par la vulnérabilité.
+Les alertes suivent la règle des [Alertes de sécurité](#alertes-de-sécurité-toutes-les-éditions). Elles vont au courriel administrateur et à chaque canal configuré dans Healthchecks (voir [Alertes](/fr/configuration/alerts/)). Un Healthchecks que vous avez retiré n'est pas réinstallé et ne lève aucune alerte (voir [Supervision et alertes](/fr/features/monitoring-alerts/)). Le texte d'une alerte est mis à jour lorsqu'une autre application est atteinte par la vulnérabilité.
 
 Une seconde alerte, **Veille des vulnérabilités**, se déclenche lorsque la veille elle-même ne peut pas vérifier : les mêmes causes que celles dont la page avertit.
 

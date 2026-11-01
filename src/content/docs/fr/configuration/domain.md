@@ -65,11 +65,10 @@ Après un changement de domaine, le nom affiché sur la page de connexion à `au
 |---|---|---|---|
 | **Keycloak (connexion)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (ce panneau)** | Ce panneau | `dash` | `dash.yourdomain.com` |
-| **Gatus (page d'état)** | Gatus | `gatus` | `gatus.yourdomain.com` |
-| **Healthchecks (moniteur de tâches planifiées)** | Healthchecks | `healthchecks` | `healthchecks.yourdomain.com` |
-| **Beszel (mesures du serveur)** | Beszel | `beszel` | `beszel.yourdomain.com` |
 
-Règles :
+Gatus (`gatus`), Healthchecks (`healthchecks`) et Beszel (`beszel`) sont installés par défaut comme applications : l'adresse de chacun est donc un paramètre de son application. Ouvrez **Applications**, puis la page de l'application avec l'engrenage de sa carte, et changez le nom à cet endroit. Le serveur déplace toutes les adresses de l'application vers le nouveau nom à sa prochaine application de la configuration (**Remettre ce serveur à niveau** dans [Paramètres du serveur](/fr/configuration/server/)).
+
+Règles, pour les champs ci-dessus et de même pour le nom d'une application :
 
 - Un seul nom par champ, sans le domaine : `auth`, et non `auth.yourdomain.com`. Sinon le message est "Un seul nom, par exemple auth : le domaine y est ajouté."
 - Lettres minuscules, chiffres et traits d'union; pas de trait d'union au début ni à la fin; 63 caractères au plus.

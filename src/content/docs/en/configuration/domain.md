@@ -65,11 +65,10 @@ After a domain change, the name shown on the sign-in page at `auth.yourdomain.co
 |---|---|---|---|
 | **Keycloak (sign-in)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (this panel)** | This panel | `dash` | `dash.yourdomain.com` |
-| **Gatus (status page)** | Gatus | `gatus` | `gatus.yourdomain.com` |
-| **Healthchecks (scheduled-job monitor)** | Healthchecks | `healthchecks` | `healthchecks.yourdomain.com` |
-| **Beszel (server metrics)** | Beszel | `beszel` | `beszel.yourdomain.com` |
 
-Rules:
+Gatus (`gatus`), Healthchecks (`healthchecks`) and Beszel (`beszel`) are installed by default as applications, so each one's address is a setting of its application: open **Apps**, then the application's page with the gear on its card, and change the name there. The server moves every address of the application to the new name when it next applies its configuration (**Bring this server up to date** in [Server settings](/en/configuration/server/)).
+
+Rules, for the fields above and the same for an application's name:
 
 - One name per field, without the domain: `auth`, not `auth.yourdomain.com`. The message otherwise is "One name only, such as auth: the domain is added to it."
 - Lower-case letters, digits and hyphens; no leading or trailing hyphen; 63 characters at most.
