@@ -66,9 +66,10 @@ Astro / Starlight feature question rather than guessing.
 
 - Client docs never reference operator paths, internal tooling or
   scenario names.
-- Every page is hand-written. Per-app documentation is NOT here: each template carries its own README in
-  its catena-templates blueprint directory, and this site does not
-  mirror it. Nothing here is generated from the maintainers' test
+- Every page is hand-written. Per-app documentation is NOT here: a catalog
+  app's description and setup steps are in its `app.json` in
+  catenahq/catena-templates (`blueprints/<id>/app.json`), and this site does
+  not mirror it. Nothing here is generated from the maintainers' test
   bench, so a claim about what is tested carries no automatic anchor:
   make it only when the gate behind it is named in catenahq/catena-ce
   SPEC.md.

@@ -38,9 +38,9 @@ A long code example used by both locales lives once in `src/examples/`
 and is rendered with Starlight's `Code` component from an `.mdx` page,
 so the duplication gate never sees two copies.
 
-Per-application documentation does not live here. Each template carries
-its own README beside its compose file, in its
-catenahq/catena-templates blueprint directory.
+Per-application documentation does not live here. A catalog app's
+description and setup steps are in its `app.json` in
+catenahq/catena-templates (`blueprints/<id>/app.json`).
 
 ## The client's domain
 
