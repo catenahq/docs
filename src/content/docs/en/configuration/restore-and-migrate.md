@@ -50,7 +50,7 @@ A second restore is refused while one runs ("A restore is already running on thi
 Each backup records the Catena version that made it. The restore compares it with the version the server runs:
 
 - A snapshot **newer** than the server is refused, because newer database files do not open under an older database. Bring the server to the snapshot's version first, then retry the restore.
-- A snapshot **older** than the server needs an explicit upgrade choice. Without it the restore is refused and nothing is changed.
+- A snapshot **older** than the server is restored, and each application's declared migration runs once its data is back.
 - Two versions that cannot be put in order are refused.
 
 A refusal happens in the first step, before anything is touched.

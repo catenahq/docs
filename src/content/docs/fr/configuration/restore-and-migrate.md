@@ -50,7 +50,7 @@ Une deuxième restauration est refusée pendant qu'une autre est en cours ("Une 
 Chaque sauvegarde enregistre la version de Catena qui l'a produite. La restauration la compare à la version que fait tourner le serveur :
 
 - Un instantané **plus récent** que le serveur est refusé, car des fichiers de base de données plus récents ne s'ouvrent pas sous une base plus ancienne. Amenez d'abord le serveur à la version de l'instantané, puis relancez la restauration.
-- Un instantané **plus ancien** que le serveur exige un choix explicite de mise à niveau. Sans lui, la restauration est refusée et rien n'est modifié.
+- Un instantané **plus ancien** que le serveur est restauré, et la migration déclarée de chaque application s'exécute une fois ses données remises en place.
 - Deux versions impossibles à ordonner sont refusées.
 
 Le refus survient à la première étape, avant que quoi que ce soit soit touché.
