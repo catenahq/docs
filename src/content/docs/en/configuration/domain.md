@@ -66,7 +66,7 @@ After a domain change, the name shown on the sign-in page at `auth.yourdomain.co
 | **Keycloak (sign-in)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (this panel)** | This panel | `dash` | `dash.yourdomain.com` |
 
-Gatus (`gatus`), Healthchecks (`healthchecks`) and Beszel (`beszel`) are installed by default as applications, so each one's address is a setting of its application: open **Apps**, then the application's page with the gear on its card, and change the name there. The server moves every address of the application to the new name when it next applies its configuration (**Bring this server up to date** in [Server settings](/en/configuration/server/)).
+Gatus (`gatus`), Healthchecks (`healthchecks`) and Beszel (`beszel`) are installed by default as applications, so each one's address is a setting of its application: open **Apps**, then the application's page with the gear on its card, and change the name there. The server moves every address of the application to the new name when it next applies its configuration (**Apply the saved settings** in [Server settings](/en/configuration/server/)).
 
 Rules, for the fields above and the same for an application's name:
 
@@ -84,7 +84,7 @@ A server on Catena Pro or Catena Business can serve several unlinked domains. Ea
 1. In Cloudflare, create a token with **Zone:DNS:Edit** scoped to the one domain to attach.
 2. Open the **Domains** panel in the menu.
 3. Paste the token in **Cloudflare API token (one domain)** and press **Attach domain**.
-4. Changes apply on the next configuration run: press **Bring this server up to date** in [Server settings](/en/configuration/server/).
+4. Changes apply on the next configuration run: press **Apply the saved settings** in [Server settings](/en/configuration/server/).
 
 The token must reach exactly one domain, the one being attached. The table lists each domain with its role, Primary or Secondary. A primary domain cannot be removed while secondary ones exist ("remove the others first"); every other row has a **Remove** button. When a subscription lapses, secondary domains stay stored but are no longer served. See [Subscription](/en/configuration/subscription/).
 

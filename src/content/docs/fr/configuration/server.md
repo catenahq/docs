@@ -1,6 +1,6 @@
 ---
 title: "Paramètres du serveur"
-description: "Fuseau horaire et paramètres régionaux, compte du partage de stockage de masse, remise à niveau du serveur selon sa configuration stockée et emplacement de la trousse de reprise après sinistre."
+description: "Fuseau horaire et paramètres régionaux, compte du partage de stockage de masse, application des paramètres enregistrés au serveur et emplacement de la trousse de reprise après sinistre."
 ---
 
 ## Fuseau horaire et paramètres régionaux
@@ -25,21 +25,23 @@ Un partage monté en NFS n'en demande aucun, et un serveur sans partage laisse l
 
 ## Configuration du serveur
 
-**Paramètres** > **Configuration du serveur** ramène le serveur à la configuration établie lors de son installation. Ce qui a dérivé depuis est rétabli; ce qui est déjà correct n'est pas touché. Les données ne sont pas touchées.
+**Paramètres** > **Configuration du serveur** applique au serveur les paramètres enregistrés sur la page, et remet en place tout ce qui a changé sur le serveur depuis. Les paramètres déjà en place ne sont pas touchés. Les données ne sont pas touchées. Les sections qui en ont besoin lancent cette opération d'elles-mêmes à l'enregistrement.
 
 ### Ce qui s'affiche
 
 - **Dernière remise à niveau** : un horodatage, ou "pas encore".
 - **Automatique** : "Oui, selon l'horaire réglé dans Horaires." ou "Non. Se déclenche uniquement depuis cette page."
-- En cours : "Remise à niveau du serveur en cours." Certains services redémarrent pendant l'opération, donc des parties du serveur peuvent être brièvement indisponibles. L'opération se poursuit même si vous fermez la page.
-- "Ce serveur est en pause pour maintenance : il a été laissé tel quel. L'opération reprendra d'elle-même à la fin de la maintenance."
-- Après un échec : "La dernière tentative n'a pas abouti. Ce serveur fonctionne toujours sur la configuration qu'il avait auparavant, et rien n'est resté à moitié appliqué." Un journal de la tentative est replié sous "Ce que le serveur a enregistré pendant cette tentative".
+- En cours : "Application des paramètres enregistrés au serveur." Certains services redémarrent pendant l'opération, donc des parties du serveur peuvent être brièvement indisponibles. L'opération se poursuit même si vous fermez la page.
+- Pendant que le serveur se vérifie après l'application : "Les paramètres sont appliqués. Le serveur se vérifie lui-même; les autres changements attendent la fin."
+- Après l'échec de cette vérification : "Les paramètres ont été appliqués, et la vérification du serveur qui a suivi a échoué à : {étape}. Les sections concernées affichent Échec; le journal est ci-dessous. Appliquer de nouveau relance la vérification."
+- Après un échec : "La dernière tentative s'est arrêtée à : {étape}. Ce qu'elle avait appliqué avant cette étape reste appliqué, et le journal est ci-dessous. Appliquer de nouveau ne présente aucun risque." Quand aucune étape n'est connue, le texte indique "La dernière tentative n'a pas abouti. Ce qu'elle avait appliqué avant reste appliqué, et le journal est ci-dessous. Appliquer de nouveau ne présente aucun risque." Un journal de la tentative est replié sous "Ce que le serveur a enregistré pendant cette tentative".
+- Pendant qu'une exécution suivante est en cours, l'étape et le journal de la dernière tentative échouée restent affichés sous "La tentative précédente s'est arrêtée à cette étape :" et "Ce que le serveur a enregistré pendant la tentative précédente".
 
 ### Lancer l'opération
 
 1. Lisez l'avertissement : "Les services redémarrent au fur et à mesure qu'ils retrouvent leur configuration prévue, donc des parties de ce serveur sont brièvement indisponibles. Les données ne sont pas touchées."
 2. Cochez "Je comprends que des services redémarrent et sont brièvement indisponibles."
-3. Appuyez sur **Remettre ce serveur à niveau**.
+3. Appuyez sur **Appliquer les paramètres enregistrés**.
 
 Le formulaire est masqué pendant une exécution ou quand le serveur ne peut pas être interrogé.
 
@@ -63,6 +65,7 @@ La trousse (adresse du dépôt de sauvegarde, clés de stockage et mot de passe 
 ## Dépannage
 
 - Une section indique qu'elle appliquera le changement dès que la mise à niveau en cours sera terminée : rien à faire, le serveur l'applique lors d'une exécution de plus, juste après.
-- Une section indique que l'application n'a pas démarré : elle n'a pu ni démarrer ni être mise en file derrière l'exécution de configuration en cours. Attendez la fin de cette exécution, puis appuyez sur **Remettre ce serveur à niveau**.
-- La dernière tentative a échoué : lisez le journal sous "Ce que le serveur a enregistré pendant cette tentative". Le serveur garde sa configuration précédente, et relancer est sans danger.
+- Une section indique que l'application n'a pas démarré : elle n'a pu ni démarrer ni être mise en file derrière l'exécution de configuration en cours. Attendez la fin de cette exécution, puis appuyez sur **Appliquer les paramètres enregistrés**.
+- La dernière tentative a échoué : lisez l'étape et le journal sous "Ce que le serveur a enregistré pendant cette tentative". Ce qu'elle avait appliqué avant l'étape reste appliqué, et appliquer de nouveau est sans danger.
+- Une section affiche Échec et son indice renvoie ici : la vérification de cette section par le serveur a échoué après la dernière exécution. L'étape et le journal se trouvent dans cette section; appliquer de nouveau relance la vérification.
 - Un fuseau horaire est refusé : utilisez le nom exact, par exemple `America/Toronto`.

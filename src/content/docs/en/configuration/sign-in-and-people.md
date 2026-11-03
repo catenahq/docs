@@ -86,7 +86,7 @@ Before a group is renamed or deleted, the panel shows "What this change affects"
 
 Every change is recorded in the administrative log.
 
-If the panel reports "This server has no directory credential yet, so the list of people cannot be read. It arrives with the next configuration run.", run **Bring this server up to date** in [Server settings](/en/configuration/server/) to provide it.
+If the panel reports "This server has no directory credential yet, so the list of people cannot be read. It arrives with the next configuration run.", press **Apply the saved settings** in [Server settings](/en/configuration/server/) to provide it.
 
 ## Troubleshooting
 

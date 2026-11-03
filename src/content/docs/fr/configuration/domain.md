@@ -66,7 +66,7 @@ Après un changement de domaine, le nom affiché sur la page de connexion à `au
 | **Keycloak (connexion)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (ce panneau)** | Ce panneau | `dash` | `dash.yourdomain.com` |
 
-Gatus (`gatus`), Healthchecks (`healthchecks`) et Beszel (`beszel`) sont installés par défaut comme applications : l'adresse de chacun est donc un paramètre de son application. Ouvrez **Applications**, puis la page de l'application avec l'engrenage de sa carte, et changez le nom à cet endroit. Le serveur déplace toutes les adresses de l'application vers le nouveau nom à sa prochaine application de la configuration (**Remettre ce serveur à niveau** dans [Paramètres du serveur](/fr/configuration/server/)).
+Gatus (`gatus`), Healthchecks (`healthchecks`) et Beszel (`beszel`) sont installés par défaut comme applications : l'adresse de chacun est donc un paramètre de son application. Ouvrez **Applications**, puis la page de l'application avec l'engrenage de sa carte, et changez le nom à cet endroit. Le serveur déplace toutes les adresses de l'application vers le nouveau nom à sa prochaine application de la configuration (**Appliquer les paramètres enregistrés** dans [Paramètres du serveur](/fr/configuration/server/)).
 
 Règles, pour les champs ci-dessus et de même pour le nom d'une application :
 
@@ -84,7 +84,7 @@ Un serveur sous Catena Pro ou Catena Business peut servir plusieurs domaines non
 1. Dans Cloudflare, créez un jeton avec **Zone:DNS:Edit** limité au seul domaine à rattacher.
 2. Ouvrez le panneau **Domaines** dans le menu.
 3. Collez le jeton dans **Jeton d'API Cloudflare (un domaine)** et appuyez sur **Rattacher le domaine**.
-4. Les changements s'appliquent lors de la prochaine exécution de configuration : appuyez sur **Remettre ce serveur à niveau** dans [Paramètres du serveur](/fr/configuration/server/).
+4. Les changements s'appliquent lors de la prochaine exécution de configuration : appuyez sur **Appliquer les paramètres enregistrés** dans [Paramètres du serveur](/fr/configuration/server/).
 
 Le jeton doit atteindre exactement un domaine, celui qui est rattaché. Le tableau liste chaque domaine avec son rôle, Principal ou Secondaire. Un domaine principal ne peut pas être retiré tant que des domaines secondaires existent ("retirez d'abord les autres"); chaque autre ligne a un bouton **Retirer**. Quand un abonnement prend fin, les domaines secondaires restent enregistrés mais ne sont plus servis. Voir [Abonnement](/fr/configuration/subscription/).
 

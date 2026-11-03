@@ -1,6 +1,6 @@
 ---
 title: "Server settings"
-description: "Time zone and locale, the bulk storage share account, bringing the server up to date with its stored configuration, and where the disaster-recovery keyset lives."
+description: "Time zone and locale, the bulk storage share account, applying the saved settings to the server, and where the disaster-recovery keyset lives."
 ---
 
 ## Time zone and locale
@@ -25,21 +25,23 @@ A share mounted over NFS needs none, and a server with no share leaves both blan
 
 ## Server configuration
 
-**Settings** > **Server configuration** brings the server back to the configuration it was set up with. Anything that has drifted since is put back; anything already correct is left alone. Data is not touched.
+**Settings** > **Server configuration** applies the settings saved on the page to the server, and puts back anything that changed on the server since. Settings already in place are left alone. Data is not touched. The sections that need it start this by themselves when you save them.
 
 ### What it shows
 
 - **Last brought up to date**: a timestamp, or "not yet".
 - **On a schedule**: "Yes, on the schedule set in Schedules." or "No. It happens when started here."
-- While running: "Bringing this server up to date." Some services restart meanwhile, so parts of the server may be briefly unavailable. The work continues even if you close the page.
-- "This server is paused for maintenance, so it was left as it is. It resumes on its own once the maintenance ends."
-- After a failure: "The last attempt did not finish. This server is still running on the configuration it had before, and nothing was left half-applied." A log of the attempt is folded under "What the server recorded during this attempt".
+- While running: "Applying the saved settings to the server." Some services restart meanwhile, so parts of the server may be briefly unavailable. The work continues even if you close the page.
+- While the server checks itself after applying: "The settings are applied. The server is checking itself; other changes wait until it ends."
+- After that check fails: "The settings were applied, and the check of the server afterwards failed at: {step}. The sections it concerns read Failed; the log is below. Applying again checks it again."
+- After a failure: "The last attempt stopped at: {step}. What it applied before that step stays applied, and the log is below. Applying again is safe." When no step is known, the text reads "The last attempt did not finish. What it applied before that stays applied, and the log is below. Applying again is safe." A log of the attempt is folded under "What the server recorded during this attempt".
+- While a later run is in progress, the step and the log of the last failed attempt stay shown under "The previous attempt stopped at this step:" and "What the server recorded during the previous attempt".
 
 ### Run it
 
 1. Read the warning: "Services restart as they are brought back to their intended configuration, so parts of this server are briefly unavailable. Data is not touched."
 2. Tick "I understand that services restart and are briefly unavailable."
-3. Press **Bring this server up to date**.
+3. Press **Apply the saved settings**.
 
 The form is hidden while a run is in progress or when the server cannot be asked.
 
@@ -63,6 +65,7 @@ The keyset (backup repository address, storage keys and backup encryption passwo
 ## Troubleshooting
 
 - A section reports that it will apply the change as soon as the running update finishes: nothing to do, the server applies it in one more run right after.
-- A section reports that applying did not start: it could be neither started nor queued behind the configuration run in progress. Wait for that run to finish, then press **Bring this server up to date**.
-- The last attempt failed: read the log under "What the server recorded during this attempt". The server keeps its previous configuration, and running again is safe.
+- A section reports that applying did not start: it could be neither started nor queued behind the configuration run in progress. Wait for that run to finish, then press **Apply the saved settings**.
+- The last attempt failed: read the step and the log under "What the server recorded during this attempt". What it applied before the step stays applied, and applying again is safe.
+- A section reads Failed and its hint links here: the server's check of that section failed after the last run. The step and the log are in this section; applying again checks it again.
 - A time zone is refused: use the exact name, for example `America/Toronto`.

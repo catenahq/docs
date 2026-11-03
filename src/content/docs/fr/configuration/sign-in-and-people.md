@@ -86,7 +86,7 @@ Avant qu'un groupe soit renommé ou supprimé, le panneau affiche "Ce que ce cha
 
 Chaque changement est consigné dans le journal administratif.
 
-Si le panneau indique "Ce serveur n'a pas encore d'identifiant d'annuaire, la liste des personnes ne peut donc pas être lue. Il arrive à la prochaine configuration.", lancez **Remettre ce serveur à niveau** dans [Paramètres du serveur](/fr/configuration/server/) pour le fournir.
+Si le panneau indique "Ce serveur n'a pas encore d'identifiant d'annuaire, la liste des personnes ne peut donc pas être lue. Il arrive à la prochaine configuration.", appuyez sur **Appliquer les paramètres enregistrés** dans [Paramètres du serveur](/fr/configuration/server/) pour le fournir.
 
 ## Dépannage
 
