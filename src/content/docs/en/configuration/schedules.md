@@ -145,7 +145,7 @@ Under **Check a schedule**, type an expression and press **Check**. The panel re
 2. In the job's section, edit **Schedule** if the default does not suit, and tick **Run on this schedule**.
 3. Press **Save schedules**. The page confirms with "Schedules saved and applied to this server." A refusal reads "This server did not accept the schedule." followed by the reason.
 
-Saving also sets the Healthchecks checks of the backup, the backup integrity check, the restore test, the offsite copy, the nightly maintenance and the off-site heartbeat to the new schedules; a check that no turned-on job reports to is paused. When Healthchecks does not answer, the page reads "Schedules saved and applied to this server. Healthchecks did not answer, so the checks that watch these jobs take the new schedules the next time the schedules are saved or this server's configuration is brought up to date." A check turned back on shows "new" in Healthchecks until its job next runs.
+Saving also sets the Healthchecks checks of the backup, the backup integrity check, the restore test, the offsite copy, the nightly maintenance and the off-site heartbeat to the new schedules; a check that no turned-on job reports to is paused. When Healthchecks does not answer, the page reads "Schedules saved and applied to this server. Healthchecks did not answer, so the checks that watch these jobs take the new schedules the next time the schedules are saved or the saved settings are applied to this server." A check turned back on shows "new" in Healthchecks until its job next runs.
 
 When no backup is scheduled, the page warns "Nothing is scheduled on this server, so no backup will run. Turn on the backup schedule below."
 

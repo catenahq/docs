@@ -9,7 +9,7 @@ All web traffic reaches the server through an encrypted Cloudflare tunnel, so no
 
 **App tunnel.** A tunnel service on the server connects out to Cloudflare. Requests for `yourdomain.com` addresses arrive through it, pass to Traefik, and then go to the app. Apps that are not public sit behind a per-app sign-in gate (see [Single sign-on](/en/features/single-sign-on/)).
 
-**Domain changes.** Applying a domain in **Settings** > **Domain** replaces the tunnel with a new one. The applications are unavailable for a few minutes while the server is brought up to date under the domain. Until you apply a domain, nothing is published and you reach the panel over an SSH forward.
+**Domain changes.** Applying a domain in **Settings** > **Domain** replaces the tunnel with a new one. The applications are unavailable for a few minutes while the saved settings are applied under the domain. Until you apply a domain, nothing is published and you reach the panel over an SSH forward.
 
 **Admin path.** The tailnet is optional. **Settings** > **Admin access tunnel** takes either a hosted Tailscale OAuth client or a self-hosted Headscale server. The credentials are checked on the server before they are stored. If you choose no private network, key-only SSH on the public address stays the way in.
 

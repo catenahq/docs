@@ -33,9 +33,11 @@ Community attaches a single domain. A token that reaches several domains lists t
 
 When a token is already stored, you can leave the field blank: the stored token is used.
 
-The warning reads: "Applying replaces this server's Cloudflare tunnel with a new one: the current tunnel is dropped, and the applications are unavailable for a few minutes while the server is brought up to date under the domain." Applying stores the token and the domain, replaces the tunnel and then runs a full configuration of the server. The section follows the progress: "Applying the domain: the tunnel is being replaced, then the server is brought up to date under it. The public addresses are unreachable for a few minutes, and this section follows the progress."
+The warning reads: "Applying replaces this server's Cloudflare tunnel with a new one: the current tunnel is dropped, and the applications are unavailable for a few minutes while the saved settings are applied under the domain." Applying stores the token and the domain, replaces the tunnel and then applies the saved settings to the server. The section follows the progress: "Applying the domain: the tunnel is being replaced, then the saved settings are applied under it. The public addresses are unreachable for a few minutes, and this section follows the progress." Its badge turns **Applied** by itself when the run ends, without a reload.
 
 The same **Apply** repairs a leaked or broken tunnel: press it with the domain already in use to create a fresh tunnel and drop the old one.
+
+While an apply runs, a second **Apply** saves nothing and the section reads: "The server is still applying the last change, shown below. Nothing new was saved." Press it again once the run ends.
 
 ### What moves to the new domain
 
@@ -73,9 +75,9 @@ Rules, for the fields above and the same for an application's name:
 - One name per field, without the domain: `auth`, not `auth.yourdomain.com`. The message otherwise is "One name only, such as auth: the domain is added to it."
 - Lower-case letters, digits and hyphens; no leading or trailing hyphen; 63 characters at most.
 - A blank field keeps the name in use. To return to a default, type the default name.
-- The section ends with **Save and apply**: the server is brought up to date and the services behind the renamed addresses restart briefly.
+- The section ends with **Save and apply**: the saved settings are applied and the services behind the renamed addresses restart briefly.
 
-When the panel's own name changes, **Server configuration** shows "This dashboard moves to a new address once the configuration is applied. It opens there on its own as soon as the new address answers; until then, the address is:" followed by the old address. Your bookmarks to the old address stop working.
+When the panel's own name changes, **Server configuration** first shows "This dashboard moves to {address} once the server serves the new domain. The link to it appears here as soon as it does.", with the new address in place of `{address}`. Once the server serves the new domain, it shows "This dashboard moves to a new address once the configuration is applied. It opens there on its own as soon as the new address answers; until then, the address is:" followed by a link to the new address, which opens as soon as it answers. Your bookmarks to the old address stop working.
 
 ## Extra domains
 

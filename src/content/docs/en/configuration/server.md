@@ -25,11 +25,11 @@ A share mounted over NFS needs none, and a server with no share leaves both blan
 
 ## Server configuration
 
-**Settings** > **Server configuration** applies the settings saved on the page to the server, and puts back anything that changed on the server since. Settings already in place are left alone. Data is not touched. The sections that need it start this by themselves when you save them.
+**Settings** > **Server configuration** applies the settings saved on this page to the server, and puts back anything that changed on the server since. Settings already in place are left alone. The settings sections that need it start this by themselves when saved.
 
 ### What it shows
 
-- **Last brought up to date**: a timestamp, or "not yet".
+- **Last applied**: a timestamp, or "not yet".
 - **On a schedule**: "Yes, on the schedule set in Schedules." or "No. It happens when started here."
 - While running: "Applying the saved settings to the server." Some services restart meanwhile, so parts of the server may be briefly unavailable. The work continues even if you close the page.
 - While the server checks itself after applying: "The settings are applied. The server is checking itself; other changes wait until it ends."

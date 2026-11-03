@@ -25,11 +25,11 @@ Un partage monté en NFS n'en demande aucun, et un serveur sans partage laisse l
 
 ## Configuration du serveur
 
-**Paramètres** > **Configuration du serveur** applique au serveur les paramètres enregistrés sur la page, et remet en place tout ce qui a changé sur le serveur depuis. Les paramètres déjà en place ne sont pas touchés. Les données ne sont pas touchées. Les sections qui en ont besoin lancent cette opération d'elles-mêmes à l'enregistrement.
+**Paramètres** > **Configuration du serveur** applique au serveur les paramètres enregistrés sur cette page, et remet en place tout ce qui a changé sur le serveur depuis. Les paramètres déjà en place ne sont pas touchés. Les sections de paramètres qui en ont besoin lancent cette opération d'elles-mêmes à l'enregistrement.
 
 ### Ce qui s'affiche
 
-- **Dernière remise à niveau** : un horodatage, ou "pas encore".
+- **Dernière application** : un horodatage, ou "pas encore".
 - **Automatique** : "Oui, selon l'horaire réglé dans Horaires." ou "Non. Se déclenche uniquement depuis cette page."
 - En cours : "Application des paramètres enregistrés au serveur." Certains services redémarrent pendant l'opération, donc des parties du serveur peuvent être brièvement indisponibles. L'opération se poursuit même si vous fermez la page.
 - Pendant que le serveur se vérifie après l'application : "Les paramètres sont appliqués. Le serveur se vérifie lui-même; les autres changements attendent la fin."

@@ -197,8 +197,8 @@ The **Log** page records every update decision, among them:
 | No backup is configured; nightly updates run without one. |
 | The nightly maintenance completed, or did not complete cleanly and the step that failed. |
 | A combination of steps chosen on the Schedules page is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). |
-| `<app>` was updated to `<version>` but the update could not be recorded, so bringing the server up to date puts the previous version back. |
-| The update of `<app>` to `<version>` was rolled back but its record could not be cleared, so bringing the server up to date may install `<version>` again. |
+| `<app>` was updated to `<version>` but the update could not be recorded, so applying the saved settings puts the previous version back. |
+| The update of `<app>` to `<version>` was rolled back but its record could not be cleared, so applying the saved settings may install `<version>` again. |
 | The nightly update leaves `<app>` alone: a service of it is not running. Its updates resume once the service runs. |
 
 ## Update an app by hand

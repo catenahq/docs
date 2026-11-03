@@ -197,8 +197,8 @@ La page **Journal** consigne chaque décision de mise à jour, notamment :
 | Aucune sauvegarde n'est configurée; les mises à jour nocturnes s'appliquent sans sauvegarde. |
 | L'entretien nocturne s'est terminé, ou ne s'est pas terminé correctement, avec l'étape en échec. |
 | Une combinaison d'étapes choisie sur la page Horaires est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). |
-| `<application>` a été mis à jour vers `<version>`, mais la mise à jour n'a pas pu être enregistrée; la remise à niveau du serveur remet donc la version précédente. |
-| La mise à jour de `<application>` vers `<version>` a été annulée, mais son enregistrement n'a pas pu être effacé; la remise à niveau du serveur pourrait donc réinstaller `<version>`. |
+| `<application>` a été mis à jour vers `<version>`, mais la mise à jour n'a pas pu être enregistrée; l'application des paramètres enregistrés remet donc la version précédente. |
+| La mise à jour de `<application>` vers `<version>` a été annulée, mais son enregistrement n'a pas pu être effacé; l'application des paramètres enregistrés pourrait donc réinstaller `<version>`. |
 | La mise à jour nocturne laisse `<application>` de côté : un de ses services ne fonctionne pas. Ses mises à jour reprennent dès que le service fonctionne. |
 
 ## Mettre une application à jour à la main

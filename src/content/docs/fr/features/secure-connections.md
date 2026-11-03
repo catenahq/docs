@@ -9,7 +9,7 @@ Tout le trafic web atteint le serveur par un tunnel Cloudflare chiffré : aucun 
 
 **Tunnel des applications.** Un service du serveur se connecte vers Cloudflare. Les requêtes destinées aux adresses de `yourdomain.com` arrivent par ce tunnel, passent par Traefik, puis vont à l'application. Les applications non publiques sont derrière une barrière de connexion propre à chacune (voir [Authentification unique](/fr/features/single-sign-on/)).
 
-**Changement de domaine.** Appliquer un domaine dans **Paramètres** > **Domaine** remplace le tunnel par un nouveau. Les applications sont indisponibles quelques minutes pendant que le serveur est remis à niveau sous le domaine. Tant que vous n'avez appliqué aucun domaine, rien n'est publié et vous atteignez le panneau par un transfert de port SSH.
+**Changement de domaine.** Appliquer un domaine dans **Paramètres** > **Domaine** remplace le tunnel par un nouveau. Les applications sont indisponibles quelques minutes pendant que les paramètres enregistrés sont appliqués sous le domaine. Tant que vous n'avez appliqué aucun domaine, rien n'est publié et vous atteignez le panneau par un transfert de port SSH.
 
 **Voie d'administration.** Le tailnet est facultatif. **Paramètres** > **Tunnel d'accès administrateur** accepte un client OAuth Tailscale hébergé ou un serveur Headscale auto-hébergé. Les identifiants sont vérifiés sur le serveur avant d'être enregistrés. Si vous ne choisissez aucun réseau privé, le SSH par clé sur l'adresse publique reste la voie d'accès.
 

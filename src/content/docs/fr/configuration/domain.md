@@ -33,9 +33,11 @@ Catena Communauté rattache un seul domaine. Un jeton qui atteint plusieurs doma
 
 Quand un jeton est déjà stocké, vous pouvez laisser le champ vide : le jeton stocké est utilisé.
 
-L'avertissement indique : "L'application remplace le tunnel Cloudflare de ce serveur par un nouveau : le tunnel actuel est abandonné, et les applications sont indisponibles quelques minutes pendant que le serveur est remis à niveau sous le domaine." L'application stocke le jeton et le domaine, remplace le tunnel, puis exécute une configuration complète du serveur. La section en suit le déroulement : "Application du domaine : le tunnel est remplacé, puis le serveur est remis à niveau sous ce domaine. Les adresses publiques sont injoignables quelques minutes, et cette section en suit le déroulement."
+L'avertissement indique : "L'application remplace le tunnel Cloudflare de ce serveur par un nouveau : le tunnel actuel est abandonné, et les applications sont indisponibles quelques minutes pendant que les paramètres enregistrés sont appliqués sous le domaine." L'application stocke le jeton et le domaine, remplace le tunnel, puis applique au serveur les paramètres enregistrés. La section en suit le déroulement : "Application du domaine : le tunnel est remplacé, puis les paramètres enregistrés sont appliqués sous ce domaine. Les adresses publiques sont injoignables quelques minutes, et cette section en suit le déroulement." Son étiquette passe d'elle-même à **Appliqué** à la fin de l'opération, sans rechargement.
 
 Le même bouton **Appliquer** répare un tunnel compromis ou défaillant : appuyez dessus avec le domaine déjà en usage pour créer un nouveau tunnel et abandonner l'ancien.
+
+Pendant qu'une application du domaine s'exécute, un deuxième **Appliquer** n'enregistre rien et la section indique : "Le serveur applique encore le dernier changement, affiché ci-dessous. Rien de nouveau n'a été enregistré." Appuyez de nouveau dessus une fois l'opération terminée.
 
 ### Ce qui passe au nouveau domaine
 
@@ -73,9 +75,9 @@ Règles, pour les champs ci-dessus et de même pour le nom d'une application :
 - Un seul nom par champ, sans le domaine : `auth`, et non `auth.yourdomain.com`. Sinon le message est "Un seul nom, par exemple auth : le domaine y est ajouté."
 - Lettres minuscules, chiffres et traits d'union; pas de trait d'union au début ni à la fin; 63 caractères au plus.
 - Un champ vide conserve le nom en usage. Pour revenir à une valeur par défaut, saisissez le nom par défaut.
-- La section se termine par **Enregistrer et appliquer** : le serveur est remis à niveau et les services derrière les adresses renommées redémarrent brièvement.
+- La section se termine par **Enregistrer et appliquer** : les paramètres enregistrés sont appliqués et les services derrière les adresses renommées redémarrent brièvement.
 
-Quand le nom du panneau lui-même change, **Configuration du serveur** affiche "Ce tableau de bord change d'adresse une fois la configuration appliquée. Il s'ouvrira tout seul à la nouvelle adresse dès qu'elle répondra ; d'ici là, l'adresse est :" suivi de l'ancienne adresse. Vos signets vers l'ancienne adresse cessent de fonctionner.
+Quand le nom du panneau lui-même change, **Configuration du serveur** affiche d'abord "Ce tableau de bord passe à {address} dès que le serveur sert le nouveau domaine. Le lien qui y mène s'affiche ici dès que c'est le cas.", la nouvelle adresse remplaçant `{address}`. Dès que le serveur sert le nouveau domaine, elle affiche "Ce tableau de bord change d'adresse une fois la configuration appliquée. Il s'ouvrira tout seul à la nouvelle adresse dès qu'elle répondra ; d'ici là, l'adresse est :" suivi d'un lien vers la nouvelle adresse, qui s'ouvre dès qu'elle répond. Vos signets vers l'ancienne adresse cessent de fonctionner.
 
 ## Domaines supplémentaires
 
