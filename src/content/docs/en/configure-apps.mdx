@@ -60,6 +60,8 @@ A repository holds one folder per app under `blueprints/`, as `blueprints/<app>/
 
 Catena reads a repository's files as data and checks them before it deploys them. Only an unchanged file of Catena's catalog may give an app the server's network or the container engine, read stored secrets, or take values that another app provides. Any other file that asks for them is refused.
 
+A file of Catena's catalog that you change by hand loses those rights, but the app keeps running: Catena starts it and restarts it with the files it holds, and gives it no new value until the file is the catalog's again. The app's page and its card say what is held, and an app that reads values from it keeps the ones it has. A restore or a move brings it back as it was backed up.
+
 ### What an app can ask of Catena
 
 The `x-catena` block of an app (see [Declare the settings](#declare-the-settings-optional) and [Declare the backup mode and update steps](#declare-the-backup-mode-and-update-steps-optional)) can declare what the app needs of the server. Catena fulfils it before each deploy: a certificate for the app's names and DNS records in the zones the server serves. A name outside the domains the server serves is refused, unless the file is an unchanged file of Catena's catalog. Labels ask for sign-in (see [Sign in with Catena accounts](#sign-in-with-catena-accounts-optional)), and the block can take an app's users from a sign-in group.

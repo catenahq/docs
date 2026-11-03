@@ -60,6 +60,8 @@ Un dépôt contient un dossier par application sous `blueprints/`, soit `bluepri
 
 Catena lit les fichiers d'un dépôt comme des données et les vérifie avant de les déployer. Seul un fichier inchangé du catalogue de Catena peut donner à une application le réseau du serveur ou le moteur de conteneurs, lire des secrets stockés ou prendre des valeurs qu'une autre application fournit. Tout autre fichier qui les demande est refusé.
 
+Un fichier du catalogue de Catena que vous modifiez à la main perd ces droits, mais l'application continue de tourner : Catena la démarre et la redémarre avec les fichiers qu'elle contient, et ne lui donne aucune nouvelle valeur tant que le fichier n'est pas redevenu celui du catalogue. La page de l'application et sa carte disent ce qui est retenu, et une application qui lit des valeurs de celle-ci garde celles qu'elle a. Une restauration ou un déplacement la remet telle qu'elle a été sauvegardée.
+
 ### Ce qu'une application peut demander à Catena
 
 Le bloc `x-catena` d'une application (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif) et [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)) peut déclarer ce dont l'application a besoin du serveur. Catena y répond avant chaque déploiement : un certificat pour les noms de l'application et des enregistrements DNS dans les zones que le serveur sert. Un nom hors des domaines que le serveur sert est refusé, sauf si le fichier est un fichier inchangé du catalogue de Catena. Les étiquettes demandent la connexion (voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif)), et le bloc peut tirer les utilisateurs d'une application d'un groupe de connexion.
