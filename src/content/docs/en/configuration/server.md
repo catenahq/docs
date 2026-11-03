@@ -47,7 +47,7 @@ The form is hidden while a run is in progress or when the server cannot be asked
 
 ### When to use it
 
-- After a section reports "Saved, but applying it did not start, most likely because the server is already updating its configuration."
+- After a section reports "Saved, but applying it did not start, most likely because the server is already applying its settings."
 - After you attach or remove an extra domain, or after your subscription starts or lapses, so that what it unlocks is switched on or off.
 - When the People panel reports it has no directory credential yet.
 - To repair a drifted service without reinstalling.

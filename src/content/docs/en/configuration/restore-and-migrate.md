@@ -233,7 +233,7 @@ The window closes on its own after 4 hours, five wrong codes close it too, and *
 
 A migration starts the applications with the server: nothing is left stopped.
 
-After the final checks the old server frees its activation of the subscription key, the new server activates it and then brings itself up to date, which turns on what the key unlocks (extra domains, schedules). Some services restart during that. **Settings** > **Subscription** shows the result. If freeing the old activation fails, free it in Polar's customer portal and save the key again on the new server.
+After the final checks the old server frees its activation of the subscription key, the new server activates it and then applies the saved settings, which turns on what the key unlocks (extra domains, schedules). Some services restart during that. **Settings** > **Subscription** shows the result. If freeing the old activation fails, free it in Polar's customer portal and save the key again on the new server.
 
 ### Calling it off
 

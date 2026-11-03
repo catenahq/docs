@@ -47,7 +47,7 @@ Le formulaire est masqué pendant une exécution ou quand le serveur ne peut pas
 
 ### Quand l'utiliser
 
-- Après qu'une section a indiqué "Enregistré, mais l'application n'a pas démarré, sans doute parce que le serveur met déjà sa configuration à niveau."
+- Après qu'une section a indiqué "Enregistré, mais l'application n'a pas démarré, sans doute parce que le serveur applique déjà ses paramètres."
 - Après que vous avez rattaché ou retiré un domaine supplémentaire, ou après le début ou la fin de votre abonnement, pour activer ou désactiver ce qu'il débloque.
 - Quand le panneau Personnes indique qu'il n'a pas encore d'identifiant d'annuaire.
 - Pour réparer un service qui a dérivé sans réinstaller.
