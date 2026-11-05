@@ -93,6 +93,17 @@ jobs:
             npm run check:prose
             npm run check
             npm run build
+      # Only a push keeps the site: on a pull request a failing gate is run
+      # again at the base, which can leave the base's build in dist. The deploy
+      # publishes this artifact for the same tree.
+      - name: Keep the built site for the deploy
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: site
+          path: docs/dist
+          retention-days: 30
+          if-no-files-found: ignore
 
   duplication:
     # Copy-paste ratchet: .jscpd.json carries the baseline threshold;
