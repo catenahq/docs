@@ -162,7 +162,7 @@ Included:
 
 Excluded: container image layers (they are pulled again), antivirus signature databases, logs and temporary folders.
 
-Not included: the files an application keeps in its own storage bucket, such as Nextcloud's. Their earlier states come back from that bucket's offsite copy, as of its last copy (see [Put a bucket back from its offsite copy](/en/configuration/restore-and-migrate/#put-a-bucket-back-from-its-offsite-copy)).
+Not included: the files an application keeps in its own storage bucket, such as Nextcloud's; the app's page warns of this at its first start. Their earlier states come back from that bucket's offsite copy, as of its last copy (see [Put a bucket back from its offsite copy](/en/configuration/restore-and-migrate/#put-a-bucket-back-from-its-offsite-copy)).
 
 Database exports are automatic for every running container whose image is a PostgreSQL one, its name holding `postgres` or starting with `postgis`, `timescale` or `pgvector`, or a MariaDB or MySQL one. PostgreSQL is exported with `pg_dumpall`. MariaDB and MySQL need `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in the container's environment. Each export is a plain SQL file, one per database server, and the backup storage compresses it, so each backup after the first sends only what changed. A failed export of a running database fails the whole backup. A database that is not running yet is another case: a backup waits up to ten minutes for every deployed application's database to run before exporting it, and a database still down after that is left out of that backup, the backup of everything else goes ahead, and the run is reported as failed, naming the application. Other engines, such as MongoDB or SQLite, get no automatic export.
 
