@@ -19,7 +19,7 @@ On Community, the nightly maintenance updates no application; you update an app 
 
 Debian's automatic security updates run on every server, in every edition. They cover the security suite, stable updates, point releases and the private-network client's own repository. They never restart the server by themselves.
 
-A restart is needed when an update replaces something that is already running. Once an hour the server checks whether one is due. While it is due, every admin page shows "An installed update takes effect only after this server restarts. Restart it from the System page." and the **System** page lists what asked for it and which services still run on replaced libraries.
+A restart is needed when an update replaces something that is already running. The server is asked whether one is due when a page loads, and the answer is kept for 30 seconds, so the banner and the card clear soon after a restart. While one is due, every admin page shows "An installed update takes effect only after this server restarts. Restart it from the System page." and the **System** page lists what asked for it and which services still run on replaced libraries. When the server does not answer, the **Restart** card reads "Unknown: this server did not answer the restart check. Reload the page in a minute to ask again."
 
 To restart:
 
@@ -40,7 +40,7 @@ Open **Settings** > **Control panel version**.
 3. Tick "I understand the panel restarts, and every application restarts for about a minute if Docker changes version."
 4. Press **Update this panel**.
 
-The section follows the update through Downloading, Installing, Restarting, Checking health and Applying its configuration. While it downloads, the section shows the layers done and the MiB downloaded, refreshed every 5 seconds. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if you close the page. Everything else keeps running, until the update moves Docker to the version the release carries: every application then restarts for about a minute (see [Docker engine](#docker-engine)).
+The section follows the update through Downloading, Installing, Restarting, Checking health, Applying its configuration, Checking the services and Moving the container engine; applications restart for about a minute. While it downloads, the section shows the layers done and the MiB downloaded, refreshed every 5 seconds. The panel is unreachable for about a minute while it restarts and returns on its own; the update continues on the server even if you close the page. Everything else keeps running, until the update moves Docker to the version the release carries: every application then restarts for about a minute (see [Docker engine](#docker-engine)).
 
 An update brings the newer versions of Catena's own services that were tested together with it (see [Catena's own services](#catenas-own-services)). It checks the server's health again after applying its configuration, and one that makes the server less healthy than before is put back automatically, along with the data copied for it (see [Rollback and quarantine](#rollback-and-quarantine)). The section then reads "The last attempt did not finish. This server put the previous version back and is running normally on it, one version behind." with the server's log of the attempt folded below.
 
@@ -203,7 +203,7 @@ The **Log** page records every update decision, among them:
 
 ## Update an app by hand
 
-On every edition, Community included, you update an app added from a repository from its own page, at any time after its first start:
+On every edition, Community included, you update an app added from a repository from its own page, at any time after its first start. The **Update** part is on the page of every app that has a folder on this server. Before the first start it holds **Version**, to choose the version the app starts with (see [Settings, start, stop and delete](/en/configure-apps/#settings-start-stop-and-delete)). An app not added from a repository reads "It was not added from a repository, so Catena has no newer version to move it to." An app whose folder or settings cannot be read names the problem and reads "Catena cannot check for an update until this is fixed."
 
 1. Open **Apps** and the app's page with the gear on its card, then **Update**.
 2. Read "Running: `<version>`" and "Update to: `<version>`". When the app must pass through other versions on the way, the part says how many.
