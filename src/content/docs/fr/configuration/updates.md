@@ -138,7 +138,7 @@ Avant une mise à jour, les versions candidates sont analysées pour les vulnér
 - Une version qui ajoute une nouvelle vulnérabilité élevée ou critique est écartée au profit d'une version inférieure propre, ou la mise à jour attend.
 - Une version plus récente qui supprime une vulnérabilité élevée ou critique présente dans la version en cours est appliquée sans le délai d'attente.
 
-Sans analyseur, la vérification des vulnérabilités est désactivée et le délai d'attente s'applique toujours. Voir [Vulnérabilités](/fr/configuration/vulnerabilities/). Une vulnérabilité que trouve la veille des vulnérabilités peut aussi être corrigée à la demande, ou automatiquement lorsque la CISA la signale comme exploitée, sans le délai d'attente (voir [Corriger une vulnérabilité](/fr/configuration/vulnerabilities/#corriger-une-vulnérabilité)).
+Sans analyseur, la vérification des vulnérabilités est désactivée et le délai d'attente s'applique toujours. Voir [Vulnérabilités](/fr/configuration/vulnerabilities/). Une vulnérabilité que trouve la veille des vulnérabilités peut aussi être corrigée à la demande dans toutes les éditions, ou automatiquement avec Catena Pro lorsque la CISA la signale comme exploitée, sans le délai d'attente (voir [Corriger une vulnérabilité](/fr/configuration/vulnerabilities/#corriger-une-vulnérabilité)).
 
 ### Retour arrière et quarantaine
 
@@ -155,7 +155,7 @@ Avec Catena Pro, l'entretien nocturne cherche une version plus récente pour cha
 - "`<service>` est exclu des mises à jour automatiques. La version `<nouvelle>` est disponible ; la version en service est `<actuelle>`." nomme le service, la version qu'il exécute et la version trouvée.
 - Une seconde ligne indique ce qu'on sait des vulnérabilités. Elle affiche "Pas vérifié pour les vulnérabilités connues." quand l'analyseur est désactivé ou n'a pas pu lire la version en service, et "La version en service n'a aucune vulnérabilité élevée ou critique connue qui ait un correctif." quand elle est propre. Sinon, elle compte les vulnérabilités élevées ou critiques de la version en service qui ont un correctif. Une version plus récente n'est vérifiée qu'une fois sur le serveur ; d'ici là, la ligne ajoute "On ne sait pas si `<nouvelle>` les corrige". Une fois sur le serveur, la ligne indique "`<nouvelle>` corrige `<n>` des `<m>` vulnérabilités élevées ou critiques connues de la version en service et en apporte `<k>` nouvelles.", et la page de confirmation les liste sous **Corrigées :** et **Nouvelles :**.
 
-L'avis disparaît quand la vérification nocturne n'a rien signalé depuis deux jours, pour ne jamais nommer une version que rien n'a vérifiée depuis.
+L'avis disparaît quand la vérification nocturne n'a rien signalé depuis deux jours, pour ne jamais nommer une version que rien n'a vérifiée depuis. Vous confirmez vous-même le passage dans toutes les éditions, et rien ne fait évoluer un tel service de lui-même.
 
 Pour appliquer la mise à jour :
 
@@ -222,7 +222,7 @@ Une mise à jour fait avancer une application d'une version majeure à la fois a
 
 ## Applications avec Communauté
 
-Sans l'entretien nocturne, Catena ne cherche aucune version plus récente de vos applications et n'en applique aucune d'elle-même : une application reste à la version que vous avez ajoutée jusqu'à ce que vous la mettiez à jour à la main (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)). Les alertes de sécurité vous préviennent quand une application est atteinte par une vulnérabilité exploitée, ou critique et dotée d'une version corrigée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). La catégorie **Mises à jour** de **Actions** est vide avec Communauté : ses boutons arrivent avec un abonnement.
+Sans l'entretien nocturne, Catena ne cherche aucune version plus récente de vos applications et n'en applique aucune d'elle-même : une application reste à la version que vous avez ajoutée jusqu'à ce que vous la mettiez à jour à la main (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)). Les alertes de sécurité vous préviennent quand une application est atteinte par une vulnérabilité exploitée, ou critique ou élevée et corrigée par une mise à jour proposée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). La catégorie **Mises à jour** de **Actions** est vide avec Communauté : ses boutons arrivent avec un abonnement.
 
 ## Dépannage
 

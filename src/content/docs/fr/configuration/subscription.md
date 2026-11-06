@@ -3,7 +3,7 @@ title: "Abonnement"
 description: "Enregistrer votre clé d'abonnement Polar, le sens de chaque état, le transfert d'une clé entre serveurs, et ce qui se verrouille ou continue de fonctionner à la fin de votre abonnement."
 ---
 
-Catena Communauté est gratuit et n'exige aucune clé. Catena Pro et Catena Business débloquent des fonctions supplémentaires du panneau d'administration grâce à une clé d'abonnement vendue par Polar. Vous enregistrez la clé dans **Paramètres** > **Abonnement**. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).
+Catena Communauté est gratuit et n'exige aucune clé. Catena Pro et Catena Business débloquent des fonctions supplémentaires du panneau d'administration grâce à une clé d'abonnement vendue par Polar. Vous enregistrez la clé dans **Paramètres** > **Abonnement**. Avec Catena Communauté, vous faites chaque action à la main, Catena Pro exécute les mêmes actions de lui-même, et Catena Business ajoute la reddition de comptes : listes complètes, inventaire logiciel, SBOM, exportations et rapports. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).
 
 ## Prérequis
 
@@ -79,7 +79,7 @@ Quand Polar cesse d'accorder la clé, ou que le délai de grâce est écoulé :
 - Les actions payantes sont refusées, et les domaines supplémentaires au-delà du domaine principal cessent d'être servis (ils restent enregistrés).
 - Une bannière sur chaque page d'administration mène à la section **Abonnement** et en donne la raison, une entrée s'ajoute au **Journal**, et un courriel part vers votre adresse d'administrateur par le service de courriel configuré (en anglais puis en français). Sans service de courriel, la bannière et l'entrée du journal sont les seuls avis. Voir [Courriel sortant](/fr/configuration/email/).
 
-Ce qui ne se verrouille jamais : les applications et leurs données, la sauvegarde hebdomadaire, les alertes de sécurité (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)), les sauvegardes manuelles, les restaurations du serveur entier, les mises à jour lancées à la main, l'authentification unique et la supervision. Une clé absente, refusée ou non confirmée laisse le serveur sur Catena Communauté et n'empêche jamais une installation ni l'accès aux données.
+Ce qui ne se verrouille jamais : les applications et leurs données, la sauvegarde hebdomadaire, les alertes de sécurité, une vérification sur demande et le correctif d'urgence que vous lancez vous-même (voir [Vulnérabilités](/fr/configuration/vulnerabilities/)), les rapports d'erreurs (voir [Alertes](/fr/configuration/alerts/#envoyer-des-rapports-derreurs-au-soutien-de-catena)), les sauvegardes manuelles, les restaurations du serveur entier, les mises à jour lancées à la main, l'authentification unique et la supervision. Une clé absente, refusée ou non confirmée laisse le serveur sur Catena Communauté et n'empêche jamais une installation ni l'accès aux données.
 
 ## Dépannage
 

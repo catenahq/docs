@@ -3,7 +3,7 @@ title: "Subscription"
 description: "Saving your Polar subscription key, what each status means, how a key moves between servers, and what locks or keeps working when your subscription lapses."
 ---
 
-Catena Community is free and needs no key. Catena Pro and Catena Business unlock additional admin panel features with a subscription key sold through Polar. You save the key in **Settings** > **Subscription**. The editions are compared at [catena.run](https://catena.run/en/#pricing).
+Catena Community is free and needs no key. Catena Pro and Catena Business unlock additional admin panel features with a subscription key sold through Polar. You save the key in **Settings** > **Subscription**. On Catena Community you take every action by hand, Catena Pro runs the same actions on their own, and Catena Business adds accountability: full lists, the software inventory, SBOMs, exports and reports. The editions are compared at [catena.run](https://catena.run/en/#pricing).
 
 ## Prerequisites
 
@@ -79,7 +79,7 @@ When Polar stops granting the key, or the grace period ends:
 - Paid actions are refused, and extra domains beyond the primary one stop being served (they stay stored).
 - A banner on every admin page links to the **Subscription** section with the reason, one entry is added to the **Log**, and one email goes to your admin address through the mail service you configured (English then French). With no mail service set, the banner and the log entry are the only notices. See [Outgoing email](/en/configuration/email/).
 
-What never locks: applications and their data, the weekly backup, the security alerts (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)), manual backups, whole-server restores, updates started by hand, single sign-on and monitoring. A missing, refused or unconfirmed key leaves the server on Catena Community and never blocks an installation or access to data.
+What never locks: applications and their data, the weekly backup, the security alerts, a check on request and the emergency patch you start yourself (see [Vulnerabilities](/en/configuration/vulnerabilities/)), error reports (see [Alerts](/en/configuration/alerts/#send-error-reports-to-catena-support)), manual backups, whole-server restores, updates started by hand, single sign-on and monitoring. A missing, refused or unconfirmed key leaves the server on Catena Community and never blocks an installation or access to data.
 
 ## Troubleshooting
 

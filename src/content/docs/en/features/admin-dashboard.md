@@ -35,7 +35,7 @@ Every console of the panel shows its lines as they arrive and carries the same t
 
 ## What each edition adds
 
-Community has Apps (with the Compose checker), System, Actions, Restore, Schedules (the weekly backup and the vulnerability watch), Log, Settings and the Vulnerabilities page (see [Vulnerabilities page](/en/configuration/vulnerabilities/#vulnerabilities-page)). Catena Pro adds **Managed updates**, **Domains**, **People**, **Migration** and **Restore report**. Catena Business adds **Audit log**, **Compliance report** and **Monthly report**. See the [edition comparison](https://catena.run/en/#pricing).
+Community has Apps (with the Compose checker), System, Actions, Restore, Schedules (the weekly backup and the vulnerability watch), Log, Settings and the Vulnerabilities page (see [Vulnerabilities page](/en/configuration/vulnerabilities/#vulnerabilities-page)). Catena Pro adds **Managed updates**, **Domains**, **People**, **Migration** and **Restore report**. Catena Business adds **Audit log**, **Compliance report** and **Monthly report**, and the full list of vulnerabilities with the software inventory (see [Vulnerabilities page](/en/configuration/vulnerabilities/#vulnerabilities-page)). See the [edition comparison](https://catena.run/en/#pricing).
 
 ## Monthly report (Catena Business)
 

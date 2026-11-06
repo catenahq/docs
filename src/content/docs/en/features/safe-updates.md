@@ -31,7 +31,7 @@ The panel has its own **Control panel updates** schedule (monthly by default) an
 
 ## What each edition adds
 
-Community has OS patching, restart reporting, version visibility, security alerts for exploited and critical vulnerabilities (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)), and manual panel and engine updates; for apps, no update is offered or applied. Catena Pro and Catena Business add the nightly maintenance and the other schedules, managed app updates, CVE remediation and automatic rollback. See the [edition comparison](https://catena.run/en/#pricing).
+Community has OS patching, restart reporting, version visibility, security alerts for exploited vulnerabilities and for critical or high ones an update on offer fixes (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)), a check on request and the emergency patch you start yourself, and manual panel and engine updates; for apps, no update is offered or applied. Catena Pro and Catena Business add the nightly maintenance and the other schedules, managed app updates, the automatic patch of exploited vulnerabilities and automatic rollback. Catena Business adds the full list of vulnerabilities and the software inventory. See the [edition comparison](https://catena.run/en/#pricing).
 
 ## Limits
 

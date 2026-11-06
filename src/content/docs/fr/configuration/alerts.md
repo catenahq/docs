@@ -31,7 +31,7 @@ La section se termine par **Enregistrer et appliquer**; les services qui utilise
 
 ## Envoyer des rapports d'erreurs au soutien de Catena
 
-**Paramètres** > **Rapports d'erreurs au soutien de Catena** permet à un serveur sous Catena Pro ou Catena Business d'aviser le soutien de Catena quand l'un des contrôles propres à Catena échoue ou se rétablit, pour que le soutien puisse vous aider avant qu'un petit problème ne grossisse. L'option est désactivée tant que vous ne l'activez pas.
+**Paramètres** > **Rapports d'erreurs au soutien de Catena** permet à un serveur d'aviser Catena quand l'un des contrôles propres à Catena échoue ou se rétablit. Elle existe dans toutes les éditions et reste désactivée tant que vous ne l'activez pas. Avec Catena Pro ou Catena Business, le soutien peut alors vous aider avant qu'un petit problème ne grossisse. Sans abonnement payant, les rapports aident Catena à trouver et à corriger les problèmes du produit : le serveur s'inscrit sous une identité d'installation aléatoire qu'il garde pour lui, liée à aucune licence, et un rapport n'ouvre aucun billet de soutien.
 
 Pour l'activer :
 
@@ -44,12 +44,12 @@ Un rapport nomme le contrôle, indique s'il échoue et depuis quand, l'applicati
 
 Sous l'interrupteur, la section liste les 100 derniers rapports envoyés, du plus récent au plus ancien, chacun avec le texte exact qui a quitté le serveur et l'indication que le soutien de Catena l'a reçu ou non.
 
-Quand une tâche en échec a écrit un texte sur ce qui a mal tourné, ce texte reste sur votre serveur. La liste le propose pour chaque rapport qui en a un :
+Quand une tâche en échec a écrit un texte sur ce qui a mal tourné, ce texte reste sur votre serveur. Sans abonnement payant, il n'est pas envoyé. Avec Catena Pro ou Catena Business, la liste le propose pour chaque rapport qui en a un :
 
 - **Télécharger le texte de la tâche** enregistre le texte tel quel.
 - **Relire et envoyer au soutien de Catena** ouvre le texte dans une zone. Retirez ce que vous ne voulez pas que le soutien voie, puis appuyez sur **Envoyer ce texte au soutien de Catena**. Seul le texte de la zone est envoyé, et la liste montre exactement ce que vous avez envoyé.
 
-Le soutien répond du lundi au vendredi, de 8 h à 17 h. Les rapports d'erreurs ne forment pas une surveillance 24 heures sur 24, et un serveur éteint ou sans accès à Internet n'envoie rien : pour cela, utilisez le signal de vie hors site décrit plus haut.
+Les billets de soutien et les réponses viennent avec Catena Pro et Catena Business, et le soutien répond du lundi au vendredi, de 8 h à 17 h. Les rapports d'erreurs ne forment pas une surveillance 24 heures sur 24, et un serveur éteint ou sans accès à Internet n'envoie rien : pour cela, utilisez le signal de vie hors site décrit plus haut.
 
 ## Ajouter des canaux de notification dans Healthchecks
 

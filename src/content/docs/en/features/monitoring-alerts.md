@@ -20,7 +20,7 @@ Gatus, Healthchecks and Beszel are installed by default as applications, and eac
 
 ## What each edition adds
 
-Gatus, Healthchecks, Beszel, the status page and on-host alerts work on every edition, and so do the security alerts: the vulnerability watch emails you about an exploited vulnerability, or a critical one with a fixed version (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). Catena Pro adds the off-site heartbeat and Catena Business adds monitoring-as-a-service, described in the [edition comparison](https://catena.run/en/#pricing).
+Gatus, Healthchecks, Beszel, the status page and on-host alerts work on every edition, and so do the security alerts: the vulnerability watch emails you about an exploited vulnerability, or a critical or high one that an update on offer fixes (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). Catena Pro adds the off-site heartbeat and Catena Business adds monitoring-as-a-service, described in the [edition comparison](https://catena.run/en/#pricing).
 
 ## Limits
 

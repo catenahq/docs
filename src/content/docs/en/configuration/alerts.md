@@ -31,7 +31,7 @@ The section ends with **Save and apply**; the services that use these values res
 
 ## Send error reports to Catena support
 
-**Settings** > **Error reports to Catena support** lets a server on Catena Pro or Catena Business tell Catena support when one of Catena's own checks fails or recovers, so support can help you before a small fault becomes a large one. It is off until you turn it on.
+**Settings** > **Error reports to Catena support** lets a server tell Catena when one of Catena's own checks fails or recovers. It is on every edition and off until you turn it on. On Catena Pro or Catena Business, support can then help you before a small fault becomes a large one. Without a paid subscription, the reports help Catena find and fix problems in the product: the server signs up with a random install identity it keeps for itself, tied to no licence, and a report opens no support ticket.
 
 To turn it on:
 
@@ -44,12 +44,12 @@ A report names the check, whether it is failing, since when, the application it 
 
 Below the switch, the section lists the last 100 reports sent, newest first, each with the exact text that left the server and whether Catena support received it.
 
-When a failed job wrote text about what went wrong, that text stays on your server. The list offers it for each report that has some:
+When a failed job wrote text about what went wrong, that text stays on your server. Without a paid subscription, it is not sent. On Catena Pro or Catena Business, the list offers it for each report that has some:
 
 - **Download the job output** saves the text as it is.
 - **Review and send to Catena support** opens the text in a box. Remove whatever you do not want support to see, then press **Send this text to Catena support**. Only the text in the box is sent, and the list shows exactly what you sent.
 
-Support answers Monday to Friday, 08:00 to 17:00. Error reports are not round-the-clock monitoring, and a server that is switched off or cannot reach the internet sends nothing: for that, use the off-site heartbeat above.
+Support tickets and replies come with Catena Pro and Catena Business, and support answers Monday to Friday, 08:00 to 17:00. Error reports are not round-the-clock monitoring, and a server that is switched off or cannot reach the internet sends nothing: for that, use the off-site heartbeat above.
 
 ## Add notification channels in Healthchecks
 

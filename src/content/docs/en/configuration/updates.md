@@ -138,7 +138,7 @@ Before an update, the candidate releases are scanned for known vulnerabilities (
 - A release that adds a new high or critical vulnerability is skipped in favour of a lower clean one, or the update waits.
 - A newer release that removes a high or critical vulnerability present in the running one is applied without the waiting period.
 
-Without a scanner the vulnerability check is off and the waiting period still applies. See [Vulnerabilities](/en/configuration/vulnerabilities/). A vulnerability the vulnerability watch finds can also be patched on demand, or automatically when CISA lists it as exploited, without the waiting period (see [Patch a vulnerability](/en/configuration/vulnerabilities/#patch-a-vulnerability)).
+Without a scanner the vulnerability check is off and the waiting period still applies. See [Vulnerabilities](/en/configuration/vulnerabilities/). A vulnerability the vulnerability watch finds can also be patched on demand on every edition, or automatically on Catena Pro when CISA lists it as exploited, without the waiting period (see [Patch a vulnerability](/en/configuration/vulnerabilities/#patch-a-vulnerability)).
 
 ### Rollback and quarantine
 
@@ -155,7 +155,7 @@ On Catena Pro, the nightly maintenance checks each of these services for a newer
 - "`<service>` is kept off the automatic updates. Version `<new>` is available; it runs `<current>`." names the service, the version it runs and the version found.
 - A second line says what is known of the vulnerabilities. It reads "Not checked for known vulnerabilities." when the scanner is off or could not read the running version, and "The running version has no known high or critical vulnerability with a fix." when it is clean. Otherwise it counts the high or critical vulnerabilities of the running version that have a fix. A newer version is checked only once it is on the server, so until then the line adds "Whether `<new>` fixes them is not known". Once it is on the server, the line reads "`<new>` fixes `<n>` of the `<m>` known high or critical vulnerabilities of the running version and brings `<k>` new ones.", and the confirmation page lists them under **Fixed:** and **New:**.
 
-The notice disappears when the nightly check has not reported for two days, so it never names a version nothing has checked since.
+The notice disappears when the nightly check has not reported for two days, so it never names a version nothing has checked since. You confirm the move yourself on every edition, and nothing moves such a service by itself.
 
 To apply the update:
 
@@ -222,7 +222,7 @@ An update moves an app at most one major version at a time, whether the nightly 
 
 ## Community: applications
 
-Without the nightly maintenance, Catena looks for no newer version of your applications and applies none by itself: an application stays on the version you added until you update it by hand (see [Update an app by hand](#update-an-app-by-hand)). The security alerts tell you when an application carries an exploited vulnerability, or a critical one with a fixed version (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). The **Upgrades** category of **Actions** is empty on Community: its buttons arrive with a subscription.
+Without the nightly maintenance, Catena looks for no newer version of your applications and applies none by itself: an application stays on the version you added until you update it by hand (see [Update an app by hand](#update-an-app-by-hand)). The security alerts tell you when an application carries an exploited vulnerability, or a critical or high one that an update on offer fixes (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). The **Upgrades** category of **Actions** is empty on Community: its buttons arrive with a subscription.
 
 ## Troubleshooting
 
