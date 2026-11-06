@@ -16,7 +16,7 @@ Small and mid-size organizations that want to own the software they depend on, w
 | Cloudflare tunnel | Carries all web traffic to the server, so no web port is open on the machine. |
 | Traefik | Routes each address to the right app. |
 | Keycloak | One sign-on for every app, with groups deciding who can open what. |
-| catena-admin | The admin panel: apps (add, configure, start, stop, update and remove them), status, actions, restore, schedules and settings. |
+| catena-admin | The admin panel: apps (add, configure, deploy, take down, update and remove them), status, actions, restore, schedules and settings. |
 | restic backups | Encrypted backups sent to S3 storage you own. |
 | Gatus, Healthchecks, Beszel | Status page, missed-job alarms, and server resource graphs. |
 | Tailnet (optional) | A private network for administration. |
