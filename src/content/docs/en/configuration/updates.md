@@ -150,12 +150,12 @@ Before one of Catena's own services that keeps data moves to a new version, its 
 
 A catalog app's template can set `vps.auto-update=off` on a service whose files a new version may rewrite past what the version before it reads. The nightly maintenance never moves such a service. One catalog service is kept off this way: Plane's object storage.
 
-On Catena Pro, the nightly maintenance checks each of these services for a newer version. When it finds one, the app's tile on the **Apps** tab shows a notice that only administrators see:
+On every edition, a check each day looks at each of these services for a newer version, and on Catena Pro the nightly maintenance looks too. The check only reports: it moves nothing. When it finds a newer version, the app's tile on the **Apps** tab shows a notice that only administrators see:
 
 - "`<service>` is kept off the automatic updates. Version `<new>` is available; it runs `<current>`." names the service, the version it runs and the version found.
 - A second line says what is known of the vulnerabilities. It reads "Not checked for known vulnerabilities." when the scanner is off or could not read the running version, and "The running version has no known high or critical vulnerability with a fix." when it is clean. Otherwise it counts the high or critical vulnerabilities of the running version that have a fix. A newer version is checked only once it is on the server, so until then the line adds "Whether `<new>` fixes them is not known". Once it is on the server, the line reads "`<new>` fixes `<n>` of the `<m>` known high or critical vulnerabilities of the running version and brings `<k>` new ones.", and the confirmation page lists them under **Fixed:** and **New:**.
 
-The notice disappears when the nightly check has not reported for two days, so it never names a version nothing has checked since. You confirm the move yourself on every edition, and nothing moves such a service by itself.
+The notice disappears when no check has reported for two days, so it never names a version nothing has checked since. You confirm the move yourself on every edition, and nothing moves such a service by itself.
 
 To apply the update:
 

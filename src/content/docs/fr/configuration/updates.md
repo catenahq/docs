@@ -150,12 +150,12 @@ Avant qu'un service propre à Catena qui conserve des données passe à une nouv
 
 Le modèle d'une application du catalogue peut poser `vps.auto-update=off` sur un service dont une nouvelle version risque de réécrire ses fichiers au-delà de ce que la version précédente sait lire. L'entretien nocturne ne fait jamais avancer un tel service. Un service du catalogue est ainsi exclu : le stockage d'objets de Plane.
 
-Avec Catena Pro, l'entretien nocturne cherche une version plus récente pour chacun de ces services. S'il en trouve une, la tuile de l'application, dans l'onglet **Applications**, affiche un avis que seuls les administrateurs voient :
+Dans toutes les éditions, une vérification quotidienne cherche une version plus récente pour chacun de ces services, et avec Catena Pro l'entretien nocturne la cherche aussi. La vérification ne fait que signaler : elle ne fait rien avancer. Quand elle en trouve une, la tuile de l'application, dans l'onglet **Applications**, affiche un avis que seuls les administrateurs voient :
 
 - "`<service>` est exclu des mises à jour automatiques. La version `<nouvelle>` est disponible ; la version en service est `<actuelle>`." nomme le service, la version qu'il exécute et la version trouvée.
 - Une seconde ligne indique ce qu'on sait des vulnérabilités. Elle affiche "Pas vérifié pour les vulnérabilités connues." quand l'analyseur est désactivé ou n'a pas pu lire la version en service, et "La version en service n'a aucune vulnérabilité élevée ou critique connue qui ait un correctif." quand elle est propre. Sinon, elle compte les vulnérabilités élevées ou critiques de la version en service qui ont un correctif. Une version plus récente n'est vérifiée qu'une fois sur le serveur ; d'ici là, la ligne ajoute "On ne sait pas si `<nouvelle>` les corrige". Une fois sur le serveur, la ligne indique "`<nouvelle>` corrige `<n>` des `<m>` vulnérabilités élevées ou critiques connues de la version en service et en apporte `<k>` nouvelles.", et la page de confirmation les liste sous **Corrigées :** et **Nouvelles :**.
 
-L'avis disparaît quand la vérification nocturne n'a rien signalé depuis deux jours, pour ne jamais nommer une version que rien n'a vérifiée depuis. Vous confirmez vous-même le passage dans toutes les éditions, et rien ne fait évoluer un tel service de lui-même.
+L'avis disparaît quand aucune vérification n'a fait de rapport depuis deux jours, pour ne jamais nommer une version que rien n'a vérifiée depuis. Vous confirmez vous-même le passage dans toutes les éditions, et rien ne fait évoluer un tel service de lui-même.
 
 Pour appliquer la mise à jour :
 
