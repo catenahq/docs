@@ -21,7 +21,7 @@ All web traffic reaches the server through an encrypted Cloudflare tunnel, so no
 
 ## What each edition adds
 
-Community includes both tunnels, Cloudflare DDoS protection and one domain. Catena Pro and Catena Business add serving several separate domains from one server, each with its own sign-on, through the **Domains** panel. If a subscription ends, the extra domains stay stored but are no longer served. See the [edition comparison](https://catena.run/en/#pricing).
+Community includes both tunnels, Cloudflare DDoS protection and one domain. Catena Pro and Catena Business add serving several separate domains from one server, each with its own sign-on, added in **Settings** > **Domain**; see [Domain and Cloudflare](/en/configuration/domain/). If a subscription ends, the extra domains stay stored but are no longer served. See the [edition comparison](https://catena.run/en/#pricing).
 
 ## Limits
 

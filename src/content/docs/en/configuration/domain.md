@@ -1,6 +1,6 @@
 ---
 title: "Domain and Cloudflare"
-description: "Connecting your server to a Cloudflare domain: the API token and its permissions, applying the domain, renaming the infrastructure subdomains and attaching extra domains."
+description: "Connecting your server to a Cloudflare domain: the API token and its permissions, applying the domain, renaming the infrastructure subdomains and adding or removing extra domains."
 ---
 
 Every public address of the server is a name under one domain, served through a Cloudflare tunnel. Until you apply a domain, the server runs without public addresses, and you reach the panel through the SSH forward described in [Installation](/en/installation/).
@@ -81,14 +81,43 @@ When the panel's own name changes, **Server configuration** first shows "This da
 
 ## Extra domains
 
-A server on Catena Pro or Catena Business can serve several unlinked domains. Each one is a separate sign-on island: people using one domain never see another domain's login. Shared dashboards stay on the first (primary) domain. The editions are compared at [catena.run](https://catena.run/en/#pricing).
+Catena Pro serves several domains from one server. **Settings** > **Domain** lists the **First domain**, which you apply as described above, then the **Other domains**. Each domain is its own sign-on: people using one domain never see another domain's login. The shared dashboards stay on the first domain. The editions are compared at [catena.run](https://catena.run/en/#pricing).
 
-1. In Cloudflare, create a token with **Zone:DNS:Edit** scoped to the one domain to attach.
-2. Open the **Domains** panel in the menu.
-3. Paste the token in **Cloudflare API token (one domain)** and press **Attach domain**.
-4. Changes apply on the next configuration run: press **Apply the saved settings** in [Server settings](/en/configuration/server/).
+### Add a domain
 
-The token must reach exactly one domain, the one being attached. The table lists each domain with its role, Primary or Secondary. A primary domain cannot be removed while secondary ones exist ("remove the others first"); every other row has a **Remove** button. When a subscription lapses, secondary domains stay stored but are no longer served. See [Subscription](/en/configuration/subscription/).
+The domain must be in the same Cloudflare account as the first domain.
+
+1. In Cloudflare, create a token with **Zone:DNS:Edit** on the domain to add.
+2. Open **Settings** > **Domain**.
+3. In **Other domains**, paste the token in **Cloudflare API token for this domain**. The domains it reaches fill the list.
+4. Choose the domain in **Domain**, then press **Add the domain**.
+
+The server saves the domain and applies the domain list: "Saved. The server applies the domain list; services restart briefly." The first domain's tunnel is not replaced.
+
+If the domain is in another Cloudflare account, the panel refuses it: "This domain is in another Cloudflare account. Add a domain from the same Cloudflare account as the first domain."
+
+### Change the token of a domain
+
+Each extra domain has its own token. Paste the new token in the domain's row and press **Replace the token**.
+
+### Remove a domain
+
+Press **Remove** on the domain's row. This works on every edition. The server takes the domain's wildcard name down and keeps its token until that is done. The first domain has no **Remove**: to change it, apply another domain as the first domain.
+
+### The state of each domain
+
+Each row says where the domain stands:
+
+| Row | Meaning |
+|---|---|
+| "Served" | The domain is served. |
+| "Waiting for the next configuration run" | The domain is saved and the server has not applied it yet. |
+| "Not served: its Cloudflare token was refused" | Cloudflare refused the domain's token. The domain is left out while the other domains keep working. Press **Replace the token** with a working one. |
+| "Not served without Catena Pro" | The server has no subscription that covers several domains. |
+
+### Without a subscription
+
+When a subscription lapses, or without one, the extra domains stay saved but are no longer served. In place of the add form, the section reads "Upgrade to Pro to deploy your apps from multiple domains". You can only remove the extra domains: you cannot add a domain or replace a token. See [Subscription](/en/configuration/subscription/).
 
 ## Troubleshooting
 

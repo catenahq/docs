@@ -21,7 +21,7 @@ Tout le trafic web atteint le serveur par un tunnel Cloudflare chiffré : aucun 
 
 ## Ce qu'ajoute chaque édition
 
-Communauté comprend les deux tunnels, la protection contre les attaques par déni de service de Cloudflare et un domaine. Catena Pro et Catena Business ajoutent la desserte de plusieurs domaines distincts depuis un même serveur, chacun avec sa propre connexion, par le panneau **Domaines**. Si un abonnement prend fin, les domaines supplémentaires restent enregistrés mais ne sont plus servis. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté comprend les deux tunnels, la protection contre les attaques par déni de service de Cloudflare et un domaine. Catena Pro et Catena Business ajoutent la desserte de plusieurs domaines distincts depuis un même serveur, chacun avec sa propre connexion, ajoutés dans **Paramètres** > **Domaine** ; voir [Domaine et Cloudflare](/fr/configuration/domain/). Si un abonnement prend fin, les domaines supplémentaires restent enregistrés mais ne sont plus servis. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 
