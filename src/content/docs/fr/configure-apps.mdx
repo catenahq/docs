@@ -367,7 +367,7 @@ Sur n'importe quel service, facultatif, et lue sur le service qui la porte.
 |---|---|---|---|
 | `vps.auto-update` | `off`, `patch`, `minor`, `patch+minor`, `major` | `patch` | Jusqu'où la version de l'image peut avancer. `patch` garde les numéros majeur et mineur (`1.2.3` vers `1.2.9`). `minor` et `patch+minor` gardent le numéro majeur (`1.2.3` vers `1.9.0`). `major` accepte toute version plus récente (`1.2.3` vers `2.0.0`). `off` ne la change jamais. Une valeur invalide équivaut à `patch`. |
 
-Seules les images dotées d'une version complète sont mises à jour. Les services qui exécutent la même image avancent ensemble, selon la plus restrictive de leurs étiquettes; un service sans étiquette compte comme `patch`. Les mises à jour s'exécutent pendant l'entretien nocturne, qui exige Catena Pro ou Catena Business ([éditions](https://catena.run/fr/#pricing)); voir [Mises à jour](/fr/configuration/updates/).
+Une valeur peut lire un réglage, avec un défaut : `vps.auto-update=${UPDATE_LEVEL:-major}` prend la valeur du réglage `UPDATE_LEVEL` (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif)) et `major` tant qu'il n'est pas défini. Seules les images dotées d'une version complète sont mises à jour. Les services qui exécutent la même image avancent ensemble, selon la plus restrictive de leurs étiquettes; un service sans étiquette compte comme `patch`. Les mises à jour s'exécutent pendant l'entretien nocturne, qui exige Catena Pro ou Catena Business ([éditions](https://catena.run/fr/#pricing)); voir [Mises à jour](/fr/configuration/updates/).
 
 ### Ports publiés
 

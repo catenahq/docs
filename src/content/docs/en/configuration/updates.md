@@ -90,8 +90,9 @@ You add an application from a repository on the server's list (see [Add an app f
 2. **Trusted repository.** The update applies by itself. Catena's catalog is trusted. A repository you add is trusted only if you tick **Trusted: apply its updates by themselves**.
 3. **Repository that is not trusted.** The update is offered and waits for you. The tile shows "Update `<tag>` offered", and the **Update** part of the application's page, opened with the gear on its card, reads "Update to: `<version>`". Tick "Move to version `<version>` now" and press **Update to `<version>`**. The update then runs as a night's would, without the waiting period (see [Update an app by hand](#update-an-app-by-hand)).
 4. **Version older than 12 months.** When the version an application runs dates from more than 12 months ago, an update to a newer one is only offered, even from a trusted repository.
+5. **Beyond the update level.** A catalog app has the setting **Automatic updates: major, minor, patch or off** in its settings file, `major` by default (see [The vps.auto-update label](#the-vpsauto-update-label)). The nightly maintenance applies a newer tag only within that level: `minor` stays within the running major version, `patch` within the running minor version, and `off` moves nothing. A newer tag beyond the level is offered as in step 3, and the Log gives the reason. You confirm it as in step 3, whatever the level.
 
-A version whose content changes after Catena first saw it is refused and set aside. When the application declares versions it must pass through, the update goes through each of them in turn.
+A version whose content changes after Catena first saw it is refused and set aside. When the application declares versions it must pass through, the update goes through each of them in turn. When a newer major version of the application is published upstream and its repository has not released it, the Log says so once for each such major version, and the update waits until the repository releases it.
 
 Every update first holds the application: its address answers a bare 503 (service unavailable) until the update stands or its rollback is complete, with no page that says why, and the application's writers are kept still with its own backup mode or update steps when it declares them (see [Declare the backup mode and update steps](/en/configure-apps/#declare-the-backup-mode-and-update-steps-optional)). The update takes a copy of the application's databases and data first, then checks the application's health, and rolls back by itself when the application is less healthy than before (see [Rollback and quarantine](#rollback-and-quarantine)).
 
@@ -124,7 +125,9 @@ Only images pinned to a full version tag are updated automatically: `1.2.3`, `v1
 
 ### The vps.auto-update label
 
-An application's `vps.auto-update` label sets how far its tag may move, from `off` to `major`; its values are in the [label reference](/en/configure-apps/#updates). Applications default to `patch`, which keeps the major and minor numbers; Catena's own services follow the rule in [Catena's own services](#catenas-own-services). Services that share one image take the most restrictive label.
+An application's `vps.auto-update` label sets how far its tag may move, from `off` to `major`; its values are in the [label reference](/en/configure-apps/#updates). A catalog app's services carry `vps.auto-update=${UPDATE_LEVEL:-major}`, so the label reads the app's setting **Automatic updates: major, minor, patch or off** (`UPDATE_LEVEL`) in its settings file: `major` until you set `minor`, `patch` or `off`. The databases and caches of a catalog app keep a label of their own.
+
+An app added from a repository takes from a registry only the patch releases of its images, whatever the label. Its minor and major versions arrive as a newer tag of its repository (see [Apps added from a repository](#apps-added-from-a-repository)). An app you wrote yourself moves as its label says and defaults to `patch`, which keeps the major and minor numbers. Catena's own services follow the rule in [Catena's own services](#catenas-own-services). Services that share one image take the most restrictive label.
 
 ### Waiting period and vulnerability gate
 
@@ -145,7 +148,7 @@ Before one of Catena's own services that keeps data moves to a new version, its 
 
 ### Services kept off the automatic updates
 
-A catalog app's template can set `vps.auto-update=off` on a service whose files a new version may rewrite past what the version before it reads. The nightly maintenance never moves such a service. Two catalog services are kept off this way: Plane's object storage and Zammad's search index (Elasticsearch).
+A catalog app's template can set `vps.auto-update=off` on a service whose files a new version may rewrite past what the version before it reads. The nightly maintenance never moves such a service. One catalog service is kept off this way: Plane's object storage.
 
 On Catena Pro, the nightly maintenance checks each of these services for a newer version. When it finds one, the app's tile on the **Apps** tab shows a notice that only administrators see:
 
@@ -200,6 +203,8 @@ The **Log** page records every update decision, among them:
 | `<app>` was updated to `<version>` but the update could not be recorded, so applying the saved settings puts the previous version back. |
 | The update of `<app>` to `<version>` was rolled back but its record could not be cleared, so applying the saved settings may install `<version>` again. |
 | The nightly update leaves `<app>` alone: a service of it is not running. Its updates resume once the service runs. |
+| An update of `<app>` to `<version>` waits for an administrator to confirm it: `<reason>`. |
+| `<app>`: version `<version>` is published, and its repository has not released it yet. The update waits until it does. |
 
 ## Update an app by hand
 
@@ -213,7 +218,7 @@ From the press, the button reads **Updating** and stays greyed out until the upd
 
 The update takes a copy of the app's databases and data first, checks the app's health afterwards and puts the previous version back by itself if the app is less healthy than before (see [Rollback and quarantine](#rollback-and-quarantine)). It skips the waiting period, as an update you start always does.
 
-An update moves an app at most one major version at a time, whether the nightly maintenance or you start it, and an image whose `vps.auto-update` label is `major` follows the same bound. When the repository publishes a later major version, the **Update** part says that it comes after this update: once this update stands, the part offers the next one. The server refuses a version that is not newer than the one running, that was set aside after a rollback or that is more than one major version ahead, and gives the reason in the part. The part reads "This is the newest version its repository publishes." when there is nothing to move to, and a held update shows why, for example files changed by hand (see [Apps changed outside Catena](#apps-changed-outside-catena)).
+An update moves an app at most one major version at a time, whether the nightly maintenance or you start it. When the repository publishes a later major version, the **Update** part says that it comes after this update: once this update stands, the part offers the next one. The server refuses a version that is not newer than the one running, that was set aside after a rollback or that is more than one major version ahead, and gives the reason in the part. The part reads "This is the newest version its repository publishes." when there is nothing to move to, and a held update shows why, for example files changed by hand (see [Apps changed outside Catena](#apps-changed-outside-catena)).
 
 ## Community: applications
 
@@ -229,3 +234,5 @@ Without the nightly maintenance, Catena looks for no newer version of your appli
 | The version list is replaced by a text box | The registry could not be reached; type the version. |
 | An application is never updated, though its repository has newer versions | The application's page shows why: a badge such as **Files changed by hand** (see [Apps changed outside Catena](#apps-changed-outside-catena)), or an offer waiting for you because the repository is not trusted. The **Update** part says why an update is held. |
 | The nightly update leaves an application alone | Fix the service that is down. The next nightly update takes the application again once every service runs. |
+| The Log says an update "waits for an administrator to confirm it" | The reason names the cause. When it is the update level, confirm the update from the app's page (see [Update an app by hand](#update-an-app-by-hand)), or change **Automatic updates** in the app's settings. |
+| The Log says a version "is published, and its repository has not released it yet" | Nothing is wrong on your server. The app stays on its version until its repository releases that one. |

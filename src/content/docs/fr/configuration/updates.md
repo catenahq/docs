@@ -90,8 +90,9 @@ Vous ajoutez une application depuis un dépôt de la liste du serveur (voir [Ajo
 2. **Dépôt de confiance.** La mise à jour s'applique d'elle-même. Le catalogue de Catena est de confiance. Un dépôt que vous ajoutez ne l'est que si vous cochez **De confiance : appliquer ses mises à jour d'elles-mêmes**.
 3. **Dépôt qui n'est pas de confiance.** La mise à jour est proposée et attend votre décision. La tuile affiche "Mise à jour `<étiquette>` proposée", et la partie **Mise à jour** de la page de l'application, qu'ouvre l'engrenage de sa carte, indique "Mise à jour vers : `<version>`". Cochez "Passer à la version `<version>` maintenant" et appuyez sur **Mettre à jour vers `<version>`**. La mise à jour se déroule alors comme celle d'une nuit, sans le délai d'attente (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)).
 4. **Version de plus de 12 mois.** Lorsque la version qu'exécute une application date de plus de 12 mois, la mise à jour vers une version plus récente est seulement proposée, même depuis un dépôt de confiance.
+5. **Au-delà du niveau de mise à jour.** Une application du catalogue a le réglage **Mises à jour automatiques : major, minor, patch ou off** dans son fichier de réglages, `major` par défaut (voir [L'étiquette vps.auto-update](#létiquette-vpsauto-update)). L'entretien nocturne n'applique une étiquette plus récente que dans ce niveau : `minor` reste dans la version majeure en service, `patch` dans la version mineure en service, et `off` ne fait rien avancer. Une étiquette plus récente au-delà du niveau est proposée comme à l'étape 3, et le Journal en donne la raison. Vous la confirmez comme à l'étape 3, quel que soit le niveau.
 
-Une version dont le contenu change après que Catena l'a vue pour la première fois est refusée et mise de côté. Lorsque l'application déclare des versions par lesquelles elle doit passer, la mise à jour les traverse l'une après l'autre.
+Une version dont le contenu change après que Catena l'a vue pour la première fois est refusée et mise de côté. Lorsque l'application déclare des versions par lesquelles elle doit passer, la mise à jour les traverse l'une après l'autre. Lorsqu'une version majeure plus récente de l'application est publiée en amont et que son dépôt ne l'a pas encore livrée, le Journal le dit une fois pour chacune de ces versions majeures, et la mise à jour attend que le dépôt la livre.
 
 Chaque mise à jour commence par retenir l'application : son adresse répond un simple 503 (service indisponible) jusqu'à ce que la mise à jour tienne ou que son retour arrière soit terminé, sans page qui en explique la raison, et les écritures de l'application sont immobilisées par son propre mode de sauvegarde ou ses propres étapes de mise à jour lorsqu'elle en déclare (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](/fr/configure-apps/#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)). La mise à jour fait d'abord une copie des bases de données et des données de l'application, vérifie ensuite sa santé, et revient en arrière d'elle-même lorsque l'application est en moins bon état qu'avant (voir [Retour arrière et quarantaine](#retour-arrière-et-quarantaine)).
 
@@ -124,7 +125,9 @@ Seules les images épinglées à une étiquette de version complète sont mises 
 
 ### L'étiquette vps.auto-update
 
-L'étiquette `vps.auto-update` d'une application détermine jusqu'où son numéro de version peut avancer, de `off` à `major`; ses valeurs figurent dans la [référence des étiquettes](/fr/configure-apps/#mises-à-jour). Les applications ont `patch` par défaut, qui garde les numéros majeur et mineur; les services propres à Catena suivent la règle de [Services propres à Catena](#services-propres-à-catena). Des services qui partagent une même image prennent l'étiquette la plus restrictive.
+L'étiquette `vps.auto-update` d'une application détermine jusqu'où son numéro de version peut avancer, de `off` à `major`; ses valeurs figurent dans la [référence des étiquettes](/fr/configure-apps/#mises-à-jour). Les services d'une application du catalogue portent `vps.auto-update=${UPDATE_LEVEL:-major}` : l'étiquette lit donc le réglage **Mises à jour automatiques : major, minor, patch ou off** (`UPDATE_LEVEL`) du fichier de réglages de l'application, `major` tant que vous ne choisissez pas `minor`, `patch` ou `off`. Les bases de données et les caches d'une application du catalogue gardent une étiquette qui leur est propre.
+
+Une application ajoutée depuis un dépôt ne prend d'un registre que les versions correctives de ses images, quelle que soit l'étiquette. Ses versions mineures et majeures arrivent sous forme d'une étiquette plus récente de son dépôt (voir [Applications ajoutées depuis un dépôt](#applications-ajoutées-depuis-un-dépôt)). Une application que vous avez écrite vous-même avance selon son étiquette et a `patch` par défaut, qui garde les numéros majeur et mineur. Les services propres à Catena suivent la règle de [Services propres à Catena](#services-propres-à-catena). Des services qui partagent une même image prennent l'étiquette la plus restrictive.
 
 ### Délai d'attente et barrière de vulnérabilités
 
@@ -145,7 +148,7 @@ Avant qu'un service propre à Catena qui conserve des données passe à une nouv
 
 ### Services exclus des mises à jour automatiques
 
-Le modèle d'une application du catalogue peut poser `vps.auto-update=off` sur un service dont une nouvelle version risque de réécrire ses fichiers au-delà de ce que la version précédente sait lire. L'entretien nocturne ne fait jamais avancer un tel service. Deux services du catalogue sont ainsi exclus : le stockage d'objets de Plane et l'index de recherche de Zammad (Elasticsearch).
+Le modèle d'une application du catalogue peut poser `vps.auto-update=off` sur un service dont une nouvelle version risque de réécrire ses fichiers au-delà de ce que la version précédente sait lire. L'entretien nocturne ne fait jamais avancer un tel service. Un service du catalogue est ainsi exclu : le stockage d'objets de Plane.
 
 Avec Catena Pro, l'entretien nocturne cherche une version plus récente pour chacun de ces services. S'il en trouve une, la tuile de l'application, dans l'onglet **Applications**, affiche un avis que seuls les administrateurs voient :
 
@@ -200,6 +203,8 @@ La page **Journal** consigne chaque décision de mise à jour, notamment :
 | `<application>` a été mis à jour vers `<version>`, mais la mise à jour n'a pas pu être enregistrée; l'application des paramètres enregistrés remet donc la version précédente. |
 | La mise à jour de `<application>` vers `<version>` a été annulée, mais son enregistrement n'a pas pu être effacé; l'application des paramètres enregistrés pourrait donc réinstaller `<version>`. |
 | La mise à jour nocturne laisse `<application>` de côté : un de ses services ne fonctionne pas. Ses mises à jour reprennent dès que le service fonctionne. |
+| Une mise à jour de `<application>` vers `<version>` attend la confirmation d'un administrateur : `<raison>`. |
+| `<application>` : la version `<version>` est publiée, et son dépôt ne l'a pas encore livrée. La mise à jour attend qu'il le fasse. |
 
 ## Mettre une application à jour à la main
 
@@ -213,7 +218,7 @@ Dès que vous appuyez, le bouton indique **Mise à jour en cours** et reste gris
 
 La mise à jour fait d'abord une copie des bases de données et des données de l'application, vérifie ensuite sa santé et remet la version précédente d'elle-même si l'application est en moins bon état qu'avant (voir [Retour arrière et quarantaine](#retour-arrière-et-quarantaine)). Elle saute le délai d'attente, comme toute mise à jour que vous lancez.
 
-Une mise à jour fait avancer une application d'une version majeure à la fois au plus, qu'elle soit lancée par l'entretien nocturne ou par vous, et une image dont l'étiquette `vps.auto-update` est `major` suit la même limite. Quand le dépôt publie une version majeure plus tardive, la partie **Mise à jour** dit qu'elle viendra après celle-ci : une fois cette mise à jour en place, la partie propose la suivante. Le serveur refuse une version qui n'est pas plus récente que celle en service, qui a été mise de côté après un retour arrière ou qui dépasse d'une version majeure, et en donne la raison dans la partie. La partie indique "C'est la version la plus récente que publie son dépôt." quand il n'y a rien vers quoi passer, et une mise à jour retenue montre pourquoi, par exemple des fichiers modifiés à la main (voir [Applications modifiées hors de Catena](#applications-modifiées-hors-de-catena)).
+Une mise à jour fait avancer une application d'une version majeure à la fois au plus, qu'elle soit lancée par l'entretien nocturne ou par vous. Quand le dépôt publie une version majeure plus tardive, la partie **Mise à jour** dit qu'elle viendra après celle-ci : une fois cette mise à jour en place, la partie propose la suivante. Le serveur refuse une version qui n'est pas plus récente que celle en service, qui a été mise de côté après un retour arrière ou qui dépasse d'une version majeure, et en donne la raison dans la partie. La partie indique "C'est la version la plus récente que publie son dépôt." quand il n'y a rien vers quoi passer, et une mise à jour retenue montre pourquoi, par exemple des fichiers modifiés à la main (voir [Applications modifiées hors de Catena](#applications-modifiées-hors-de-catena)).
 
 ## Applications avec Communauté
 
@@ -229,3 +234,5 @@ Sans l'entretien nocturne, Catena ne cherche aucune version plus récente de vos
 | La liste de versions est remplacée par une zone de texte | Le registre n'a pas pu être joint; saisissez la version. |
 | Une application ne se met jamais à jour, bien que son dépôt ait des versions plus récentes | La page de l'application en donne la raison : un badge comme **Fichiers modifiés à la main** (voir [Applications modifiées hors de Catena](#applications-modifiées-hors-de-catena)), ou une mise à jour proposée qui attend votre décision parce que le dépôt n'est pas de confiance. La partie **Mise à jour** dit pourquoi une mise à jour est retenue. |
 | La mise à jour nocturne laisse une application de côté | Corrigez le service arrêté. La mise à jour nocturne suivante reprend l'application dès que tous ses services fonctionnent. |
+| Le Journal dit qu'une mise à jour "attend la confirmation d'un administrateur" | La raison en nomme la cause. Quand c'est le niveau de mise à jour, confirmez la mise à jour depuis la page de l'application (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)), ou changez **Mises à jour automatiques** dans les réglages de l'application. |
+| Le Journal dit qu'une version "est publiée, et son dépôt ne l'a pas encore livrée" | Rien n'est anormal sur votre serveur. L'application reste à sa version jusqu'à ce que son dépôt livre celle-là. |
