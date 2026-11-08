@@ -82,9 +82,9 @@ Enregistrer une adresse déjà sur la liste change sa confiance et son jeton. **
 
 Un dépôt contient un dossier par application sous `blueprints/`, soit `blueprints/<application>/docker-compose.yml` avec les autres fichiers de l'application à côté, au plus 500 fichiers et 5 Mio, sans lien ni sous-module. Il publie chaque version sous forme d'étiquette écrite `<application>/<version>-<révision>`, comme `my-app/1.2.3-1`, où la version et la révision utilisent des lettres, des chiffres et les caractères `.`, `_`, `+` et `-`.
 
-Catena lit les fichiers d'un dépôt comme des données et les vérifie avant de les déployer. Seul un fichier inchangé du catalogue de Catena peut donner à une application le réseau du serveur ou le moteur de conteneurs, lire des secrets stockés ou prendre des valeurs qu'une autre application fournit. Tout autre fichier qui les demande est refusé.
+Catena lit les fichiers d'un dépôt comme des données et les vérifie avant de les déployer. Seul un fichier du catalogue de Catena peut donner à une application le réseau du serveur ou le moteur de conteneurs, et seulement ceux que son bloc `x-catena` déclare. C'est le cas que le fichier soit inchangé ou que vous l'ayez modifié à la main; dans le second cas, la page de l'application et sa carte nomment chacun de ceux avec lesquels elle tourne. Seul un fichier inchangé du catalogue de Catena peut lire des secrets stockés ou prendre des valeurs qu'une autre application fournit. Tout autre fichier qui les demande est refusé.
 
-Un fichier du catalogue de Catena que vous modifiez à la main perd ces droits, mais l'application continue de tourner : Catena la démarre et la redémarre avec les fichiers qu'elle contient, et ne lui donne aucune nouvelle valeur tant que le fichier n'est pas redevenu celui du catalogue. La page de l'application et sa carte disent ce qui est retenu, et une application qui lit des valeurs de celle-ci garde celles qu'elle a. Une restauration ou un déplacement la remet telle qu'elle a été sauvegardée.
+Un fichier du catalogue de Catena que vous modifiez à la main perd les secrets stockés et les valeurs des autres applications, mais l'application continue de tourner : Catena la démarre et la redémarre avec les fichiers qu'elle contient, et ne lui donne aucune nouvelle valeur tant que le fichier n'est pas redevenu celui du catalogue. La page de l'application et sa carte disent ce qui est retenu, et une application qui lit des valeurs de celle-ci garde celles qu'elle a. Une restauration ou un déplacement la remet telle qu'elle a été sauvegardée.
 
 ### Ce qu'une application peut demander à Catena
 
@@ -462,11 +462,11 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | Règle | Niveau | Ce qu'elle signale |
 |---|---|---|
 | <a id="x1"></a>X1 | erreur | `privileged: true`. |
-| <a id="x2"></a>X2 | erreur | Le réseau propre du serveur (`network_mode: host`, ou le réseau externe `host`). Un fichier déployé tel quel depuis le catalogue de Catena dont le bloc le déclare passe. |
+| <a id="x2"></a>X2 | erreur | Le réseau propre du serveur (`network_mode: host`, ou le réseau externe `host`). Un fichier du catalogue de Catena dont le bloc le déclare passe, inchangé ou modifié à la main. |
 | <a id="x3"></a>X3 | erreur | `pid: host`, qui montre chaque processus du serveur. |
 | <a id="x4"></a>X4 | erreur | `ipc: host`, qui atteint la mémoire partagée d'autres processus. |
 | <a id="x5"></a>X5 | erreur | `devices`, qui atteint le matériel du serveur. |
-| <a id="x6"></a>X6 | erreur | Le socket Docker monté dans le service, qui contrôle chaque conteneur. Un fichier déployé tel quel depuis le catalogue de Catena dont le bloc le déclare passe. |
+| <a id="x6"></a>X6 | erreur | Le socket Docker monté dans le service, qui contrôle chaque conteneur. Un fichier du catalogue de Catena dont le bloc le déclare passe, inchangé ou modifié à la main. |
 | <a id="x7"></a>X7 | avertissement | `cap_add` : des capacités ajoutées. Ne gardez chacune que si l'application en a besoin. |
 | <a id="x8"></a>X8 | avertissement | Un dossier du serveur monté hors de la zone des applications : l'application lit les fichiers du serveur. |
 | <a id="x9"></a>X9 | avertissement | Un port publié sur le serveur, joignable depuis Internet sans connexion. |

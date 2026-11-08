@@ -82,9 +82,9 @@ Saving an address already on the list changes its trust and its token. **Remove*
 
 A repository holds one folder per app under `blueprints/`, as `blueprints/<app>/docker-compose.yml` with the app's other files beside it, at most 500 files and 5 MiB, with no link or submodule. It publishes each version as a tag spelled `<app>/<version>-<revision>`, such as `my-app/1.2.3-1`, where the version and the revision use letters, digits and the characters `.`, `_`, `+` and `-`.
 
-Catena reads a repository's files as data and checks them before it deploys them. Only an unchanged file of Catena's catalog may give an app the server's network or the container engine, read stored secrets, or take values that another app provides. Any other file that asks for them is refused.
+Catena reads a repository's files as data and checks them before it deploys them. Only a file of Catena's catalog may give an app the server's network or the container engine, and only the ones its `x-catena` block declares. This holds whether the file is unchanged or you changed it by hand; in the second case, the app's page and its card name each one the app runs with. Only an unchanged file of Catena's catalog may read stored secrets or take values that another app provides. Any other file that asks for them is refused.
 
-A file of Catena's catalog that you change by hand loses those rights, but the app keeps running: Catena starts it and restarts it with the files it holds, and gives it no new value until the file is the catalog's again. The app's page and its card say what is held, and an app that reads values from it keeps the ones it has. A restore or a move brings it back as it was backed up.
+A file of Catena's catalog that you change by hand loses the stored secrets and the values of other apps, but the app keeps running: Catena starts it and restarts it with the files it holds, and gives it no new value until the file is the catalog's again. The app's page and its card say what is held, and an app that reads values from it keeps the ones it has. A restore or a move brings it back as it was backed up.
 
 ### What an app can ask of Catena
 
@@ -462,11 +462,11 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | Rule | Level | What it reports |
 |---|---|---|
 | <a id="x1"></a>X1 | error | `privileged: true`. |
-| <a id="x2"></a>X2 | error | The server's own network (`network_mode: host`, or the external `host` network). A file deployed unchanged from Catena's catalog whose block declares it passes. |
+| <a id="x2"></a>X2 | error | The server's own network (`network_mode: host`, or the external `host` network). A file of Catena's catalog whose block declares it passes, unchanged or changed by hand. |
 | <a id="x3"></a>X3 | error | `pid: host`, which shows every process of the server. |
 | <a id="x4"></a>X4 | error | `ipc: host`, which reaches the shared memory of other processes. |
 | <a id="x5"></a>X5 | error | `devices`, which reaches the server's hardware. |
-| <a id="x6"></a>X6 | error | The Docker socket mounted in the service, which controls every container. A file deployed unchanged from Catena's catalog whose block declares it passes. |
+| <a id="x6"></a>X6 | error | The Docker socket mounted in the service, which controls every container. A file of Catena's catalog whose block declares it passes, unchanged or changed by hand. |
 | <a id="x7"></a>X7 | warning | `cap_add`: added capabilities. Keep each only if the app needs it. |
 | <a id="x8"></a>X8 | warning | A server folder mounted outside the apps area: the app reads the server's files. |
 | <a id="x9"></a>X9 | warning | A port published on the server, reachable from the internet without signing in. |
