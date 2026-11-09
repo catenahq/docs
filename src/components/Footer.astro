@@ -1,0 +1,25 @@
+---
+// Starlight's page footer plus a link to the privacy page of catena.run, which
+// covers this site too.
+import Default from "@astrojs/starlight/components/Footer.astro";
+const locale = Astro.locals.starlightRoute.locale === "fr" ? "fr" : "en";
+const label = locale === "fr" ? "Confidentialité" : "Privacy";
+---
+<Default />
+<p class="privacy">
+  <a href={`https://catena.run/${locale}/privacy`}>{label}</a>
+</p>
+
+<style>
+  .privacy {
+    margin: 0 auto 1.5rem;
+    text-align: center;
+    font-size: var(--sl-text-xs);
+  }
+  .privacy a {
+    color: var(--sl-color-gray-3);
+  }
+  .privacy a:hover {
+    color: var(--sl-color-white);
+  }
+</style>

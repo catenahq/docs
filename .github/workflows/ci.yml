@@ -82,6 +82,9 @@ jobs:
         # versions (the documentation names no product version), prose
         # (comments describe the code, not its history).
         uses: catenahq/contracts/.github/actions/new-failures-only@main
+        env:
+          PUBLIC_UMAMI_SCRIPT_URL: ${{ vars.UMAMI_SCRIPT_URL }}
+          PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
         with:
           working-directory: ${{ github.workspace }}/docs
           repo-path: ${{ github.workspace }}/docs

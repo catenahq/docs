@@ -1,9 +1,30 @@
 ---
-// Starlight's head plus Inter, self-hosted through the Astro Fonts API with the
+// Starlight's head, the Umami tag, plus Inter, self-hosted through the Astro Fonts API with the
 // entry the website shares (@catenahq/contracts brand/fonts.mjs, listed in
 // astro.config.mjs).
 import Default from "@astrojs/starlight/components/Head.astro";
 import { Font } from "astro:assets";
+
+// Self-hosted Umami visit counting, wired at build time. The tag is emitted
+// only when both variables are set. It counts docs.catena.run only
+// (data-domains), skips browsers that ask not to be tracked and drops the
+// query string.
+//
+//   PUBLIC_UMAMI_SCRIPT_URL  address of the Umami script
+//   PUBLIC_UMAMI_WEBSITE_ID  the site's id in the Umami dashboard
+const umamiScriptUrl = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL as string | undefined;
+const umamiWebsiteId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID as string | undefined;
 ---
 <Default />
 <Font cssVariable="--font-inter" preload />
+{umamiScriptUrl && umamiWebsiteId && (
+  <script
+    is:inline
+    defer
+    src={umamiScriptUrl}
+    data-website-id={umamiWebsiteId}
+    data-domains="docs.catena.run"
+    data-do-not-track="true"
+    data-exclude-search="true"
+  />
+)}
