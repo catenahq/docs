@@ -8,7 +8,7 @@ Des copies chiffrées de toutes les données des applications et de la configura
 ## Fonctionnement des sauvegardes
 
 - **Stockage et chiffrement.** restic chiffre sur le serveur avant tout envoi. Le dépôt est une seule adresse, de la forme `s3:https://<point-d-acces>/<seau>`, que vous saisissez dans **Paramètres** > **Dépôt de sauvegarde** avec ses deux clés S3. Le serveur génère le mot de passe de sauvegarde dans **Paramètres** > **Mot de passe de sauvegarde**, l'affiche une seule fois et ne le conserve nulle part ailleurs : enregistrez-le dans un gestionnaire de mots de passe. Vous pouvez le vérifier contre le dépôt ou le changer, ce qui ré-encode le dépôt.
-- **Contenu.** Les données et volumes des applications, la configuration du serveur (dont `/etc/catena/config.json`) et la piste d'audit. Vous déclarez les dossiers supplémentaires dans **Autres dossiers à sauvegarder**; un conteneur qui monte un chemin hors de l'ensemble sauvegardé fait échouer l'exécution plutôt que d'être ignoré en silence.
+- **Contenu.** Les données et volumes des applications, la configuration du serveur (dont `/etc/catena/config.json`) et la piste d'audit. Vous déclarez les dossiers supplémentaires dans **Autres dossiers à sauvegarder**, comme un disque que vous attachez pour les fichiers d'une application (voir [Garder les fichiers d'une application sur un disque que vous attachez](/fr/configuration/backups/#garder-les-fichiers-dune-application-sur-un-disque-que-vous-attachez)); un conteneur qui monte un chemin hors de l'ensemble sauvegardé fait échouer l'exécution plutôt que d'être ignoré en silence.
 - **Bases de données.** Avant chaque instantané, chaque conteneur en marche dont l'image est une image PostgreSQL, son nom contenant `postgres` ou commençant par `postgis`, `timescale` ou `pgvector`, est exporté avec `pg_dumpall`, de même que chaque conteneur MariaDB ou MySQL (qui exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD` dans son environnement). Les exports sont des fichiers SQL en clair, un par serveur de bases de données, compressés par le stockage des sauvegardes : chaque sauvegarde après la première n'envoie donc que ce qui a changé. Un export qui échoue pour une base en marche fait échouer la sauvegarde. Une sauvegarde attend jusqu'à dix minutes que la base de chaque application soit en marche; une base encore arrêtée après ce délai est laissée de côté et l'exécution est signalée comme échouée, avec le nom de l'application. Les bases des services de surveillance (Gatus, Healthchecks et Beszel) sont copiées entières avant chaque instantané, pendant qu'ils fonctionnent ; une copie qui échoue fait échouer la sauvegarde, et une restauration du serveur complet redémarre chaque service sur sa copie. Les autres moteurs, comme MongoDB ou le fichier SQLite propre à une application, n'ont aucun export automatique.
 - **Rétention.** Par défaut : 24 horaires, 7 quotidiens, 4 hebdomadaires et 6 mensuels, que vous pouvez modifier dans la page **Horaires**. Les sauvegardes au-delà de ces nombres sont supprimées une fois par jour, et avant chaque copie hors site. D'ici là, chaque sauvegarde reste affichée et restaurable.
 - **Cadence.** Un bouton de sauvegarde est toujours offert dans **Actions**. Un horaire de sauvegarde (le dimanche à 3 h par défaut) reste désactivé jusqu'à ce que vous l'activiez. Sans abonnement payant, il s'exécute au plus une fois par semaine, le jour et à l'heure de votre choix; Catena Pro et Catena Business ajoutent les cadences quotidiennes et personnalisées. Healthchecks reçoit un signal après chaque exécution.
@@ -24,7 +24,7 @@ Un nouveau serveur tire depuis l'ancien avec **Migrer ici un serveur en service*
 
 ## Copies hors site
 
-**Copies hors site** copie chaque seau déclaré vers un seau verrouillé (Object Lock) chez un autre fournisseur, en ajout seulement : rien n'est jamais supprimé. Vous pouvez restaurer depuis une copie sur place, ou remettre un seau en place depuis elle.
+**Copies hors site** garde une copie non réinscriptible du dépôt de sauvegarde dans un seau verrouillé (Object Lock) chez un autre fournisseur, en ajout seulement : rien n'est jamais supprimé. Vous pouvez restaurer depuis une copie sur place, ou remettre un seau en place depuis elle. La copie de tout autre seau est une copie planifiée ordinaire qu'aucune restauration ne rattache à une application.
 
 ## Ce qu'ajoute chaque édition
 
@@ -33,9 +33,8 @@ Communauté offre les sauvegardes manuelles, une sauvegarde planifiée au plus u
 ## Limites
 
 - Il vous faut un dépôt compatible S3, et si vous perdez le mot de passe de sauvegarde, les sauvegardes deviennent illisibles.
-- Un seau de fichiers copié hors site n'est restaurable qu'accompagné d'un instantané de base de données du même moment.
 - Restaurer une application ne ramène pas en arrière les réglages du serveur.
-- Une sauvegarde que la tâche **Sauvegarde** exécute selon son propre horaire ramène la base de données d'une application et les fichiers de ses volumes au moment de cette sauvegarde, sans mode maintenance autour. Les fichiers qu'une application garde dans son propre seau de stockage reviennent tels que le seau les contient, ou tels qu'à sa dernière copie hors site. Les applications ne sont mises en mode maintenance que pour la sauvegarde de la maintenance.
+- Une sauvegarde ramène la base de données d'une application et ses fichiers au moment de cette sauvegarde. Une application qui ne déclare aucun mode sauvegarde reste en marche pendant la sauvegarde : ses fichiers sont donc tels qu'ils étaient pendant l'utilisation.
 
 ## Configuration
 

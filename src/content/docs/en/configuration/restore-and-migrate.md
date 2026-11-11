@@ -24,6 +24,8 @@ The restore replaces data and nothing else. Applications are stopped while their
 
    When you choose a backup, the list also shows, under **Applications no longer on this server**, the applications that backup holds and this server does not run, such as one you removed together with its data. Tick one to bring it back with its data and the version recorded in the backup, as for any other application. Nothing is listed when the backup holds no application that is missing from the server. A name the server does not run and the backup does not hold is refused before anything changes.
 
+   A single application also gets back the folders it keeps under **Other folders to back up**, such as a disk you attach, and nothing else of those folders' disks (see [Keep an application's files on a disk you attach](/en/configuration/backups/#keep-an-applications-files-on-a-disk-you-attach)).
+
    Without a Pro subscription the scope choice is not shown, and a single-application request is refused with "Restoring a single application is not available on this plan."
 5. Under **Start the restore**, tick "I understand my applications will be unavailable during the restore." The duration scales with the amount of data.
 6. Press **Restore the selected backup**.
@@ -32,7 +34,7 @@ The option "Copy the data only and start nothing. Use this to get ready for a mi
 
 ### Progress
 
-The **Restore status** section names the step in progress, in this order: Checks before anything is touched (this includes the version rule below), Recording what is running now, Stopping the applications, Copying data back, Downloading the applications, Loading the saved settings, Starting the core services, Leaving the applications stopped, Applying the saved settings to this server, Bringing the applications back, Restoring the databases, Bringing the applications up to date, Checking the stored files, Final checks, and Finished.
+The **Restore status** section names the step in progress, in this order: Checks before anything is touched (this includes the version rule below), Recording what is running now, Stopping the applications, Copying data back, Downloading the applications, Loading the saved settings, Starting the core services, Leaving the applications stopped, Applying the saved settings to this server, Bringing the applications back, Restoring the databases, Bringing the applications up to date, Final checks, and Finished.
 
 A finished restore reads "The applications this restore brought back stay stopped until they are started.", with a link to the section below.
 
@@ -55,6 +57,16 @@ Each backup records the Catena version that made it. The restore compares it wit
 
 A refusal happens in the first step, before anything is touched.
 
+### Disks a restore writes to
+
+Each backup records which of the folders under **Other folders to back up** lie on a mounted disk. The first step refuses, names the folder and changes nothing in these cases:
+
+- A folder the restore writes into was on a mounted disk when the backup was taken and is not mounted now. Mount the disk at that path, then start the restore again.
+- The disk mounted there lacks room for the files the backup holds for it. The files the restore replaces count as room. Free space on the disk, or mount a larger one, then start the restore again.
+- A single-application restore concerns an application that kept its files in a folder this server no longer lists under **Other folders to back up**. Add the folder in **Settings** > **Backup repository**, then start the restore again.
+
+A backup that carries no such record gets no disk check. See [Keep an application's files on a disk you attach](/en/configuration/backups/#keep-an-applications-files-on-a-disk-you-attach).
+
 ## Start the applications after a restore
 
 A restore cannot tell whether an application's data was compromised before the backup was taken, so the client applications it brought back stay stopped until you start them. A whole-server restore leaves every client application stopped, and a restore of a single application leaves that application stopped. Catena's own services (the panel, the sign-in and the connection) start as before. Starting the applications works in every edition. Until you start an application, it stays stopped through updates and restarts.
@@ -66,7 +78,7 @@ While applications are left stopped, every panel page shows a banner: "Applicati
 3. Tick "I have checked these applications, or accept the risk of starting them".
 4. Press **Start the selected applications**.
 
-Starting an application brings its databases back from the backup where they did not survive, takes it out of the mode the backup put it in, and checks its stored files. The section follows the start step by step: Waiting for the backup, the offsite copy or an update to finish, Starting the applications, Restoring the databases, Bringing the applications up to date, Checking the stored files, Final checks, and Finished. While it runs the section reads "Starting the applications:" followed by the step, and when it ends, "The last start finished."
+Starting an application brings its databases back from the backup where they did not survive, and takes it out of the mode the backup put it in. The section follows the start step by step: Waiting for the backup, the offsite copy or an update to finish, Starting the applications, Restoring the databases, Bringing the applications up to date, Final checks, and Finished. While it runs the section reads "Starting the applications:" followed by the step, and when it ends, "The last start finished."
 
 An application that started leaves the list. One that did not come up is stopped again and stays listed with "Its last start did not finish:" followed by the reason, such as "no container of it came up: ...", "it did not start: ..." or "its stored definition names `<image>`, which none of its services ran when the backup was taken (...)". The reasons are shown in English. Fix the cause, then start the application again from the same section. If the whole start stops, the section reads "Starting the applications stopped at:" followed by the step. Starting the applications again runs every step again, and an application already up is not started a second time.
 
@@ -147,26 +159,16 @@ This copies a bucket's offsite copy back into the bucket it was copied from. It 
 1. Open **Restore** and go to **Put a bucket back from its offsite copy**. The section is shown once the server's installed components support it (see Troubleshooting). Without a declared copy it reads "No offsite copy is declared on this server. Offsite copies are declared in Settings, under Offsite copies."
 2. Under **Offsite copy to put back**, choose the copy. Each entry shows its name and the address of the bucket it puts back.
 3. Enter **Access key that reads the offsite copy** and **Secret key that reads the offsite copy**. They are used for this run only and kept nowhere.
-4. Optional: under **Application that keeps its files in this bucket**, choose the application when the bucket holds its files, such as Nextcloud. It is put in its backup mode while its files are copied back, then its stored files are checked against its database. Keep **None** for any other bucket, and for the backup repository.
-5. Optional: under **Into another bucket (optional)**, the fields start with the bucket the chosen copy is made from (**Address of the new bucket**) and its access key (**Access key that writes the new bucket**), so the files go back where they were. Leave **Secret key that writes the new bucket** blank to keep the secret the server holds. For the backup repository's copy the fields start empty, because the backup repository is never put back into its own bucket. To put the copy into another, empty bucket instead, replace the address, the access key and the secret key with that bucket's: a changed bucket or access key needs its secret. Enter **Region of the new bucket (optional)** when the storage provider names one: it is used for the application you chose in step 4. A bucket that holds anything is refused before the copy. With an application and a new bucket, the repair also switches the application to the new bucket (see [Point Nextcloud at the new bucket](#point-nextcloud-at-the-new-bucket)).
-6. Optional: under **As it was at (UTC, optional)**, enter a date and time to put back the files as the offsite copy held them at that moment, such as before they were encrypted or overwritten. The access key then needs the right to read earlier versions. Left blank, the latest versions are put back.
-7. Tick "I understand the bucket is written to while it is put back." and press **Put the bucket back**.
+4. Optional: under **Into another bucket (optional)**, the fields start with the bucket the chosen copy is made from (**Address of the new bucket**) and its access key (**Access key that writes the new bucket**), so the files go back where they were. Leave **Secret key that writes the new bucket** blank to keep the secret the server holds. For the backup repository's copy the fields start empty, because the backup repository is never put back into its own bucket. To put the copy into another, empty bucket instead, replace the address, the access key and the secret key with that bucket's: a changed bucket or access key needs its secret. A bucket that holds anything is refused before the copy.
+5. Optional: under **As it was at (UTC, optional)**, enter a date and time to put back the files as the offsite copy held them at that moment, such as before they were encrypted or overwritten. The access key then needs the right to read earlier versions. Left blank, the latest versions are put back.
+6. Tick "I understand the bucket is written to while it is put back." and press **Put the bucket back**.
 
-The section follows the repair step by step: Waiting for the backup, the offsite copy or an update to finish, Reaching both buckets, Checking the bucket can take the copy back, Putting the application in its backup mode, Copying the files back, Pointing the application and the offsite copy at the new bucket, Taking the application out of its backup mode, Checking the stored files, and Finished. When you chose no application, the three steps that involve one (backup mode in, backup mode out, checking the stored files) pass without doing anything. When you named no new bucket, the pointing step passes without doing anything too.
+The section follows the repair step by step: Waiting for the backup, the offsite copy or an update to finish, Reaching both buckets, Checking the bucket can take the copy back, Copying the files back, Pointing the offsite copy at the new bucket, and Finished. At the pointing step, the offsite copy of another bucket is declared to copy the new bucket from then on. The backup repository's copy moves when you save the new bucket as the backup destination. When you named no new bucket, the pointing step passes without doing anything.
 
 The copy writes into the bucket while it runs. A large bucket takes hours, and the storage provider may charge for the data read.
 
 If the repair stops, the section reads "Putting the bucket back stopped at:" followed by the step. Press **Put the bucket back** again with the same entries: starting again copies only what is still missing. The backup repository is never put back into its own bucket: a request to do so is refused before anything is copied. Save a new backup destination in **Settings**, under **Backup repository**, or name a new empty bucket for the copy to go into under **Into another bucket (optional)** and save that bucket as the backup destination (see [Choose how the backup repository carries on](#choose-how-the-backup-repository-carries-on)).
 
-### Point Nextcloud at the new bucket
-
-To move Nextcloud's files to a new bucket, the repair form does the whole move:
-
-1. Under **Application that keeps its files in this bucket**, choose Nextcloud.
-2. Under **Into another bucket (optional)**, fill **Address of the new bucket**, **Access key that writes the new bucket** and **Secret key that writes the new bucket**, and **Region of the new bucket (optional)** when the storage provider names one.
-3. Fill in the rest of the form as described above and press **Put the bucket back**.
-
-The repair copies the files into the new bucket. At the step Pointing the application and the offsite copy at the new bucket, it switches Nextcloud to the new bucket and its keys, renames Nextcloud's storage so its files stay readable, and makes the offsite copy copy the new bucket from then on. Nextcloud restarts on the new bucket. If the switch fails, Nextcloud's settings are put back. Nextcloud has to be running; a Nextcloud you stopped yourself is refused, so start it first. A Nextcloud a restore left stopped is switched when you start it from the **Restore** page (see [Start the applications after a restore](#start-the-applications-after-a-restore)).
 ### List the repositories in a locked bucket
 
 To find the backup repositories an offsite copy's locked bucket holds, such as the one a fresh start copies into its own folder:
@@ -255,6 +257,7 @@ After a completed migration the old server is stopped, not erased. Its data and 
 | "The applications this backup holds could not be read, so nothing was changed." | The server could not read the chosen backup to check an application it does not run. The reason follows, in English. Fix the cause, such as an unreachable repository, then start the restore again. |
 | "The applications this backup holds could not be listed." under **What to put back** | The same read failed when you chose a backup, so **Applications no longer on this server** shows nothing. The reason follows, in English. Fix the cause, then choose the backup again. |
 | "Bringing back an application removed from this server is not available yet: its installed components are older than this panel. Apply the saved settings in Settings, under Server configuration, then try again." | The server's installed components predate the feature. Open **Settings**, go to **Server configuration**, press **Apply the saved settings**, and try again once it finishes. |
+| The restore stops in its first step with "... was a mounted disk ... when snapshot ... was taken, and it is not mounted now" or "... need ..., and the disk mounted at ... has ... free" | A disk the restore writes to is not mounted, or has too little room. Nothing was changed. See [Disks a restore writes to](#disks-a-restore-writes-to). |
 | "A restore is running on this server. Wait for it to finish before migrating a live server here." | A migration cannot start during a restore. |
 | "A migration is already running on this server." | Wait for it, or use **Forget this migration** if it is unfinished. |
 | "The migration could not be started." | The request was not accepted. Check the ticket, the pairing code and the address (an IP address, not a name), and that the window is open on the old server. |

@@ -8,7 +8,7 @@ Encrypted copies of all app data and of the server's own configuration go to S3 
 ## How backups work
 
 - **Storage and encryption.** restic encrypts on the server before anything is uploaded. The repository is one address, written `s3:https://<endpoint>/<bucket>`, which you enter in **Settings** > **Backup repository** with its two S3 keys. The server generates the backup password in **Settings** > **Backup password**, shows it once and holds it nowhere else, so save it in a password manager. You can check it against the repository or change it, which re-keys the repository.
-- **What is included.** App data and volumes, the server's configuration (including `/etc/catena/config.json`) and the audit trail. You declare extra folders in **Other folders to back up**; a container that mounts a path outside the backup set makes the run fail rather than silently skip it.
+- **What is included.** App data and volumes, the server's configuration (including `/etc/catena/config.json`) and the audit trail. You declare extra folders in **Other folders to back up**, such as a disk you attach for an app's files (see [Keep an application's files on a disk you attach](/en/configuration/backups/#keep-an-applications-files-on-a-disk-you-attach)); a container that mounts a path outside the backup set makes the run fail rather than silently skip it.
 - **Databases.** Before each snapshot, every running container whose image is a PostgreSQL one, its name holding `postgres` or starting with `postgis`, `timescale` or `pgvector`, is exported with `pg_dumpall`, and every MariaDB or MySQL container is exported too (it needs `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in its environment). Exports are plain SQL files, one per database server, compressed by the backup storage, so each backup after the first sends only what changed. A failed export of a running database fails the backup. A backup waits up to ten minutes for each application's database to run; one still down after that is left out and the run is reported as failed, naming the application. The databases of the monitoring services (Gatus, Healthchecks and Beszel) are copied whole before each snapshot while they run, a copy that fails fails the backup, and a restore of the whole server starts each service on its copy. Other engines, such as MongoDB or an application's own SQLite file, get no automatic export.
 - **Retention.** The defaults keep 24 hourly, 7 daily, 4 weekly and 6 monthly snapshots, which you can edit on the **Schedules** page. Backups past these numbers are removed once a day, and before each offsite copy. Until then every backup stays listed and restorable.
 - **Cadence.** A backup button is always available in **Actions**. A backup schedule (Sunday at 03:00 by default) is off until you turn it on. Without a paid subscription it runs at most once a week, on the day and time you choose; Catena Pro and Catena Business add daily and custom cadences. Healthchecks receives a ping after each run.
@@ -24,7 +24,7 @@ A new server pulls from the old one with **Migrate a live server here**. The old
 
 ## Offsite copies
 
-**Offsite copies** copies each declared bucket to a locked bucket (Object Lock) at a different provider, additively: nothing is ever deleted. You can restore from a copy where it is, or put a bucket back from it.
+**Offsite copies** keeps a write-once copy of the backup repository in a locked bucket (Object Lock) at a different provider, additively: nothing is ever deleted. You can restore from a copy where it is, or put a bucket back from it. A copy of any other bucket is a plain scheduled copy that no restore matches to an application.
 
 ## What each edition adds
 
@@ -33,9 +33,8 @@ Community has manual backups, a scheduled backup at most once a week, snapshot b
 ## Limits
 
 - You need an S3-compatible repository, and if you lose the backup password the backups become unreadable.
-- A file bucket copied offsite is restorable only together with a database snapshot from the same moment.
 - Restoring one app does not roll back the server's settings.
-- A backup the **Backup** job runs on its own schedule brings an app's database and the files on its volumes back to that backup's moment, with no maintenance mode around it. Files an app keeps in its own storage bucket come back as the bucket holds them, or as of its last offsite copy. Apps are put in maintenance mode only for the maintenance's backup.
+- A backup brings an app's database and its files back to that backup's moment. An app that declares no backup mode keeps running during the backup, so its files are as they were while in use.
 
 ## Configuration
 
