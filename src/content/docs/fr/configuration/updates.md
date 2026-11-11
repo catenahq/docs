@@ -9,11 +9,11 @@ Un serveur Catena compte cinq couches qui se mettent à jour chacune à sa faço
 |---|---|---|
 | Système d'exploitation | Les mises à jour de sécurité s'appliquent automatiquement; le redémarrage est une décision. | Toutes |
 | Panneau de contrôle | **Mettre à jour ce panneau**, ou la tâche **Mises à jour du panneau de contrôle**. | Bouton : toutes. Tâche : Catena Pro ou Catena Business |
-| Moteur Docker | La mise à jour du panneau de contrôle le fait passer à la version qu'apporte la version de Catena; l'entretien le fait aussi passer au sein de la version majeure en cours (voir [Moteur Docker](#moteur-docker)). | Mise à jour du panneau de contrôle : toutes. Étape de l'entretien : Catena Pro ou Catena Business |
-| Services propres à Catena | Les versions correctives par l'entretien; les versions plus récentes arrivent avec une mise à jour du panneau de contrôle (voir [Services propres à Catena](#services-propres-à-catena)). | Catena Pro ou Catena Business |
-| Applications | L'entretien, derrière un délai d'attente, une vérification des vulnérabilités et un retour arrière; une application ajoutée depuis un dépôt se met aussi à jour à la main depuis sa page (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)). | Entretien : Catena Pro ou Catena Business. À la main : toutes |
+| Moteur Docker | La mise à jour du panneau de contrôle le fait passer à la version qu'apporte la version de Catena; la maintenance le fait aussi passer au sein de la version majeure en cours (voir [Moteur Docker](#moteur-docker)). | Mise à jour du panneau de contrôle : toutes. Étape de la maintenance : Catena Pro ou Catena Business |
+| Services propres à Catena | Les versions correctives par la maintenance; les versions plus récentes arrivent avec une mise à jour du panneau de contrôle (voir [Services propres à Catena](#services-propres-à-catena)). | Catena Pro ou Catena Business |
+| Applications | La maintenance, derrière un délai d'attente, une vérification des vulnérabilités et un retour arrière; une application ajoutée depuis un dépôt se met aussi à jour à la main depuis sa page (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)). | Maintenance : Catena Pro ou Catena Business. À la main : toutes |
 
-Avec Communauté, l'entretien ne met aucune application à jour; vous mettez à jour à la main une application ajoutée depuis un dépôt (voir [Applications avec Communauté](#applications-avec-communauté)). La [comparaison des éditions](https://catena.run/fr/#pricing) présente les éditions.
+Avec Communauté, la maintenance ne met aucune application à jour; vous mettez à jour à la main une application ajoutée depuis un dépôt (voir [Applications avec Communauté](#applications-avec-communauté)). La [comparaison des éditions](https://catena.run/fr/#pricing) présente les éditions.
 
 ## Système d'exploitation
 
@@ -27,7 +27,7 @@ Pour redémarrer :
 2. Cochez "Je comprends que cela arrête toutes les applications de ce serveur pendant environ une minute."
 3. Appuyez sur **Redémarrer ce serveur**.
 
-Lorsque l'entretien et son étape **Redémarrage** sont actifs, sa dernière étape redémarre le serveur si un redémarrage est dû, puis vérifie que chaque service est revenu. La page **Système** indique "Dernier redémarrage par l'entretien" et son issue, et le Journal le consigne. Le redémarrage vous est sinon laissé, parce que l'interruption est une décision.
+Lorsque la maintenance et son étape **Redémarrage** sont actifs, sa dernière étape redémarre le serveur si un redémarrage est dû, puis vérifie que chaque service est revenu. La page **Système** indique "Dernier redémarrage par la maintenance" et son issue, et le Journal le consigne. Le redémarrage vous est sinon laissé, parce que l'interruption est une décision.
 
 Sous **Actions** > **Opérations**, **Mises à jour apt en attente** liste ce qui attend et **Journal des mises à jour auto** montre ce que les mises à jour automatiques ont fait.
 
@@ -62,13 +62,13 @@ Docker suit la version de Catena. Dans toutes les éditions, la [mise à jour du
 
 Une version de Catena qui apporte une nouvelle version majeure de Docker fait aussi passer Docker à celle-ci.
 
-Avec Catena Pro et Catena Business, l'étape **Mise à niveau du moteur Docker** de l'entretien (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)) fait passer Docker de la même façon au sein de la version majeure en cours.
+Avec Catena Pro et Catena Business, l'étape **Mise à niveau du moteur Docker** de la maintenance (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)) fait passer Docker de la même façon au sein de la version majeure en cours.
 
 ## Services propres à Catena
 
 Les services propres à Catena sont le service de connexion, le mandataire inverse, les services de surveillance, la base de données partagée et les auxiliaires du tableau de bord du serveur.
 
-- **Versions correctives, d'elles-mêmes.** Avec Catena Pro et Catena Business, l'entretien fait passer chacun d'eux à sa version corrective la plus récente. Pour la base de données partagée, une version mineure compte comme corrective.
+- **Versions correctives, d'elles-mêmes.** Avec Catena Pro et Catena Business, la maintenance fait passer chacun d'eux à sa version corrective la plus récente. Pour la base de données partagée, une version mineure compte comme corrective.
 - **Versions mineures et majeures plus récentes, avec une mise à jour du panneau de contrôle.** Elles n'arrivent qu'avec une mise à jour du panneau de contrôle (voir [Version du panneau de contrôle](#version-du-panneau-de-contrôle)), après avoir été testées ensemble avant la publication. La mise à jour du panneau de contrôle lui-même prend toute version plus récente.
 - **Le connecteur du tunnel.** C'est la seule exception : après le délai d'attente et la vérification des vulnérabilités, il prend de lui-même toute version plus récente. Le changement ne tient que lorsque le nouveau connecteur se reconnecte à Cloudflare; sinon, le serveur remet de lui-même le précédent.
 
@@ -78,9 +78,9 @@ Un service qui conserve des données les voit copiées avant son changement de v
 
 ## Applications (Catena Pro)
 
-L'entretien met à jour chaque application de la page **Applications**, et les services propres à Catena comme décrit dans [Services propres à Catena](#services-propres-à-catena). Il prend d'abord une sauvegarde et la vérifie, et s'arrête avant toute mise à jour si cela échoue, sauf si vous avez retiré l'étape de sauvegarde (voir [Horaires](/fr/configuration/schedules/#entretien)). Vous pouvez retirer n'importe quelle étape, et Catena avertit lorsque la combinaison est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
+La maintenance met à jour chaque application de la page **Applications**, et les services propres à Catena comme décrit dans [Services propres à Catena](#services-propres-à-catena). Elle prend d'abord une sauvegarde et la vérifie, et s'arrête avant toute mise à jour si cela échoue, sauf si vous avez retiré l'étape de sauvegarde (voir [Horaires](/fr/configuration/schedules/#maintenance)). Vous pouvez retirer n'importe quelle étape, et Catena avertit lorsque la combinaison est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
 
-Une application se met à jour de deux façons, et l'entretien fait les deux : il fait passer une application à une version plus récente d'elle-même, depuis son dépôt, puis il fait passer les images du fichier de chaque application à des étiquettes plus récentes.
+Une application se met à jour de deux façons, et la maintenance fait les deux : elle fait passer une application à une version plus récente d'elle-même, depuis son dépôt, puis elle fait passer les images du fichier de chaque application à des étiquettes plus récentes.
 
 ### Applications ajoutées depuis un dépôt
 
@@ -88,9 +88,9 @@ Vous ajoutez une application depuis un dépôt de la liste du serveur (voir [Ajo
 
 1. **Délai d'attente.** Une étiquette n'est prise qu'après que Catena l'a vue pendant le délai d'attente (7 jours par défaut, le même réglage que pour les images : voir [Délai d'attente et barrière de vulnérabilités](#délai-dattente-et-barrière-de-vulnérabilités)). Le compte commence quand Catena voit l'étiquette pour la première fois. Si l'étiquette la plus récente n'a pas attendu assez longtemps, la plus récente qui a attendu est prise.
 2. **Dépôt de confiance.** La mise à jour s'applique d'elle-même. Le catalogue de Catena est de confiance. Un dépôt que vous ajoutez ne l'est que si vous cochez **De confiance : appliquer ses mises à jour d'elles-mêmes**.
-3. **Dépôt qui n'est pas de confiance.** La mise à jour est proposée et attend votre décision. La tuile affiche "Mise à jour `<étiquette>` proposée", et la partie **Mise à jour** de la page de l'application, qu'ouvre l'engrenage de sa carte, indique "Mise à jour vers : `<version>`". Cochez "Passer à la version `<version>` maintenant" et appuyez sur **Mettre à jour vers `<version>`**. La mise à jour se déroule alors comme une mise à jour de l'entretien, sans le délai d'attente (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)).
+3. **Dépôt qui n'est pas de confiance.** La mise à jour est proposée et attend votre décision. La tuile affiche "Mise à jour `<étiquette>` proposée", et la partie **Mise à jour** de la page de l'application, qu'ouvre l'engrenage de sa carte, indique "Mise à jour vers : `<version>`". Cochez "Passer à la version `<version>` maintenant" et appuyez sur **Mettre à jour vers `<version>`**. La mise à jour se déroule alors comme une mise à jour de la maintenance, sans le délai d'attente (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)).
 4. **Version de plus de 12 mois.** Lorsque la version qu'exécute une application date de plus de 12 mois, la mise à jour vers une version plus récente est seulement proposée, même depuis un dépôt de confiance.
-5. **Au-delà du niveau de mise à jour.** Une application du catalogue a le réglage **Mises à jour automatiques : major, minor, patch ou off** dans son fichier de réglages, `major` par défaut (voir [L'étiquette vps.auto-update](#létiquette-vpsauto-update)). L'entretien n'applique une étiquette plus récente que dans ce niveau : `minor` reste dans la version majeure en service, `patch` dans la version mineure en service, et `off` ne fait rien avancer. Une étiquette plus récente au-delà du niveau est proposée comme à l'étape 3, et le Journal en donne la raison. Vous la confirmez comme à l'étape 3, quel que soit le niveau.
+5. **Au-delà du niveau de mise à jour.** Une application du catalogue a le réglage **Mises à jour automatiques : major, minor, patch ou off** dans son fichier de réglages, `major` par défaut (voir [L'étiquette vps.auto-update](#létiquette-vpsauto-update)). La maintenance n'applique une étiquette plus récente que dans ce niveau : `minor` reste dans la version majeure en service, `patch` dans la version mineure en service, et `off` ne fait rien avancer. Une étiquette plus récente au-delà du niveau est proposée comme à l'étape 3, et le Journal en donne la raison. Vous la confirmez comme à l'étape 3, quel que soit le niveau.
 
 Une version dont le contenu change après que Catena l'a vue pour la première fois est refusée et mise de côté. Lorsque l'application déclare des versions par lesquelles elle doit passer, la mise à jour les traverse l'une après l'autre. Lorsqu'une version majeure plus récente de l'application est publiée en amont et que son dépôt ne l'a pas encore livrée, le Journal le dit une fois pour chacune de ces versions majeures, et la mise à jour attend que le dépôt la livre.
 
@@ -104,7 +104,7 @@ Une fois qu'une mise à jour tient, Catena garde les fichiers précédents de l'
 2. Cochez "Remettre `<application>` comme elle tournait avant sa dernière mise à jour".
 3. Appuyez sur **Remettre la version précédente**.
 
-L'annulation arrête l'application, remet ses fichiers et ses données précédents, puis la démarre. La page indique alors "`<application>` a été remise comme elle tournait avant sa dernière mise à jour." et dit ce que l'annulation a abandonné. Les données écrites depuis la mise à jour sont abandonnées, et les bases de données sont copiées dans leur état actuel et conservées comme les autres copies. La version qu'exécutait l'application est mise de côté : l'entretien ne l'applique donc pas de nouveau. Lorsque le serveur refuse, la page indique "Le serveur a refusé le retour en arrière : l'application n'a pas été mise à jour par Catena, ou les copies gardées pour elle n'existent plus."; une application modifiée hors de Catena est refusée aussi.
+L'annulation arrête l'application, remet ses fichiers et ses données précédents, puis la démarre. La page indique alors "`<application>` a été remise comme elle tournait avant sa dernière mise à jour." et dit ce que l'annulation a abandonné. Les données écrites depuis la mise à jour sont abandonnées, et les bases de données sont copiées dans leur état actuel et conservées comme les autres copies. La version qu'exécutait l'application est mise de côté : la maintenance ne l'applique donc pas de nouveau. Lorsque le serveur refuse, la page indique "Le serveur a refusé le retour en arrière : l'application n'a pas été mise à jour par Catena, ou les copies gardées pour elle n'existent plus."; une application modifiée hors de Catena est refusée aussi.
 
 ### Applications modifiées hors de Catena
 
@@ -117,7 +117,7 @@ Catena ne met une application à jour que tant que ses fichiers et ses services 
 | **Version propre du fichier** | Les fichiers et les services sont ceux du déploiement, mais le fichier compose n'est celui d'aucune version d'un dépôt. |
 | **Arrêtée** | L'application est arrêtée. |
 
-L'entretien laisse une telle application de côté, et l'annulation la refuse. Un service qui tourne sur le serveur sans avoir été ajouté par Catena est listé sous **Hors de Catena** et n'est jamais mis à jour. Portainer et Arcane sont des applications facultatives du catalogue. Les applications que vous déployez avec elles font partie de ce groupe : Catena leur donne des routes, la connexion, la surveillance et la sauvegarde de leurs données par leurs étiquettes, et leurs mises à jour relèvent de ce gestionnaire. Portainer et Arcane eux-mêmes sont mis à jour par Catena.
+La maintenance laisse une telle application de côté, et l'annulation la refuse. Un service qui tourne sur le serveur sans avoir été ajouté par Catena est listé sous **Hors de Catena** et n'est jamais mis à jour. Portainer et Arcane sont des applications facultatives du catalogue. Les applications que vous déployez avec elles font partie de ce groupe : Catena leur donne des routes, la connexion, la surveillance et la sauvegarde de leurs données par leurs étiquettes, et leurs mises à jour relèvent de ce gestionnaire. Portainer et Arcane eux-mêmes sont mis à jour par Catena.
 
 ### Images admissibles
 
@@ -148,9 +148,9 @@ Avant qu'un service propre à Catena qui conserve des données passe à une nouv
 
 ### Services exclus des mises à jour automatiques
 
-Le modèle d'une application du catalogue peut poser `vps.auto-update=off` sur un service dont une nouvelle version risque de réécrire ses fichiers au-delà de ce que la version précédente sait lire. L'entretien ne fait jamais avancer un tel service. Un service du catalogue est ainsi exclu : le stockage d'objets de Plane.
+Le modèle d'une application du catalogue peut poser `vps.auto-update=off` sur un service dont une nouvelle version risque de réécrire ses fichiers au-delà de ce que la version précédente sait lire. La maintenance ne fait jamais avancer un tel service. Un service du catalogue est ainsi exclu : le stockage d'objets de Plane.
 
-Dans toutes les éditions, une vérification quotidienne cherche une version plus récente pour chacun de ces services, et avec Catena Pro l'entretien la cherche aussi. La vérification ne fait que signaler : elle ne fait rien avancer. Quand elle en trouve une, la tuile de l'application, dans l'onglet **Applications**, affiche un avis que seuls les administrateurs voient :
+Dans toutes les éditions, une vérification quotidienne cherche une version plus récente pour chacun de ces services, et avec Catena Pro la maintenance la cherche aussi. La vérification ne fait que signaler : elle ne fait rien avancer. Quand elle en trouve une, la tuile de l'application, dans l'onglet **Applications**, affiche un avis que seuls les administrateurs voient :
 
 - "`<service>` est exclu des mises à jour automatiques. La version `<nouvelle>` est disponible ; la version en service est `<actuelle>`." nomme le service, la version qu'il exécute et la version trouvée.
 - Une seconde ligne indique ce qu'on sait des vulnérabilités. Elle affiche "Pas vérifié pour les vulnérabilités connues." quand l'analyseur est désactivé ou n'a pas pu lire la version en service, et "La version en service n'a aucune vulnérabilité élevée ou critique connue qui ait un correctif." quand elle est propre. Sinon, elle compte les vulnérabilités élevées ou critiques de la version en service qui ont un correctif. Une version plus récente n'est vérifiée qu'une fois sur le serveur ; d'ici là, la ligne ajoute "On ne sait pas si `<nouvelle>` les corrige". Une fois sur le serveur, la ligne indique "`<nouvelle>` corrige `<n>` des `<m>` vulnérabilités élevées ou critiques connues de la version en service et en apporte `<k>` nouvelles.", et la page de confirmation les liste sous **Corrigées :** et **Nouvelles :**.
@@ -181,8 +181,8 @@ Le panneau **Mises à jour gérées** (Catena Pro) affiche "État actuel :" (IDL
 
 | Action | Effet |
 |---|---|
-| **Lancer l'entretien maintenant** | Exécute immédiatement tout l'entretien, sauvegarde d'abord. |
-| **Afficher l'état des mises à jour** | Affiche l'état courant de l'entretien. |
+| **Lancer la maintenance maintenant** | Exécute immédiatement tout la maintenance, sauvegarde d'abord. |
+| **Afficher l'état des mises à jour** | Affiche l'état courant de la maintenance. |
 | **Installer les moteurs gérés sur ce serveur** | Réinstalle les outils de mise à jour de l'hôte depuis l'image qu'exécute le panneau; à utiliser après une mise à jour du panneau. |
 
 ## Événements du Journal
@@ -195,10 +195,10 @@ La page **Journal** consigne chaque décision de mise à jour, notamment :
 | `<nombre>` mise(s) à jour non liée(s) à la sécurité disponible(s); prévue(s) pour la prochaine fenêtre de maintenance. |
 | `<application>` mis à jour de `<version>` à `<version>`. |
 | La mise à jour de `<application>` vers `<version>` n'a pas abouti et a été annulée. |
-| Redémarrage du serveur pendant l'entretien, ou redémarrage qui ne s'est pas déroulé comme prévu. |
+| Redémarrage du serveur pendant la maintenance, ou redémarrage qui ne s'est pas déroulé comme prévu. |
 | Avis de sécurité signalés dans les paquets de l'hôte ou les images d'application, puis corrigés. |
 | Aucune sauvegarde n'est configurée; les mises à jour s'appliquent sans sauvegarde. |
-| L'entretien s'est terminé, ou ne s'est pas terminé correctement, avec l'étape en échec. |
+| La maintenance s'est terminée, ou ne s'est pas terminée correctement, avec l'étape en échec. |
 | Une combinaison d'étapes choisie sur la page Horaires est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). |
 | `<application>` a été mis à jour vers `<version>`, mais la mise à jour n'a pas pu être enregistrée; l'application des paramètres enregistrés remet donc la version précédente. |
 | La mise à jour de `<application>` vers `<version>` a été annulée, mais son enregistrement n'a pas pu être effacé; l'application des paramètres enregistrés pourrait donc réinstaller `<version>`. |
@@ -218,11 +218,11 @@ Dès que vous appuyez, le bouton indique **Mise à jour en cours** et reste gris
 
 La mise à jour fait d'abord une copie des bases de données et des données de l'application, vérifie ensuite sa santé et remet la version précédente d'elle-même si l'application est en moins bon état qu'avant (voir [Retour arrière et quarantaine](#retour-arrière-et-quarantaine)). Elle saute le délai d'attente, comme toute mise à jour que vous lancez.
 
-Une mise à jour fait avancer une application d'une version majeure à la fois au plus, qu'elle soit lancée par l'entretien ou par vous. Quand le dépôt publie une version majeure plus tardive, la partie **Mise à jour** dit qu'elle viendra après celle-ci : une fois cette mise à jour en place, la partie propose la suivante. Le serveur refuse une version qui n'est pas plus récente que celle en service, qui a été mise de côté après un retour arrière ou qui dépasse d'une version majeure, et en donne la raison dans la partie. La partie indique "C'est la version la plus récente que publie son dépôt." quand il n'y a rien vers quoi passer, et une mise à jour retenue montre pourquoi, par exemple des fichiers modifiés à la main (voir [Applications modifiées hors de Catena](#applications-modifiées-hors-de-catena)).
+Une mise à jour fait avancer une application d'une version majeure à la fois au plus, qu'elle soit lancée par la maintenance ou par vous. Quand le dépôt publie une version majeure plus tardive, la partie **Mise à jour** dit qu'elle viendra après celle-ci : une fois cette mise à jour en place, la partie propose la suivante. Le serveur refuse une version qui n'est pas plus récente que celle en service, qui a été mise de côté après un retour arrière ou qui dépasse d'une version majeure, et en donne la raison dans la partie. La partie indique "C'est la version la plus récente que publie son dépôt." quand il n'y a rien vers quoi passer, et une mise à jour retenue montre pourquoi, par exemple des fichiers modifiés à la main (voir [Applications modifiées hors de Catena](#applications-modifiées-hors-de-catena)).
 
 ## Applications avec Communauté
 
-Sans l'entretien, Catena ne cherche aucune version plus récente de vos applications et n'en applique aucune d'elle-même : une application reste à la version que vous avez ajoutée jusqu'à ce que vous la mettiez à jour à la main (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)). Les alertes de sécurité vous préviennent quand une application est atteinte par une vulnérabilité exploitée, ou critique ou élevée et corrigée par une mise à jour proposée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). La catégorie **Mises à jour** de **Actions** est vide avec Communauté : ses boutons arrivent avec un abonnement.
+Sans la maintenance, Catena ne cherche aucune version plus récente de vos applications et n'en applique aucune d'elle-même : une application reste à la version que vous avez ajoutée jusqu'à ce que vous la mettiez à jour à la main (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)). Les alertes de sécurité vous préviennent quand une application est atteinte par une vulnérabilité exploitée, ou critique ou élevée et corrigée par une mise à jour proposée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). La catégorie **Mises à jour** de **Actions** est vide avec Communauté : ses boutons arrivent avec un abonnement.
 
 ## Dépannage
 
@@ -230,9 +230,9 @@ Sans l'entretien, Catena ne cherche aucune version plus récente de vos applicat
 |---|---|
 | Une application ne se met jamais à jour | Son étiquette est partielle ou flottante, son étiquette d'application est `off` (voir [Services exclus des mises à jour automatiques](#services-exclus-des-mises-à-jour-automatiques)), ou sa version la plus récente a moins de 7 jours ou ajoute une vulnérabilité. |
 | "La dernière tentative n'a pas abouti." sous **Version du panneau de contrôle** | La mise à jour a été remise en arrière. Lisez le journal de la section, puis réessayez. |
-| La bannière de redémarrage reste affichée | Redémarrez depuis **Système** > **Redémarrage**, ou laissez l'entretien s'en charger. |
+| La bannière de redémarrage reste affichée | Redémarrez depuis **Système** > **Redémarrage**, ou laissez la maintenance s'en charger. |
 | La liste de versions est remplacée par une zone de texte | Le registre n'a pas pu être joint; saisissez la version. |
 | Une application ne se met jamais à jour, bien que son dépôt ait des versions plus récentes | La page de l'application en donne la raison : un badge comme **Fichiers modifiés à la main** (voir [Applications modifiées hors de Catena](#applications-modifiées-hors-de-catena)), ou une mise à jour proposée qui attend votre décision parce que le dépôt n'est pas de confiance. La partie **Mise à jour** dit pourquoi une mise à jour est retenue. |
-| La mise à jour laisse une application de côté | Corrigez le service arrêté. La prochaine exécution de l'entretien reprend l'application dès que tous ses services fonctionnent. |
+| La mise à jour laisse une application de côté | Corrigez le service arrêté. La prochaine exécution de la maintenance reprend l'application dès que tous ses services fonctionnent. |
 | Le Journal dit qu'une mise à jour "attend la confirmation d'un administrateur" | La raison en nomme la cause. Quand c'est le niveau de mise à jour, confirmez la mise à jour depuis la page de l'application (voir [Mettre une application à jour à la main](#mettre-une-application-à-jour-à-la-main)), ou changez **Mises à jour automatiques** dans les réglages de l'application. |
 | Le Journal dit qu'une version "est publiée, et son dépôt ne l'a pas encore livrée" | Rien n'est anormal sur votre serveur. L'application reste à sa version jusqu'à ce que son dépôt livre celle-là. |

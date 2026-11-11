@@ -39,7 +39,7 @@ Communauté offre Applications (avec le Vérificateur Compose), Système, Action
 
 ## Rapport mensuel (Catena Business)
 
-Le panneau **Rapport mensuel** est une page imprimable qui résume ce que le serveur a consigné de son propre entretien. Il montre deux périodes : le dernier mois civil et le mois en cours jusqu'à maintenant. Chaque période comporte ces sections :
+Le panneau **Rapport mensuel** est une page imprimable qui résume ce que le serveur a consigné de sa propre maintenance. Il montre deux périodes : le dernier mois civil et le mois en cours jusqu'à maintenant. Chaque période comporte ces sections :
 
 - **Sauvegardes**, **Tests de restauration** et **Mises à jour** (appliquées, annulées, redémarrages, et composants dont une version plus récente est disponible).
 - **Vulnérabilités** : celles qui sont critiques et élevées, avec un correctif publié, dans les images qui s'exécutent sur le serveur, au début et à la fin de la période, avec le nombre de celles qui ont été corrigées et découvertes.
@@ -48,7 +48,7 @@ Le panneau **Rapport mensuel** est une page imprimable qui résume ce que le ser
 
 Chaque chiffre est lu sur le serveur, et rien n'est envoyé ailleurs. Toutes les heures sont en UTC. Pour en garder une copie sur papier ou en PDF, utilisez la commande d'impression de votre navigateur.
 
-Un chiffre que le serveur ne consigne pas n'est jamais estimé. Il apparaît sous **Non présenté pour cette période**, indiqué comme non présenté, avec la raison (par exemple, "Le journal d'entretien de ce serveur remonte au `<date>` : les sauvegardes, les mises à jour et les avertissements antérieurs ne sont donc pas présentés."). La section **Ce que ce serveur ne consigne pas** liste ce qui ne fait jamais partie du rapport, comme les mises à jour du système d'exploitation et le résultat de chaque test de restauration.
+Un chiffre que le serveur ne consigne pas n'est jamais estimé. Il apparaît sous **Non présenté pour cette période**, indiqué comme non présenté, avec la raison (par exemple, "Le journal de maintenance de ce serveur remonte au `<date>` : les sauvegardes, les mises à jour et les avertissements antérieurs ne sont donc pas présentés."). La section **Ce que ce serveur ne consigne pas** liste ce qui ne fait jamais partie du rapport, comme les mises à jour du système d'exploitation et le résultat de chaque test de restauration.
 
 ## Rapport de conformité (Catena Business)
 

@@ -1,6 +1,6 @@
 ---
 title: "Horaires"
-description: "Les neuf tâches planifiées d'un serveur Catena, la syntaxe des horaires, l'entretien et ses étapes, et la conservation des sauvegardes."
+description: "Les neuf tâches planifiées d'un serveur Catena, la syntaxe des horaires, la maintenance et ses étapes, et la conservation des sauvegardes."
 ---
 
 La page **Horaires** règle le moment où le serveur effectue ses tâches planifiées. Sauf la **Veille des vulnérabilités** sur un serveur qui n'a jamais enregistré ses horaires, rien ne s'exécute selon un horaire tant que vous ne l'activez pas ici. Vous pouvez aussi lancer chaque tâche à la main depuis la page **Actions**, dans toutes les éditions.
@@ -19,22 +19,22 @@ Chaque tâche est livrée désactivée, sauf la **Veille des vulnérabilités** 
 | Tâche | Rôle |
 |---|---|
 | **Sauvegarde** | Prend un instantané du serveur et l'envoie vers le stockage de sauvegarde configuré. Offerte dans toutes les éditions : sans abonnement payant, elle s'exécute au plus une fois par semaine, le jour et à l'heure de votre choix, et Catena Pro ajoute les horaires quotidiens et personnalisés. |
-| **Entretien** | Sauvegarde, vérifie la sauvegarde, la copie hors site, puis fait passer les composants du serveur et les applications déployées à des versions plus récentes derrière ces vérifications. Vous choisissez les étapes qu'il exécute (voir [Choisir les étapes](#choisir-les-étapes)). |
+| **Maintenance** | Sauvegarde, vérifie la sauvegarde, la copie hors site, puis fait passer les composants du serveur et les applications déployées à des versions plus récentes derrière ces vérifications. Vous choisissez les étapes qu'elle exécute (voir [Choisir les étapes](#choisir-les-étapes)). |
 | **Copie hors site** | Copie chaque seau déclaré vers le stockage non réinscriptible du second fournisseur (voir [Copies hors site](/fr/configuration/backups/#copies-hors-site)). Demande Catena Business. |
 | **Contrôle d'intégrité des sauvegardes** | Lit un échantillon du dépôt de sauvegarde de bout en bout, ce qui détecte la corruption silencieuse du stockage entre deux instantanés. |
-| **Test de restauration** | Restaure la dernière sauvegarde dans une zone temporaire et vérifie ce qui en revient, ce qui prouve qu'une sauvegarde peut être restaurée. Il télécharge autant que la sauvegarde contient et demande autant d'espace disque libre : il est donc livré désactivé. Activez-le lorsque le serveur a la place; il s'exécute alors par défaut le dimanche à 5 h, jusqu'à ce que vous choisissiez une autre heure. Il se signale à sa propre vérification Healthchecks : un test qui échoue ou ne s'exécute pas déclenche donc une alerte (voir [Alertes](/fr/configuration/alerts/)). Demande Catena Pro. Il peut plutôt s'exécuter comme étape de l'entretien (voir [Choisir les étapes](#choisir-les-étapes)). |
+| **Test de restauration** | Restaure la dernière sauvegarde dans une zone temporaire et vérifie ce qui en revient, ce qui prouve qu'une sauvegarde peut être restaurée. Il télécharge autant que la sauvegarde contient et demande autant d'espace disque libre : il est donc livré désactivé. Activez-le lorsque le serveur a la place; il s'exécute alors par défaut le dimanche à 5 h, jusqu'à ce que vous choisissiez une autre heure. Il se signale à sa propre vérification Healthchecks : un test qui échoue ou ne s'exécute pas déclenche donc une alerte (voir [Alertes](/fr/configuration/alerts/)). Demande Catena Pro. Il peut plutôt s'exécuter comme étape de la maintenance (voir [Choisir les étapes](#choisir-les-étapes)). |
 | **Mises à jour du panneau de contrôle** | Fait passer le panneau de contrôle à une version plus récente, et remet la précédente si la nouvelle rend le serveur moins sain. Le panneau est indisponible environ une minute. |
 | **Configuration du serveur** | Applique au serveur les paramètres enregistrés selon un horaire, et remet en place tout ce qui a changé sur le serveur depuis. |
 | **Signal de vie hors site** | Vérifie que la page d'état, le moniteur de tâches et le moniteur de ressources répondent, puis appelle l'adresse du signal de vie hors site enregistrée dans **Paramètres** > **Alertes et signalement des tâches manquées** (voir [Alertes](/fr/configuration/alerts/)). Demande cette adresse et Catena Pro. Sa section indique la période et le délai de grâce à régler sur la vérification externe. |
-| **Veille des vulnérabilités** | Vérifie les logiciels de chaque application et service à l'aide d'une base de vulnérabilités fraîche et de la liste de la CISA des vulnérabilités exploitées, et alerte pour chacune qui est exploitée, ou critique ou élevée et corrigée par une mise à jour proposée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). Offerte dans toutes les éditions : sans abonnement payant, elle s'exécute au plus une fois par jour. Avec Catena Pro ou Catena Business, elle peut plutôt s'exécuter dans l'entretien, après ses mises à jour (voir [Choisir les étapes](#choisir-les-étapes)). |
+| **Veille des vulnérabilités** | Vérifie les logiciels de chaque application et service à l'aide d'une base de vulnérabilités fraîche et de la liste de la CISA des vulnérabilités exploitées, et alerte pour chacune qui est exploitée, ou critique ou élevée et corrigée par une mise à jour proposée (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). Offerte dans toutes les éditions : sans abonnement payant, elle s'exécute au plus une fois par jour. Avec Catena Pro ou Catena Business, elle peut plutôt s'exécuter dans la maintenance, après ses mises à jour (voir [Choisir les étapes](#choisir-les-étapes)). |
 
 Une tâche qui demande Catena Pro ou Catena Business porte un badge **Pro** ou **Business** à côté de son nom, dans l'index à droite de la page et dans sa propre section. Le badge est gris tant que l'abonnement n'inclut pas la tâche et vert dès qu'il l'inclut; sélectionner un badge gris ouvre la page qui explique l'édition. Une tâche grise reste visible, ses commandes grisées.
 
 Chaque tâche démarre à son heure réglée. Une exécution encore en cours à l'heure réglée suivante n'est pas doublée : la tâche redémarre à la première heure réglée après sa fin. Une tâche manquée parce que le serveur était éteint ou en redémarrage s'exécute quand le serveur redémarre.
 
-### Entretien
+### Maintenance
 
-L'entretien exécute ses étapes dans un ordre fixe. Il reprend de lui-même si un redémarrage l'interrompt.
+La maintenance exécute ses étapes dans un ordre fixe. Elle reprend d'elle-même si un redémarrage l'interrompt.
 
 1. **Vérifications préalables.** Contrôle qu'au moins 5 Gio de disque sont libres.
 2. **Mode maintenance et scripts autour de la sauvegarde.** Une application du catalogue dont l'entrée le demande, comme Nextcloud, est placée en mode maintenance le temps de la sauvegarde et en est sortie ensuite, même quand la sauvegarde échoue. Des scripts facultatifs s'exécutent avant et après la sauvegarde lorsqu'il en existe sur le serveur. Rien d'autre n'est mis en pause sauf si un script le fait, et un script en échec ne produit qu'un avertissement.
@@ -47,18 +47,18 @@ L'entretien exécute ses étapes dans un ordre fixe. Il reprend de lui-même si 
 9. **Analyse des paquets du serveur.** Liste les avis de sécurité signalés dans les paquets du serveur (à titre informatif).
 10. **Mises à jour.** Met à jour les conteneurs du serveur et les applications déployées (voir [Mises à jour](/fr/configuration/updates/)).
 11. **Analyse des images.** Analyse les images en cours d'exécution (à titre informatif; voir [Vulnérabilités](/fr/configuration/vulnerabilities/)).
-12. **Veille des vulnérabilités.** Exécute la veille après les mises à jour de l'entretien, lorsque vous l'avez choisie comme étape (voir [Choisir les étapes](#choisir-les-étapes)).
+12. **Veille des vulnérabilités.** Exécute la veille après les mises à jour de la maintenance, lorsque vous l'avez choisie comme étape (voir [Choisir les étapes](#choisir-les-étapes)).
 13. **Mise à niveau du moteur Docker.** Au sein de la version majeure en cours; la version précédente est remise en place si le serveur ne revient pas en bonne santé.
 14. **Nettoyage.** Supprime les couches d'images inutilisées de plus d'une semaine.
-15. **Redémarrage.** Ne redémarre le serveur que si une mise à jour de sécurité l'exige, puis vérifie que chaque service est revenu. Le redémarrage attend d'abord que les autres travaux sur le serveur, comme une sauvegarde ou une mise à jour, se terminent; des travaux encore en cours après une heure reportent le redémarrage à la prochaine exécution de l'entretien, et la page **Système** l'indique comme reporté.
+15. **Redémarrage.** Ne redémarre le serveur que si une mise à jour de sécurité l'exige, puis vérifie que chaque service est revenu. Le redémarrage attend d'abord que les autres travaux sur le serveur, comme une sauvegarde ou une mise à jour, se terminent; des travaux encore en cours après une heure reportent le redémarrage à la prochaine exécution de la maintenance, et la page **Système** l'indique comme reporté.
 
-Ces étapes arrêtent l'entretien, afin qu'aucune mise à jour ne s'applique par-dessus une défaillance : les vérifications préalables, la sauvegarde, le test de restauration (lorsque c'est une étape), la vérification du dépôt de sauvegarde, le contrôle de santé avant les mises à jour (tout point de contrôle en échec dans la page d'état) et la vérification de la copie hors site (exigée par défaut). Les autres étapes consignent leur résultat et laissent l'entretien se poursuivre. Une étape que vous retirez ne s'exécute pas : elle ne peut donc pas l'arrêter.
+Ces étapes arrêtent la maintenance, afin qu'aucune mise à jour ne s'applique par-dessus une défaillance : les vérifications préalables, la sauvegarde, le test de restauration (lorsque c'est une étape), la vérification du dépôt de sauvegarde, le contrôle de santé avant les mises à jour (tout point de contrôle en échec dans la page d'état) et la vérification de la copie hors site (exigée par défaut). Les autres étapes consignent leur résultat et laissent la maintenance se poursuivre. Une étape que vous retirez ne s'exécute pas : elle ne peut donc pas l'arrêter.
 
-Une sauvegarde configurée qui échoue, ou dont la vérification du dépôt (ou le test de restauration, lorsque c'est une étape) échoue, arrête donc l'entretien avant toute mise à jour, sauf si l'étape de sauvegarde est retirée. Une exécution ainsi arrêtée n'a rien changé sur le serveur, et elle redémarre tout de même le serveur si un redémarrage est dû et que l'étape **Redémarrage** est activée. Lorsqu'aucune sauvegarde n'est configurée, l'entretien saute de l'étape de sauvegarde au contrôle de santé avant les mises à jour, consigne un événement au Journal et applique tout de même les mises à jour; le panneau affiche une bannière sur chaque page tant qu'aucune sauvegarde n'est configurée. Lorsque l'entretien ne change alors rien (il est désactivé, ou **Mises à jour** et **Mise à niveau du moteur Docker** sont toutes deux retirées), la bannière est raccourcie : "Aucune sauvegarde n'est configurée. En configurer une dans Paramètres."
+Une sauvegarde configurée qui échoue, ou dont la vérification du dépôt (ou le test de restauration, lorsque c'est une étape) échoue, arrête donc la maintenance avant toute mise à jour, sauf si l'étape de sauvegarde est retirée. Une exécution ainsi arrêtée n'a rien changé sur le serveur, et elle redémarre tout de même le serveur si un redémarrage est dû et que l'étape **Redémarrage** est activée. Lorsqu'aucune sauvegarde n'est configurée, la maintenance saute de l'étape de sauvegarde au contrôle de santé avant les mises à jour, consigne un événement au Journal et applique tout de même les mises à jour; le panneau affiche une bannière sur chaque page tant qu'aucune sauvegarde n'est configurée. Lorsque la maintenance ne change alors rien (elle est désactivée, ou **Mises à jour** et **Mise à niveau du moteur Docker** sont toutes deux retirées), la bannière est raccourcie : "Aucune sauvegarde n'est configurée. En configurer une dans Paramètres."
 
 ### Choisir les étapes
 
-Dans la section **Étapes** (**Étapes de l'entretien** dans l'index de la page), chaque étape est une case accompagnée d'un résumé d'une ligne, dans l'ordre où elle s'exécute :
+Dans la section **Étapes** (**Étapes de la maintenance** dans l'index de la page), chaque étape est une case accompagnée d'un résumé d'une ligne, dans l'ordre où elle s'exécute :
 
 1. **Sauvegarde**
 2. **Test de restauration**
@@ -73,15 +73,15 @@ Dans la section **Étapes** (**Étapes de l'entretien** dans l'index de la page)
 11. **Mise à niveau du moteur Docker**
 12. **Redémarrage**
 
-Toutes les étapes sont activées, sauf **Test de restauration** et **Veille des vulnérabilités**. La vérification de l'espace disque au début et le nettoyage des anciennes couches d'images à la fin s'exécutent toujours et n'ont pas de case. Pour retirer une étape, décochez sa case et appuyez sur **Enregistrer les horaires** : l'entretien la saute à chaque exécution. Pour la remettre, cochez la case et enregistrez de nouveau.
+Toutes les étapes sont activées, sauf **Test de restauration** et **Veille des vulnérabilités**. La vérification de l'espace disque au début et le nettoyage des anciennes couches d'images à la fin s'exécutent toujours et n'ont pas de case. Pour retirer une étape, décochez sa case et appuyez sur **Enregistrer les horaires** : la maintenance la saute à chaque exécution. Pour la remettre, cochez la case et enregistrez de nouveau.
 
 Certains choix sont imposés ou refusés :
 
 - Tant que la copie hors site est activée et qu'une copie hors site est déclarée (voir [Copies hors site](/fr/configuration/backups/#copies-hors-site)), **Vérification du dépôt de sauvegarde** reste cochée et grisée, avec la raison "Cette étape reste active tant que la copie hors site l'est : la copie va vers un stockage dont rien ne peut être supprimé, elle ne s'exécute donc qu'après la réussite de la vérification du dépôt de sauvegarde." Une fois enregistrée, elle reste cochée après la désactivation de la copie hors site, jusqu'à ce que vous la décochiez et enregistriez de nouveau.
-- Le test de restauration s'exécute soit comme étape, soit selon son propre horaire, jamais les deux. Cocher **Test de restauration** alors que son propre horaire est activé, ou activer cet horaire alors que l'étape est cochée, est refusé avec "Le test de restauration s'exécute soit dans l'entretien, soit selon son propre horaire, pas les deux. Désactiver l'un des deux." Désactivez l'un des deux et enregistrez de nouveau.
+- Le test de restauration s'exécute soit comme étape, soit selon son propre horaire, jamais les deux. Cocher **Test de restauration** alors que son propre horaire est activé, ou activer cet horaire alors que l'étape est cochée, est refusé avec "Le test de restauration s'exécute soit dans la maintenance, soit selon son propre horaire, pas les deux. Désactiver l'un des deux." Désactivez l'un des deux et enregistrez de nouveau.
 - Avec Catena Pro, **Copie hors site** et **Vérification de la copie hors site** sont grisées, parce que la copie hors site demande Catena Business.
 - Sans copie hors site déclarée, **Copie hors site** affiche l'indication "Aucune copie hors site n'est déclarée dans Paramètres : cette étape ne copie donc rien."
-- La veille des vulnérabilités s'exécute soit comme étape, soit selon son propre horaire, jamais les deux. Cocher **Veille des vulnérabilités** alors que son propre horaire est activé, ou activer cet horaire alors que l'étape est cochée, est refusé avec "La veille des vulnérabilités s'exécute soit dans l'entretien, soit selon son propre horaire, pas les deux. Désactiver l'un des deux." et la page indique "Rien n'a été enregistré. Les étapes de l'entretien, plus bas, en donnent la raison." Désactivez l'un des deux et enregistrez de nouveau.
+- La veille des vulnérabilités s'exécute soit comme étape, soit selon son propre horaire, jamais les deux. Cocher **Veille des vulnérabilités** alors que son propre horaire est activé, ou activer cet horaire alors que l'étape est cochée, est refusé avec "La veille des vulnérabilités s'exécute soit dans la maintenance, soit selon son propre horaire, pas les deux. Désactiver l'un des deux." et la page indique "Rien n'a été enregistré. Les étapes de la maintenance, plus bas, en donnent la raison." Désactivez l'un des deux et enregistrez de nouveau.
 
 Cinq combinaisons s'enregistrent, avec un avertissement sous la liste :
 
@@ -93,27 +93,27 @@ Cinq combinaisons s'enregistrent, avec un avertissement sous la liste :
 | **Mises à jour** ou **Mise à niveau du moteur Docker** activées, **Contrôle de santé avant les mises à jour** désactivé | "Le contrôle de santé avant les mises à jour est désactivé. Une mise à jour peut s'appliquer à un service déjà en panne, et la comparaison qui décide de remettre la version précédente ne peut alors pas savoir que la mise à jour l'a cassé." |
 | **Copie hors site** activée, **Vérification de la copie hors site** désactivée | "La vérification de la copie hors site est désactivée. Rien ne prouve que la copie hors site peut être relue : une copie impossible à restaurer n'est découverte qu'au moment où on en a besoin, et les mises à jour n'attendent pas cette preuve." |
 
-Tant que l'entretien est activé et exécute **Mises à jour** ou **Mise à niveau du moteur Docker** avec **Sauvegarde** retirée, chaque page d'administration s'ouvre sur une bannière d'avertissement : "L'entretien met ce serveur à jour sans son étape de sauvegarde. Une mise à jour ou une migration de base de données ratée pourrait entraîner une perte de données définitive. Réactiver l'étape de sauvegarde dans Horaires, sous Entretien." La bannière mène à la liste des étapes.
+Tant que la maintenance est activée et exécute **Mises à jour** ou **Mise à niveau du moteur Docker** avec **Sauvegarde** retirée, chaque page d'administration s'ouvre sur une bannière d'avertissement : "La maintenance met ce serveur à jour sans son étape de sauvegarde. Une mise à jour ou une migration de base de données ratée pourrait entraîner une perte de données définitive. Réactiver l'étape de sauvegarde dans Horaires, sous Maintenance." La bannière mène à la liste des étapes.
 
-Avec **Redémarrage** désactivé, l'entretien ne redémarre jamais le serveur. Un redémarrage en attente affiche alors la bannière "Une mise à jour installée ne prend effet qu'après le redémarrage de ce serveur. Le redémarrer depuis la page Système." Redémarrez depuis **Système** > **Redémarrage** (voir [Mises à jour](/fr/configuration/updates/)).
+Avec **Redémarrage** désactivé, la maintenance ne redémarre jamais le serveur. Un redémarrage en attente affiche alors la bannière "Une mise à jour installée ne prend effet qu'après le redémarrage de ce serveur. Le redémarrer depuis la page Système." Redémarrez depuis **Système** > **Redémarrage** (voir [Mises à jour](/fr/configuration/updates/)).
 
-### Ce que l'entretien consigne
+### Ce que la maintenance consigne
 
 Le **Journal** consigne le résultat de chaque exécution, et chaque avertissement une seule fois, au moment où sa combinaison commence à s'appliquer :
 
 | Événement |
 |---|
-| L'entretien s'est terminé. |
-| L'entretien ne s'est pas terminé correctement. Étape en échec : `<étape>`. |
-| L'entretien applique ses mises à jour sans sa sauvegarde, retirée sur la page Horaires. Une mise à jour ou une migration de base de données ratée pourrait entraîner une perte de données définitive. |
-| L'entretien fait sa sauvegarde sans qu'aucun test de restauration soit planifié sur la page Horaires. Une sauvegarde impossible à restaurer n'est découverte qu'au moment où on en a besoin. |
-| L'entretien fait sa sauvegarde sans la vérification du dépôt de sauvegarde, retirée sur la page Horaires. Un dommage dans le stockage des sauvegardes n'est découvert qu'au moment d'une restauration. |
-| L'entretien applique ses mises à jour sans le contrôle de santé avant les mises à jour, retiré sur la page Horaires. Une mise à jour peut s'appliquer à un service déjà en panne, et le contrôle qui la suit ne peut alors pas savoir si elle l'a cassé. |
-| L'entretien fait sa copie hors site sans la vérification de la copie hors site, retirée sur la page Horaires. Rien ne prouve que la copie peut être relue, et les mises à jour n'attendent pas cette preuve. |
+| La maintenance s'est terminée. |
+| La maintenance ne s'est pas terminée correctement. Étape en échec : `<étape>`. |
+| La maintenance applique ses mises à jour sans sa sauvegarde, retirée sur la page Horaires. Une mise à jour ou une migration de base de données ratée pourrait entraîner une perte de données définitive. |
+| La maintenance fait sa sauvegarde sans qu'aucun test de restauration soit planifié sur la page Horaires. Une sauvegarde impossible à restaurer n'est découverte qu'au moment où on en a besoin. |
+| La maintenance fait sa sauvegarde sans la vérification du dépôt de sauvegarde, retirée sur la page Horaires. Un dommage dans le stockage des sauvegardes n'est découvert qu'au moment d'une restauration. |
+| La maintenance applique ses mises à jour sans le contrôle de santé avant les mises à jour, retiré sur la page Horaires. Une mise à jour peut s'appliquer à un service déjà en panne, et le contrôle qui la suit ne peut alors pas savoir si elle l'a cassé. |
+| La maintenance fait sa copie hors site sans la vérification de la copie hors site, retirée sur la page Horaires. Rien ne prouve que la copie peut être relue, et les mises à jour n'attendent pas cette preuve. |
 
 L'étape nommée pour une exécution en échec est celle qui l'a arrêtée, sinon la première qui a échoué.
 
-L'entretien a aussi sa propre vérification Healthchecks, nommée **Maintenance**. Elle est avertie au début de chaque exécution, quand une étape échoue et à la fin de l'exécution : une exécution qui échoue ou n'a pas lieu déclenche donc une alerte (voir [Alertes](/fr/configuration/alerts/)). L'entretien ne se signale aux vérifications de la sauvegarde que tant que **Sauvegarde** est une étape, et à celles de la copie hors site que tant que **Copie hors site** en est une.
+La maintenance a aussi sa propre vérification Healthchecks, nommée **Maintenance**. Elle est avertie au début de chaque exécution, quand une étape échoue et à la fin de l'exécution : une exécution qui échoue ou n'a pas lieu déclenche donc une alerte (voir [Alertes](/fr/configuration/alerts/)). La maintenance ne se signale aux vérifications de la sauvegarde que tant que **Sauvegarde** est une étape, et à celles de la copie hors site que tant que **Copie hors site** en est une.
 
 ### Copie hors site et test de restauration
 
@@ -145,7 +145,7 @@ Sous **Vérifier un horaire**, saisissez une expression et appuyez sur **Vérifi
 2. Dans la section de la tâche, modifiez **Horaire** si la valeur par défaut ne convient pas, et cochez **Exécuter selon cet horaire**.
 3. Appuyez sur **Enregistrer les horaires**. La page confirme par "Horaires enregistrés et appliqués à ce serveur." Un refus affiche "Ce serveur n'a pas accepté l'horaire.", suivi de la raison.
 
-L'enregistrement règle aussi les vérifications Healthchecks de la sauvegarde, du contrôle d'intégrité des sauvegardes, du test de restauration, de la copie hors site, de l'entretien et du signal de vie hors site sur les nouveaux horaires; une vérification à laquelle aucune tâche activée ne se signale est en pause. Quand Healthchecks ne répond pas, la page indique "Horaires enregistrés et appliqués à ce serveur. Healthchecks n'a pas répondu : les vérifications qui surveillent ces tâches prendront les nouveaux horaires au prochain enregistrement des horaires ou à la prochaine application des paramètres enregistrés de ce serveur." Une vérification réactivée affiche "new" dans Healthchecks jusqu'à la prochaine exécution de sa tâche.
+L'enregistrement règle aussi les vérifications Healthchecks de la sauvegarde, du contrôle d'intégrité des sauvegardes, du test de restauration, de la copie hors site, de la maintenance et du signal de vie hors site sur les nouveaux horaires; une vérification à laquelle aucune tâche activée ne se signale est en pause. Quand Healthchecks ne répond pas, la page indique "Horaires enregistrés et appliqués à ce serveur. Healthchecks n'a pas répondu : les vérifications qui surveillent ces tâches prendront les nouveaux horaires au prochain enregistrement des horaires ou à la prochaine application des paramètres enregistrés de ce serveur." Une vérification réactivée affiche "new" dans Healthchecks jusqu'à la prochaine exécution de sa tâche.
 
 Lorsqu'aucune sauvegarde n'est planifiée, la page avertit : "Aucune tâche n'est planifiée sur ce serveur, donc aucune sauvegarde ne sera faite. Activez l'horaire de sauvegarde ci-dessous."
 
@@ -167,7 +167,7 @@ Les sauvegardes au-delà de ces nombres sont supprimées une fois par jour, avec
 
 ## Lorsque l'abonnement prend fin
 
-La sauvegarde continue de s'exécuter une fois par semaine et la veille des vulnérabilités une fois par jour. Lorsque l'horaire de sauvegarde enregistré était plus fréquent qu'hebdomadaire, ou que la sauvegarde ne s'exécutait que comme étape de l'entretien, elle s'exécute à l'heure par défaut (dimanche, 3 h) jusqu'à ce que vous enregistriez un horaire hebdomadaire ou que l'abonnement revienne. La veille des vulnérabilités fait de même à 1 h chaque jour. La page nomme ce que chacune exécute à la place de l'horaire enregistré. Toute autre tâche cesse de s'exécuter. Les horaires et les nombres de conservation enregistrés sont conservés, et les horaires enregistrés reviennent avec l'abonnement. Les applications, leurs données et les sauvegardes manuelles ne sont pas touchées. Le Journal et une bannière consignent le verrouillage.
+La sauvegarde continue de s'exécuter une fois par semaine et la veille des vulnérabilités une fois par jour. Lorsque l'horaire de sauvegarde enregistré était plus fréquent qu'hebdomadaire, ou que la sauvegarde ne s'exécutait que comme étape de la maintenance, elle s'exécute à l'heure par défaut (dimanche, 3 h) jusqu'à ce que vous enregistriez un horaire hebdomadaire ou que l'abonnement revienne. La veille des vulnérabilités fait de même à 1 h chaque jour. La page nomme ce que chacune exécute à la place de l'horaire enregistré. Toute autre tâche cesse de s'exécuter. Les horaires et les nombres de conservation enregistrés sont conservés, et les horaires enregistrés reviennent avec l'abonnement. Les applications, leurs données et les sauvegardes manuelles ne sont pas touchées. Le Journal et une bannière consignent le verrouillage.
 
 ## Dépannage
 
