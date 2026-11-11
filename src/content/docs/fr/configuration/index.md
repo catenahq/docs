@@ -43,7 +43,7 @@ L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précéd
 1. [Abonnement](/fr/configuration/subscription/), si vous avez acheté une clé Catena Pro ou Catena Business. Enregistrer la clé en premier permet aux étapes suivantes d'utiliser ce qu'elle débloque, comme les horaires plus fréquents et les domaines supplémentaires.
 2. [Domaine et Cloudflare](/fr/configuration/domain/) : le jeton d'API Cloudflare, le domaine, puis **Appliquer**. Tant que vous ne l'avez pas faite, le serveur fonctionne sans adresses publiques.
 3. [Sauvegardes et stockage S3](/fr/configuration/backups/) : le dépôt et ses clés, puis **Générer le mot de passe de chiffrement des sauvegardes**, puis la trousse de reprise après sinistre à conserver dans un gestionnaire de mots de passe.
-4. [Horaires](/fr/configuration/schedules/) : l'activation de l'horaire de sauvegarde, au plus une fois par semaine dans toutes les éditions, et des horaires d'entretien (Catena Pro ou Catena Business).
+4. [Horaires](/fr/configuration/schedules/) : l'activation de l'horaire de sauvegarde, au plus une fois par semaine dans toutes les éditions, et les autres horaires, dont l'entretien (Catena Pro ou Catena Business).
 5. [Courriel sortant](/fr/configuration/email/) : le service de courriel utilisé pour les réinitialisations de mot de passe, les invitations et les alertes.
 6. [Accès administrateur et réseau privé](/fr/configuration/admin-access/) : le réseau privé, puis éventuellement **Fermer le SSH sur le port public 22**.
 7. [Alertes](/fr/configuration/alerts/) : l'adresse du signal de vie hors site et les canaux de notification.

@@ -142,7 +142,7 @@ To replace a key: enter the new one in the row, wait for one scheduled run to su
 
 Enter both sets of keys here even when a bucket is configured elsewhere as well: an application owns where it stores its files, and this list owns what gets copied where. Source and destination must be different buckets, and you can add at most 32 rows. Leave the secret blank on an existing row to keep the stored one. Until a row exists the section reads "No offsite copies are declared, so nothing is copied offsite."
 
-The copies run on the **Offsite copy** job of the [Schedules](/en/configuration/schedules/) page, which ships switched off: turn it on there once the row is saved. They also run as a step of the nightly maintenance. An unreachable or unconfigured destination is recorded as skipped and does not stop backups.
+The copies run on the **Offsite copy** job of the [Schedules](/en/configuration/schedules/) page, which ships switched off: turn it on there once the row is saved. They also run as a step of the maintenance. An unreachable or unconfigured destination is recorded as skipped and does not stop backups.
 
 ### How the copy behaves
 
@@ -166,7 +166,7 @@ Not included: the files an application keeps in its own storage bucket, such as 
 
 Database exports are automatic for every running container whose image is a PostgreSQL one, its name holding `postgres` or starting with `postgis`, `timescale` or `pgvector`, or a MariaDB or MySQL one. PostgreSQL is exported with `pg_dumpall`. MariaDB and MySQL need `MARIADB_ROOT_PASSWORD` or `MYSQL_ROOT_PASSWORD` in the container's environment. Each export is a plain SQL file, one per database server, and the backup storage compresses it, so each backup after the first sends only what changed. A failed export of a running database fails the whole backup. A database that is not running yet is another case: a backup waits up to ten minutes for every deployed application's database to run before exporting it, and a database still down after that is left out of that backup, the backup of everything else goes ahead, and the run is reported as failed, naming the application. Other engines, such as MongoDB or SQLite, get no automatic export.
 
-Only the nightly maintenance's backup puts applications in maintenance mode: a catalog application whose entry asks for it, such as Nextcloud, is put in maintenance mode while the backup runs and taken out of it afterwards, even when the backup fails. A backup the **Backup** job runs on its own schedule, or that you start by hand, leaves every application running: its database exports are consistent, and the application's files on disk are as they were while in use. The nightly backup is the fully consistent restore point when the nightly maintenance runs with its backup step. A restore takes the applications it puts back out of maintenance mode.
+Only the maintenance's backup puts applications in maintenance mode: a catalog application whose entry asks for it, such as Nextcloud, is put in maintenance mode while the backup runs and taken out of it afterwards, even when the backup fails. A backup the **Backup** job runs on its own schedule, or that you start by hand, leaves every application running: its database exports are consistent, and the application's files on disk are as they were while in use. The backup the maintenance takes is the fully consistent restore point when the maintenance runs with its backup step. A restore takes the applications it puts back out of maintenance mode.
 
 After each snapshot the server checks every running container for folders mounted from outside the backup set. A backup fails when it finds one that is not listed under **Other folders to back up**; the **Check backup coverage** action runs the same check on demand.
 
@@ -189,7 +189,7 @@ The exported archive is listed under **Available downloads** on the **Restore** 
 
 ## When no backup is configured
 
-Every admin page shows the banner "No backup is configured: updates run with nothing to return to. Configure one in Settings." The nightly maintenance still applies updates in that state, and records a Log event saying so. When the nightly maintenance changes nothing (it is off, or [Updates and Docker engine upgrade](/en/configuration/schedules/#choosing-the-steps) are both left out), the banner is shortened to "No backup is configured. Configure one in Settings." The banner stays until a repository is configured.
+Every admin page shows the banner "No backup is configured: updates run with nothing to return to. Configure one in Settings." The maintenance still applies updates in that state, and records a Log event saying so. When the maintenance changes nothing (it is off, or [Updates and Docker engine upgrade](/en/configuration/schedules/#choosing-the-steps) are both left out), the banner is shortened to "No backup is configured. Configure one in Settings." The banner stays until a repository is configured.
 
 ## Troubleshooting
 

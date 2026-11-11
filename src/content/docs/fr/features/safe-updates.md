@@ -7,11 +7,11 @@ Le système d'exploitation se corrige de lui-même, quelle que soit l'édition. 
 
 ## Système d'exploitation
 
-Les mises à niveau automatiques de Debian sont seules à appliquer les paquets du système : mises à jour de sécurité, mises à jour stables et versions intermédiaires. Le serveur ne redémarre jamais de sa propre initiative. Une vérification horaire lit si un redémarrage est nécessaire, et une bannière sur chaque page d'administration le signale. Le redémarrage est votre décision, prise depuis **Système** > **Redémarrage** (**Redémarrer ce serveur**), ou par l'entretien nocturne, qui ne redémarre qu'à sa dernière étape, seulement si c'est dû et seulement si cet horaire est activé.
+Les mises à niveau automatiques de Debian sont seules à appliquer les paquets du système : mises à jour de sécurité, mises à jour stables et versions intermédiaires. Le serveur ne redémarre jamais de sa propre initiative. Une vérification horaire lit si un redémarrage est nécessaire, et une bannière sur chaque page d'administration le signale. Le redémarrage est votre décision, prise depuis **Système** > **Redémarrage** (**Redémarrer ce serveur**), ou par l'entretien, qui ne redémarre qu'à sa dernière étape, seulement si c'est dû et seulement si cet horaire est activé.
 
-## Entretien nocturne
+## Entretien
 
-Sur Catena Pro et Catena Business, **Horaires** > **Entretien nocturne** (désactivé par défaut, 3 h une fois activé) exécute une chaîne ordonnée : vérification de l'espace disque libre, sauvegarde, test de restauration, contrôle du dépôt de sauvegarde, copie hors site, barrière de santé Gatus, mises à jour des conteneurs, analyse des vulnérabilités, mise à niveau du moteur Docker et redémarrage si dû. La chaîne s'arrête avant toute mise à jour si le plancher d'espace disque, la sauvegarde, sa vérification ou la barrière de santé échoue, et elle reprend après un redémarrage. Sans sauvegarde configurée, les mises à jour s'exécutent quand même et une bannière d'avertissement signale qu'il n'y a rien vers quoi revenir. Vous choisissez les étapes qui s'exécutent, et un avertissement s'affiche lorsqu'une combinaison est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
+Sur Catena Pro et Catena Business, **Horaires** > **Entretien** (désactivé par défaut, 3 h une fois activé) exécute ses étapes dans l'ordre : vérification de l'espace disque libre, sauvegarde, test de restauration, contrôle du dépôt de sauvegarde, copie hors site, barrière de santé Gatus, mises à jour des conteneurs, analyse des vulnérabilités, mise à niveau du moteur Docker et redémarrage si dû. L'entretien s'arrête avant toute mise à jour si le plancher d'espace disque, la sauvegarde, sa vérification ou la barrière de santé échoue, et elle reprend après un redémarrage. Sans sauvegarde configurée, les mises à jour s'exécutent quand même et une bannière d'avertissement signale qu'il n'y a rien vers quoi revenir. Vous choisissez les étapes qui s'exécutent, et un avertissement s'affiche lorsqu'une combinaison est risquée (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
 
 ## Mises à jour des applications
 
@@ -27,17 +27,17 @@ Sur Catena Pro et Catena Business, **Horaires** > **Entretien nocturne** (désac
 
 ## Panneau et moteur Docker
 
-Le panneau a son propre horaire **Mises à jour du panneau de contrôle** (mensuel par défaut) et un bouton manuel **Mettre à jour ce panneau** dans **Paramètres** > **Version du panneau de contrôle**, qui fonctionne dans toutes les éditions. Le panneau est indisponible environ une minute, et une mise à jour qui échoue est annulée. Le moteur Docker est maintenu à sa version. Une mise à jour du panneau de contrôle le fait passer à la version qu'apporte sa version de Catena, dans toutes les éditions, et l'entretien nocturne le fait avancer au sein de sa version majeure; l'un et l'autre remettent la précédente si les services ne reviennent pas (voir [Moteur Docker](/fr/configuration/updates/#moteur-docker)).
+Le panneau a son propre horaire **Mises à jour du panneau de contrôle** et un bouton manuel **Mettre à jour ce panneau** dans **Paramètres** > **Version du panneau de contrôle**, qui fonctionne dans toutes les éditions. Le panneau est indisponible environ une minute, et une mise à jour qui échoue est annulée. Le moteur Docker est maintenu à sa version. Une mise à jour du panneau de contrôle le fait passer à la version qu'apporte sa version de Catena, dans toutes les éditions, et l'entretien le fait avancer au sein de sa version majeure; l'un et l'autre remettent la précédente si les services ne reviennent pas (voir [Moteur Docker](/fr/configuration/updates/#moteur-docker)).
 
 ## Ce qu'ajoute chaque édition
 
-Communauté offre les correctifs du système, le signalement des redémarrages, la visibilité des versions, les alertes de sécurité pour les vulnérabilités exploitées et pour les vulnérabilités critiques ou élevées qu'une mise à jour proposée corrige (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)), une vérification sur demande et le correctif d'urgence que vous lancez vous-même, et les mises à jour manuelles du panneau et du moteur; pour les applications, aucune mise à jour n'est proposée ni appliquée. Catena Pro et Catena Business ajoutent l'entretien nocturne et les autres horaires, les mises à jour gérées des applications, le correctif automatique des vulnérabilités exploitées et le retour en arrière automatique. Catena Business ajoute la liste complète des vulnérabilités et l'inventaire logiciel. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté offre les correctifs du système, le signalement des redémarrages, la visibilité des versions, les alertes de sécurité pour les vulnérabilités exploitées et pour les vulnérabilités critiques ou élevées qu'une mise à jour proposée corrige (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)), une vérification sur demande et le correctif d'urgence que vous lancez vous-même, et les mises à jour manuelles du panneau et du moteur; pour les applications, aucune mise à jour n'est proposée ni appliquée. Catena Pro et Catena Business ajoutent l'entretien et les autres horaires, les mises à jour gérées des applications, le correctif automatique des vulnérabilités exploitées et le retour en arrière automatique. Catena Business ajoute la liste complète des vulnérabilités et l'inventaire logiciel. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 
 - Seuls les conteneurs sont gérés; le système appartient à Debian.
 - Aucune mise à jour n'est offerte pour une application dont l'étiquette n'est pas une version complète x.y.z.
-- Le redémarrage nocturne est le seul redémarrage automatique.
+- Le redémarrage en fin d'entretien est le seul redémarrage automatique.
 
 ## Configuration
 

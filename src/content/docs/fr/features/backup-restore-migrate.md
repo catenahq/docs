@@ -35,7 +35,7 @@ Communauté offre les sauvegardes manuelles, une sauvegarde planifiée au plus u
 - Il vous faut un dépôt compatible S3, et si vous perdez le mot de passe de sauvegarde, les sauvegardes deviennent illisibles.
 - Un seau de fichiers copié hors site n'est restaurable qu'accompagné d'un instantané de base de données du même moment.
 - Restaurer une application ne ramène pas en arrière les réglages du serveur.
-- Une sauvegarde que la tâche **Sauvegarde** exécute selon son propre horaire ramène la base de données d'une application et les fichiers de ses volumes au moment de cette sauvegarde, sans mode maintenance autour. Les fichiers qu'une application garde dans son propre seau de stockage reviennent tels que le seau les contient, ou tels qu'à sa dernière copie hors site. Les applications ne sont mises en mode maintenance que pour la sauvegarde de l'entretien nocturne.
+- Une sauvegarde que la tâche **Sauvegarde** exécute selon son propre horaire ramène la base de données d'une application et les fichiers de ses volumes au moment de cette sauvegarde, sans mode maintenance autour. Les fichiers qu'une application garde dans son propre seau de stockage reviennent tels que le seau les contient, ou tels qu'à sa dernière copie hors site. Les applications ne sont mises en mode maintenance que pour la sauvegarde de l'entretien.
 
 ## Configuration
 

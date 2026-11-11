@@ -130,15 +130,15 @@ With continuity, saving first opens the offsite copy and checks that it holds th
 - The offsite copy holds another repository than the new destination. The reason ends "Put the offsite copy back into the new bucket, or choose a fresh start". Put the offsite copy back into the new bucket first (see [Put a bucket back from its offsite copy](#put-a-bucket-back-from-its-offsite-copy)) and save that bucket again, or choose **A fresh repository** under **How the backup repository carries on** and save again.
 - The offsite copy does not open, so it cannot be checked. Correct the cause the reason gives, such as the keys of the offsite copy in **Settings**, under **Offsite copies**, then save again.
 
-## Turn the nightly updates back on after a restore
+## Turn the updates back on after a restore
 
-For the same reason, a whole-server restore switches the nightly maintenance's **Updates** and **Docker engine upgrade** steps off, and the other steps keep the choice you made. Nothing changes on the server overnight until you decide. Every admin page then shows a banner: "No automatic updates are configured on this server since the restore of {date}. Turn them back on in Schedules, under Nightly maintenance." The **Restore status** section reads "The nightly updates stay off until they are turned back on in Schedules."
+For the same reason, a whole-server restore switches the maintenance's **Updates** and **Docker engine upgrade** steps off, and the other steps keep the choice you made. Nothing changes on the server until you decide. Every admin page then shows a banner: "No automatic updates are configured on this server since the restore of {date}. Turn them back on in Schedules, under Maintenance." The **Restore status** section reads "The updates stay off until they are turned back on in Schedules."
 
-1. Open **Schedules** and go to **Nightly maintenance**, under **Steps**.
+1. Open **Schedules** and go to **Maintenance**, under **Steps**.
 2. Tick **Updates**, **Docker engine upgrade**, or both (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
 3. Press **Save schedules**.
 
-The banner goes once either step is on. Updates need Catena Pro or Catena Business, and the nightly maintenance itself must be turned on.
+The banner goes once either step is on. Updates need Catena Pro or Catena Business, and the maintenance itself must be turned on.
 
 ## Put a bucket back from its offsite copy
 
@@ -190,7 +190,7 @@ Without a choice, saving a new destination makes a new backup password and confi
 
 ## Restore report
 
-The **Restore report** panel (Catena Pro) shows evidence that backups restore: a local restore test with its recovery time, and the state of the offsite copy. The local test is off until you turn it on: it runs weekly on the **Restore test** schedule, or every night as a step of the nightly maintenance (see [Schedules](/en/configuration/schedules/)). It downloads as much as the backup holds and needs as much free disk, so turn it on when the server has the room. **Verify my backup can be restored** under **Actions** runs it on demand. A link to the report appears in the **Restore status** section.
+The **Restore report** panel (Catena Pro) shows evidence that backups restore: a local restore test with its recovery time, and the state of the offsite copy. The local test is off until you turn it on: it runs on its own **Restore test** schedule, or as a step of the maintenance (see [Schedules](/en/configuration/schedules/)). It downloads as much as the backup holds and needs as much free disk, so turn it on when the server has the room. **Verify my backup can be restored** under **Actions** runs it on demand. A link to the report appears in the **Restore status** section.
 
 ## Migrate to another server
 

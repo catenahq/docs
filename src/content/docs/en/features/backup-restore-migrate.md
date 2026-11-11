@@ -35,7 +35,7 @@ Community has manual backups, a scheduled backup at most once a week, snapshot b
 - You need an S3-compatible repository, and if you lose the backup password the backups become unreadable.
 - A file bucket copied offsite is restorable only together with a database snapshot from the same moment.
 - Restoring one app does not roll back the server's settings.
-- A backup the **Backup** job runs on its own schedule brings an app's database and the files on its volumes back to that backup's moment, with no maintenance mode around it. Files an app keeps in its own storage bucket come back as the bucket holds them, or as of its last offsite copy. Apps are put in maintenance mode only for the nightly maintenance's backup.
+- A backup the **Backup** job runs on its own schedule brings an app's database and the files on its volumes back to that backup's moment, with no maintenance mode around it. Files an app keeps in its own storage bucket come back as the bucket holds them, or as of its last offsite copy. Apps are put in maintenance mode only for the maintenance's backup.
 
 ## Configuration
 

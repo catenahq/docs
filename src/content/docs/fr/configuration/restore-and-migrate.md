@@ -130,15 +130,15 @@ Avec la continuité, l'enregistrement ouvre d'abord la copie hors site et vérif
 - La copie hors site contient un autre dépôt que la nouvelle destination. La raison se termine par "Put the offsite copy back into the new bucket, or choose a fresh start" (en anglais). Remettez d'abord la copie hors site dans le nouveau seau (voir [Remettre un seau en place depuis sa copie hors site](#remettre-un-seau-en-place-depuis-sa-copie-hors-site)) et enregistrez de nouveau ce seau, ou choisissez **Un dépôt neuf** sous **Comment le dépôt de sauvegarde se poursuit** et enregistrez de nouveau.
 - La copie hors site ne s'ouvre pas : elle ne peut donc pas être vérifiée. Corrigez la cause indiquée par la raison, par exemple les clés de la copie hors site dans **Paramètres**, sous **Copies hors site**, puis enregistrez de nouveau.
 
-## Réactiver les mises à jour nocturnes après une restauration
+## Réactiver les mises à jour après une restauration
 
-Pour la même raison, une restauration du serveur entier désactive les étapes **Mises à jour** et **Mise à niveau du moteur Docker** de l'entretien nocturne, et les autres étapes gardent le choix que vous avez fait. Rien ne change sur le serveur pendant la nuit tant que vous n'avez pas décidé. Chaque page d'administration affiche alors une bannière : "Aucune mise à jour automatique n'est configurée sur ce serveur depuis la restauration du {date}. Les réactiver dans Horaires, sous Entretien nocturne." La section **État de la restauration** indique "Les mises à jour nocturnes restent désactivées jusqu'à ce qu'elles soient réactivées dans Horaires."
+Pour la même raison, une restauration du serveur entier désactive les étapes **Mises à jour** et **Mise à niveau du moteur Docker** de l'entretien, et les autres étapes gardent le choix que vous avez fait. Rien ne change sur le serveur tant que vous n'avez pas décidé. Chaque page d'administration affiche alors une bannière : "Aucune mise à jour automatique n'est configurée sur ce serveur depuis la restauration du {date}. Les réactiver dans Horaires, sous Entretien." La section **État de la restauration** indique "Les mises à jour restent désactivées jusqu'à ce qu'elles soient réactivées dans Horaires."
 
-1. Ouvrez **Horaires** et allez à **Entretien nocturne**, sous **Étapes**.
+1. Ouvrez **Horaires** et allez à **Entretien**, sous **Étapes**.
 2. Cochez **Mises à jour**, **Mise à niveau du moteur Docker**, ou les deux (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
 3. Appuyez sur **Enregistrer les horaires**.
 
-La bannière disparaît dès que l'une des deux étapes est activée. Les mises à jour exigent Catena Pro ou Catena Business, et l'entretien nocturne lui-même doit être activé.
+La bannière disparaît dès que l'une des deux étapes est activée. Les mises à jour exigent Catena Pro ou Catena Business, et l'entretien lui-même doit être activé.
 
 ## Remettre un seau en place depuis sa copie hors site
 
@@ -190,7 +190,7 @@ Sans choix, enregistrer une nouvelle destination crée un nouveau mot de passe d
 
 ## Rapport de restauration
 
-Le panneau **Rapport de restauration** (Catena Pro) montre la preuve que les sauvegardes se restaurent : un test de restauration local avec son temps de récupération, et l'état de la copie hors site. Le test local est désactivé tant que vous ne l'activez pas : il s'exécute chaque semaine selon l'horaire **Test de restauration**, ou chaque nuit comme étape de l'entretien nocturne (voir [Horaires](/fr/configuration/schedules/)). Il télécharge autant que la sauvegarde contient et demande autant d'espace disque libre : activez-le lorsque le serveur a la place. **Vérifier que ma sauvegarde est restaurable**, dans **Actions**, l'exécute sur demande. Un lien vers le rapport figure dans la section **État de la restauration**.
+Le panneau **Rapport de restauration** (Catena Pro) montre la preuve que les sauvegardes se restaurent : un test de restauration local avec son temps de récupération, et l'état de la copie hors site. Le test local est désactivé tant que vous ne l'activez pas : il s'exécute selon son propre horaire **Test de restauration**, ou comme étape de l'entretien (voir [Horaires](/fr/configuration/schedules/)). Il télécharge autant que la sauvegarde contient et demande autant d'espace disque libre : activez-le lorsque le serveur a la place. **Vérifier que ma sauvegarde est restaurable**, dans **Actions**, l'exécute sur demande. Un lien vers le rapport figure dans la section **État de la restauration**.
 
 ## Migrer vers un autre serveur
 

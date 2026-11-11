@@ -35,7 +35,7 @@ Chaque console du panneau affiche ses lignes à mesure qu'elles arrivent et port
 
 ## Ce qu'ajoute chaque édition
 
-Communauté offre Applications (avec le Vérificateur Compose), Système, Actions, Restauration, Horaires (la sauvegarde hebdomadaire et la veille des vulnérabilités), Journal, Paramètres et la page Vulnérabilités (voir [Page Vulnérabilités](/fr/configuration/vulnerabilities/#page-vulnérabilités)). Catena Pro ajoute **Mises à jour gérées**, **Domaines**, **Personnes**, **Migration** et **Rapport de restauration**. Catena Business ajoute **Journal d'audit**, **Rapport de conformité** et **Rapport mensuel**, ainsi que la liste complète des vulnérabilités avec l'inventaire logiciel (voir [Page Vulnérabilités](/fr/configuration/vulnerabilities/#page-vulnérabilités)). Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté offre Applications (avec le Vérificateur Compose), Système, Actions, Restauration, Horaires (la sauvegarde et la veille des vulnérabilités), Journal, Paramètres et la page Vulnérabilités (voir [Page Vulnérabilités](/fr/configuration/vulnerabilities/#page-vulnérabilités)). Catena Pro ajoute **Mises à jour gérées**, **Domaines**, **Personnes**, **Migration** et **Rapport de restauration**. Catena Business ajoute **Journal d'audit**, **Rapport de conformité** et **Rapport mensuel**, ainsi que la liste complète des vulnérabilités avec l'inventaire logiciel (voir [Page Vulnérabilités](/fr/configuration/vulnerabilities/#page-vulnérabilités)). Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Rapport mensuel (Catena Business)
 
@@ -48,7 +48,7 @@ Le panneau **Rapport mensuel** est une page imprimable qui résume ce que le ser
 
 Chaque chiffre est lu sur le serveur, et rien n'est envoyé ailleurs. Toutes les heures sont en UTC. Pour en garder une copie sur papier ou en PDF, utilisez la commande d'impression de votre navigateur.
 
-Un chiffre que le serveur ne consigne pas n'est jamais estimé. Il apparaît sous **Non présenté pour cette période**, indiqué comme non présenté, avec la raison (par exemple, "Le journal d'entretien de ce serveur remonte au `<date>` : les sauvegardes, les mises à jour et les avertissements antérieurs ne sont donc pas présentés."). La section **Ce que ce serveur ne consigne pas** liste ce qui ne fait jamais partie du rapport, comme les mises à jour du système d'exploitation et le résultat du test de restauration de chaque nuit.
+Un chiffre que le serveur ne consigne pas n'est jamais estimé. Il apparaît sous **Non présenté pour cette période**, indiqué comme non présenté, avec la raison (par exemple, "Le journal d'entretien de ce serveur remonte au `<date>` : les sauvegardes, les mises à jour et les avertissements antérieurs ne sont donc pas présentés."). La section **Ce que ce serveur ne consigne pas** liste ce qui ne fait jamais partie du rapport, comme les mises à jour du système d'exploitation et le résultat de chaque test de restauration.
 
 ## Rapport de conformité (Catena Business)
 
