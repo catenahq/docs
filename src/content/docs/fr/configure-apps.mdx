@@ -327,6 +327,7 @@ Sur chaque service qui porte `vps.route.host` : le service d'entrée et toute au
 | `vps.route.port` | Un numéro de port | `80` | Port d'écoute du service dans son conteneur. |
 | `vps.auth.mode` | `public`, `private`, `admin-only` | aucun | `public` : aucune barrière. `private` : les groupes de `vps.auth.groups`, ou `admin`, `client` et `staff` quand aucun n'est listé. `admin-only` : administrateurs seulement. |
 | `vps.auth.groups` | Noms de groupes Keycloak, séparés par des virgules | aucun | Groupes admis; une personne dans l'un d'eux entre. Ignorée avec `public` et `admin-only`. Le groupe `visitor` rend l'adresse publique. |
+| `vps.auth.public_paths` | Chemins séparés par des virgules, chacun commençant par `/` | aucun | Sur une adresse protégée par la connexion, ces chemins exacts s'ouvrent à tous; tout autre chemin demande encore la connexion. Au plus 8. `/`, un chemin sous `/oauth2` et un chemin avec `//` ou une partie `.` ou `..` restent derrière la connexion. Ignorée sur une adresse publique. |
 | `vps.health.path` | Un chemin d'URL | aucun | Adresse que la page d'état vérifie toutes les 2 minutes; l'adresse est en marche quand elle répond 200. Sans elle, la vérification lit la page d'accueil : une adresse publique est en marche quand elle répond sans erreur, une adresse derrière la connexion quand elle renvoie les visiteurs vers la connexion. |
 | `vps.health.expect` | Texte | aucun | Texte que la réponse doit contenir. Sert seulement avec `vps.health.path`. |
 
@@ -443,7 +444,7 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | <a id="k4"></a>K4 | avertissement | Une étiquette de l'application entière sur un autre service que l'adresse principale, ou une étiquette d'adresse sur un service sans adresse : elle est ignorée. |
 | <a id="k5"></a>K5 | avertissement | Une étiquette `vps.*` sous `deploy.labels`, où Catena ne la lit pas. |
 | <a id="k6"></a>K6 | note | Une adresse publique sans `vps.health.path`. |
-| <a id="k7"></a>K7 | avertissement | Une étiquette d'accès sans effet : un `vps.auth.mode` inconnu, `vps.auth.groups` sur une adresse publique ou réservée aux administrateurs, `visitor` à côté d'autres groupes, ou un groupe qui n'existe pas dans Keycloak. |
+| <a id="k7"></a>K7 | avertissement, erreur | Un avertissement pour une étiquette d'accès sans effet : un `vps.auth.mode` inconnu, `vps.auth.groups` sur une adresse publique ou réservée aux administrateurs, `visitor` à côté d'autres groupes, un groupe qui n'existe pas dans Keycloak, ou `vps.auth.public_paths` sur une adresse publique. Une erreur quand `vps.auth.public_paths` nomme un chemin qui n'est pas exact, ou plus de 8 chemins : ces chemins restent derrière la connexion. |
 | <a id="k8"></a>K8 | note | Une étiquette d'image sans version complète, ou une valeur de `vps.auto-update` non valide. |
 | <a id="k9"></a>K9 | erreur | Un montage de dossier hors de la zone des applications, absent de **Autres dossiers à sauvegarder** : la sauvegarde échoue. |
 | <a id="k10"></a>K10 | avertissement | Le fichier correspond à une application du catalogue mais est déployé sous un autre nom : les actions du catalogue et les restaurations ne la trouvent pas. |

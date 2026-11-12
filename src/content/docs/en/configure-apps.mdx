@@ -327,6 +327,7 @@ On every service that carries `vps.route.host`: the front-door service and any o
 | `vps.route.port` | A port number | `80` | Port the service listens on inside its container. |
 | `vps.auth.mode` | `public`, `private`, `admin-only` | none | `public`: no gate. `private`: the groups in `vps.auth.groups`, or `admin`, `client` and `staff` when none are listed. `admin-only`: administrators only. |
 | `vps.auth.groups` | Keycloak group names, comma-separated | none | Groups allowed in; a person in any one of them gets in. Ignored with `public` and `admin-only`. The group `visitor` makes the address public. |
+| `vps.auth.public_paths` | Paths, comma-separated, each starting with `/` | none | On an address behind sign-in, these exact paths open to everyone; every other path still asks to sign in. At most 8. `/`, a path under `/oauth2` and a path with `//` or a `.` or `..` part stay behind the sign-in. Ignored on a public address. |
 | `vps.health.path` | A URL path | none | Address the status page checks every 2 minutes; the address is up when it answers 200. Without it, the check reads the front page: a public address is up when it answers without an error, an address behind sign-in when it sends visitors to sign in. |
 | `vps.health.expect` | Text | none | Text the reply must contain. Used only with `vps.health.path`. |
 
@@ -443,7 +444,7 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | <a id="k4"></a>K4 | warning | An app-wide label on a service other than the main address, or an address label on a service with no address: it is ignored. |
 | <a id="k5"></a>K5 | warning | A `vps.*` label under `deploy.labels`, where Catena does not read it. |
 | <a id="k6"></a>K6 | note | A public address with no `vps.health.path`. |
-| <a id="k7"></a>K7 | warning | An access label that has no effect: an unknown `vps.auth.mode`, `vps.auth.groups` on a public or admin-only address, `visitor` beside other groups, or a group that does not exist in Keycloak. |
+| <a id="k7"></a>K7 | warning, error | A warning for an access label that has no effect: an unknown `vps.auth.mode`, `vps.auth.groups` on a public or admin-only address, `visitor` beside other groups, a group that does not exist in Keycloak, or `vps.auth.public_paths` on a public address. An error when `vps.auth.public_paths` names a path that is not exact, or more than 8 paths: those paths stay behind the sign-in. |
 | <a id="k8"></a>K8 | note | An image tag with no full version, or a `vps.auto-update` value that is not valid. |
 | <a id="k9"></a>K9 | error | A bind mount outside the apps area that is not listed under **Other folders to back up**: the backup fails. |
 | <a id="k10"></a>K10 | warning | The file matches a catalog app but is deployed under another name: catalog actions and restores do not find it. |
