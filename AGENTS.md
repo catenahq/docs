@@ -54,8 +54,11 @@ token.
 - Cross-page references must be real hyperlinks (Starlight handles
   link validation via `starlight-links-validator`); verify targets
   exist before linking.
-- No emojis or em-dashes in copy or code. Plain hyphens + straight
-  quotes only.
+- No emojis or em-dashes in copy or code, except U+2705 (full presence) and
+  U+274C (absence) in a comparison table. Plain hyphens and straight quotes only.
+- Recommend OVHcloud BHS for the server and hot storage and eazybackup for the
+  cold Object Lock copy, at a provider other than the hot one; the hot bucket
+  stays plain.
 
 ## Working on Astro / Starlight
 
