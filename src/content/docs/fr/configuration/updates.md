@@ -131,7 +131,7 @@ Une application ajoutée depuis un dépôt ne prend d'un registre que les versio
 
 ### Délai d'attente et barrière de vulnérabilités
 
-Une nouvelle version n'est adoptée qu'après avoir attendu un certain nombre de jours, 7 par défaut. Pour le changer, réglez **Jours d'attente d'une nouvelle version avant qu'une mise à jour la prenne** (de 0 à 90, où 0 signifie aucune attente) à côté de **Mises à jour** sur la page **Horaires** (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). Une version qu'aucune source ne sait dater n'est adoptée que si son analyse est propre.
+Une nouvelle version n'est adoptée qu'après avoir attendu un certain nombre de jours, 7 par défaut. L'attente se compte à partir de la date où la version a été publiée pour la première fois, telle que le serveur l'a vue : quand un registre publie de nouveau la même version, par exemple reconstruite sur une image de base plus récente, l'attente ne recommence pas. Pour le changer, réglez **Jours d'attente d'une nouvelle version avant qu'une mise à jour la prenne** (de 0 à 90, où 0 signifie aucune attente) à côté de **Mises à jour** sur la page **Horaires** (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). Une version qu'aucune source ne sait dater n'est adoptée que si son analyse est propre.
 
 Avant une mise à jour, les versions candidates sont analysées pour les vulnérabilités connues (Trivy, gravités élevée et critique, jusqu'à quatre candidates) :
 

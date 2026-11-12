@@ -131,7 +131,7 @@ An app added from a repository takes from a registry only the patch releases of 
 
 ### Waiting period and vulnerability gate
 
-A new release is only adopted after it has waited a number of days, 7 by default. To change it, set **Days a new version waits before an update takes it** (0 to 90, where 0 means no wait) beside **Updates** on the **Schedules** page (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). A release no source can date is adopted only when its scan is clean.
+A new release is only adopted after it has waited a number of days, 7 by default. The wait counts from the date the version was first published, as the server first saw it: when a registry publishes the same version again, for example rebuilt on a newer base image, the wait does not start over. To change it, set **Days a new version waits before an update takes it** (0 to 90, where 0 means no wait) beside **Updates** on the **Schedules** page (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). A release no source can date is adopted only when its scan is clean.
 
 Before an update, the candidate releases are scanned for known vulnerabilities (Trivy, high and critical severities, up to four candidates):
 
