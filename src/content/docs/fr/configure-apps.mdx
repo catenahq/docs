@@ -333,6 +333,8 @@ Sur chaque service qui porte `vps.route.host` : le service d'entrée et toute au
 
 Sans `vps.auth.mode` ni `vps.auth.groups`, seuls les administrateurs entrent. Cela vaut pour chaque adresse séparément : une adresse ne prend pas l'accès de l'adresse principale. Les administrateurs entrent toujours à une adresse privée.
 
+Le mode peut venir d'un réglage : `vps.auth.mode=${AUTH_MODE:-public}` prend la valeur du réglage `AUTH_MODE` (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif)) et `public` tant qu'il n'est pas défini ou qu'il est vide. L'adresse principale de chaque application du catalogue lit ainsi son réglage **Accès** (`AUTH_MODE`), à la valeur du catalogue tant que vous ne la changez pas; le changement s'applique au prochain déploiement. Placer derrière la barrière de connexion une application qui gère sa propre connexion limite aussi cette connexion aux groupes que la barrière admet, et ses applications mobiles et de bureau peuvent cesser de se connecter.
+
 ### Sur le service d'entrée, une seule fois
 
 Sur le service de l'adresse principale seulement. Sur tout autre service, ces étiquettes sont ignorées.

@@ -333,6 +333,8 @@ On every service that carries `vps.route.host`: the front-door service and any o
 
 With neither `vps.auth.mode` nor `vps.auth.groups`, only administrators get in. This holds for each address on its own: an address does not take the access of the main address. Administrators always get into a private address.
 
+The mode can come from a setting: `vps.auth.mode=${AUTH_MODE:-public}` takes the value of the setting `AUTH_MODE` (see [Declare the settings](#declare-the-settings-optional)) and `public` while it is not set or empty. Each catalog app's main address reads its setting **Access** (`AUTH_MODE`) this way, at the catalog's value until you change it; the change applies at the next deploy. Putting an app that signs in by itself behind the sign-in gate also limits its own sign-in to the groups the gate admits, and its mobile and desktop apps may stop connecting.
+
 ### On the front-door service, once
 
 On the main address's service only. On any other service these labels are ignored.
