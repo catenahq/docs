@@ -52,7 +52,7 @@ A figure the server does not record is never estimated. It appears under **Not s
 
 ## Compliance report (Catena Business)
 
-The **Compliance report** maps your server's security and privacy controls to ISO/IEC 27001:2022, Quebec's Law 25, PIPEDA, the GDPR and SOC 2. SOC 2 is shown as a self-assessment: only an independent auditor issues a SOC 2 report. Pick a framework under **Frameworks** to see only its controls, with a **Summary** of the clauses they cover and how many you have attested.
+The **Compliance report** maps your server's security and privacy controls to ISO/IEC 27001:2022, Quebec's Law 25, PIPEDA, the GDPR and SOC 2. SOC 2 is shown as a self-assessment: only an independent auditor issues a SOC 2 report. Tick one or more frameworks and press **Show** to see only their controls and evidence files, with a **Summary** of the clauses they cover and how many you have attested; **All frameworks** shows every one again. Press **Download as PDF** to save the page as you see it, with the frameworks you ticked, without its forms and buttons.
 
 Each control shows what the server measures for it as you open the page: the latest restore test, the backups kept, vulnerability counts, who can reach each application, whether a second factor is required at sign-in. A measurement older than its limit is marked out of date. For a control you own or share, press **Record the state of this control** and choose its state (**Met**, **In progress**, **Not met** or **Not applicable**), with a note, evidence files and an optional review date. A control Catena operates carries Catena's statement.
 
