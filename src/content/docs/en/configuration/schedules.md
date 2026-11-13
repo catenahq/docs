@@ -58,7 +58,7 @@ A configured backup that fails, or fails its repository check (or its restore te
 
 ### Choosing the steps
 
-In the **Steps** section (**Maintenance steps** in the page's index), each step is a box with a one-line summary, in the order it runs:
+The **Maintenance** section opens the page, first in the index at the right. Under **Steps**, at the end of that section, each step is a box with a one-line summary, in the order it runs:
 
 1. **Backup**
 2. **Restore test**
