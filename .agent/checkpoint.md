@@ -2,17 +2,15 @@
 
 ## Done
 
-- Read the page, docs AGENTS.md and README.md, CI workflow, `.jscpd.json`.
-- Inbound links found with `git grep configure-apps` in docs, catena-admin, catena-templates, ops, website.
-
-## In flight
-
-- Step 2 (rewrite) with fleet:docs-manager; brief `/var/tmp/issues/409/briefs/docs-manager.md`, notes
-  `/var/tmp/issues/409/notes/docs-manager.md`.
+- Rewrite committed in 23e01d3: EN 11,739 to 4,467 words, FR 12,721 to 4,872 (fleet:docs-manager wrote it; the
+  coordinator restored the facts a file author needs; fleet:code-reviewer found ten minor points, all applied).
+- Gates after the last edit: check:unicode, check:versions, check:prose, astro check (0 errors), build (all internal
+  links valid), jscpd 0%. Every anchor other repos link checked in `dist/{en,fr}/configure-apps/index.html`.
+- `check-repo-rules.mjs` fails only on the tracked `.agent/` files, which the coordinator removes before merge.
 
 ## Next
 
-- Gates, review, commit.
+- None: result `done`.
 
 ## Facts
 

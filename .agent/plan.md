@@ -18,18 +18,19 @@ checker's S, K, X tables).
 ## Steps
 
 1. [Done] Investigate: page, inbound links (docs, catena-admin, catena-templates, ops, website), gates.
-2. [Open] Rewrite EN and FR together to about a third of the words: drop quoted panel messages, timings and
+2. [Done] Rewrite EN and FR together to about a third of the words: drop quoted panel messages, timings and
    behaviour other pages own (link them), merge "How Catena reads an app" and steps 1-8 into one short sequence,
    keep step 2 to what the checker tables do not say, word "What an app can ask of Catena" generically (per-app
    pairings live in each app's `app.json`), shorten the Nextcloud example's notes and the troubleshooting table.
    Move the inline settings YAML to `src/examples/app-settings.yml` so both locales render one copy.
    Files: `src/content/docs/en/configure-apps.mdx`, `src/content/docs/fr/configure-apps.mdx`,
    `src/examples/app-settings.yml`. Helper: fleet:docs-manager.
-3. [Open] Gates: `npm ci`, `npm run check:unicode`, `node ../contracts/scripts/check-repo-rules.mjs`,
+3. [Done] Gates: `npm ci`, `npm run check:unicode`, `node ../contracts/scripts/check-repo-rules.mjs`,
    `npm run check:versions`, `npm run check:prose`, `npm run check`, `npm run build`, `npx --yes jscpd@4 --silent`.
-4. [Open] Review: fleet:code-reviewer on the diff (no claim the old page did not support, anchors kept, EN/FR
+4. [Done] Review: fleet:code-reviewer on the diff (no claim the old page did not support, anchors kept, EN/FR
    parity, client-page rules).
-5. [Open] Commit `docs(configure-apps): ...` with the three paths.
+5. [Done] Commit `docs(configure-apps): ...` with the three paths. Built: 23e01d3 (EN 11,739 to 4,467 words,
+   FR 12,721 to 4,872).
 
 ## Open questions
 
