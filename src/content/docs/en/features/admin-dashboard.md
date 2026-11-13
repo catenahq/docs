@@ -39,14 +39,14 @@ Community has Apps (with the Compose checker), System, Actions, Restore, Schedul
 
 ## Monthly report (Catena Business)
 
-The **Monthly report** panel is one printable page that sums up what the server recorded about its own upkeep. It shows two periods: last calendar month, and the current month so far. Each period has these sections:
+The **Monthly report** panel shows one calendar month of what the server recorded about its own upkeep. It opens on the last full month. To show another month, use the arrows above the report, which step to the previous or the next month, or choose a year and a month and press **Show**. You can go back to the earliest month the server keeps records for, or to the last full month on a newer server, and forward to the current month, shown so far. The month has these sections:
 
 - **Backups**, **Restore tests** and **Updates** (applied, rolled back, restarts, and components with a newer version available).
-- **Vulnerabilities**: critical and high ones with a published fix in the images that run on the server, at the start and end of the period, with how many were fixed and found.
+- **Vulnerabilities**: critical and high ones with a published fix in the images that run on the server, at the start and end of the month, with how many were fixed and found.
 - **Availability**: for each watched service, the share of the time it answered, how many times it stopped answering and for how long.
 - **Alerts and warnings** raised by the job monitor and the maintenance log.
 
-Every figure is read on the server, and nothing is sent elsewhere. All times are UTC. To keep a copy on paper or as a PDF, use your browser's print command.
+Every figure is read on the server, and nothing is sent elsewhere. All times are UTC. To keep a copy, press **Download as PDF**: the PDF holds the month the page shows.
 
 A figure the server does not record is never estimated. It appears under **Not shown for this period** as not shown, with the reason (for example, "The maintenance log on this server goes back to `<date>`, so the backups, updates and warnings before that date are not shown."). The section **What this server does not record** lists what is never part of the report, such as operating-system updates and the result of each restore test.
 

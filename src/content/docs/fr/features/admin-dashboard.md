@@ -39,14 +39,14 @@ Communauté offre Applications (avec le Vérificateur Compose), Système, Action
 
 ## Rapport mensuel (Catena Business)
 
-Le panneau **Rapport mensuel** est une page imprimable qui résume ce que le serveur a consigné de sa propre maintenance. Il montre deux périodes : le dernier mois civil et le mois en cours jusqu'à maintenant. Chaque période comporte ces sections :
+Le panneau **Rapport mensuel** présente un mois civil de ce que le serveur a consigné de sa propre maintenance. Il s'ouvre sur le dernier mois complet. Pour afficher un autre mois, utilisez les flèches au-dessus du rapport, qui passent au mois précédent ou au mois suivant, ou choisissez une année et un mois et appuyez sur **Afficher**. Vous pouvez remonter jusqu'au plus ancien mois dont le serveur garde des registres, ou jusqu'au dernier mois complet sur un serveur plus récent, et avancer jusqu'au mois en cours, présenté jusqu'à maintenant. Le mois comporte ces sections :
 
 - **Sauvegardes**, **Tests de restauration** et **Mises à jour** (appliquées, annulées, redémarrages, et composants dont une version plus récente est disponible).
-- **Vulnérabilités** : celles qui sont critiques et élevées, avec un correctif publié, dans les images qui s'exécutent sur le serveur, au début et à la fin de la période, avec le nombre de celles qui ont été corrigées et découvertes.
+- **Vulnérabilités** : celles qui sont critiques et élevées, avec un correctif publié, dans les images qui s'exécutent sur le serveur, au début et à la fin du mois, avec le nombre de celles qui ont été corrigées et découvertes.
 - **Disponibilité** : pour chaque service surveillé, la part du temps où il a répondu, le nombre de fois où il a cessé de répondre et pendant combien de temps.
 - **Alertes et avertissements** levés par le moniteur de tâches et le journal de maintenance.
 
-Chaque chiffre est lu sur le serveur, et rien n'est envoyé ailleurs. Toutes les heures sont en UTC. Pour en garder une copie sur papier ou en PDF, utilisez la commande d'impression de votre navigateur.
+Chaque chiffre est lu sur le serveur, et rien n'est envoyé ailleurs. Toutes les heures sont en UTC. Pour en garder une copie, appuyez sur **Télécharger en PDF** : le PDF contient le mois que la page affiche.
 
 Un chiffre que le serveur ne consigne pas n'est jamais estimé. Il apparaît sous **Non présenté pour cette période**, indiqué comme non présenté, avec la raison (par exemple, "Le journal de maintenance de ce serveur remonte au `<date>` : les sauvegardes, les mises à jour et les avertissements antérieurs ne sont donc pas présentés."). La section **Ce que ce serveur ne consigne pas** liste ce qui ne fait jamais partie du rapport, comme les mises à jour du système d'exploitation et le résultat de chaque test de restauration.
 
