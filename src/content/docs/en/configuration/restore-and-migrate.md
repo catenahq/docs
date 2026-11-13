@@ -194,6 +194,28 @@ Without a choice, saving a new destination makes a new backup password and confi
 
 The **Restore report** panel (Catena Pro) shows evidence that backups restore: a local restore test with its recovery time, and the state of the offsite copy. The local test is off until you turn it on: it runs on its own **Restore test** schedule, or as a step of the maintenance (see [Schedules](/en/configuration/schedules/)). It downloads as much as the backup holds and needs as much free disk, so turn it on when the server has the room. **Verify my backup can be restored** under **Actions** runs it on demand. A link to the report appears in the **Restore status** section.
 
+The test restores the newest backup into a separate folder on your server, checks what came back, then deletes the folder. Your running applications are not touched.
+
+Catena Pro shows:
+
+- The verdict: recovery verified, verification failed, or not tested yet.
+- The backup the test restored, by its identifier and the time it was taken.
+- When a test failed, the step it stopped at.
+- When the test last ran and its recovery time.
+- The result of the weekly start-up test.
+- The state of the offsite copy.
+
+Catena Business adds the detail, item by item:
+
+- Each step of the test, with how it is checked and its result.
+- Each PostgreSQL export, with the databases it holds and the time it was exported.
+- Each SQLite copy and each application definition the test checked.
+- Notes on what the test could not check.
+- Each service of the weekly start-up test, with its result.
+- How the offsite copy is checked.
+
+Press **Download as PDF** to keep a copy of the page. The PDF holds what the page shows for your edition.
+
 ## Migrate to another server
 
 A migration copies almost everything while the old server keeps serving. Only the last few minutes are unavailable to the people using it, and that part does not grow with the amount of data. You start the migration from the new server, after the old server has opened a time-limited window.

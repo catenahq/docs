@@ -28,7 +28,7 @@ A new server pulls from the old one with **Migrate a live server here**. The old
 
 ## What each edition adds
 
-Community has manual backups, a scheduled backup at most once a week, snapshot browsing, whole-server restore and rebuild, and the receiving side of a migration. Catena Pro adds daily and custom backup schedules, the other schedules, restoring a single app, the restore report and the source side of a migration, and Catena Business adds offsite copies. See the [edition comparison](https://catena.run/en/#pricing).
+Community has manual backups, a scheduled backup at most once a week, snapshot browsing, whole-server restore and rebuild, and the receiving side of a migration. Catena Pro adds daily and custom backup schedules, the other schedules, restoring a single app, the restore report and the source side of a migration, and Catena Business adds offsite copies and the [restore report](/en/configuration/restore-and-migrate/#restore-report)'s item-by-item detail. See the [edition comparison](https://catena.run/en/#pricing).
 
 ## Limits
 
