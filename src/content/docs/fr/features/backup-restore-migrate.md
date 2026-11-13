@@ -28,7 +28,7 @@ Un nouveau serveur tire depuis l'ancien avec **Migrer ici un serveur en service*
 
 ## Ce qu'ajoute chaque édition
 
-Communauté offre les sauvegardes manuelles, une sauvegarde planifiée au plus une fois par semaine, la consultation des instantanés, la restauration et la reconstruction du serveur entier, et le côté récepteur d'une migration. Catena Pro ajoute les horaires de sauvegarde quotidiens et personnalisés, les autres horaires, la restauration d'une seule application, le rapport de restauration et le côté source d'une migration, et Catena Business ajoute les copies hors site. Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
+Communauté offre les sauvegardes manuelles, une sauvegarde planifiée au plus une fois par semaine, la consultation des instantanés, la restauration et la reconstruction du serveur entier, et le côté récepteur d'une migration. Catena Pro ajoute les horaires de sauvegarde quotidiens et personnalisés, les autres horaires, la restauration d'une seule application, le rapport de restauration et le côté source d'une migration, et Catena Business ajoute les copies hors site et le détail, élément par élément, du [rapport de restauration](/fr/configuration/restore-and-migrate/#rapport-de-restauration). Voir la [comparaison des éditions](https://catena.run/fr/#pricing).
 
 ## Limites
 

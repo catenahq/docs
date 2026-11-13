@@ -194,6 +194,28 @@ Sans choix, enregistrer une nouvelle destination crée un nouveau mot de passe d
 
 Le panneau **Rapport de restauration** (Catena Pro) montre la preuve que les sauvegardes se restaurent : un test de restauration local avec son temps de récupération, et l'état de la copie hors site. Le test local est désactivé tant que vous ne l'activez pas : il s'exécute selon son propre horaire **Test de restauration**, ou comme étape de la maintenance (voir [Horaires](/fr/configuration/schedules/)). Il télécharge autant que la sauvegarde contient et demande autant d'espace disque libre : activez-le lorsque le serveur a la place. **Vérifier que ma sauvegarde est restaurable**, dans **Actions**, l'exécute sur demande. Un lien vers le rapport figure dans la section **État de la restauration**.
 
+Le test restaure la sauvegarde la plus récente dans un dossier séparé de votre serveur, vérifie ce qui est revenu, puis supprime le dossier. Vos applications en cours d'exécution ne sont pas touchées.
+
+Catena Pro montre :
+
+- Le verdict : récupération vérifiée, échec de la vérification, ou pas encore testé.
+- La sauvegarde que le test a restaurée, par son identifiant et l'heure de sa prise.
+- Lorsqu'un test a échoué, l'étape où il s'est arrêté.
+- Le moment du dernier test et son temps de récupération.
+- Le résultat du test de démarrage hebdomadaire.
+- L'état de la copie hors site.
+
+Catena Business ajoute le détail, élément par élément :
+
+- Chaque étape du test, avec la façon dont elle est vérifiée et son résultat.
+- Chaque export PostgreSQL, avec les bases de données qu'il contient et l'heure de son export.
+- Chaque copie SQLite et chaque définition d'application que le test a vérifiées.
+- Des remarques sur ce que le test n'a pas pu vérifier.
+- Chaque service du test de démarrage hebdomadaire, avec son résultat.
+- La façon dont la copie hors site est vérifiée.
+
+Appuyez sur **Télécharger en PDF** pour garder une copie de la page. Le PDF contient ce que la page montre pour votre édition.
+
 ## Migrer vers un autre serveur
 
 Une migration copie presque tout pendant que l'ancien serveur continue de servir. Seules les dernières minutes sont indisponibles pour les personnes qui l'utilisent, et cette période ne croît pas avec le volume de données. Vous lancez la migration depuis le nouveau serveur, une fois que l'ancien a ouvert une fenêtre limitée dans le temps.
