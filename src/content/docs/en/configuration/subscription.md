@@ -7,7 +7,7 @@ Catena Community is free and needs no key. Catena Pro and Catena Business unlock
 
 ## Prerequisites
 
-- A subscription key from Polar.
+- A subscription key from Polar. An order placed with **Subscribe to Catena Pro** or **Subscribe to Catena Business** in **Settings** > **Subscription**, or in the pricing section of [catena.run](https://catena.run/en/#pricing), gives you one.
 - The server must be able to reach Polar over HTTPS.
 
 ## Save the key
@@ -33,6 +33,8 @@ A blank field keeps the saved key. A new or renewed key takes effect as soon as 
 - "Saved. The check with Polar did not finish; the server asks again every hour."
 
 The section also links to **Manage the subscription in Polar's customer portal**, where you manage the key itself and the server activations.
+
+While the server has no key, or Polar does not grant it (the No key and Not granted statuses below), the section also shows **Subscribe to Catena Pro** and **Subscribe to Catena Business**. Each opens that edition's Polar checkout in a new tab, in the panel's language. The order gives you a subscription key: paste it in **Subscription key** in this same section and press **Save**. The other statuses show no Subscribe button, since the key they name belongs to a subscription you already have.
 
 ## One server per key
 
@@ -60,11 +62,11 @@ The **Status** line shows one of these. Text in braces is filled in with a date.
 
 | Situation | Sentence | What to do |
 |---|---|---|
-| No key | "No subscription key is saved. The paid features are off." | Save a key if you want paid features. |
+| No key | "No subscription key is saved. The paid features are off." | Save a key if you want paid features, or press **Subscribe to Catena Pro** or **Subscribe to Catena Business** to get one. |
 | Waiting | "The key is saved and Polar has not answered about it for this server yet. The paid features stay off until it does; the server asks every hour, and saving the key asks at once." | Wait for the next check, or save the key again to ask at once. |
 | Active | "Active. Polar last confirmed the key on this server at {date}." | Nothing. |
 | Grace | "Active within the grace period: Polar has not been reachable since {date}. The paid features stay on until {date}, and the server keeps asking every hour." | Check the server's outbound network and DNS. |
-| Not granted | "Polar does not grant this key on this server: the subscription was cancelled or has lapsed, the key was revoked or replaced, or this server's activation was freed in the customer portal. The paid features are off. Once the subscription is active, saving the key again activates it here." | Renew the subscription, or save the key again once it is active. |
+| Not granted | "Polar does not grant this key on this server: the subscription was cancelled or has lapsed, the key was revoked or replaced, or this server's activation was freed in the customer portal. The paid features are off. Once the subscription is active, saving the key again activates it here." | Renew the subscription (**Subscribe to Catena Pro** or **Subscribe to Catena Business** opens a new order), or save the key again once it is active. |
 | Refused | "Polar refused to activate this key on this server: it is active on another server (a key is active on one server at a time), or it is revoked, disabled or expired. Freeing the other activation in Polar's customer portal and saving the key again here activates it on this server." | Free the other activation in the portal, then save the key again. |
 | No known edition | "Polar grants this key, but it belongs to no Catena edition this panel knows. The paid features are off." | Check which product the key was issued for in the portal. |
 | Unreachable | "Polar has not been reachable since {date}, beyond the 48-hour grace. The paid features are off until Polar answers again; the server keeps asking every hour." | Restore outbound access to Polar; the features return at the first successful check. |
