@@ -58,7 +58,7 @@ Une sauvegarde configurée qui échoue, ou dont la vérification du dépôt (ou 
 
 ### Choisir les étapes
 
-Dans la section **Étapes** (**Étapes de la maintenance** dans l'index de la page), chaque étape est une case accompagnée d'un résumé d'une ligne, dans l'ordre où elle s'exécute :
+La section **Maintenance** ouvre la page, en tête de l'index à droite. Sous **Étapes**, à la fin de cette section, chaque étape est une case accompagnée d'un résumé d'une ligne, dans l'ordre où elle s'exécute :
 
 1. **Sauvegarde**
 2. **Test de restauration**
