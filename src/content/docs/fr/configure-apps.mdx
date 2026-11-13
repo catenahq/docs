@@ -1,497 +1,261 @@
 ---
 title: "Configurer une application pour Catena"
-description: "Ajoutez une application à un serveur Catena depuis un dépôt, ou publiez-y le fichier compose propre à une application, afin qu'elle soit publiée, protégée, sauvegardée, mise à jour et supervisée, avec la référence des étiquettes et un exemple Nextcloud."
+description: "Ajoutez une application depuis un dépôt ou préparez le fichier compose d'une application, avec la référence des étiquettes et les règles du vérificateur."
 ---
 
 import { Code } from "@astrojs/starlight/components";
 import appSkeleton from "../../../examples/app-skeleton.yml?raw";
 import publishedPort from "../../../examples/published-port.yml?raw";
 import secondAddress from "../../../examples/second-address.yml?raw";
+import appSettings from "../../../examples/app-settings.yml?raw";
 import appDeclaration from "../../../examples/app-declaration.yml?raw";
 import verifyCheck from "../../../examples/verify-check.yml?raw";
 import nextcloudCompose from "../../../examples/nextcloud-compose.yml?raw";
 import nextcloudOidcProvider from "../../../examples/nextcloud-oidc-provider.sh?raw";
 
-Catena gère une application à partir d'étiquettes (labels) écrites dans son fichier compose : il publie l'adresse, place la barrière de connexion devant, sauvegarde les données, met l'application à jour et la surveille sur la page d'état. Dans ce guide, vous ajoutez une application depuis un dépôt, puis vous préparez le fichier compose propre à une application et le publiez dans un dépôt à vous. Une application qui passe par toutes les étapes est entièrement gérée.
-
-Quand le logiciel figure au catalogue de Catena, l'entrée du catalogue est le chemin le plus court : ses étiquettes, ses réseaux, son placement et son client de connexion sont déjà en place, et vous l'ajoutez comme l'explique [Ajouter une application depuis un dépôt](#ajouter-une-application-depuis-un-dépôt).
+Catena gère une application à partir d'étiquettes (labels) écrites dans son fichier compose : il publie l'adresse, place la barrière de connexion devant, sauvegarde les données, met l'application à jour et la surveille sur la page d'état. Quand le logiciel figure au catalogue de Catena, l'entrée du catalogue est le chemin le plus court : ses étiquettes, ses réseaux, son placement et son client de connexion sont déjà en place.
 
 ## Ajouter une application depuis un dépôt
 
-Les administrateurs ajoutent les applications avec **Ajouter une application**, au-dessus des cartes de la page **Applications**, et les configurent et les suppriment depuis la page de chaque application, qu'ouvre l'engrenage de la carte de l'application. Chaque application vit dans son propre dossier sur le serveur : son fichier compose, un fichier de réglages et une note sur sa provenance. Le dossier figure dans chaque sauvegarde et fait tourner l'application sans Catena (voir [Restaurer une application sur n'importe quelle machine](/fr/features/backup-restore-migrate/#restaurer-une-application-sur-nimporte-quelle-machine)).
+Les administrateurs ajoutent les applications avec **Ajouter une application**, au-dessus des cartes de la page **Applications**, et les configurent depuis la page de chaque application, qu'ouvre l'engrenage de sa carte. Chaque application vit dans son propre dossier, qui figure dans chaque sauvegarde et fait tourner l'application sans Catena (voir [Restaurer une application sur n'importe quelle machine](/fr/features/backup-restore-migrate/#restaurer-une-application-sur-nimporte-quelle-machine)).
 
-Une application vient d'un dépôt git de la liste du serveur. Le catalogue de Catena figure d'emblée sur la liste et est de confiance. Pour ajouter une application :
+Une application vient d'un dépôt git de la liste du serveur; le catalogue de Catena y figure d'emblée. Pour ajouter une application :
 
 1. Ouvrez **Applications** et appuyez sur **Ajouter une application**.
-2. Choisissez le **Dépôt**, saisissez le nom de l'**Application** et appuyez sur **Afficher les versions**.
-3. Choisissez une **Version**. La liste contient les dix plus récentes. Une version est une étiquette (tag) que le dépôt a publiée pour l'application.
-4. Au besoin, saisissez **Nom sur ce serveur** : lettres minuscules, chiffres et traits d'union. Sans nom, l'application garde le sien. Un nom qui est déjà un dossier ou une application du serveur est refusé.
+2. Choisissez le **Dépôt**, saisissez le nom de l'**Application** et appuyez sur **Afficher les versions**. Après avoir publié une nouvelle application ou version, appuyez sur **Lire de nouveau** pour relire tout de suite la liste du dépôt.
+3. Choisissez une **Version** : une étiquette (tag) que le dépôt a publiée pour l'application.
+4. Au besoin, saisissez **Nom sur ce serveur** : lettres minuscules, chiffres et traits d'union.
 5. Appuyez sur **Ajouter**.
 
-La page d'ajout garde pour une journée la liste des applications de chaque dépôt. Chaque dépôt indique quand sa liste a été lue ("Lu `<heure>`."), et **Lire de nouveau** la relit tout de suite : servez-vous-en après avoir publié une nouvelle application ou version. Quand le dépôt ne peut pas être relu, la liste lue auparavant reste. Sous la description d'une application, **À propos** montre ce qu'elle est; les liens de ce texte suivent la règle donnée sous [Réglages, déploiement, retrait et suppression](#réglages-déploiement-retrait-et-suppression).
+Catena récupère l'application à cette version, vérifie son fichier compose (voir [Vérifier une application avec le panneau](#vérifier-une-application-avec-le-panneau)) et laisse l'application arrêtée; un fichier qui comporte une erreur est refusé.
 
-Catena récupère l'application à cette version, vérifie son fichier compose (voir [Vérifier une application avec le panneau](#vérifier-une-application-avec-le-panneau)), écrit son dossier avec son fichier de réglages et la laisse arrêtée : rien d'elle ne tourne encore, et rien ne la démarre d'elle-même. Un fichier qui comporte une erreur à la vérification est refusé et n'est pas conservé; les avertissements et les notes n'arrêtent pas l'ajout. La page reste où elle est, et la réponse s'affiche sur le bouton. Pendant l'ajout, le bouton indique **Ajout en cours** et dit ce qu'il attend quand une autre tâche le retient (voir [Changements qui s'exécutent ensemble](#changements-qui-sexécutent-ensemble)). Chaque administrateur voit aussi la carte de l'application sur la page **Applications**, marquée **Ajout en cours**, avec ce qu'elle attend, et la carte devient celle de l'application une fois l'ajout terminé. Quand il se termine bien, le bouton devient vert et indique **Ajoutée**, ou **Ajoutée sous le nom `<app>`** quand le serveur a dû prendre un autre nom que celui que vous avez saisi, et un bouton **Ouvrir ses réglages** ouvre la page de l'application; l'application figure sur la page **Applications** comme une carte arrêtée avec son engrenage. Un refus réaffiche le formulaire, avec la raison du serveur à côté du bouton.
-
-Appuyez sur l'engrenage de sa carte, saisissez les réglages de l'application (voir [Réglages, déploiement, retrait et suppression](#réglages-déploiement-retrait-et-suppression)), puis appuyez sur **Déployer l'application** sous **Déployer, retirer et supprimer**, à la fin de **Aperçu** : c'est le premier déploiement de l'application. La page suit le déploiement de votre appui jusqu'à sa fin. Le bouton indique **Déploiement en cours**, avec ce que le déploiement attend ou sa dernière ligne de progression (le téléchargement de chaque image avec les couches terminées et les Mio reçus, puis le déploiement), et **Retirer l'application** et **Supprimer l'application et ses données** sont désactivés. Il se termine dans l'un de trois états :
-
-- **Déployée.** L'application tourne.
-- **Déployée. L'application se prépare.** L'application n'a pas encore répondu à sa question de disponibilité (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)); son état indique **En démarrage** jusque-là.
-- **Le dernier déploiement a échoué le `<date>` :** avec la raison du serveur dessous, et **Déployer l'application** de nouveau actif. La raison reste sur la page, même après un rechargement, jusqu'à un changement qui déploie l'application.
-
-Un déploiement qui rencontre un autre changement de la même application, ou que le serveur refuse, le dit à côté de son bouton. Vous pouvez fermer la page : le déploiement se poursuit, et la page indique où il en est quand vous la rouvrez. Un téléchargement qui ne reçoit aucune donnée pendant 3 minutes met fin au déploiement, tout comme un téléchargement qui n'est toujours pas terminé après une heure en tout. Le serveur garde les couches qu'il a terminées. La tuile de l'application apparaît dès que Catena l'a prise en compte, en quelques secondes.
+Appuyez sur l'engrenage de la carte de l'application, saisissez ses réglages (voir [Réglages, déploiement, retrait et suppression](#réglages-déploiement-retrait-et-suppression)), puis appuyez sur **Déployer l'application** dans **Aperçu**. L'application indique **En démarrage** tant qu'elle n'a pas répondu à sa question de disponibilité (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)).
 
 ### Réglages, déploiement, retrait et suppression
 
-Chaque application a une page propre, qu'ouvre l'engrenage de la carte de l'application. Elle montre ce qu'est l'application (**À propos de cette application**), ses étapes de mise en route (**Étapes de mise en route**) et, dans une section repliée, **En savoir plus sur cette application**, tels que le paquet de l'application les écrit. Les liens de ces textes s'ouvrent dans un nouvel onglet, et seuls les liens sécurisés (`https://`) sont des liens. La carte **Sur cette page**, à droite, ouvre une partie à la fois :
+Chaque application a une page propre. La carte **Sur cette page** ouvre une partie à la fois :
 
-- **Aperçu.** La version et le dépôt d'où vient l'application, si elle est toujours telle que Catena l'a déployée, la mise à jour qui attend votre décision, le champ **Nom** et **Ouvrir l'application**. Saisissez le nom que l'application affiche sur la page **Applications** et comme titre de sa propre page, puis appuyez sur **Enregistrer le nom**; laissez le champ vide pour reprendre le nom fourni avec l'application. Le nom est gardé dans le dossier de l'application : les mises à jour et la remise de la version précédente le conservent et chaque sauvegarde le contient; le fichier compose, l'adresse de l'application et sa carte sur la page d'état ne changent pas. À la fin de la partie, **Déployer, retirer et supprimer** regroupe trois boutons. Le premier est l'unique bouton d'exécution de l'application : il indique **Déployer l'application** tant que l'application est arrêtée et **Redéployer l'application** tant qu'elle tourne, et fait la même chose dans les deux cas, la page suivant le déploiement. Il déploie le fichier de réglages et le fichier compose tels qu'ils sont, avec l'image la plus récente de chaque version qu'ils nomment; les services dont la définition n'a pas changé continuent de tourner. Pour une application tout juste ajoutée, c'est le premier déploiement. **Retirer l'application** est actif tant que l'application tourne, ne demande aucune confirmation, retire les services de l'application et garde ses données, ses fichiers et ses réglages. **Supprimer l'application et ses données** est actif tant que l'application est arrêtée : il efface l'application et toutes ses données de ce serveur. Avant de supprimer, la page cherche la dernière sauvegarde qui contient l'application et en indique la date, le retour en arrière se faisant depuis la page [Restauration](/fr/features/backup-restore-migrate/); cocher la case de confirmation supprime alors l'application. Quand aucune sauvegarde ne contient l'application, ou que les sauvegardes sont illisibles, la page avertit que rien ne pourra la ramener et vous demande de saisir plutôt le nom de l'application. Une application en marche n'est jamais supprimée : le serveur le refuse, il faut donc d'abord la retirer.
-- **Réglages.** "Une sauvegarde permet à cette application de revenir à son état actuel." indique "Dernière sauvegarde qui la contient : `<date>`." ou "Aucune sauvegarde ne la contient encore.", et **Sauvegarder maintenant** lance une sauvegarde du serveur entier, cette application comprise. Les deux ne s'affichent que si les sauvegardes sont configurées et non suspendues (voir [Sauvegardes et stockage S3](/fr/configuration/backups/)). Appuyez sur **Ouvrir les paramètres** et la réponse montre le fichier de réglages de l'application dans une zone de texte, chaque valeur telle que le fichier la contient, mots de passe et clés compris, y compris les valeurs que Catena copie de ses propres réglages ou d'une autre application, avec le fichier compose de l'application en lecture seule dessous. Le fichier contient les valeurs avec lesquelles l'application démarre, et vous y lisez et changez chaque réglage de l'application. Catena écrit le fichier en trois groupes, chacun sous un commentaire d'en-tête qui commence par "# Catena: " : vos réglages et toute clé que l'application ne déclare pas; les valeurs que Catena a générées, chacune sous un commentaire qui dit ce que fait un changement, par exemple où l'application garde sa propre copie; et les valeurs que Catena écrit elle-même, à partir des réglages de ce serveur ou d'une autre application. Catena réécrit ses propres lignes de commentaire chaque fois qu'elle écrit le fichier, et garde toutes les autres lignes, vos commentaires et l'ordre de vos lignes compris, à chaque enregistrement, mise à jour et changement de version. Chaque ouverture est consignée dans la piste d'audit avec la personne et le moment, jamais avec le texte, et une page chargée par son adresse ne contient jamais le fichier. Avant le premier démarrage de l'application, rien n'a lu les valeurs : vous changez chacune sans confirmation. Après, seule une valeur générée dont l'application garde sa propre copie, dans sa base de données ou sa configuration, en demande une : l'éditeur liste ces valeurs, et vous changez d'abord la copie de l'application (le commentaire de la valeur dit où), puis vous cochez "Pour chaque valeur de cette liste que j'ai changée, j'ai d'abord changé la copie de l'application", sinon l'enregistrement est refusé et rien n'est enregistré. Une valeur générée que l'application lit seulement à son premier démarrage, ou reprend à chaque déploiement, ne demande rien. Une ligne que Catena écrit elle-même est refusée quand vous la changez ou la retirez : la raison indique "Catena keeps this value set; it cannot be changed or removed here". Appuyez sur **Enregistrer le fichier de réglages** : cela écrit le fichier et ne déploie rien. Sur une application qui tourne, la réponse indique "Enregistré. Appuyer sur Redéployer pour appliquer les réglages."; sur une application arrêtée, elle indique "Enregistré. Les réglages s'appliquent au prochain déploiement." Une ligne doit être vide, un commentaire qui commence par `#`, ou `KEY=value` avec un nom que Docker accepte. Une ligne que vous avez changée ou ajoutée est refusée quand sa valeur nomme une autre variable ou contient la valeur secrète d'une autre clé ou un secret que Catena conserve pour l'application. Un dossier que le vérificateur d'applications refuse l'est aussi, tout comme le changement, après que l'application a tourné, d'une valeur qu'elle ne prend qu'avant son premier démarrage, comme le dossier où une application garde ses fichiers (voir [Garder les fichiers d'une application sur un disque que vous attachez](/fr/configuration/backups/#garder-les-fichiers-dune-application-sur-un-disque-que-vous-attachez)) : définissez une telle valeur avant d'appuyer sur **Déployer l'application**. La raison s'affiche à côté du bouton, et rien n'est écrit. Une valeur qu'un autre administrateur a changée depuis l'ouverture du fichier est refusée comme périmée : rouvrez les paramètres avant le changement suivant. Une application en marche prend le fichier enregistré quand vous appuyez sur **Redéployer l'application**, et une application arrêtée, ou ajoutée et pas encore déployée, le prend à son prochain déploiement. Une mise à jour garde le fichier que vous avez enregistré, et remettre la version précédente restaure le fichier tel qu'il était avant cette mise à jour. Une valeur est stockée en texte brut; ni Docker ni un shell ne l'exécute comme une commande.
-- **Journaux.** Les lignes les plus récentes écrites par chaque service de l'application, dans une console (voir [Consoles](/fr/features/admin-dashboard/#consoles)), seulement pour l'administrateur qui les demande. Quand l'application a au moins deux services, **Service** les liste. **Tous les services**, le premier choix, affiche ensemble les lignes les plus récentes de tous les services : un service très actif peut donc cacher les autres; choisissez un service pour lire ses propres lignes les plus récentes, et un suivi ne suit alors que ce service. Saisissez **Lignes**, de 1 à 1500 (200 au départ), cochez **Suivre les nouvelles lignes** si vous voulez les lignes qui suivent, et appuyez sur **Afficher les lignes récentes**. Votre navigateur garde **Lignes** et le choix du suivi pour toutes les applications, et le service pour chaque application. Sous la console, "Lu à `<heure>`." indique le moment, et **Actualiser** relit avec les mêmes réglages. Une ligne de plus de 512 octets est coupée, et seuls les codes de couleur et de style y restent. Une application arrêtée indique "L'application est arrêtée : aucun service ne tourne." Un service qui n'a rien écrit indique "Ce service n'a encore rien écrit." Un service dont toutes les lignes sont plus anciennes que celles affichées indique, après son nom, "ses lignes sont plus anciennes que celles affichées. Le choisir sous Service pour les lire." Les valeurs du fichier de paramètres de l'application qui sont secrètes et font au moins 4 caractères s'affichent comme `***`; un secret que l'application crée et affiche elle-même peut encore paraître. Les lignes restent dans la page où vous les lisez : le serveur n'en conserve aucune, et la piste d'audit consigne chaque lecture avec l'application, le service que vous avez choisi, le nombre de lignes et le suivi ou non, jamais les lignes. Une lecture qui échoue indique "Le journal n'a pas pu être lu." avec la raison. Pendant un suivi, **Arrêter le suivi** y met fin, et au plus 200 nouvelles lignes par seconde s'affichent; quand l'application écrit plus vite, la console indique "`<nombre>` lignes sautées : l'application écrit plus vite que la page n'affiche." Un service qui écrit une ligne de plus de 1 Mio n'affiche plus de lignes dans le suivi, et la console le dit; **Actualiser** les relit. Un suivi prend fin de lui-même quand rien ne le lit pendant 10 secondes, quand sa page ne donne aucun signe de vie pendant 3 minutes ("Le suivi s'est arrêté pendant que cette page était inactive. Affichez les lignes de nouveau pour continuer."), quand vous démarrez un suivi plus récent de la même application, quand l'application s'arrête, en 5 secondes environ ("L'application s'est arrêtée."), et quand l'unique service qu'il suit n'existe plus, dans le même délai ("Ce service n'existe plus : l'application a changé. Afficher les lignes de nouveau pour continuer."). Quand la page reste coupée du serveur pendant 30 secondes, ou que le serveur ne connaît plus le suivi, la console indique "La connexion est perdue. Actualisez pour continuer."
-- **Vulnérabilités.** Ce que la veille des vulnérabilités a trouvé dans cette application, dans toutes les éditions. Sous **Corrigeable maintenant** figurent les constats qui ont une version corrigée dans une image que la mise à jour proposée fait avancer, chacun avec la mise à jour, liée à **Mise à jour** quand la page l'applique; les autres constats qui ont une version corrigée figurent sous "Un correctif existe pour le paquet; aucune mise à jour de cette application n'est encore proposée." (ou, pour un service de l'infrastructure propre à ce serveur, "Un correctif existe pour le paquet; les mises à jour de ce serveur l'appliquent."); sous **Pas encore de correctif** figurent les constats sans version corrigée, avec ou sans mise à jour proposée. Sans Catena Business, ces deux groupes ne listent que les constats que des attaquants exploitent et ceux sur lesquels la veille alerte, et comptent les autres par gravité (voir [Page Vulnérabilités](/fr/configuration/vulnerabilities/#page-vulnérabilités)). La partie indique "Aucune vulnérabilité critique, élevée, moyenne ou exploitée trouvée." quand il n'y en a aucune, et "La veille des vulnérabilités n'a pas encore vérifié cette application." avant sa première vérification. Dans la carte **Sur cette page**, le badge **Exploitée** ou **À corriger** dit si cette application a quelque chose à traiter. **Toutes les vulnérabilités** ouvre la [page Vulnérabilités](/fr/configuration/vulnerabilities/#page-vulnérabilités). Le seul bouton qui met l'application à jour se trouve dans **Mise à jour**.
-- **Mise à jour.** Affichée dans toutes les éditions pour toute application qui a un dossier sur ce serveur. Avant le premier démarrage de l'application, elle indique "Pas encore démarrée : choisissez la version avec laquelle elle démarre." et contient **Version** : les dix versions les plus récentes que son dépôt offre, avec celle que l'application a choisie. Choisissez-en une autre et appuyez sur **Enregistrer la version** : le dossier de l'application prend le fichier compose de cette version, les valeurs que vous avez modifiées restent, une valeur encore à sa valeur par défaut prend la valeur par défaut de la version choisie, et une valeur que la version choisie n'a pas est abandonnée. Rien n'est déployé, et la page indique "La version de `<app>` a été changée. `<app>` reste arrêtée jusqu'à son déploiement." Un changement de version est refusé une fois l'application démarrée ou dès qu'elle détient des données; ensuite, le champ disparaît et seules les [mises à jour](/fr/configuration/updates/#applications-ajoutées-depuis-un-dépôt) font passer l'application à une autre version. Une application sans version à choisir indique "Pas encore démarrée : elle démarre avec la version que contiennent ses fichiers." Une application non ajoutée depuis un dépôt indique "Elle n'a pas été ajoutée depuis un dépôt : Catena n'a donc aucune version plus récente vers laquelle la mettre à jour." Une application dont le dossier ou les réglages sont illisibles en nomme la raison et indique "Catena ne peut pas chercher de mise à jour tant que ce problème n'est pas réglé." Après le premier démarrage, une application ajoutée depuis un dépôt indique "Version en service : `<version>`", puis ce qu'une mise à jour ferait, avec les versions écrites comme le champ **Version** les écrit. Quand une version plus récente vous est ouverte, elle indique "Mise à jour vers : `<version>`", le nombre de versions que la mise à jour traverse quand l'application doit en traverser, et pourquoi la mise à jour attend votre décision quand la maintenance l'a proposée; cochez la confirmation et appuyez sur **Mettre à jour vers `<version>`**. Une mise à jour fait avancer l'application d'une version majeure à la fois au plus : quand le dépôt publie une version majeure plus tardive, la partie dit qu'elle viendra après cette mise à jour. Elle indique "C'est la version la plus récente que publie son dépôt." quand rien de plus récent n'est ouvert, donne la raison quand une mise à jour est retenue (par exemple, des fichiers modifiés à la main) ou qu'une autre tâche tourne sur ce serveur, et, quand le dépôt est illisible, donne la raison et un lien **Réessayer**. Dessous, la partie dit que la mise à jour copie d'abord les données et les bases de données de l'application sur ce serveur, et que la version précédente et ses données sont remises en place d'elles-mêmes si la nouvelle version ne démarre pas correctement. Tant que la version précédente peut être remise, la partie offre aussi ce retour en arrière (voir [Applications ajoutées depuis un dépôt](/fr/configuration/updates/#applications-ajoutées-depuis-un-dépôt)).
-
-Le résultat de chaque changement s'affiche dans une bannière en haut de la page, et la page se rouvre sur la partie utilisée. Un bouton sur lequel vous appuyez passe en attente et reste indisponible jusqu'à la réponse du serveur : un deuxième appui n'envoie rien.
-
-Un badge sur la page de l'application et sur sa carte indique si l'application est toujours telle que Catena l'a déployée, et la page montre une mise à jour qui attend votre décision. Une application que vous avez modifiée à la main, ou par un autre gestionnaire de conteneurs, n'est pas mise à jour, et son badge le dit. Les badges, la liste **Hors de Catena** et les applications facultatives Portainer et Arcane du catalogue sont expliqués sous [Applications modifiées hors de Catena](/fr/configuration/updates/#applications-modifiées-hors-de-catena).
+- **Aperçu.** **Déployer l'application** (**Redéployer l'application** tant que l'application tourne) déploie le fichier de réglages et le fichier compose tels qu'ils sont. **Retirer l'application** retire les services de l'application et garde ses données, ses fichiers et ses réglages. **Supprimer l'application et ses données**, actif tant que l'application est arrêtée, efface l'application et toutes ses données, après que la page a indiqué la date de la dernière sauvegarde qui la contient (voir [Restauration](/fr/features/backup-restore-migrate/)); quand aucune sauvegarde ne la contient, la page avertit que rien ne pourra la ramener et vous demande de saisir le nom de l'application.
+- **Réglages.** **Ouvrir les paramètres** montre le fichier de réglages de l'application, chaque valeur telle que le fichier la contient. **Enregistrer le fichier de réglages** ne déploie rien : **Redéployer l'application** l'applique à une application qui tourne, et une application arrêtée le prend à son prochain déploiement. Après le premier démarrage de l'application, une valeur générée dont l'application garde sa propre copie demande de cocher une confirmation : changez d'abord la copie de l'application. Une valeur que l'application ne prend qu'avant son premier démarrage, comme le dossier où elle garde ses fichiers (voir [Garder les fichiers d'une application sur un disque que vous attachez](/fr/configuration/backups/#garder-les-fichiers-dune-application-sur-un-disque-que-vous-attachez)), est verrouillée une fois l'application démarrée. Une ligne que Catena écrit elle-même ne peut pas être changée.
+- **Journaux.** Les lignes les plus récentes de chaque service, dans une console (voir [Consoles](/fr/features/admin-dashboard/#consoles)).
+- **Vulnérabilités.** Ce que la veille des vulnérabilités a trouvé (voir [Page Vulnérabilités](/fr/configuration/vulnerabilities/#page-vulnérabilités)).
+- **Mise à jour.** **Version** choisit la version avant le premier démarrage; ensuite, la mise à jour proposée s'affiche ici (voir [mises à jour](/fr/configuration/updates/#applications-ajoutées-depuis-un-dépôt) et [Applications modifiées hors de Catena](/fr/configuration/updates/#applications-modifiées-hors-de-catena)).
 
 ### Changements qui s'exécutent ensemble
 
-Les changements de deux applications s'exécutent en même temps : déployer une application n'attend ni le déploiement, ni le retrait, ni la mise à jour, ni les réglages d'une autre. Un changement n'attend qu'un autre changement de la même application, et les applications qui lisent d'elle (celles qui utilisent un service qu'elle fournit, voir [Ce qu'une application peut demander à Catena](#ce-quune-application-peut-demander-à-catena)).
-
-Une tâche qui touche tout le serveur passe en premier et attend tous les changements en cours : une configuration, une restauration, la maintenance et une mise à jour. Une sauvegarde attend chaque application qu'elle met en pause. Une mise à jour d'une application, la remise de sa version précédente et un correctif de vulnérabilité retiennent aussi tout le serveur : ils attendent tous les autres changements et font attendre les autres. Une vérification de dépôt s'exécute à côté du démarrage d'une application.
-
-Pendant qu'un changement attend, la page en dit la raison, sur le bouton de l'ajout et à côté du démarrage :
-
-- "En attente de la fin d'une tâche qui touche tout le serveur : une sauvegarde, une mise à jour, une configuration ou une restauration."
-- "En attente de la fin d'un autre changement de cette application."
-
-Le changement s'exécute ensuite de lui-même.
+Les changements de deux applications s'exécutent en même temps. Un changement attend un autre changement de la même application et les applications qui utilisent un service qu'elle fournit. Une tâche qui touche tout le serveur (une configuration, une restauration, la maintenance, une mise à jour) passe en premier : elle attend tous les changements en cours, et les autres changements l'attendent.
 
 ### Dépôts
 
-**Dépôts**, sous **Gérer les applications**, liste les dépôts d'où vous pouvez ajouter des applications. Pour en ajouter un :
+**Dépôts**, sous **Gérer les applications**, liste les dépôts d'où vous pouvez ajouter des applications. Saisissez l'**Adresse du dépôt** (une adresse `https://` sans mot de passe, sans paramètres de requête et sans fragment) et, pour un dépôt privé, un **Jeton d'accès**. Cochez **De confiance : appliquer ses mises à jour d'elles-mêmes** seulement pour un dépôt dont vous faites confiance à l'auteur, puis appuyez sur **Enregistrer le dépôt**.
 
-1. Saisissez son **Adresse du dépôt** : une adresse `https://` sans mot de passe, sans paramètres de requête et sans fragment.
-2. Pour un dépôt privé, saisissez un **Jeton d'accès**. Il est enregistré sur le serveur et jamais réaffiché; la liste indique seulement "Jeton enregistré". Pour le remplacer, saisissez-en un nouveau. Pour le supprimer, cochez **Supprimer le jeton enregistré**.
-3. Cochez **De confiance : appliquer ses mises à jour d'elles-mêmes** seulement pour un dépôt dont vous faites confiance à l'auteur. Les mises à jour d'un dépôt de confiance s'appliquent d'elles-mêmes pendant la maintenance; pour les autres, chaque mise à jour attend votre décision sur la page de l'application (voir [Applications ajoutées depuis un dépôt](/fr/configuration/updates/#applications-ajoutées-depuis-un-dépôt)).
-4. Appuyez sur **Enregistrer le dépôt**.
+Un dépôt contient `blueprints/<application>/docker-compose.yml` avec les autres fichiers de l'application à côté, au plus 500 fichiers et 5 Mio, sans lien ni sous-module. Il publie chaque version sous forme d'étiquette écrite `<application>/<version>-<révision>`, comme `my-app/1.2.3-1`, où la version et la révision utilisent des lettres, des chiffres et les caractères `.`, `_`, `+` et `-`.
 
-Enregistrer une adresse déjà sur la liste change sa confiance et son jeton. **Retirer** enlève un dépôt de la liste, avec son jeton; les applications déjà ajoutées depuis lui restent.
-
-Un dépôt contient un dossier par application sous `blueprints/`, soit `blueprints/<application>/docker-compose.yml` avec les autres fichiers de l'application à côté, au plus 500 fichiers et 5 Mio, sans lien ni sous-module. Il publie chaque version sous forme d'étiquette écrite `<application>/<version>-<révision>`, comme `my-app/1.2.3-1`, où la version et la révision utilisent des lettres, des chiffres et les caractères `.`, `_`, `+` et `-`.
-
-Catena lit les fichiers d'un dépôt comme des données et les vérifie avant de les déployer. Seul un fichier du catalogue de Catena peut donner à une application le réseau du serveur ou le moteur de conteneurs, et seulement ceux que son bloc `x-catena` déclare. C'est le cas que le fichier soit inchangé ou que vous l'ayez modifié à la main; dans le second cas, la page de l'application et sa carte nomment chacun de ceux avec lesquels elle tourne. Seul un fichier inchangé du catalogue de Catena peut lire des secrets stockés ou prendre des valeurs qu'une autre application fournit. Tout autre fichier qui les demande est refusé.
-
-Un fichier du catalogue de Catena que vous modifiez à la main perd les secrets stockés et les valeurs des autres applications, mais l'application continue de tourner : Catena la démarre et la redémarre avec les fichiers qu'elle contient, et ne lui donne aucune nouvelle valeur tant que le fichier n'est pas redevenu celui du catalogue. La page de l'application et sa carte disent ce qui est retenu, et une application qui lit des valeurs de celle-ci garde celles qu'elle a. Une restauration ou un déplacement la remet telle qu'elle a été sauvegardée.
+Seul un fichier du catalogue de Catena peut donner à une application le réseau du serveur ou le moteur de conteneurs, et seulement ceux que son bloc `x-catena` déclare, que vous ayez modifié le fichier à la main ou non. Seul un fichier inchangé du catalogue de Catena peut lire des secrets stockés ou prendre des valeurs qu'une autre application fournit; tout autre fichier qui les demande est refusé.
 
 ### Ce qu'une application peut demander à Catena
 
-Le bloc `x-catena` d'une application (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif) et [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)) peut déclarer ce dont l'application a besoin du serveur. Catena y répond avant chaque déploiement : un certificat pour les noms de l'application et des enregistrements DNS dans les zones que le serveur sert. Un nom hors des domaines que le serveur sert est refusé, sauf si le fichier est un fichier inchangé du catalogue de Catena. Les étiquettes demandent la connexion (voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif)), et le bloc peut tirer les utilisateurs d'une application d'un groupe de connexion.
-
-Une application peut aussi fournir un service à d'autres applications, que celles qui l'utilisent trouvent d'elles-mêmes. Dès que l'application ClamAV du catalogue tourne, Nextcloud et le serveur de courriel sont déployés de nouveau une fois avec son adresse et analysent par son intermédiaire. Nextcloud se configure de la même façon pour l'éditeur OnlyOffice ou Collabora du catalogue. L'application de relais d'appels du catalogue fournit le relais qu'utilisent Nextcloud Talk et Element : la démarrer les déploie de nouveau une fois avec son adresse et son secret, et la retirer les remet comme avant. Ajouter Talk ou Element n'ajoute jamais le relais, et le relais ne peut pas être ajouté avant que le serveur ait son domaine, parce qu'il a besoin d'un nom et d'un certificat. L'application de serveur de courriel fait publier par Catena son enregistrement d'adresse, son enregistrement MTA-STS et son enregistrement TLS-RPT; vous publiez vous-même ses enregistrements MX, SPF, DKIM et DMARC.
+Le bloc `x-catena` d'une application peut déclarer ce dont elle a besoin du serveur : Catena y répond avant chaque déploiement, avec un certificat pour les noms de l'application et des enregistrements DNS dans les zones que le serveur sert. Une application peut aussi fournir un service à d'autres applications, que celles qui l'utilisent trouvent d'elles-mêmes.
 
 ## Comment Catena lit une application
 
-Une application est un ensemble de services. L'un d'eux, le **service d'entrée**, répond aux requêtes web : le serveur web ou le serveur d'application. Les autres (base de données, cache, tâches de fond) sont internes et restent hors de portée d'Internet et des autres applications.
+Une application est un ensemble de services. L'un d'eux, le **service d'entrée**, répond aux requêtes web; les autres (base de données, cache, tâches de fond) sont internes et restent hors de portée d'Internet et des autres applications. Vous écrivez les étiquettes sous la clé `labels:` propre à chaque service, en liste, une `"clé=valeur"` par ligne; les étiquettes placées sous `deploy.labels` ne sont pas vues.
 
-Vous écrivez les étiquettes sous la clé `labels:` propre à chaque service, en liste, une `"clé=valeur"` par ligne. La page d'état, les restaurations, les migrations et les mises à jour les lisent à cet endroit; les étiquettes placées sous `deploy.labels` leur échappent.
-
-Un service qui porte `vps.route.host` a une **adresse** publique, et son port, qui peut entrer et son contrôle de santé sont lus sur ce service seulement. La plupart des applications ont une seule adresse, sur le service d'entrée. Une application peut en avoir plusieurs, comme un site public et une page d'administration servie par un autre service. Avec deux adresses ou plus, vous marquez l'**adresse principale** avec `vps.route.main=true` sur son service. Les étiquettes qui décrivent l'application dans son ensemble (sa tuile, son titre sur la page d'état, son entrée de connexion, `vps.auth.protected`) sont lues sur le service de l'adresse principale seulement, telles que l'application en cours d'exécution les a, et sont ignorées sur tout autre service. Avec une seule adresse, ce service est l'adresse principale et n'a pas besoin de marque. Quand une application a deux adresses ou plus et que aucune ou plusieurs sont marquées principales, l'application n'a aucune route.
-
-L'accès se règle par adresse et n'est jamais hérité : une adresse sans étiquette d'accès n'admet que les administrateurs, même quand l'adresse principale est publique. Deux adresses ne peuvent pas partager un nom d'hôte : celle qui a été déployée en premier le garde, et l'autre n'a aucune route. La politique de mise à jour et les ports publiés décrivent un service en particulier, et chacun est facultatif. L'application à laquelle un service appartient est le nom de l'application sur le serveur, et le service est sa clé dans le fichier; Catena lit les deux dans Docker Swarm lui-même, aucune étiquette ne les nomme. La [référence des étiquettes](#référence-des-étiquettes) indique où va chacune.
-
-La valeur d'une étiquette peut être une `${VARIABLE}` des réglages de l'application (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif)) : Catena lit la valeur qu'a reçue le service déployé. Une étiquette `vps.*` que Catena ne reconnaît pas reste sans effet.
-
-Le squelette ci-dessous contient chaque élément qu'ajoutent les étapes : un service d'entrée `web` et une base de données `db`.
+Un service qui porte `vps.route.host` a une **adresse** publique, et son port, qui peut entrer et son contrôle de santé sont lus sur ce service seulement. Avec deux adresses ou plus, vous marquez l'**adresse principale** avec `vps.route.main=true` sur son service; les étiquettes qui décrivent l'application dans son ensemble (sa tuile, son titre sur la page d'état, son entrée de connexion, `vps.auth.protected`) sont lues sur ce service seulement. L'accès se règle par adresse et ne s'hérite jamais de l'adresse principale. Le squelette ci-dessous contient un service d'entrée `web` et une base de données `db`; la [référence des étiquettes](#référence-des-étiquettes) indique où va chacune.
 
 <Code code={appSkeleton} lang="yaml" />
 
-## Étape 1 : Choisir le nom de l'application
+1. **Choisir le nom de l'application.** Un nom court fait de lettres minuscules, de chiffres et de traits d'union, comme `my-app`. Le mandataire joint le service d'entrée à `my-app_web` : le nom de l'application, un trait de soulignement et la clé du service dans le fichier.
+2. **Préparer le fichier pour Docker Swarm.** Swarm refuse certaines clés compose et en ignore d'autres (règles [S1](#s1), [S2](#s2), [S3](#s3) et [S4](#s4)), et certaines clés demandent le contrôle du serveur ([X1](#x1), [X3](#x3) et [X5](#x5)). Aussi :
+   - Chaque service qui monte un volume nommé ou un dossier de l'hôte porte la contrainte de placement `node.labels.catena.role==data` : swarm crée un volume vide sur un autre serveur, sans erreur.
+   - N'écrivez pas de `depends_on` : swarm n'ordonne pas les démarrages. Quand un plantage suivi d'un redémarrage fait des dégâts, l'entrypoint attend lui-même la base de données.
+   - N'écrivez `deploy.restart_policy` que pour un service qui ne doit pas être relancé (`condition: none`) ou seulement après un échec (`condition: on-failure`).
+   - Écrivez `tmpfs` en forme longue (`type: tmpfs`). Un montage tmpfs est `noexec` : un chemin qui doit exécuter du code est un volume.
+   - Chaque service qui rejoint `catena-network` porte `cap_drop: [NET_RAW]`, pour qu'il ne puisse pas forger du trafic vers les services propres de Catena; une application qui a besoin des paquets bruts ajoute plutôt `cap_add: [NET_RAW]` ([X11](#x11)).
+   - Chaque image porte une version complète, comme `1.2.3` ou `1.2.3-alpine`. Seules celles-là sont mises à jour automatiquement.
+3. **Raccorder le service d'entrée.** Le service d'entrée se joint au réseau externe `catena-network` et garde le réseau `default` de l'application; les services internes restent sur `default` seulement. Le fichier déclare `catena-network` comme `external: true`.
+4. **Étiqueter le service d'entrée.** `vps.route.host` avec l'adresse publique, comme `my-app.yourdomain.com`, et `vps.route.port` quand l'application n'écoute pas sur le port 80. `vps.auth.mode=public` pour une application ouverte à tous, ou `vps.auth.groups` avec les groupes Keycloak admis pour une application privée (voir [Connexion et personnes](/fr/configuration/sign-in-and-people/)); sans l'un ni l'autre, seuls les administrateurs entrent. `vps.health.path` avec une adresse qui répond 200 quand l'application fonctionne.
+5. **Une autre adresse (facultatif).** Ajoutez `vps.route.main=true` sur le service d'entrée. Sur l'autre service, ajoutez `vps.route.host`, ses étiquettes d'accès et, au besoin, `vps.route.port` et `vps.health.path`, et reliez-le à `catena-network`. Ci-dessous, `web` est public et `admin` admet le groupe `staff` :
 
-Donnez à l'application un nom court fait de lettres minuscules, de chiffres et de traits d'union, comme `my-app`. C'est le nom de l'application sur le serveur, que vous donnez en ajoutant l'application (étape 7). Les restaurations, les migrations et les mises à jour trouvent l'application par ce nom, et le mandataire joint le service d'entrée à `my-app_web` : le nom de l'application, un trait de soulignement et la clé du service dans le fichier.
+   <Code code={secondAddress} lang="yaml" />
 
-## Étape 2 : Préparer le fichier pour Docker Swarm
+6. **Ports et mises à jour (facultatif).** Un service qui publie un port pour un autre protocole que le web porte aussi `vps.expose.tcp` ou `vps.expose.udp`, ce qui ouvre le port dans le coupe-feu. `vps.auto-update` règle jusqu'où une image avance (voir [Mises à jour](#mises-à-jour)).
 
-Les applications tournent sur Docker Swarm, qui refuse certaines clés compose net et en ignore d'autres sans rien dire. Le catalogue est vérifié contre ces règles; quand vous écrivez un fichier à la main, vous les respectez vous-même.
+   <Code code={publishedPort} lang="yaml" />
 
-- **Politique de redémarrage.** Swarm relance par défaut un service arrêté. N'écrivez `deploy.restart_policy` que pour un service qui ne doit pas être relancé (`condition: none`) ou seulement après un échec (`condition: on-failure`), comme une tâche d'initialisation.
-- **Placement des données.** Chaque service qui monte un volume nommé ou un dossier de l'hôte porte la contrainte de placement `node.labels.catena.role==data`. Un volume est local à un serveur : sur un autre, swarm le crée vide, sans erreur.
-- **Pas de `depends_on`.** Swarm n'ordonne pas les démarrages et abandonne la clé sans message. Swarm relance un service parti trop tôt. Quand un plantage suivi d'un redémarrage fait des dégâts (un installateur qui s'arrête à moitié), l'entrypoint attend lui-même la base de données.
-- **Pas de `configs:` en ligne.** La vérification refuse une entrée `file:` ou `content:` (règle [S4](#s4)). L'entrypoint du service écrit plutôt le fichier de configuration. Seuls les `configs` `external: true` sont acceptés.
-- **`tmpfs` en forme longue** (`type: tmpfs`). La clé courte est ignorée en silence. Un montage tmpfs est `noexec`; un chemin qui doit exécuter du code est un volume.
-- **Ports publiés en forme longue** avec `mode: host`, qui conserve l'adresse réelle du client (le mode par défaut la remplace). L'[étape 4](#étape-4--étiqueter-le-service-dentrée) donne l'étiquette qui les ouvre dans le coupe-feu.
-- **Clés refusées**, qui font rejeter tout le fichier par swarm : `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Les limites vont dans `deploy.resources.limits`, le nombre de répliques dans `deploy.replicas`.
-- **Clés ignorées**, sans effet : `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, `security_opt`, `shm_size`. Les images sont construites et publiées ailleurs; swarm ne fait que les télécharger.
-- **Clés d'accès au serveur.** Swarm abandonne aussi `privileged`, `pid` et `devices` : l'application tourne sans ce qu'elle demandait. Le Vérificateur Compose du panneau signale `privileged: true`, `pid: host` et `devices` comme des erreurs ([X1](#x1), [X3](#x3), [X5](#x5)) : le fichier demande le contrôle du serveur. Le fichier corrigé garde la clé : vous décidez.
-- **Pas d'accès réseau brut sur `catena-network`.** Docker donne à chaque conteneur le droit d'envoyer des paquets réseau bruts, ce qui permet à un conteneur de `catena-network` de forger du trafic vers les services propres de Catena. Chaque service qui rejoint `catena-network` porte `cap_drop: [NET_RAW]`. Une application qui a besoin des paquets bruts (un analyseur de réseau, par exemple) ajoute plutôt `cap_add: [NET_RAW]`. Le Vérificateur Compose du panneau signale un service qui le garde ([X11](#x11)), et le fichier corrigé porte le retrait. Une application déjà déployée garde l'accès jusqu'à ce que vous publiiez le fichier corrigé comme nouvelle version.
-- **Versions complètes.** Chaque image porte une version complète, comme `1.2.3` ou `1.2.3-alpine`. Seules celles-là sont mises à jour automatiquement : `latest`, `stable`, `1.2` ou `1` ne sont jamais modifiées.
-
-## Étape 3 : Raccorder le service d'entrée
-
-Le service d'entrée se joint au réseau externe `catena-network` et garde le réseau `default` de l'application pour joindre les services internes. Aucun alias n'est nécessaire. Les services internes restent sur `default` seulement. Le fichier déclare `catena-network` comme `external: true` (voir le squelette ci-dessus).
-
-Le mandataire inverse joint le service d'entrée par ce réseau, et de même tout autre service qui a une adresse. Un service avec une adresse qui n'est pas sur `catena-network` n'a aucune route pour cette adresse. Un service interne sans entrée `catena-network` est inaccessible au mandataire et aux autres applications.
-
-## Étape 4 : Étiqueter le service d'entrée
-
-Écrivez ces étiquettes sur le service d'entrée :
-
-1. `vps.route.host` avec l'adresse publique, comme `my-app.yourdomain.com`. Sans elle, l'application n'a ni route, ni tuile, ni carte sur la page d'état.
-2. `vps.route.port` avec le port d'écoute de l'application dans son conteneur, s'il n'est pas 80.
-3. Qui peut entrer :
-   - `vps.auth.mode=public` pour une application ouverte à tous. La connexion propre à l'application, s'il y en a une, reste aux commandes.
-   - `vps.auth.groups` avec les groupes Keycloak admis, pour une application privée. Une personne dans l'un d'eux entre.
-   - Aucune des deux : seuls les administrateurs entrent.
-4. `vps.health.path` avec une adresse de l'application qui répond 200 quand l'application fonctionne, comme `/health`. Sans elle, la page d'état vérifie la page d'accueil de l'application : une application publique est en marche quand la page répond sans erreur, et une application derrière la connexion quand elle renvoie les visiteurs vers la connexion.
-5. Au besoin, le nom, l'icône et la description de la tuile dans l'onglet **Applications**, et le titre de la carte sur la page d'état.
-
-Les administrateurs entrent toujours. Aucune étiquette ne crée de groupe : les groupes existent déjà dans Keycloak, gérés dans sa console d'administration à `auth.yourdomain.com` ou dans le panneau **Personnes** avec Catena Pro (voir [Connexion et personnes](/fr/configuration/sign-in-and-people/)). La barrière décide qui atteint l'application, pas ce qu'une personne peut y faire : les rôles et permissions internes relèvent des réglages de l'application elle-même.
-
-Un service qui publie un port pour un protocole autre que le web (courriel, relais TURN) porte aussi `vps.expose.tcp` ou `vps.expose.udp` avec ces ports, ce qui les ouvre dans le coupe-feu du serveur. Une étiquette n'ouvre jamais un port que le serveur déclare lui-même (SSH, ou un port réservé au serveur ou à votre réseau privé) : Catena ignore cette entrée et la consigne dans son journal.
-
-<Code code={publishedPort} lang="yaml" />
-
-### Une autre adresse (facultatif)
-
-Quand un autre service de l'application répond sur une adresse qui lui est propre, comme une page d'administration, donnez aussi des étiquettes à ce service :
-
-1. Sur le service d'entrée, ajoutez `vps.route.main=true`. Elle marque l'adresse qu'ouvre la tuile et qui porte les étiquettes de l'application entière.
-2. Sur l'autre service, ajoutez `vps.route.host` avec son adresse propre, `vps.route.port` s'il n'est pas 80, et son accès : `vps.auth.mode=public`, ou `vps.auth.groups` avec les groupes admis. Sans l'un ni l'autre, seuls les administrateurs entrent, quoi que permette l'adresse principale.
-3. Ajoutez-y `vps.health.path` quand sa page d'accueil ne convient pas comme contrôle. La page d'état affiche alors une carte par adresse.
-4. Reliez aussi ce service à `catena-network` (étape 3).
-
-Laissez la tuile, le titre sur la page d'état, `vps.auth.protected` et les étiquettes de connexion sur le service d'entrée. Dans le fichier ci-dessous, `web` est public et `admin` admet le groupe `staff` :
-
-<Code code={secondAddress} lang="yaml" />
-
-## Étape 5 : Régler la politique de mise à jour (facultatif)
-
-Par défaut, une image ne passe qu'aux nouvelles versions correctives. Un service qui doit avancer davantage, ou pas du tout, porte `vps.auto-update` (voir [Mises à jour](#mises-à-jour)).
-
-Rien d'autre ne s'étiquette par service. Un service dont l'image est une base de données ou un cache (PostgreSQL, PostGIS, TimescaleDB, MariaDB, MySQL, MongoDB, Redis, Valkey, KeyDB, Memcached, Elasticsearch, OpenSearch) est reconnu par son image et continue de tourner quand une migration met en pause le reste de l'application.
-
-## Étape 6 : Prévoir les données
-
-- **Les volumes nommés** résident dans le dossier des volumes Docker et figurent dans chaque sauvegarde. Chaque volume est déclaré par son nom : les volumes anonymes sont aussi sauvegardés, mais une restauration d'une seule application ne les atteint pas.
-- **Les montages liés (bind)** dans la zone des applications sont inclus. Un montage lié vers tout autre chemin absolu fait échouer la sauvegarde, sauf si vous inscrivez ce dossier sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. Voir [Sauvegardes et stockage S3](/fr/configuration/backups/). Un montage lié d'un dossier inscrit lui-même est refusé : montez un dossier qu'il contient (règle [X17](#x17)).
-- **Les bases de données sont copiées automatiquement** avant chaque sauvegarde. C'est le nom de l'image qui décide, pas une étiquette :
-  - un conteneur en cours d'exécution dont le nom d'image contient `postgres` est copié avec `pg_dumpall`, sous l'utilisateur de `POSTGRES_USER`;
-  - un conteneur dont le nom d'image contient `mariadb` ou `mysql` est copié, et exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD` dans son environnement;
-  - une copie qui échoue fait échouer la sauvegarde.
-- **Les autres moteurs** (MongoDB, SQLite et semblables) n'ont aucune copie automatique. Vous avez besoin de l'exportation propre à l'application, ou d'une copie de volume cohérente en soi.
-- **Les grands ensembles de fichiers** vont dans un volume, ou dans un dossier d'un disque que vous attachez, montez et inscrivez (voir [Garder les fichiers d'une application sur un disque que vous attachez](/fr/configuration/backups/#garder-les-fichiers-dune-application-sur-un-disque-que-vous-attachez)).
-
-Une sauvegarde ne met pas en pause une application ajoutée à la main, sauf si le fichier déclare un mode de sauvegarde (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)) : sinon rien n'est placé en mode maintenance autour de l'instantané. Une entrée du catalogue peut le demander : Nextcloud, par exemple, est placé en mode maintenance à chaque sauvegarde et en est sorti juste après l'instantané, même quand la sauvegarde échoue.
-
-## Étape 7 : Publier et ajouter
-
-1. Dans un dépôt git joignable en `https://`, placez le fichier compose à `blueprints/<application>/docker-compose.yml`, où `<application>` est le nom de l'étape 1, avec les autres fichiers de l'application à côté.
-2. Étiquetez la version `<application>/<version>-<révision>`, comme `my-app/1.2.3-1`.
-3. Sous **Dépôts**, sur la page **Applications**, enregistrez l'adresse du dépôt, avec un jeton d'accès s'il est privé (voir [Dépôts](#dépôts)).
-4. Sous **Ajouter une application**, choisissez le dépôt, saisissez `<application>`, choisissez la version et appuyez sur **Ajouter** (voir [Ajouter une application depuis un dépôt](#ajouter-une-application-depuis-un-dépôt)).
-5. Saisissez les mots de passe et les clés comme réglages de l'application (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif)). Ils restent hors du fichier et vous pouvez les renouveler sans publier de nouvelle version.
-6. Appuyez sur **Déployer l'application** sur la page de l'application.
-
-Pour modifier l'application plus tard, publiez une nouvelle étiquette; l'application y passe comme l'explique [Applications ajoutées depuis un dépôt](/fr/configuration/updates/#applications-ajoutées-depuis-un-dépôt).
-
-## Étape 8 : Vérifier
-
-1. Patientez quelques secondes : Catena prend le déploiement en compte d'elle-même, et revérifie chaque heure.
-2. Ouvrez l'adresse. Une application privée affiche d'abord la page de connexion; une application publique s'ouvre directement.
-3. La tuile de l'application figure dans l'onglet **Applications**, et sa carte sur la page d'état passe au vert.
-
-Quand une vérification échoue, le [tableau de dépannage](#dépannage) énumère les causes habituelles. Pour repérer la plupart des erreurs avant de déployer, [vérifiez le fichier avec le panneau](#vérifier-une-application-avec-le-panneau).
+7. **Prévoir les données.** Les volumes nommés figurent dans chaque sauvegarde; déclarez chacun par son nom, car une restauration d'une seule application n'atteint pas un volume anonyme. Un montage lié hors de la zone des applications fait échouer la sauvegarde, sauf si vous inscrivez le dossier sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder** (voir [Sauvegardes et stockage S3](/fr/configuration/backups/) et la règle [X17](#x17)). Les bases de données sont copiées avant chaque sauvegarde, selon le nom de l'image : `postgres` (sous l'utilisateur de `POSTGRES_USER`), `mariadb` et `mysql` (qui exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD`). Les autres moteurs, comme MongoDB ou SQLite, n'ont aucune copie : servez-vous de l'exportation propre à l'application. Une sauvegarde ne met l'application en pause que si son fichier déclare un mode de sauvegarde (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)).
+8. **Publier, ajouter et vérifier.** Placez le fichier dans un dépôt git, étiquetez la version, enregistrez le dépôt sous **Dépôts**, ajoutez l'application, saisissez ses mots de passe et ses clés comme réglages (ils restent hors du fichier) et appuyez sur **Déployer l'application**. Ouvrez ensuite l'adresse : sa tuile figure dans l'onglet **Applications** et sa carte sur la page d'état passe au vert (voir [Dépannage](#dépannage)).
 
 ## Connexion avec les comptes Catena (facultatif)
 
-Une application qui prend en charge OpenID Connect peut laisser les gens se connecter avec leur compte Catena plutôt qu'avec un mot de passe distinct. Les étiquettes font créer à Catena l'entrée de connexion propre à l'application dans Keycloak et lui remettent son identifiant, son secret et son émetteur.
+Une application qui prend en charge OpenID Connect peut laisser les gens se connecter avec leur compte Catena. Sur le service d'entrée, ajoutez les étiquettes `vps.auth.oidc` (voir la [référence des étiquettes](#sur-le-service-dentrée-une-seule-fois)) avec l'adresse de rappel de l'application, comme `https://my-app.yourdomain.com/auth/callback` : elle est en `https://` sur un domaine que ce serveur sert, ou le schéma propre d'une application de téléphone. Un `*`, un `http://` simple ou un `#` est refusé, et quand une étiquette est erronée, Catena ne crée ni ne modifie rien pour cette application.
 
-1. Ajoutez ces étiquettes au service d'entrée :
-   - `vps.auth.oidc=true`.
-   - `vps.auth.oidc.redirect_uris` avec l'adresse de rappel de l'application (sa documentation la nomme), comme `https://my-app.yourdomain.com/auth/callback`. Séparez plusieurs adresses par des virgules.
-   - `vps.auth.oidc.public=true` seulement pour une application qui ne peut pas garder de secret, comme une application de téléphone. L'entrée n'a alors aucun secret et exige PKCE.
-2. Dans le fichier compose, transmettez les trois valeurs à l'application sous les noms qu'elle attend, avec une valeur par défaut vide pour que le premier déploiement fonctionne : `${OIDC_CLIENT_ID:-}`, `${OIDC_CLIENT_SECRET:-}` (absente pour une application publique) et `${OIDC_ISSUER_URL:-}`.
-3. Ajoutez l'application et déployez-la. Dans les minutes qui suivent, Catena crée l'entrée, écrit les trois valeurs dans les réglages de l'application et déploie de nouveau l'application quand elles changent. Keycloak génère le secret; Catena le copie.
-
-Chaque adresse de retour est en `https://` sur un domaine que ce serveur sert, ou le schéma propre d'une application de téléphone, comme `app.immich:///oauth-callback`. Un `*`, un `http://` simple ou un `#` est refusé. Quand une étiquette est erronée, Catena ne crée ni ne modifie rien pour cette application.
-
-Les personnes qui peuvent se connecter par le bouton propre à l'application suivent les groupes de l'application : les administrateurs seulement pour une application que seuls eux peuvent ouvrir, le personnel et les administrateurs quand les groupes dépassent `admin`, et tous les comptes quand `client` en fait partie. Une application publique sans `vps.auth.groups` admet le personnel et les administrateurs.
-
-Catena ne modifie que les entrées qu'elle a créées. Une entrée de même nom que vous avez créée à la main n'est jamais reprise. Retirer les étiquettes, ou l'application, supprime l'entrée créée par Catena.
-
-Pour vérifier que cela a fonctionné :
-
-- Dans l'onglet **Applications**, un administrateur voit sur la tuile de l'application **connexion prête**, **connexion en attente** ou **connexion en échec**, avec la raison, à la place du badge OIDC. Le personnel ne voit aucun badge.
-- En attente signifie que Catena réessaie d'elle-même. En échec signifie que quelque chose est à corriger, et la tuile dit quoi. L'onglet **Journal** nomme aussi l'application et la raison.
-
-Voir [Authentification unique](/fr/features/single-sign-on/) pour le fonctionnement de la connexion entre applications.
+Dans le fichier compose, transmettez les valeurs à l'application avec une valeur par défaut vide : `${OIDC_CLIENT_ID:-}`, `${OIDC_CLIENT_SECRET:-}` (absente pour une application publique) et `${OIDC_ISSUER_URL:-}`. Dans les minutes qui suivent le déploiement, Catena crée l'entrée dans Keycloak et écrit les valeurs dans les réglages de l'application. La tuile indique **connexion prête**, **connexion en attente** ou **connexion en échec**, avec la raison (voir [Authentification unique](/fr/features/single-sign-on/)).
 
 ## Déclarer les réglages (facultatif)
 
-Les valeurs que le fichier d'une application lit sous la forme `${VARIABLE}` viennent de son fichier de réglages. Déclarez chacune dans le bloc `x-catena`, avec `schema: 2`, comme l'un des deux :
+Déclarez chaque valeur que le fichier lit sous la forme `${VARIABLE}` dans le bloc `x-catena`, avec `schema: 2`, comme un **réglage** avec une valeur par défaut et une étiquette en anglais et en français, ou comme un secret **généré**, avec sa longueur et son alphabet (`alnum` ou `hex`).
 
-- un **réglage** que vous changez sur la page de l'application, avec une valeur par défaut et une étiquette en anglais et en français;
-- un secret **généré** que Catena produit quand vous ajoutez l'application, avec sa longueur et son alphabet (`alnum` ou `hex`).
+<Code code={appSettings} lang="yaml" />
 
-```yaml
-x-catena:
-  schema: 2
-  env:
-    APP_HOSTNAME:
-      setting:
-        default: my-app.yourdomain.com
-        label: { en: "Address", fr: "Adresse" }
-    ADMIN_EMAIL:
-      setting:
-        default: admin@yourdomain.com
-        label: { en: "Administrator email", fr: "Courriel de l'administrateur" }
-        first_start_only: true
-    DB_PASSWORD:
-      generated: { length: 32, alphabet: alnum, applied_on_deploy: true }
-    ADMIN_PASSWORD:
-      generated:
-        length: 24
-        alphabet: hex
-        first_start_only: true
-        note: "The application keeps its own copy in its database after the first start."
-```
-
-Marquez un réglage `first_start_only: true` quand l'application ne le prend qu'avant son premier démarrage : il est verrouillé une fois l'application déployée. Sur une clé générée, `first_start_only: true` dit que l'application lit la valeur à son premier démarrage seulement, et `applied_on_deploy: true` qu'elle reprend la valeur à chaque déploiement; n'en posez qu'un des deux au plus. Sans l'un ni l'autre, l'application est supposée garder sa propre copie de la valeur, et un changement dans le fichier de réglages demande la confirmation décrite dans [Réglages, déploiement, retrait et suppression](#réglages-déploiement-retrait-et-suppression). `note` est une phrase en anglais : elle devient le commentaire au-dessus de la clé dans le fichier de réglages, à la place du commentaire habituel. Le réglage qui nomme le dossier où une application garde ses fichiers est de ce genre (voir [Garder les fichiers d'une application sur un disque que vous attachez](/fr/configuration/backups/#garder-les-fichiers-dune-application-sur-un-disque-que-vous-attachez)).
-
-Vous lisez un secret généré, comme le mot de passe d'administrateur que l'application crée à son premier démarrage, dans le fichier de réglages de la page de l'application (voir [Réglages, déploiement, retrait et suppression](#réglages-déploiement-retrait-et-suppression)) : chaque ouverture est consignée dans la piste d'audit.
-
-Une variable qui n'est ni déclarée ni écrite par Catena, comme le sont les valeurs de connexion, se lit comme vide.
+`first_start_only: true` sur un réglage le verrouille une fois l'application déployée; sur une clé générée, il dit que l'application lit la valeur à son premier démarrage seulement. `applied_on_deploy: true` dit que l'application reprend une valeur générée à chaque déploiement; n'en posez qu'un des deux au plus. Sans l'un ni l'autre sur une clé générée, l'application est supposée garder sa propre copie de la valeur, et un changement après le premier démarrage demande la confirmation décrite dans [Réglages, déploiement, retrait et suppression](#réglages-déploiement-retrait-et-suppression). `note` est une phrase en anglais qui devient le commentaire au-dessus de la clé dans le fichier de réglages.
 
 ## Déclarer le mode de sauvegarde et les étapes de mise à jour (facultatif)
 
-Une application peut porter son propre mode de sauvegarde et ses propres étapes de mise à jour dans un bloc `x-catena`, au début de son fichier compose. Le dossier de l'application garde le fichier tel que Catena l'a déployé : le bloc voyage donc avec l'application, les sauvegardes et les restaurations le ramènent, et le serveur le lit dans ce fichier, pas dans le catalogue.
+Une application peut porter son propre mode de sauvegarde et ses propres étapes de mise à jour dans un bloc `x-catena`, au début de son fichier.
 
 <Code code={appDeclaration} lang="yaml" />
 
-Commencez le bloc par `schema: 1`. Chaque commande est une liste de mots (`["yarn", "db:migrate"]`), exécutée avec `docker exec` dans le `service` nommé de l'application, sans interpréteur de commandes. Chaque section indique `service` et `timeout_seconds`; `user` est facultatif et nomme le compte sous lequel les commandes s'exécutent.
+Commencez le bloc par `schema: 1`. Chaque commande est une liste de mots, exécutée avec `docker exec` dans le `service` nommé, sans interpréteur de commandes. Chaque section indique `service` et `timeout_seconds`; `user` est facultatif et nomme le compte sous lequel les commandes s'exécutent.
 
-- **`quiesce`** est le mode de sauvegarde. La maintenance exécute les commandes `pre` avant la sauvegarde, par exemple pour placer l'application en mode maintenance, et les commandes `post` après, même quand la sauvegarde échoue. La maintenance exige Catena Pro ou Catena Business (voir [Horaires](/fr/configuration/schedules/)). `post` doit réussir même si `pre` n'a jamais été exécutée. Chaque commande peut durer jusqu'à 60 secondes. Une commande encore en cours à la fin de son délai dispose d'autant de temps en plus, jusqu'à deux minutes, pour se terminer, puis elle est arrêtée, avant l'exécution de la commande suivante; une commande arrêtée est consignée dans l'onglet **Journal**.
-- **`lifecycle`** contient les étapes de mise à jour, chaque commande pouvant durer jusqu'à 3600 secondes :
-  - `before_update` s'exécute dans le conteneur en marche juste avant qu'une mise à jour déploie la nouvelle image, et `after_update` une fois la mise à jour réglée, qu'elle soit conservée ou annulée.
-  - `ready` est la question que le serveur pose jusqu'à ce que l'application réponde : une commande qui réussit quand l'application est prête. Elle est posée après chaque déploiement, avant chaque étape de mise à jour et avant la vérification de l'application. Tant que l'application ne répond pas, elle indique "En démarrage" dans le panneau, jusqu'à ce que `timeout_seconds` (30 minutes si le bloc n'en indique pas) soit écoulé. Ensuite, la vérification d'une application dont le bloc déclare une commande de vérification échoue et l'onglet **Journal** nomme l'application.
-  - `migrate` s'exécute quand une mise à jour change l'image de `service`, et après une restauration du serveur entier une fois les bases de données remises en place. Si elle échoue après une mise à jour, la mise à jour est annulée, image et base de données.
-  - `versioned_volumes` liste les volumes nommés de l'application que la nouvelle version transforme sur place et que la version précédente ne sait plus lire. Le serveur copie chacun avant une mise à jour qui change `service` et remet la copie en place si la mise à jour est annulée. Un volume que monte une base de données ou un service qui ne s'exécute qu'une fois ne peut pas figurer dans la liste.
-
+- **`quiesce`** est le mode de sauvegarde : les commandes `pre` s'exécutent avant la sauvegarde et les commandes `post` après, même quand la sauvegarde échoue. `post` doit réussir même si `pre` n'a jamais été exécutée. Chaque commande peut durer jusqu'à 60 secondes. Il s'exécute pendant la maintenance, qui exige Catena Pro ou Catena Business (voir [Horaires](/fr/configuration/schedules/)).
+- **`lifecycle`** contient les étapes de mise à jour, chaque commande pouvant durer jusqu'à 3600 secondes. `before_update` et `after_update` s'exécutent autour d'une mise à jour. `ready` réussit quand l'application est prête. `migrate` s'exécute quand une mise à jour change l'image de `service`, et après une restauration du serveur entier; si elle échoue après une mise à jour, la mise à jour est annulée. `versioned_volumes` liste les volumes nommés que la nouvelle version transforme sur place et que la version précédente ne sait plus lire : le serveur copie chacun avant une mise à jour qui change `service` et remet la copie en place en cas d'annulation. Un volume que monte une base de données ou un service qui ne s'exécute qu'une fois ne peut pas figurer dans la liste.
 - **`hooks.verify`** est la vérification qui indique au serveur que l'application fonctionne (voir [Déclarer une vérification](#déclarer-une-vérification-facultatif)).
 
-Les mises à jour elles-mêmes s'exécutent pendant la maintenance, qui exige Catena Pro ou Catena Business (voir [Mises à jour](/fr/configuration/updates/)).
-
-Le serveur refuse les mises à jour de l'application quand le bloc ne tient pas pour son fichier. Les règles :
-
-- Un `service` nomme un service que le fichier déclare.
-- Aucune valeur ne contient de `$` : Docker le lit comme une variable quand il déploie le fichier. Écrivez les commandes sans `$`.
-- Aucune valeur ne nomme une image du fichier, car une mise à jour les réécrit.
-- Un délai reste dans sa limite.
-- Un format plus récent que celui que le serveur lit est refusé tant que le serveur n'est pas mis à jour.
-
-[Vérifiez le fichier avec le panneau](#vérifier-une-application-avec-le-panneau) avant de déployer : la règle [K17](#k17) signale chacun de ces cas et liste les commandes que le bloc fait exécuter par le serveur.
+Le serveur refuse les mises à jour de l'application quand un `service` ne nomme aucun service du fichier, qu'une valeur contient un `$` ou nomme une image du fichier, qu'un délai dépasse sa limite, ou que le format est trop récent (règle [K17](#k17)).
 
 ## Déclarer une vérification (facultatif)
 
-Une vérification est une commande que le serveur exécute pour savoir si l'application fonctionne. C'est la liste `hooks.verify` du bloc `x-catena`, qui commence par `schema: 2` :
+Une vérification est la liste `hooks.verify` du bloc `x-catena`, qui commence par `schema: 2`.
 
 <Code code={verifyCheck} lang="yaml" />
 
-- `service` est le service dans lequel la vérification s'exécute, et `user` (facultatif) le compte sous lequel elle s'exécute. Le serveur l'exécute dans un conteneur en marche de ce service, avec les valeurs des réglages de l'application dans son environnement. Un service sans conteneur en marche est attendu jusqu'à 2 minutes.
-- `verify` est une liste de commandes, chacune une liste de mots, exécutées dans l'ordre sans interpréteur de commandes, sauf si une commande en nomme un, comme dans l'exemple. Écrivez chaque `$` sous la forme `$$` : Docker lit un `$` seul comme une variable quand il déploie le fichier.
-- `timeout_seconds` limite chaque commande : 5 minutes si le bloc n'en indique pas, 3600 secondes au plus.
-
-La vérification réussit quand chaque commande se termine avec le code 0. Le serveur l'exécute :
-
-- toutes les heures, pour chaque application qui en déclare une et qui n'est pas arrêtée. Un échec va une seule fois au journal de maintenance, avec la dernière ligne imprimée par la vérification comme motif, jusqu'à ce que la vérification réussisse de nouveau;
-- après qu'une mise à jour a migré l'application, avant que la mise à jour soit conservée. Une vérification qui échoue annule la mise à jour, image et base de données. Tant que la commande `ready` de l'application (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)) ne répond pas, le serveur attend et pose de nouveau la question, jusqu'au `timeout_seconds` de `lifecycle` du bloc; ensuite, la mise à jour est annulée.
-
-Une bonne vérification :
-
-1. Fait répondre le serveur de l'application sur le chemin qu'empruntent les gens. Envoyez une requête HTTP au port de l'application depuis le service de la vérification, avec un client que l'image contient : la commande d'un contrôle de santé existant, l'environnement d'exécution de l'application (PHP, Node.js, Python, Ruby), ou `curl` ou `wget` quand l'image en contient un. La commande de santé propre à l'application convient aussi quand elle interroge le serveur en marche.
-2. Pour chaque fonction que le nom ou la description de l'application annonce et que son serveur fournit (un éditeur, un analyseur, un relais d'appels, le courriel), confirme qu'elle est branchée et qu'elle répond.
-3. N'écrit rien, se termine bien en deçà de `timeout_seconds`, imprime une seule ligne qui dit ce qui a échoué et se termine avec le code 0 seulement quand toutes les vérifications tiennent.
-4. Répond ok tant qu'un mode maintenance que retient une sauvegarde ou une mise à jour est actif, de sorte qu'une sauvegarde ou une mise à jour ne déclenche jamais d'échec.
+`service` est le service dans lequel la vérification s'exécute, et `user` (facultatif) le compte sous lequel elle s'exécute. `verify` est une liste de commandes, chacune une liste de mots, exécutées dans l'ordre sans interpréteur de commandes, sauf si une commande en nomme un. Écrivez chaque `$` sous la forme `$$`. `timeout_seconds` limite chaque commande : 5 minutes si le bloc n'en indique pas, 3600 secondes au plus. La vérification réussit quand chaque commande se termine avec le code 0. Le serveur l'exécute toutes les heures et après qu'une mise à jour a migré l'application : une vérification qui échoue annule la mise à jour. Une bonne vérification n'écrit rien, imprime une seule ligne qui dit ce qui a échoué et répond ok tant qu'une sauvegarde ou une mise à jour retient l'application en mode maintenance.
 
 ## Référence des étiquettes
 
-Chaque étiquette va sous la clé `labels:` propre au service.
-
 ### Sur chaque service avec une adresse
 
-Sur chaque service qui porte `vps.route.host` : le service d'entrée et toute autre adresse. Chaque adresse lit les siennes.
+| Étiquette | Valeurs | Description |
+|---|---|---|
+| `vps.route.host` | Une adresse sous `yourdomain.com` | Adresse publique. Sans elle sur aucun service, l'application n'a ni route, ni tuile, ni carte sur la page d'état. |
+| `vps.route.port` | Un numéro de port | Défaut `80`. Port d'écoute du service dans son conteneur. |
+| `vps.auth.mode` | `public`, `private`, `admin-only` | `private` : les groupes de `vps.auth.groups`, ou `admin`, `client` et `staff` quand aucun n'est listé. |
+| `vps.auth.groups` | Noms de groupes Keycloak, séparés par des virgules | Groupes admis. Ignorée avec `public` et `admin-only`. Le groupe `visitor` rend l'adresse publique. |
+| `vps.auth.public_paths` | Chemins séparés par des virgules, chacun commençant par `/` | Sur une adresse protégée par la connexion, ces chemins exacts s'ouvrent à tous. Au plus 8. `/` et un chemin sous `/oauth2` restent derrière la connexion. |
+| `vps.health.path` | Un chemin d'URL | L'adresse est en marche quand ce chemin répond 200; sans lui, la page d'accueil est vérifiée. |
+| `vps.health.expect` | Texte | Texte que la réponse doit contenir. Sert seulement avec `vps.health.path`. |
 
-| Étiquette | Valeurs | Défaut | Description |
-|---|---|---|---|
-| `vps.route.host` | Une adresse sous `yourdomain.com` | aucun | Adresse publique. Le service qui la porte a une adresse de l'application. Sans elle sur aucun service, l'application n'a ni route, ni tuile, ni carte sur la page d'état. Deux adresses ne peuvent pas partager un nom d'hôte : celle déployée en premier le garde. |
-| `vps.route.port` | Un numéro de port | `80` | Port d'écoute du service dans son conteneur. |
-| `vps.auth.mode` | `public`, `private`, `admin-only` | aucun | `public` : aucune barrière. `private` : les groupes de `vps.auth.groups`, ou `admin`, `client` et `staff` quand aucun n'est listé. `admin-only` : administrateurs seulement. |
-| `vps.auth.groups` | Noms de groupes Keycloak, séparés par des virgules | aucun | Groupes admis; une personne dans l'un d'eux entre. Ignorée avec `public` et `admin-only`. Le groupe `visitor` rend l'adresse publique. |
-| `vps.auth.public_paths` | Chemins séparés par des virgules, chacun commençant par `/` | aucun | Sur une adresse protégée par la connexion, ces chemins exacts s'ouvrent à tous; tout autre chemin demande encore la connexion. Au plus 8. `/`, un chemin sous `/oauth2` et un chemin avec `//` ou une partie `.` ou `..` restent derrière la connexion. Ignorée sur une adresse publique. |
-| `vps.health.path` | Un chemin d'URL | aucun | Adresse que la page d'état vérifie toutes les 2 minutes; l'adresse est en marche quand elle répond 200. Sans elle, la vérification lit la page d'accueil : une adresse publique est en marche quand elle répond sans erreur, une adresse derrière la connexion quand elle renvoie les visiteurs vers la connexion. |
-| `vps.health.expect` | Texte | aucun | Texte que la réponse doit contenir. Sert seulement avec `vps.health.path`. |
-
-Sans `vps.auth.mode` ni `vps.auth.groups`, seuls les administrateurs entrent. Cela vaut pour chaque adresse séparément : une adresse ne prend pas l'accès de l'adresse principale. Les administrateurs entrent toujours à une adresse privée.
-
-Le mode peut venir d'un réglage : `vps.auth.mode=${AUTH_MODE:-public}` prend la valeur du réglage `AUTH_MODE` (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif)) et `public` tant qu'il n'est pas défini ou qu'il est vide. L'adresse principale de chaque application du catalogue lit ainsi son réglage **Accès** (`AUTH_MODE`), à la valeur du catalogue tant que vous ne la changez pas; le changement s'applique au prochain déploiement. Placer derrière la barrière de connexion une application qui gère sa propre connexion limite aussi cette connexion aux groupes que la barrière admet, et ses applications mobiles et de bureau peuvent cesser de se connecter.
+Sans `vps.auth.mode` ni `vps.auth.groups`, seuls les administrateurs entrent. Le mode peut venir d'un réglage : `vps.auth.mode=${AUTH_MODE:-public}`. Placer derrière la barrière de connexion une application qui gère sa propre connexion limite aussi cette connexion aux groupes que la barrière admet, et ses applications mobiles et de bureau peuvent cesser de se connecter.
 
 ### Sur le service d'entrée, une seule fois
 
-Sur le service de l'adresse principale seulement. Sur tout autre service, ces étiquettes sont ignorées.
+Sur le service de l'adresse principale seulement; sur tout autre service, ces étiquettes sont ignorées.
 
-| Étiquette | Valeurs | Défaut | Description |
-|---|---|---|---|
-| `vps.route.main` | `true`, `false` | `false` | Marque l'adresse principale. Nécessaire seulement quand l'application a deux adresses ou plus, sur un seul service exactement. Avec aucune ou plusieurs marquées, l'application n'a aucune route. |
-| `vps.auth.protected` | `true`, `false` | `false` | `true` désigne une application qui ne doit pas être publique : si ses étiquettes la rendent publique quand même, sa tuile dans **Applications** porte le badge "devrait exiger une connexion", visible des administrateurs seulement. |
-| `vps.auth.oidc` | `true`, `false` | `false` | Catena crée l'entrée de connexion propre à l'application dans Keycloak et place `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` dans les réglages de l'application. Les administrateurs voient un badge OIDC sur la tuile, remplacé par l'état de la connexion une fois qu'il y en a un. |
-| `vps.auth.oidc.redirect_uris` | Adresses, séparées par des virgules | aucun | Adresses de retour de l'entrée de connexion. Obligatoire avec `vps.auth.oidc`. Voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif). |
-| `vps.auth.oidc.public` | `true`, `false` | `false` | `true` pour une application qui n'envoie aucun secret : l'entrée n'a aucun secret et exige PKCE. |
-| `vps.display-name` | Texte | l'adresse principale | Titre de la carte de l'adresse principale sur la page d'état. Les cartes des autres adresses portent leur adresse pour titre. |
-| `vps.homepage.name` | Texte | le nom de l'application sur le serveur | Titre de la tuile dans l'onglet **Applications**. Un nom saisi dans le champ **Nom** de la page de l'application le remplace. |
-| `vps.homepage.icon` | Un nom d'icône, ou l'adresse d'une image | `mdi-application` | Icône de la tuile. Une adresse qui commence par `http` s'affiche comme image. |
-| `vps.homepage.description` | Texte | aucun | Sous-titre de la tuile. |
-| `vps.homepage.description-fr` | Texte | aucun | Sous-titre de la tuile quand le panneau est en français. |
-| `vps.homepage.hidden` | `true`, `false` | `false` | Masque la tuile pour tous sauf les administrateurs. L'application reste joignable. |
+| Étiquette | Valeurs | Description |
+|---|---|---|
+| `vps.route.main` | `true`, `false` | Défaut `false`. Marque l'adresse principale, sur un seul service exactement. Nécessaire seulement avec deux adresses ou plus. |
+| `vps.auth.protected` | `true`, `false` | Défaut `false`. Désigne une application qui ne doit pas être publique : les administrateurs voient un badge quand ses étiquettes la rendent publique quand même. |
+| `vps.auth.oidc` | `true`, `false` | Défaut `false`. Catena crée l'entrée de connexion de l'application dans Keycloak et place `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` dans les réglages de l'application. |
+| `vps.auth.oidc.redirect_uris` | Adresses, séparées par des virgules | Adresses de retour. Obligatoire avec `vps.auth.oidc`. |
+| `vps.auth.oidc.public` | `true`, `false` | Défaut `false`. Pour une application qui n'envoie aucun secret : l'entrée exige PKCE. |
+| `vps.display-name` | Texte | Défaut l'adresse principale. Titre de la carte sur la page d'état. |
+| `vps.homepage.name` | Texte | Défaut le nom de l'application sur le serveur. Titre de la tuile. Le champ **Nom** de la page de l'application le remplace. |
+| `vps.homepage.icon` | Un nom d'icône, ou l'adresse d'une image | Défaut `mdi-application`. Icône de la tuile. Une adresse qui commence par `http` s'affiche comme image. |
+| `vps.homepage.description`, `vps.homepage.description-fr` | Texte | Sous-titre de la tuile, au plus 300 caractères; le second quand le panneau est en français. |
+| `vps.homepage.hidden` | `true`, `false` | Défaut `false`. Masque la tuile pour tous sauf les administrateurs. |
 
-### Logo, nom et description
-
-La carte d'une application sur la page **Applications** montre son logo, son nom et sa description. Un dépôt les définit avec un fichier et trois étiquettes :
-
-- **Logo.** Placez `logo.png` ou `logo.svg` à côté du fichier compose, dans `blueprints/<app>/`. Un PNG fait au plus 512 pixels de côté, et l'un ou l'autre type pèse au plus 64 Kio. Le serveur nettoie le fichier avant que la carte l'affiche, et un logo qu'il refuse n'est pas affiché. Une application déjà ajoutée montre un nouveau logo dès qu'elle passe à la version qui le porte.
-- **Nom et description.** Sur le service de l'adresse principale, `vps.homepage.name` est le titre de la carte, `vps.homepage.description` sa description, et `vps.homepage.description-fr` sa description quand le panneau est en français. Une description compte au plus 300 caractères. Les étiquettes figurent dans le tableau ci-dessus.
+Le logo de la carte de l'application est `logo.png` ou `logo.svg` à côté du fichier compose, dans `blueprints/<application>/` : un PNG fait au plus 512 pixels de côté, l'un ou l'autre type pèse au plus 64 Kio.
 
 ### Mises à jour
 
-Sur n'importe quel service, facultatif, et lue sur le service qui la porte.
+| Étiquette | Valeurs | Description |
+|---|---|---|
+| `vps.auto-update` | `off`, `patch`, `minor`, `patch+minor`, `major` | Défaut `patch`. Jusqu'où la version de l'image peut avancer : `patch` garde les numéros majeur et mineur, `minor` et `patch+minor` gardent le numéro majeur, `major` accepte toute version plus récente, `off` ne la change jamais. Une valeur invalide équivaut à `patch`. |
 
-| Étiquette | Valeurs | Défaut | Description |
-|---|---|---|---|
-| `vps.auto-update` | `off`, `patch`, `minor`, `patch+minor`, `major` | `patch` | Jusqu'où la version de l'image peut avancer. `patch` garde les numéros majeur et mineur (`1.2.3` vers `1.2.9`). `minor` et `patch+minor` gardent le numéro majeur (`1.2.3` vers `1.9.0`). `major` accepte toute version plus récente (`1.2.3` vers `2.0.0`). `off` ne la change jamais. Une valeur invalide équivaut à `patch`. |
-
-Une valeur peut lire un réglage, avec un défaut : `vps.auto-update=${UPDATE_LEVEL:-major}` prend la valeur du réglage `UPDATE_LEVEL` (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif)) et `major` tant qu'il n'est pas défini. Seules les images dotées d'une version complète sont mises à jour. Les services qui exécutent la même image avancent ensemble, selon la plus restrictive de leurs étiquettes; un service sans étiquette compte comme `patch`. Les mises à jour s'exécutent pendant la maintenance, qui exige Catena Pro ou Catena Business ([éditions](https://catena.run/fr/#pricing)); voir [Mises à jour](/fr/configuration/updates/).
+Une valeur peut lire un réglage, avec un défaut : `vps.auto-update=${UPDATE_LEVEL:-major}`. Les services qui exécutent la même image avancent ensemble, selon la plus restrictive de leurs étiquettes. Les mises à jour s'exécutent pendant la maintenance, qui exige Catena Pro ou Catena Business ([éditions](https://catena.run/fr/#pricing)); voir [Mises à jour](/fr/configuration/updates/).
 
 ### Ports publiés
 
-Sur le service qui publie les ports.
-
-| Étiquette | Valeurs | Défaut | Description |
-|---|---|---|---|
-| `vps.expose.tcp` | Ports ou plages, séparés par des virgules (`25,465`, `7000-7010`) | aucun | Ouvre ces ports TCP à Internet dans le coupe-feu du serveur. Le service les publie lui-même, en forme longue avec `mode: host`. Une application du catalogue à qui le réseau de l'hôte est accordé ne publie rien : ses étiquettes ouvrent les ports qu'elle écoute directement sur le serveur. Une entrée qui chevauche un port que le serveur déclare lui-même, ou une entrée invalide, est ignorée. |
-| `vps.expose.udp` | Ports ou plages, séparés par des virgules | aucun | La même chose pour les ports UDP. |
+| Étiquette | Valeurs | Description |
+|---|---|---|
+| `vps.expose.tcp`, `vps.expose.udp` | Ports ou plages, séparés par des virgules | Ouvre ces ports TCP ou UDP dans le coupe-feu du serveur. Le service les publie lui-même, en forme longue avec `mode: host`. Une entrée qui chevauche un port que le serveur déclare lui-même est ignorée. |
 
 ## Exemple complet : Nextcloud
 
-L'entrée du catalogue pour Nextcloud est la façon recommandée de l'exploiter : elle comporte plus de précautions que le fichier simplifié ci-dessous, et son client de connexion est déjà créé. Ajoutez l'entrée du catalogue, puis déployez-la : Nextcloud garde ses fichiers dans le volume `nc-data`, ou dans un dossier d'un disque que vous attachez, que vous nommez dans ses réglages avant son premier déploiement (voir [Garder les fichiers d'une application sur un disque que vous attachez](/fr/configuration/backups/#garder-les-fichiers-dune-application-sur-un-disque-que-vous-attachez)). C'est toute la procédure, et Catena enregistre elle-même Keycloak dans Nextcloud. Le fichier ci-dessous montre la même conception avec les éléments dont une application écrite à la main a besoin, ajoutée sous le nom `my-nextcloud`; le mandataire joint `app` à `my-nextcloud_app`. Les versions d'images sont des valeurs fictives.
+L'entrée du catalogue pour Nextcloud est la façon recommandée de l'exploiter. Le fichier simplifié ci-dessous montre les éléments dont une application écrite à la main a besoin. Les versions d'images sont des valeurs fictives.
 
 <Code code={nextcloudCompose} lang="yaml" />
 
-Vous déclarez les variables (`NEXTCLOUD_HOSTNAME`, `NEXTCLOUD_ADMIN_USER`, `NEXTCLOUD_ADMIN_PASSWORD`, `DB_PASSWORD` et `NEXTCLOUD_DATA_LOCATION`) comme réglages (voir [Déclarer les réglages](#déclarer-les-réglages-facultatif)) et vous les saisissez sur la page de l'application avant de la déployer. `NEXTCLOUD_HOSTNAME` vaut `nextcloud.yourdomain.com`. `NEXTCLOUD_DATA_LOCATION` vaut `nc-data`, le nom du volume, ou le chemin d'un dossier d'un disque attaché; déclarez-le avec `first_start_only: true`, pour qu'il soit verrouillé après le premier déploiement. Catena remplit elle-même les valeurs `OIDC_*` (voir ci-dessous).
+Déclarez les variables comme réglages. `NEXTCLOUD_DATA_LOCATION` vaut `nc-data`, le nom du volume, ou le chemin d'un dossier d'un disque attaché; déclarez-le avec `first_start_only: true`.
 
-### Pourquoi chaque élément
+- **Stockage.** `nc-data` contient les fichiers des utilisateurs et `nc-html` l'arborescence du code : persistée, elle fait mettre à niveau un conteneur recréé, plutôt que le réinstaller par-dessus des données vivantes.
+- **Placement.** `app`, `db` et `cron` montent des volumes : les trois sont épinglés au nœud de données.
+- **Attente de la base.** L'entrypoint ouvre une vraie connexion à la base avant de passer la main à l'entrypoint de l'image : une boucle de plantages et de redémarrages n'est pas sûre pour Nextcloud.
+- **Taille des morceaux.** Cloudflare plafonne le corps d'une requête à 100 Mo sur ses forfaits Free et Pro, si bien que le morceau de téléversement par défaut de Nextcloud, de 100 Mio, échoue en périphérie : 80 Mio (`83886080`) laisse de la marge.
+- **Accès.** `vps.auth.mode=public` laisse la connexion propre à Nextcloud aux commandes, ce qui garde fonctionnels les liens de partage.
 
-- **Stockage.** `nc-data` contient les fichiers des utilisateurs et est monté par `${NEXTCLOUD_DATA_LOCATION}` : un nom est un volume Docker, qui figure dans chaque sauvegarde, et un chemin est un dossier d'un disque que vous attachez et inscrivez sous **Autres dossiers à sauvegarder**. `nc-html` contient l'arborescence du code : persistée, elle fait reconnaître un conteneur recréé comme une installation existante, qui est mise à niveau, plutôt que réinstallée par-dessus des données vivantes.
-- **Placement.** `app`, `db` et `cron` montent des volumes : les trois sont épinglés au nœud de données. `redis` ne conserve rien et n'a pas besoin d'épinglage : un cache manquant est simplement un cache raté.
-- **Attente de la base de données au lieu de `depends_on`.** Une boucle de plantages et de redémarrages jusqu'à ce que la base réponde n'est pas sûre pour Nextcloud : l'installateur abandonne après dix essais, mais le fichier de version est alors déjà écrit, de sorte que le démarrage suivant prend la voie de la mise à niveau et l'instance reste "non installée" jusqu'à l'effacement du volume. L'entrypoint ouvre donc une vraie connexion à la base (et non un simple test TCP, car Postgres accepte les connexions pendant son démarrage) puis seulement passe la main à l'entrypoint de l'image. Après 300 secondes, il se termine pour que swarm relance la tâche.
-- **Crochet de configuration.** L'image ne remplit son dossier de configuration que s'il est vide : un fichier de configuration écrit avant le démarrage fait échouer le premier lancement. L'entrypoint écrit donc un crochet `before-starting` que l'image exécute après avoir rempli le dossier. `$$` est l'échappement compose d'un `$` littéral.
-- **Service cron.** La même image exécute `/cron.sh` pour les tâches de fond. Il partage les quatre montages avec `app`, atterrit donc sur le même nœud, et attend la base de la même façon.
-- **Domaines de confiance et mandataire.** Le chiffrement TLS se termine en périphérie. `OVERWRITEPROTOCOL=https`, `OVERWRITEHOST` et `OVERWRITECLIURL` font écrire des adresses https par Nextcloud, `TRUSTED_PROXIES` couvre les plages privées qu'utilise le mandataire de Catena, et `NEXTCLOUD_TRUSTED_DOMAINS` est le nom d'hôte public.
-- **Taille des morceaux.** Cloudflare plafonne le corps d'une requête à 100 Mo sur ses forfaits Free et Pro. Le morceau de téléversement par défaut de Nextcloud est de 100 Mio, ce qui échoue en périphérie et est réessayé sans fin. 80 Mio (`83886080`) laisse de la marge. La valeur 0 désactive le découpage et fait échouer tout téléversement de plus de 100 Mo.
-- **Accès.** `vps.auth.mode=public` laisse la connexion propre à Nextcloud aux commandes, ce qui garde fonctionnels les liens de partage anonymes (`/s/...`) pour les gens sans compte. La connexion par Keycloak s'ajoute dans l'application (ci-dessous).
-- **Santé.** `vps.health.path=/status.php` vérifie la page qui dit que Nextcloud lui-même est en marche, au-delà de sa page d'accueil.
-- **Sauvegardes.** L'image du service `db` contient `postgres` et `POSTGRES_USER` est défini : la base est donc copiée avant chaque sauvegarde.
-
-### Connexion avec OIDC
-
-Dans l'application du catalogue, Catena crée le client Keycloak et enregistre elle-même le fournisseur dans Nextcloud.
-
-Pour le fichier écrit à la main, les deux étiquettes `vps.auth.oidc` sur `app` font créer l'entrée de connexion à Catena et écrire `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` et `OIDC_ISSUER_URL` dans les réglages de l'application (voir [Connexion avec les comptes Catena](#connexion-avec-les-comptes-catena-facultatif)). L'adresse de retour des étiquettes est l'adresse de rappel de Nextcloud, `https://nextcloud.yourdomain.com/apps/user_oidc/code`. Quand la tuile de l'application affiche **connexion prête**, vous lisez les trois valeurs dans le fichier `.env` du dossier de l'application (voir [Restaurer une application sur n'importe quelle machine](/fr/features/backup-restore-migrate/#restaurer-une-application-sur-nimporte-quelle-machine)), puis vous enregistrez le fournisseur dans Nextcloud avec `occ`, exécuté dans le conteneur `app` depuis l'interpréteur de commandes du serveur, l'identifiant et le secret remplaçant les deux valeurs fictives :
+Les étiquettes `vps.auth.oidc` sur `app` ont pour adresse de retour l'adresse de rappel de Nextcloud, `https://nextcloud.yourdomain.com/apps/user_oidc/code`. Quand la tuile affiche **connexion prête**, lisez les trois valeurs dans le fichier `.env` du dossier de l'application et enregistrez le fournisseur avec `occ`, exécuté dans le conteneur `app`, l'identifiant et le secret remplaçant les deux valeurs fictives. Vous pouvez répéter la commande.
 
 <Code code={nextcloudOidcProvider} lang="bash" />
 
-La commande crée le fournisseur ou le met à jour : vous pouvez la répéter. La page de connexion de Nextcloud affiche alors **Se connecter avec keycloak**. Le compte administrateur local continue de fonctionner en secours.
-
 ## Vérifier une application avec le panneau
 
-Le **Vérificateur Compose** lit un fichier compose comme le liront Docker Swarm et votre serveur, avant que vous le déployiez. C'est la dernière entrée du menu à droite de la page **Applications**. Seuls les administrateurs la voient; le personnel ne la voit pas.
+Le **Vérificateur Compose** lit un fichier compose comme le liront Docker Swarm et votre serveur, avant que vous le déployiez. Seuls les administrateurs le voient.
 
 1. Ouvrez **Applications**, puis **Vérificateur Compose** dans le menu à droite.
-2. Dans **Nom de l'application**, saisissez le nom que vous donnerez à l'application (étape 1). Son adresse et ses ports ne comptent alors pas comme déjà pris par une autre application.
-3. Collez le fichier compose dans **Fichier compose** et sélectionnez **Vérifier**.
-4. Lisez les constats. Chacun porte son niveau (**erreur**, **avertissement** ou **note**), sa règle, le service concerné et ce qu'il faut changer. **Ce que cela signifie** ouvre la règle dans les listes ci-dessous.
-5. Quand des corrections automatiques s'appliquent, la page affiche le **Fichier corrigé** et les changements par rapport à votre fichier. Copiez-le dans le fichier de l'application, dans votre dépôt, et publiez une nouvelle version. Un constat marqué **corrigé ci-dessous** est déjà réglé dans ce fichier; tout autre est un choix que vous faites dans votre fichier.
+2. Saisissez le **Nom de l'application**, collez le fichier compose dans **Fichier compose** et sélectionnez **Vérifier**.
+3. Lisez les constats : chacun porte son niveau, sa règle et ce qu'il faut changer. **Ce que cela signifie** ouvre la règle dans les listes ci-dessous.
+4. Quand des corrections s'appliquent, copiez le **Fichier corrigé** dans le fichier de l'application, dans votre dépôt, et publiez une nouvelle version.
 
-Rien n'est déployé depuis cet onglet. La vérification compare votre fichier à ce que votre serveur détient : les adresses et les ports de ses autres applications, les domaines qu'il sert, les groupes avec lesquels on se connecte et les dossiers ajoutés à la sauvegarde. Une partie que le serveur ne peut pas lire est nommée sous les totaux, et les vérifications qui en dépendent sont omises.
-
-Votre serveur vérifie aussi le fichier de chaque application de la page **Applications** toutes les heures et après chaque déploiement. Dans l'onglet **Applications**, un administrateur voit sur une tuile qui compte au moins une erreur ou un avertissement un lien comme **Vérificateur Compose : erreurs 1, avertissements 2**. Les notes ne sont pas comptées. Le lien ouvre le **Vérificateur Compose** avec les constats de cette application. La page de l'application montre le fichier compose déployé, en lecture seule (voir [Réglages, déploiement, retrait et suppression](#réglages-déploiement-retrait-et-suppression)) : collez ce fichier ici pour voir le fichier corrigé. La tuile n'a pas de lien quand rien n'a été trouvé.
-
-Un constat est une **erreur** quand le déploiement échoue, que des données sont perdues, que l'application est inaccessible ou qu'elle prend le contrôle du serveur. C'est un **avertissement** quand un réglage ne fait pas ce que dit le fichier. Une **note** est bonne à savoir.
+Un constat est une **erreur** quand le déploiement échoue, que des données sont perdues, que l'application est inaccessible ou qu'elle prend le contrôle du serveur, un **avertissement** quand un réglage ne fait pas ce que dit le fichier, et une **note** sinon.
 
 ### Ce que Docker Swarm refuse ou ignore
 
 | Règle | Niveau | Ce qu'elle signale |
 |---|---|---|
 | <a id="s0"></a>S0 | erreur | Le fichier n'est pas un YAML valide, n'est pas un fichier compose, n'a aucun service, ou a un service qui n'est pas une suite de clés. |
-| <a id="s1"></a>S1 | erreur | Une clé qui fait refuser tout le fichier par Swarm : `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Les limites vont dans `deploy.resources.limits` et le nombre de répliques dans `deploy.replicas`. |
-| <a id="s2"></a>S2 | avertissement | Une clé que Swarm ignore, comme `depends_on`, `restart`, `container_name`, `expose`, `links`, `external_links`, `build`, `network_mode`, la forme courte de `tmpfs` ou quelques autres sans équivalent dans Swarm. |
-| <a id="s3"></a>S3 | erreur | Un port publié par le maillage de routage, qui remplace l'adresse de chaque visiteur par une adresse interne. Utilisez la forme longue avec `mode: host`. |
+| <a id="s1"></a>S1 | erreur | Une clé qui fait refuser tout le fichier par Swarm : `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Les limites vont dans `deploy.resources.limits`, le nombre de répliques dans `deploy.replicas`. |
+| <a id="s2"></a>S2 | avertissement | Une clé que Swarm ignore, comme `depends_on`, `restart`, `container_name`, `expose`, `links`, `build`, `network_mode`, la forme courte de `tmpfs`. |
+| <a id="s3"></a>S3 | erreur | Un port publié par le maillage de routage, qui remplace l'adresse de chaque visiteur. Utilisez `mode: host`. |
 | <a id="s4"></a>S4 | erreur | Une entrée `configs` dont le contenu vient d'un fichier ou d'un texte en ligne. Seuls les `configs` `external: true` sont acceptés. |
 
 ### Ce que Catena lit dans le fichier
 
 | Règle | Niveau | Ce qu'elle signale |
 |---|---|---|
-| <a id="k1"></a>K1 | erreur | Un service qui a une adresse n'est pas sur `catena-network`, ou le fichier ne déclare pas ce réseau avec `external: true` : le mandataire ne peut pas le joindre. |
+| <a id="k1"></a>K1 | erreur | Un service qui a une adresse n'est pas sur `catena-network`, ou le fichier ne déclare pas ce réseau avec `external: true`. |
 | <a id="k2"></a>K2 | erreur | Un service qui stocke des données dans un volume n'est pas épinglé au nœud de données. S'applique dès deux nœuds. |
 | <a id="k3"></a>K3 | erreur | Plusieurs adresses sans exactement un `vps.route.main=true`, ou deux services avec la même adresse. |
-| <a id="k4"></a>K4 | avertissement | Une étiquette de l'application entière sur un autre service que l'adresse principale, ou une étiquette d'adresse sur un service sans adresse : elle est ignorée. |
+| <a id="k4"></a>K4 | avertissement | Une étiquette de l'application entière sur un autre service que l'adresse principale, ou une étiquette d'adresse sur un service sans adresse. |
 | <a id="k5"></a>K5 | avertissement | Une étiquette `vps.*` sous `deploy.labels`, où Catena ne la lit pas. |
 | <a id="k6"></a>K6 | note | Une adresse publique sans `vps.health.path`. |
-| <a id="k7"></a>K7 | avertissement, erreur | Un avertissement pour une étiquette d'accès sans effet : un `vps.auth.mode` inconnu, `vps.auth.groups` sur une adresse publique ou réservée aux administrateurs, `visitor` à côté d'autres groupes, un groupe qui n'existe pas dans Keycloak, ou `vps.auth.public_paths` sur une adresse publique. Une erreur quand `vps.auth.public_paths` nomme un chemin qui n'est pas exact, ou plus de 8 chemins : ces chemins restent derrière la connexion. |
+| <a id="k7"></a>K7 | avertissement, erreur | Un avertissement pour une étiquette d'accès sans effet : un `vps.auth.mode` inconnu, `vps.auth.groups` sur une adresse publique ou réservée aux administrateurs, `visitor` à côté d'autres groupes, un groupe Keycloak inconnu, ou `vps.auth.public_paths` sur une adresse publique. Une erreur pour un chemin inexact, ou plus de 8. |
 | <a id="k8"></a>K8 | note | Une étiquette d'image sans version complète, ou une valeur de `vps.auto-update` non valide. |
 | <a id="k9"></a>K9 | erreur | Un montage de dossier hors de la zone des applications, absent de **Autres dossiers à sauvegarder** : la sauvegarde échoue. |
 | <a id="k10"></a>K10 | avertissement | Le fichier correspond à une application du catalogue mais est déployé sous un autre nom : les actions du catalogue et les restaurations ne la trouvent pas. |
 | <a id="k11"></a>K11 | note | Une étiquette `vps.*` que Catena ne lit pas, comme une qui nomme l'application ou le service. |
-| <a id="k12"></a>K12 | avertissement | Un port publié qu'aucune étiquette `vps.expose.tcp` ou `vps.expose.udp` ne déclare (ouvert sur Internet), ou un port déclaré que le service ne publie pas avec `mode: host`. Une application du catalogue à qui le réseau de l'hôte est accordé ne publie rien et ne reçoit aucun avertissement pour ses ports déclarés. |
+| <a id="k12"></a>K12 | avertissement | Un port publié qu'aucune étiquette `vps.expose.tcp` ou `vps.expose.udp` ne déclare (ouvert sur Internet), ou un port déclaré que le service ne publie pas avec `mode: host`. |
 | <a id="k13"></a>K13 | note | Une base de données qui n'est pas exportée avant chaque sauvegarde : son volume est copié pendant qu'elle tourne. |
 | <a id="k14"></a>K14 | erreur | Une adresse qu'une autre application détient déjà. |
 | <a id="k15"></a>K15 | erreur | Une adresse qui n'est pas sous un domaine que sert votre serveur. |
 | <a id="k16"></a>K16 | erreur | Un port qu'une autre application ouvre déjà sur votre serveur. |
-| <a id="k17"></a>K17 | erreur, avertissement | Un bloc `x-catena` qui ne se lit pas ou ne tient pas pour son fichier (voir [Déclarer le mode de sauvegarde et les étapes de mise à jour](#déclarer-le-mode-de-sauvegarde-et-les-étapes-de-mise-à-jour-facultatif)) : le serveur refuse les mises à jour de l'application. Un avertissement liste les commandes que le bloc fait exécuter par le serveur dans les conteneurs de l'application. |
+| <a id="k17"></a>K17 | erreur, avertissement | Un bloc `x-catena` qui ne se lit pas ou ne tient pas pour son fichier : le serveur refuse les mises à jour de l'application. Un avertissement liste les commandes qu'il fait exécuter par le serveur. |
 
 ### Ce qui atteint le serveur
 
 | Règle | Niveau | Ce qu'elle signale |
 |---|---|---|
 | <a id="x1"></a>X1 | erreur | `privileged: true`. |
-| <a id="x2"></a>X2 | erreur | Le réseau propre du serveur (`network_mode: host`, ou le réseau externe `host`). Un fichier du catalogue de Catena dont le bloc le déclare passe, inchangé ou modifié à la main. |
+| <a id="x2"></a>X2 | erreur | Le réseau propre du serveur (`network_mode: host`, ou le réseau externe `host`). Un fichier du catalogue de Catena dont le bloc le déclare passe. |
 | <a id="x3"></a>X3 | erreur | `pid: host`, qui montre chaque processus du serveur. |
 | <a id="x4"></a>X4 | erreur | `ipc: host`, qui atteint la mémoire partagée d'autres processus. |
 | <a id="x5"></a>X5 | erreur | `devices`, qui atteint le matériel du serveur. |
-| <a id="x6"></a>X6 | erreur | Le socket Docker monté dans le service, qui contrôle chaque conteneur. Un fichier du catalogue de Catena dont le bloc le déclare passe, inchangé ou modifié à la main. |
+| <a id="x6"></a>X6 | erreur | Le socket Docker monté dans le service. Un fichier du catalogue de Catena dont le bloc le déclare passe. |
 | <a id="x7"></a>X7 | avertissement | `cap_add` : des capacités ajoutées. Ne gardez chacune que si l'application en a besoin. |
-| <a id="x8"></a>X8 | avertissement | Un dossier du serveur monté hors de la zone des applications : l'application lit les fichiers du serveur. |
-| <a id="x9"></a>X9 | avertissement | Un port publié sur le serveur, joignable depuis Internet sans connexion. |
-| <a id="x10"></a>X10 | erreur | Des étiquettes Traefik, qui n'acheminent rien. Utilisez `vps.route.host` et `vps.auth.mode` ou `vps.auth.groups`. |
-| <a id="x11"></a>X11 | avertissement | Un service de `catena-network` qui garde l'accès réseau brut, avec lequel il pourrait forger du trafic vers les services propres de Catena. Le fichier corrigé ajoute `cap_drop: [NET_RAW]`; une application qui a besoin de l'accès ajoute `cap_add: [NET_RAW]` ([X7](#x7) le signale alors). |
-| <a id="x17"></a>X17 | erreur | Dans le dossier d'une application, un montage lié d'un dossier du serveur hors du dossier de données propre à l'application, sauf s'il se trouve dans un dossier inscrit sous **Autres dossiers à sauvegarder**. Un montage lié d'un dossier inscrit lui-même est refusé aussi : montez un dossier qu'il contient. Tant qu'un disque monté au dossier inscrit est absent, ce dossier n'existe pas : l'application ne démarre pas et n'écrit rien sur le disque système. Sont aussi signalés : un montage lié de tout le dossier de données de l'application, des montages liés qui se contiennent l'un l'autre, et un volume qui attache un système de fichiers qui lui est propre. |
+| <a id="x8"></a>X8 | avertissement | Un dossier du serveur monté hors de la zone des applications. |
+| <a id="x9"></a>X9 | avertissement | Un port publié sur le serveur, joignable sans connexion. |
+| <a id="x10"></a>X10 | erreur | Des étiquettes Traefik, qui n'acheminent rien. Utilisez `vps.route.host` et les étiquettes d'accès. |
+| <a id="x11"></a>X11 | avertissement | Un service de `catena-network` qui garde l'accès réseau brut, avec lequel il pourrait forger du trafic vers les services propres de Catena. Le fichier corrigé ajoute `cap_drop: [NET_RAW]`; une application qui en a besoin ajoute `cap_add: [NET_RAW]` ([X7](#x7) le signale alors). |
+| <a id="x17"></a>X17 | erreur | Un montage lié d'un dossier du serveur hors du dossier de données propre à l'application, sauf s'il se trouve dans un dossier inscrit sous **Autres dossiers à sauvegarder**; un montage lié d'un dossier inscrit lui-même est refusé. Sont aussi signalés : un montage lié de tout le dossier de données de l'application, des montages liés qui se contiennent l'un l'autre, et un volume qui attache son propre système de fichiers. |
 
 ## Dépannage
 
 | Symptôme | Cause et correction |
 |---|---|
-| 502 ou 503 sur l'adresse | Le mandataire ne joint pas l'application. Le service d'entrée est sur `catena-network`, et `vps.route.port` est son port d'écoute. Lisez les journaux du service avec `docker service logs <application>_<service>` sur le serveur. |
-| 403 après la connexion | La personne n'est dans aucun groupe autorisé. Le groupe de `vps.auth.groups` existe dans Keycloak, correspond exactement (majuscules comprises), et la personne en est membre (**Personnes** ou Keycloak). |
-| Seuls les administrateurs entrent | Ni `vps.auth.mode` ni `vps.auth.groups` n'est défini, ou le mode n'est pas `public`, `private` ou `admin-only` et aucun groupe n'est listé. |
-| Pas de route, ou une adresse ou un accès erronés | Aucun `vps.route.host`, plusieurs adresses dont aucune ou deux sont marquées `vps.route.main=true`, ou service d'entrée qui n'est pas sur `catena-network`. Une étiquette de l'application entière sur un autre service que celui de l'adresse principale est ignorée. La synchronisation des routes s'exécute quelques secondes après un déploiement et toutes les heures. |
-| Une adresse ne répond pas | Une autre adresse de ce serveur utilise déjà son nom d'hôte, ou son service n'est pas sur `catena-network`. La tuile indique à un administrateur quelle adresse et pourquoi. Donnez à l'adresse un nom d'hôte qui lui est propre, ou reliez son service à `catena-network`, puis publiez une nouvelle version et faites-y passer l'application. |
+| 502 ou 503 sur l'adresse | Le mandataire ne joint pas l'application : le service d'entrée n'est pas sur `catena-network`, ou `vps.route.port` n'est pas son port. |
+| 403 après la connexion | La personne n'est dans aucun groupe autorisé. Le groupe de `vps.auth.groups` existe dans Keycloak et correspond exactement, majuscules comprises. |
+| Pas de route | Aucun `vps.route.host`, ou plusieurs adresses sans exactement un `vps.route.main=true`. |
 | Carte rouge sur la page d'état | Application publique dont la page d'accueil répond une erreur, application derrière la connexion qui ne renvoie pas les visiteurs vers la connexion, `vps.health.path` qui ne répond pas 200, ou texte `vps.health.expect` absent de la réponse. |
-| La tuile indique **connexion en échec** ou **connexion en attente** | Lisez la raison sur la tuile. Une adresse de retour de `vps.auth.oidc.redirect_uris` doit être en `https://` sur un domaine que ce serveur sert, sans `*` ni `#`. Corrigez l'étiquette dans votre dépôt, publiez une nouvelle version et faites-y passer l'application. |
-| Sauvegarde échouée sur un montage lié | Le montage est hors de la zone des applications. Déplacez les données vers un volume nommé, ou inscrivez le dossier sous **Paramètres** > **Dépôt de sauvegarde** > **Autres dossiers à sauvegarder (séparés par des virgules)**. |
-| Sauvegarde échouée sur une base de données | La copie a échoué. Un conteneur MariaDB ou MySQL exige `MARIADB_ROOT_PASSWORD` ou `MYSQL_ROOT_PASSWORD`; un conteneur Postgres exige un `POSTGRES_USER` valide. |
-| Mise à jour ignorée | L'étiquette d'image n'est pas une version complète (`latest`, `1.2`), `vps.auto-update` vaut `off`, ou le saut dépasse l'étiquette (une version majeure sous `patch`). La version la plus récente peut aussi être retenue par les contrôles de vulnérabilités ou le délai d'attente, ou l'application est retenue parce qu'elle a été modifiée hors de Catena (voir [Applications modifiées hors de Catena](/fr/configuration/updates/#applications-modifiées-hors-de-catena)). |
-| Une application ajoutée ne tourne pas | Une application reste arrêtée après **Ajouter** jusqu'à ce que vous appuyiez sur **Déployer l'application** sur sa page. |
-| La page indique "Le dernier déploiement a échoué le `<date>` :" | Lisez la raison dessous, corrigez-la et appuyez de nouveau sur **Déployer l'application**. La raison reste jusqu'à un changement qui déploie l'application. |
-| Un changement indique "En attente de ..." | Une tâche retient l'application ou tout le serveur. Le changement s'exécute quand elle se termine (voir [Changements qui s'exécutent ensemble](#changements-qui-sexécutent-ensemble)). |
-| L'ajout d'une application est refusé | Le nom est déjà un dossier ou une application du serveur, la version n'est pas une étiquette de cette application dans le dépôt, le dépôt n'est pas sur la liste, ou le fichier compose comporte une erreur à la vérification (voir [Vérifier une application avec le panneau](#vérifier-une-application-avec-le-panneau)). |
-| Redémarrages en boucle au premier déploiement | Rien n'attend la base de données. L'entrypoint du service l'attend, comme dans l'exemple Nextcloud. |
-| Données absentes après un changement de nœud | Un service avec volume n'avait pas `node.labels.catena.role==data` et a démarré sur un autre nœud avec un volume vide. |
+| Sauvegarde échouée | Un montage lié hors de la zone des applications, ou une copie de base de données échouée (étape 7). |
+| Données absentes après un changement de nœud | Un service avec volume n'avait pas `node.labels.catena.role==data` ([K2](#k2)). |

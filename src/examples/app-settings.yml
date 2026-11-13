@@ -1,0 +1,20 @@
+x-catena:
+  schema: 2
+  env:
+    APP_HOSTNAME:
+      setting:
+        default: my-app.yourdomain.com
+        label: { en: "Address", fr: "Adresse" }
+    ADMIN_EMAIL:
+      setting:
+        default: admin@yourdomain.com
+        label: { en: "Administrator email", fr: "Courriel de l'administrateur" }
+        first_start_only: true
+    DB_PASSWORD:
+      generated: { length: 32, alphabet: alnum, applied_on_deploy: true }
+    ADMIN_PASSWORD:
+      generated:
+        length: 24
+        alphabet: hex
+        first_start_only: true
+        note: "The application keeps its own copy in its database after the first start."
