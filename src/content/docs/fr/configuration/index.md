@@ -59,4 +59,4 @@ L'ordre ci-dessous évite les impasses : chaque étape s'appuie sur les précéd
 
 ## Panneaux payants
 
-Certains panneaux hors de **Paramètres** exigent Catena Pro ou Catena Business. Un panneau que l'abonnement ne comprend pas est grisé dans le menu et ouvre une courte explication. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).
+Certains panneaux hors de **Paramètres** exigent Catena Pro ou Catena Business. Un panneau que l'abonnement ne comprend pas reste dans le menu, grisé avec un cadenas après son nom, et ouvre une courte explication. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).

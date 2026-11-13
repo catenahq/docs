@@ -74,7 +74,7 @@ The **Status** line shows one of these. Text in braces is filled in with a date.
 
 When Polar stops granting the key, or the grace period ends:
 
-- The paid panels turn into greyed entries under **Catena Pro** or **Catena Business**. Each opens an explanation of the feature, the edition that includes it and a **Subscribe** button.
+- The paid panels the subscription no longer includes stay in their place in the left menu, greyed, with a lock after their name. Each opens an explanation of the feature, the edition that includes it and a **Subscribe** button.
 - Every schedule is turned off, since turning one on needs a paid edition, except two: the backup keeps running once a week and the vulnerability watch once a day, at their default times when the saved schedule was faster (see [When the subscription lapses](/en/configuration/schedules/#when-the-subscription-lapses)). The saved choices are kept and return with the subscription.
 - Paid actions are refused, and extra domains beyond the primary one stop being served (they stay stored).
 - A banner on every admin page links to the **Subscription** section with the reason, one entry is added to the **Log**, and one email goes to your admin address through the mail service you configured (English then French). With no mail service set, the banner and the log entry are the only notices. See [Outgoing email](/en/configuration/email/).
