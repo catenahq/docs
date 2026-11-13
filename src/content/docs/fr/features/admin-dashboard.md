@@ -17,7 +17,7 @@ Le tableau de bord d'administration est un panneau unique pour l'état, les appl
 
 **Actions sûres.** Le conteneur du panneau ne modifie jamais le serveur directement. Un bouton envoie une action nommée à l'hôte par SSH, et les noms inconnus sont refusés. Chaque action déclenchée par un bouton est consignée au journal système du serveur.
 
-**Panneaux payants.** Les panneaux que votre abonnement ne débloque pas apparaissent grisés sous **Catena Pro** ou **Catena Business** et ouvrent une explication avec un lien vers la comparaison des éditions. Le panneau reste refusé tant qu'une clé ne le débloque pas.
+**Panneaux payants.** Sous **Paramètres**, une ligne sépare les panneaux Catena Pro des onglets de toutes les éditions, et une autre ligne sépare les panneaux Catena Business des panneaux Catena Pro. Un panneau que votre abonnement débloque s'ouvre normalement. Celui qu'il ne débloque pas reste à sa place, grisé avec un cadenas après son nom, et ouvre une explication de ce qu'il fait, de l'édition qui le comprend et un bouton **S'abonner**. Le panneau reste refusé tant qu'une clé ne le débloque pas.
 
 **Bannières.** Les pages d'administration affichent une bannière quand un redémarrage est en attente, quand aucune sauvegarde n'est configurée ou quand les fonctions payantes sont verrouillées. Les applications et leurs données continuent de fonctionner dans tous les cas.
 

@@ -17,7 +17,7 @@ The admin dashboard is one panel for status, apps, backups, restores, schedules 
 
 **Safe actions.** The panel container never edits the server directly. A button dispatches a named action to the host over SSH, and unknown names are rejected. Every action a button triggers is logged in the server's system journal.
 
-**Paid panels.** Panels your subscription does not unlock appear greyed under **Catena Pro** or **Catena Business** and open an explainer with a link to the edition comparison. The panel stays refused until a key unlocks it.
+**Paid panels.** Below **Settings**, a line separates the Catena Pro panels from the tabs every edition has, and another line separates the Catena Business panels from the Catena Pro ones. A panel your subscription unlocks opens normally. One it does not unlock stays in its place, greyed with a lock after its name, and opens an explainer with what it does, the edition that includes it and a **Subscribe** button. The panel stays refused until a key unlocks it.
 
 **Banners.** Admin pages show a banner when a restart is pending, when no backup is configured, or when the paid features are locked. Applications and their data keep running in every case.
 

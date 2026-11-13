@@ -59,4 +59,4 @@ The order below avoids dead ends: later steps rely on earlier ones. The domain, 
 
 ## Paid panels
 
-Some panels outside **Settings** need Catena Pro or Catena Business. A panel the subscription does not include is greyed in the menu and opens a short explanation. The editions are compared at [catena.run](https://catena.run/en/#pricing).
+Some panels outside **Settings** need Catena Pro or Catena Business. A panel the subscription does not include stays in the menu, greyed with a lock after its name, and opens a short explanation. The editions are compared at [catena.run](https://catena.run/en/#pricing).
