@@ -1,6 +1,6 @@
 ---
 title: "Domain and Cloudflare"
-description: "Connecting your server to a Cloudflare domain: the API token and its permissions, applying the domain, renaming the infrastructure subdomains and attaching extra domains."
+description: "Connecting your server to a Cloudflare domain: the API token and its permissions, applying the domain, renaming the infrastructure subdomains and adding or removing extra domains."
 ---
 
 Every public address of the server is a name under one domain, served through a Cloudflare tunnel. Until you apply a domain, the server runs without public addresses, and you reach the panel through the SSH forward described in [Installation](/en/installation/).
@@ -33,9 +33,11 @@ Community attaches a single domain. A token that reaches several domains lists t
 
 When a token is already stored, you can leave the field blank: the stored token is used.
 
-The warning reads: "Applying replaces this server's Cloudflare tunnel with a new one: the current tunnel is dropped, and the applications are unavailable for a few minutes while the server is brought up to date under the domain." Applying stores the token and the domain, replaces the tunnel and then runs a full configuration of the server. The section follows the progress: "Applying the domain: the tunnel is being replaced, then the server is brought up to date under it. The public addresses are unreachable for a few minutes, and this section follows the progress."
+The warning reads: "Applying replaces this server's Cloudflare tunnel with a new one: the current tunnel is dropped, and the applications are unavailable for a few minutes while the saved settings are applied under the domain." Applying stores the token and the domain, replaces the tunnel and then applies the saved settings to the server. The section follows the progress: "Applying the domain: the tunnel is being replaced, then the saved settings are applied under it. The public addresses are unreachable for a few minutes, and this section follows the progress." Its badge turns **Applied** by itself when the run ends, without a reload.
 
 The same **Apply** repairs a leaked or broken tunnel: press it with the domain already in use to create a fresh tunnel and drop the old one.
+
+While an apply runs, a second **Apply** saves nothing and the section reads: "The server is still applying the last change, shown below. Nothing new was saved." Press it again once the run ends.
 
 ### What moves to the new domain
 
@@ -65,29 +67,57 @@ After a domain change, the name shown on the sign-in page at `auth.yourdomain.co
 |---|---|---|---|
 | **Keycloak (sign-in)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (this panel)** | This panel | `dash` | `dash.yourdomain.com` |
-| **Gatus (status page)** | Gatus | `gatus` | `gatus.yourdomain.com` |
-| **Healthchecks (scheduled-job monitor)** | Healthchecks | `healthchecks` | `healthchecks.yourdomain.com` |
-| **Beszel (server metrics)** | Beszel | `beszel` | `beszel.yourdomain.com` |
 
-Rules:
+Gatus (`gatus`), Healthchecks (`healthchecks`) and Beszel (`beszel`) are installed by default as applications, so each one's address is a setting of its application: open **Apps**, then the application's page with the gear on its card, and change the name there. The server moves every address of the application to the new name when it next applies its configuration (**Apply the saved settings** in [Server settings](/en/configuration/server/)).
+
+Rules, for the fields above and the same for an application's name:
 
 - One name per field, without the domain: `auth`, not `auth.yourdomain.com`. The message otherwise is "One name only, such as auth: the domain is added to it."
 - Lower-case letters, digits and hyphens; no leading or trailing hyphen; 63 characters at most.
 - A blank field keeps the name in use. To return to a default, type the default name.
-- The section ends with **Save and apply**: the server is brought up to date and the services behind the renamed addresses restart briefly.
+- The section ends with **Save and apply**: the saved settings are applied and the services behind the renamed addresses restart briefly.
 
-When the panel's own name changes, **Server configuration** shows "This dashboard moves to a new address once the configuration is applied. It opens there on its own as soon as the new address answers; until then, the address is:" followed by the old address. Your bookmarks to the old address stop working.
+When the panel's own name changes, **Server configuration** first shows "This dashboard moves to {address} once the server serves the new domain. The link to it appears here as soon as it does.", with the new address in place of `{address}`. Once the server serves the new domain, it shows "This dashboard moves to a new address once the configuration is applied. It opens there on its own as soon as the new address answers; until then, the address is:" followed by a link to the new address, which opens as soon as it answers. Your bookmarks to the old address stop working.
 
 ## Extra domains
 
-A server on Catena Pro or Catena Business can serve several unlinked domains. Each one is a separate sign-on island: people using one domain never see another domain's login. Shared dashboards stay on the first (primary) domain. The editions are compared at [catena.run](https://catena.run/en/#pricing).
+Catena Pro serves several domains from one server. **Settings** > **Domain** lists the **First domain**, which you apply as described above, then the **Other domains**. Each domain is its own sign-on: people using one domain never see another domain's login. The shared dashboards stay on the first domain. The editions are compared at [catena.run](https://catena.run/en/#pricing).
 
-1. In Cloudflare, create a token with **Zone:DNS:Edit** scoped to the one domain to attach.
-2. Open the **Domains** panel in the menu.
-3. Paste the token in **Cloudflare API token (one domain)** and press **Attach domain**.
-4. Changes apply on the next configuration run: press **Bring this server up to date** in [Server settings](/en/configuration/server/).
+### Add a domain
 
-The token must reach exactly one domain, the one being attached. The table lists each domain with its role, Primary or Secondary. A primary domain cannot be removed while secondary ones exist ("remove the others first"); every other row has a **Remove** button. When a subscription lapses, secondary domains stay stored but are no longer served. See [Subscription](/en/configuration/subscription/).
+The domain must be in the same Cloudflare account as the first domain.
+
+1. In Cloudflare, create a token with **Zone:DNS:Edit** on the domain to add.
+2. Open **Settings** > **Domain**.
+3. In **Other domains**, paste the token in **Cloudflare API token for this domain**. The domains it reaches fill the list.
+4. Choose the domain in **Domain**, then press **Add the domain**.
+
+The server saves the domain and applies the domain list: "Saved. The server applies the domain list; services restart briefly." The first domain's tunnel is not replaced.
+
+If the domain is in another Cloudflare account, the panel refuses it: "This domain is in another Cloudflare account. Add a domain from the same Cloudflare account as the first domain."
+
+### Change the token of a domain
+
+Each extra domain has its own token. Paste the new token in the domain's row and press **Replace the token**.
+
+### Remove a domain
+
+Press **Remove** on the domain's row. This works on every edition. The server takes the domain's wildcard name down and keeps its token until that is done. The first domain has no **Remove**: to change it, apply another domain as the first domain.
+
+### The state of each domain
+
+Each row says where the domain stands:
+
+| Row | Meaning |
+|---|---|
+| "Served" | The domain is served. |
+| "Waiting for the next configuration run" | The domain is saved and the server has not applied it yet. |
+| "Not served: its Cloudflare token was refused" | Cloudflare refused the domain's token. The domain is left out while the other domains keep working. Press **Replace the token** with a working one. |
+| "Not served without Catena Pro" | The server has no subscription that covers several domains. |
+
+### Without a subscription
+
+When a subscription lapses, or without one, the extra domains stay saved but are no longer served. In place of the add form, the section reads "Upgrade to Pro to deploy your apps from multiple domains". You can only remove the extra domains: you cannot add a domain or replace a token. See [Subscription](/en/configuration/subscription/).
 
 ## Troubleshooting
 

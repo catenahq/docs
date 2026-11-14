@@ -3,11 +3,11 @@ title: "Subscription"
 description: "Saving your Polar subscription key, what each status means, how a key moves between servers, and what locks or keeps working when your subscription lapses."
 ---
 
-Catena Community is free and needs no key. Catena Pro and Catena Business unlock additional admin panel features with a subscription key sold through Polar. You save the key in **Settings** > **Subscription**. The editions are compared at [catena.run](https://catena.run/en/#pricing).
+Catena Community is free and needs no key. Catena Pro and Catena Business unlock additional admin panel features with a subscription key sold through Polar. You save the key in **Settings** > **Subscription**. On Catena Community you take every action by hand, Catena Pro runs the same actions on their own, and Catena Business adds accountability: full lists, the software inventory, SBOMs, exports and reports. The editions are compared at [catena.run](https://catena.run/en/#pricing).
 
 ## Prerequisites
 
-- A subscription key from Polar.
+- A subscription key from Polar. An order placed with **Subscribe to Catena Pro** or **Subscribe to Catena Business** in **Settings** > **Subscription**, or in the pricing section of [catena.run](https://catena.run/en/#pricing), gives you one.
 - The server must be able to reach Polar over HTTPS.
 
 ## Save the key
@@ -33,6 +33,8 @@ A blank field keeps the saved key. A new or renewed key takes effect as soon as 
 - "Saved. The check with Polar did not finish; the server asks again every hour."
 
 The section also links to **Manage the subscription in Polar's customer portal**, where you manage the key itself and the server activations.
+
+While the server has no key, or Polar does not grant it (the No key and Not granted statuses below), the section also shows **Subscribe to Catena Pro** and **Subscribe to Catena Business**. Each opens that edition's Polar checkout in a new tab, in the panel's language. The order gives you a subscription key: paste it in **Subscription key** in this same section and press **Save**. The other statuses show no Subscribe button, since the key they name belongs to a subscription you already have.
 
 ## One server per key
 
@@ -60,11 +62,11 @@ The **Status** line shows one of these. Text in braces is filled in with a date.
 
 | Situation | Sentence | What to do |
 |---|---|---|
-| No key | "No subscription key is saved. The paid features are off." | Save a key if you want paid features. |
+| No key | "No subscription key is saved. The paid features are off." | Save a key if you want paid features, or press **Subscribe to Catena Pro** or **Subscribe to Catena Business** to get one. |
 | Waiting | "The key is saved and Polar has not answered about it for this server yet. The paid features stay off until it does; the server asks every hour, and saving the key asks at once." | Wait for the next check, or save the key again to ask at once. |
 | Active | "Active. Polar last confirmed the key on this server at {date}." | Nothing. |
 | Grace | "Active within the grace period: Polar has not been reachable since {date}. The paid features stay on until {date}, and the server keeps asking every hour." | Check the server's outbound network and DNS. |
-| Not granted | "Polar does not grant this key on this server: the subscription was cancelled or has lapsed, the key was revoked or replaced, or this server's activation was freed in the customer portal. The paid features are off. Once the subscription is active, saving the key again activates it here." | Renew the subscription, or save the key again once it is active. |
+| Not granted | "Polar does not grant this key on this server: the subscription was cancelled or has lapsed, the key was revoked or replaced, or this server's activation was freed in the customer portal. The paid features are off. Once the subscription is active, saving the key again activates it here." | Renew the subscription (**Subscribe to Catena Pro** or **Subscribe to Catena Business** opens a new order), or save the key again once it is active. |
 | Refused | "Polar refused to activate this key on this server: it is active on another server (a key is active on one server at a time), or it is revoked, disabled or expired. Freeing the other activation in Polar's customer portal and saving the key again here activates it on this server." | Free the other activation in the portal, then save the key again. |
 | No known edition | "Polar grants this key, but it belongs to no Catena edition this panel knows. The paid features are off." | Check which product the key was issued for in the portal. |
 | Unreachable | "Polar has not been reachable since {date}, beyond the 48-hour grace. The paid features are off until Polar answers again; the server keeps asking every hour." | Restore outbound access to Polar; the features return at the first successful check. |
@@ -74,12 +76,12 @@ The **Status** line shows one of these. Text in braces is filled in with a date.
 
 When Polar stops granting the key, or the grace period ends:
 
-- The paid panels turn into greyed entries under **Catena Pro** or **Catena Business**. Each opens an explanation of the feature, the edition that includes it and a **Subscribe** button.
+- The paid panels the subscription no longer includes stay in their place in the left menu, greyed, with a lock after their name. Each opens an explanation of the feature, the edition that includes it and a **Subscribe** button.
 - Every schedule is turned off, since turning one on needs a paid edition, except two: the backup keeps running once a week and the vulnerability watch once a day, at their default times when the saved schedule was faster (see [When the subscription lapses](/en/configuration/schedules/#when-the-subscription-lapses)). The saved choices are kept and return with the subscription.
 - Paid actions are refused, and extra domains beyond the primary one stop being served (they stay stored).
 - A banner on every admin page links to the **Subscription** section with the reason, one entry is added to the **Log**, and one email goes to your admin address through the mail service you configured (English then French). With no mail service set, the banner and the log entry are the only notices. See [Outgoing email](/en/configuration/email/).
 
-What never locks: applications and their data, the weekly backup, the security alerts (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)), manual backups, whole-server restores, updates started by hand, single sign-on and monitoring. A missing, refused or unconfirmed key leaves the server on Catena Community and never blocks an installation or access to data.
+What never locks: applications and their data, the weekly backup, the security alerts, a check on request and the emergency patch you start yourself (see [Vulnerabilities](/en/configuration/vulnerabilities/)), error reports (see [Alerts](/en/configuration/alerts/#send-error-reports-to-catena-support)), manual backups, whole-server restores, updates started by hand, single sign-on and monitoring. A missing, refused or unconfirmed key leaves the server on Catena Community and never blocks an installation or access to data.
 
 ## Troubleshooting
 

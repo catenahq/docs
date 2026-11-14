@@ -54,8 +54,11 @@ token.
 - Cross-page references must be real hyperlinks (Starlight handles
   link validation via `starlight-links-validator`); verify targets
   exist before linking.
-- No emojis or em-dashes in copy or code. Plain hyphens + straight
-  quotes only.
+- No emojis or em-dashes in copy or code, except U+2705 (full presence) and
+  U+274C (absence) in a comparison table. Plain hyphens and straight quotes only.
+- Recommend OVHcloud BHS for the server and hot storage and eazybackup for the
+  cold Object Lock copy, at a provider other than the hot one; the hot bucket
+  stays plain.
 
 ## Working on Astro / Starlight
 
@@ -66,9 +69,10 @@ Astro / Starlight feature question rather than guessing.
 
 - Client docs never reference operator paths, internal tooling or
   scenario names.
-- Every page is hand-written. Per-app documentation is NOT here: each template carries its own README in
-  its catena-templates blueprint directory, and this site does not
-  mirror it. Nothing here is generated from the maintainers' test
+- Every page is hand-written. Per-app documentation is NOT here: a catalog
+  app's description and setup steps are in its `app.json` in
+  catenahq/catena-templates (`blueprints/<id>/app.json`), and this site does
+  not mirror it. Nothing here is generated from the maintainers' test
   bench, so a claim about what is tested carries no automatic anchor:
   make it only when the gate behind it is named in catenahq/catena-ce
   SPEC.md.

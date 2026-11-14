@@ -17,11 +17,6 @@
       "automerge": true
     },
     {
-      "matchManagers": ["npm"],
-      "matchUpdateTypes": ["major"],
-      "automerge": false
-    },
-    {
       "description": "TypeScript 7 (native port) is unsupported by the astro toolchain: @astrojs/check + @volar/kit peer-require typescript ^5||^6, so Renovate cannot even produce a v7 lockfile (npm ci EUSAGE on the desynced branch). Re-enable when @astrojs/check ships a ^7 peer range.",
       "matchPackageNames": ["typescript"],
       "matchUpdateTypes": ["major"],
@@ -40,8 +35,7 @@
     {
       "matchManagers": ["dockerfile", "docker-compose"],
       "matchUpdateTypes": ["major"],
-      "groupName": "docker (major)",
-      "automerge": false
+      "groupName": "docker (major)"
     }
   ],
   "ignorePaths": ["**/node_modules/**"]

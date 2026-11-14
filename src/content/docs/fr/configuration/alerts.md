@@ -15,6 +15,8 @@ Les alertes viennent de trois outils du serveur : Gatus (chaque service répond-
 
 Une surveillance installée sur le serveur ne peut pas signaler une panne qui emporte le serveur entier. Le signal de vie hors site comble cet écart : selon son horaire, le serveur vérifie que sa page d'état, son moniteur de tâches et son moniteur de ressources répondent, puis appelle l'adresse hors site. Un appel simple indique que tout va bien; un appel d'échec nomme les surveillances qui ne répondent plus; l'absence d'appel signifie que le serveur est hors service, et le service externe donne l'alerte. Enregistrer l'adresse seule n'envoie rien : le signal de vie s'exécute une fois que vous l'activez dans [Horaires](/fr/configuration/schedules/), où sa section indique la période et le délai de grâce à régler sur la vérification externe. À la fin de votre abonnement, les appels cessent : mettez alors la vérification externe en pause.
 
+**Envoyer un signal de vie de test** exécute le signal de vie une fois, maintenant, sur l'adresse enregistrée, et indique à côté du bouton si le service externe a reçu l'appel, ou quelle surveillance du serveur n'a pas répondu. Il exige Catena Pro : sans lui, l'adresse et le bouton sont affichés verrouillés, avec un avis, et le signal de vie ne s'exécute pas.
+
 Les alertes parviennent aussi à votre courriel d'administrateur, par le service choisi dans [Courriel sortant](/fr/configuration/email/) : tant que le courriel sortant est réglé, le serveur garde dans Healthchecks un canal de courriel vers votre adresse d'administrateur, rattaché à toutes les vérifications au moment de sa création. Un canal détaché d'une vérification dans Healthchecks le reste. Avec **Aucun courriel sortant**, le canal est retiré et les alertes ne parviennent qu'aux canaux que vous ajoutez dans Healthchecks.
 
 La section se termine par **Enregistrer et appliquer**; les services qui utilisent ces valeurs redémarrent brièvement.
@@ -24,12 +26,12 @@ La section se termine par **Enregistrer et appliquer**; les services qui utilise
 1. Gatus sonde les services partagés (le panneau d'administration, Healthchecks, Keycloak, Beszel, le tunnel Cloudflare et le mandataire inverse) et chaque application exposée à intervalle fixe (environ une à deux minutes). Après 3 échecs consécutifs, il déclenche une alerte, et après 2 réussites, il la résout.
 2. Chaque alerte de Gatus est publiée dans Healthchecks sous la forme d'une vérification par service, nommée `gatus-<service>`, créée au premier échec.
 3. Healthchecks envoie chaque alerte à votre courriel d'administrateur et aux canaux ajoutés dans sa propre interface.
-4. Les tâches planifiées (sauvegarde, copie hors site, entretien nocturne, sonde de redémarrage, signal de vie hors site) signalent leur passage à Healthchecks. Un signal manquant est en soi l'alerte. Les vérifications de la sauvegarde, de la copie hors site, de l'entretien nocturne (**Nightly maintenance**, avertie quand une nuit commence, échoue ou se termine) et du signal de vie hors site suivent les horaires des tâches qui s'y signalent; tant qu'aucune de ces tâches n'est activée, la vérification est en pause et n'est donc jamais en retard. Dans toutes les éditions, la veille des vulnérabilités crée aussi une vérification par vulnérabilité sur laquelle elle alerte (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). L'entretien nocturne ne se signale aux vérifications de la sauvegarde et de la copie hors site que tant que ses étapes de sauvegarde et de copie hors site sont activées (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
+4. Les tâches planifiées (sauvegarde, copie hors site, maintenance, sonde de redémarrage, signal de vie hors site) signalent leur passage à Healthchecks. Un signal manquant est en soi l'alerte. Les vérifications de la sauvegarde, de la copie hors site, de la maintenance (**Maintenance**, avertie quand une exécution commence, échoue ou se termine) et du signal de vie hors site suivent les horaires des tâches qui s'y signalent; tant qu'aucune de ces tâches n'est activée, la vérification est en pause et n'est donc jamais en retard. Dans toutes les éditions, la veille des vulnérabilités crée aussi une vérification par vulnérabilité sur laquelle elle alerte (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). La maintenance ne se signale aux vérifications de la sauvegarde et de la copie hors site que tant que ses étapes de sauvegarde et de copie hors site sont activées (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
 5. Beszel surveille le serveur avec des règles créées une seule fois et jamais écrasées : état (agent silencieux) pendant 5 minutes, processeur à 90 % pendant 10 minutes, mémoire à 90 % pendant 10 minutes, disque à 85 % pendant 10 minutes. Ses alertes passent par Healthchecks et parviennent donc aux mêmes canaux.
 
 ## Envoyer des rapports d'erreurs au soutien de Catena
 
-**Paramètres** > **Rapports d'erreurs au soutien de Catena** permet à un serveur sous Catena Pro ou Catena Business d'aviser le soutien de Catena quand l'un des contrôles propres à Catena échoue ou se rétablit, pour que le soutien puisse vous aider avant qu'un petit problème ne grossisse. L'option est désactivée tant que vous ne l'activez pas.
+**Paramètres** > **Rapports d'erreurs au soutien de Catena** permet à un serveur d'aviser Catena quand l'un des contrôles propres à Catena échoue ou se rétablit. Elle existe dans toutes les éditions et reste désactivée tant que vous ne l'activez pas. Avec Catena Pro ou Catena Business, le soutien peut alors vous aider avant qu'un petit problème ne grossisse. Sans abonnement payant, les rapports aident Catena à trouver et à corriger les problèmes du produit : le serveur s'inscrit sous une identité d'installation aléatoire qu'il garde pour lui, liée à aucune licence, et un rapport n'ouvre aucun billet de soutien.
 
 Pour l'activer :
 
@@ -42,12 +44,12 @@ Un rapport nomme le contrôle, indique s'il échoue et depuis quand, l'applicati
 
 Sous l'interrupteur, la section liste les 100 derniers rapports envoyés, du plus récent au plus ancien, chacun avec le texte exact qui a quitté le serveur et l'indication que le soutien de Catena l'a reçu ou non.
 
-Quand une tâche en échec a écrit un texte sur ce qui a mal tourné, ce texte reste sur votre serveur. La liste le propose pour chaque rapport qui en a un :
+Quand une tâche en échec a écrit un texte sur ce qui a mal tourné, ce texte reste sur votre serveur. Sans abonnement payant, il n'est pas envoyé. Avec Catena Pro ou Catena Business, la liste le propose pour chaque rapport qui en a un :
 
 - **Télécharger le texte de la tâche** enregistre le texte tel quel.
 - **Relire et envoyer au soutien de Catena** ouvre le texte dans une zone. Retirez ce que vous ne voulez pas que le soutien voie, puis appuyez sur **Envoyer ce texte au soutien de Catena**. Seul le texte de la zone est envoyé, et la liste montre exactement ce que vous avez envoyé.
 
-Le soutien répond du lundi au vendredi, de 8 h à 17 h. Les rapports d'erreurs ne forment pas une surveillance 24 heures sur 24, et un serveur éteint ou sans accès à Internet n'envoie rien : pour cela, utilisez le signal de vie hors site décrit plus haut.
+Les billets de soutien et les réponses viennent avec Catena Pro et Catena Business, et le soutien répond du lundi au vendredi, de 8 h à 17 h. Les rapports d'erreurs ne forment pas une surveillance 24 heures sur 24, et un serveur éteint ou sans accès à Internet n'envoie rien : pour cela, utilisez le signal de vie hors site décrit plus haut.
 
 ## Ajouter des canaux de notification dans Healthchecks
 
@@ -64,7 +66,7 @@ Les canaux par courriel exigent [Courriel sortant](/fr/configuration/email/).
 - `https://gatus.yourdomain.com` : la page d'état de Gatus.
 - `https://healthchecks.yourdomain.com` : Healthchecks, avec le dernier signal de chaque tâche.
 - `https://beszel.yourdomain.com` : Beszel, avec les graphiques de ressources du serveur.
-- La page **Système** du panneau d'administration montre les alertes actives et les tâches qui ne se sont pas encore signalées.
+- La page **Système** du panneau d'administration ouvre ces outils depuis le titre de ses cartes : **Ressources** ouvre Beszel, **Surveillance** ouvre Gatus, et **Tâches planifiées** et **Alertes** ouvrent Healthchecks. La carte **Alertes** liste ce dont Healthchecks avertit en ce moment, et "Aucune alerte" quand il n'y a rien; la carte **Tâches planifiées** nomme chaque tâche, avec un point gris pour celle qui ne s'est pas encore signalée.
 
 Vous pouvez changer les noms de sous-domaines dans [Domaine et Cloudflare](/fr/configuration/domain/).
 

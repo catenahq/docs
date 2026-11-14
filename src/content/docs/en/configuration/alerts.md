@@ -15,6 +15,8 @@ Alerts come from three on-server tools: Gatus (is each service answering), Healt
 
 A monitor on the server cannot report an outage that takes the whole server down. The off-site heartbeat closes that gap: on its schedule, the server checks that its status page, job monitor and resource monitor answer, then calls the off-site address. A plain call means all is well; a failure call names the monitors that stopped answering; no call at all means the server is down, and the outside service raises the alert. Saving the address alone sends nothing: the heartbeat runs once you turn it on in [Schedules](/en/configuration/schedules/), where its section shows the period and grace time to set on the outside check. When your subscription ends, the calls stop, so pause the outside check then.
 
+**Send a test heartbeat** runs the heartbeat once now, on the saved address, and shows beside the button whether the outside service took the call, or which monitor on the server did not answer. It needs Catena Pro: without it, the address and the button are shown locked, with a notice, and the heartbeat does not run.
+
 Alerts also reach your admin email, through the service chosen in [Outgoing email](/en/configuration/email/): while outgoing mail is set, the server keeps an email channel to your admin address in Healthchecks, attached to every check when the channel is created. A channel detached from a check in Healthchecks stays detached. With **No outgoing mail**, the channel is removed and alerts reach only the channels you add in Healthchecks.
 
 The section ends with **Save and apply**; the services that use these values restart briefly.
@@ -24,12 +26,12 @@ The section ends with **Save and apply**; the services that use these values res
 1. Gatus probes the shared services (the admin panel, Healthchecks, Keycloak, Beszel, the Cloudflare tunnel and the reverse proxy) and every routed application on a fixed interval (about one to two minutes). After 3 consecutive failures it raises an alert, and after 2 successes it resolves it.
 2. Each Gatus alert is posted to Healthchecks as one check per service, named `gatus-<service>`, created on the first failure.
 3. Healthchecks sends each alert to your admin email and to the channels added in its own interface.
-4. Scheduled jobs (backup, offsite copy, nightly maintenance, restart probe, off-site heartbeat) ping Healthchecks as they run. A missed ping is itself the alert. The checks of the backup, the offsite copy, the nightly maintenance (**Nightly maintenance**, told when a night starts, fails or ends) and the off-site heartbeat follow the schedules of the jobs that report to them; while none of those jobs is turned on, the check is paused, so it never goes late. On every edition, the vulnerability watch also creates one check per vulnerability it alerts on (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). The nightly maintenance reports to the backup and offsite copy checks only while its backup and offsite copy steps are on (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
+4. Scheduled jobs (backup, offsite copy, maintenance, restart probe, off-site heartbeat) ping Healthchecks as they run. A missed ping is itself the alert. The checks of the backup, the offsite copy, the maintenance (**Maintenance**, told when a run starts, fails or ends) and the off-site heartbeat follow the schedules of the jobs that report to them; while none of those jobs is turned on, the check is paused, so it never goes late. On every edition, the vulnerability watch also creates one check per vulnerability it alerts on (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). The maintenance reports to the backup and offsite copy checks only while its backup and offsite copy steps are on (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
 5. Beszel watches the server with rules created once and never overwritten: status (agent silent) for 5 minutes, CPU at 90% for 10 minutes, memory at 90% for 10 minutes, disk at 85% for 10 minutes. Its alerts go through Healthchecks, so they reach the same channels.
 
 ## Send error reports to Catena support
 
-**Settings** > **Error reports to Catena support** lets a server on Catena Pro or Catena Business tell Catena support when one of Catena's own checks fails or recovers, so support can help you before a small fault becomes a large one. It is off until you turn it on.
+**Settings** > **Error reports to Catena support** lets a server tell Catena when one of Catena's own checks fails or recovers. It is on every edition and off until you turn it on. On Catena Pro or Catena Business, support can then help you before a small fault becomes a large one. Without a paid subscription, the reports help Catena find and fix problems in the product: the server signs up with a random install identity it keeps for itself, tied to no licence, and a report opens no support ticket.
 
 To turn it on:
 
@@ -42,12 +44,12 @@ A report names the check, whether it is failing, since when, the application it 
 
 Below the switch, the section lists the last 100 reports sent, newest first, each with the exact text that left the server and whether Catena support received it.
 
-When a failed job wrote text about what went wrong, that text stays on your server. The list offers it for each report that has some:
+When a failed job wrote text about what went wrong, that text stays on your server. Without a paid subscription, it is not sent. On Catena Pro or Catena Business, the list offers it for each report that has some:
 
 - **Download the job output** saves the text as it is.
 - **Review and send to Catena support** opens the text in a box. Remove whatever you do not want support to see, then press **Send this text to Catena support**. Only the text in the box is sent, and the list shows exactly what you sent.
 
-Support answers Monday to Friday, 08:00 to 17:00. Error reports are not round-the-clock monitoring, and a server that is switched off or cannot reach the internet sends nothing: for that, use the off-site heartbeat above.
+Support tickets and replies come with Catena Pro and Catena Business, and support answers Monday to Friday, 08:00 to 17:00. Error reports are not round-the-clock monitoring, and a server that is switched off or cannot reach the internet sends nothing: for that, use the off-site heartbeat above.
 
 ## Add notification channels in Healthchecks
 
@@ -64,7 +66,7 @@ Email channels need [Outgoing email](/en/configuration/email/).
 - `https://gatus.yourdomain.com`: the Gatus status page.
 - `https://healthchecks.yourdomain.com`: Healthchecks, with each job's last ping.
 - `https://beszel.yourdomain.com`: Beszel, with the server's resource graphs.
-- The **System** page of the admin panel shows active alerts and jobs not reporting yet.
+- The **System** page of the admin panel opens these tools from the titles of its cards: **Resources** opens Beszel, **Monitoring** opens Gatus, and **Scheduled jobs** and **Alerts** open Healthchecks. The **Alerts** card lists what Healthchecks is warning about now, and "No alert" when there is nothing; the **Scheduled jobs** card names each job, with a grey dot for one that has not reported yet.
 
 You can change the subdomain names in [Domain and Cloudflare](/en/configuration/domain/).
 

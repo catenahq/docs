@@ -4,7 +4,10 @@ Astro + Starlight client wiki for the catena stack. Public-facing
 docs (EN + FR), served at `docs.catena.run`.
 
 Standalone build (`npm run build` -> `dist/`); deployed to GitHub
-Pages via `.github/workflows/deploy-pages.yml` on push to `main`.
+Pages via `.github/workflows/deploy-pages.yml` on push to `main`. The deploy
+publishes the site that the `ci.yml` push run of the same tree built (it waits
+up to 30 minutes for a run still going), builds only when there is none, and
+does not publish a tree whose CI failed.
 No chained-build coupling with the marketing site.
 
 ## Develop
@@ -38,9 +41,9 @@ A long code example used by both locales lives once in `src/examples/`
 and is rendered with Starlight's `Code` component from an `.mdx` page,
 so the duplication gate never sees two copies.
 
-Per-application documentation does not live here. Each template carries
-its own README beside its compose file, in its
-catenahq/catena-templates blueprint directory.
+Per-application documentation does not live here. A catalog app's
+description and setup steps are in its `app.json` in
+catenahq/catena-templates (`blueprints/<id>/app.json`).
 
 ## The client's domain
 

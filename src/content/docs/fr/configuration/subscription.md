@@ -3,11 +3,11 @@ title: "Abonnement"
 description: "Enregistrer votre clé d'abonnement Polar, le sens de chaque état, le transfert d'une clé entre serveurs, et ce qui se verrouille ou continue de fonctionner à la fin de votre abonnement."
 ---
 
-Catena Communauté est gratuit et n'exige aucune clé. Catena Pro et Catena Business débloquent des fonctions supplémentaires du panneau d'administration grâce à une clé d'abonnement vendue par Polar. Vous enregistrez la clé dans **Paramètres** > **Abonnement**. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).
+Catena Communauté est gratuit et n'exige aucune clé. Catena Pro et Catena Business débloquent des fonctions supplémentaires du panneau d'administration grâce à une clé d'abonnement vendue par Polar. Vous enregistrez la clé dans **Paramètres** > **Abonnement**. Avec Catena Communauté, vous faites chaque action à la main, Catena Pro exécute les mêmes actions de lui-même, et Catena Business ajoute la reddition de comptes : listes complètes, inventaire logiciel, SBOM, exportations et rapports. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).
 
 ## Prérequis
 
-- Une clé d'abonnement de Polar.
+- Une clé d'abonnement de Polar. Une commande passée avec **S'abonner à Catena Pro** ou **S'abonner à Catena Business** dans **Paramètres** > **Abonnement**, ou dans la section des prix de [catena.run](https://catena.run/fr/#pricing), vous en donne une.
 - Le serveur doit pouvoir joindre Polar en HTTPS.
 
 ## Enregistrer la clé
@@ -33,6 +33,8 @@ Un champ vide conserve la clé enregistrée. Une clé nouvelle ou renouvelée pr
 - "Enregistrée. La vérification auprès de Polar n'a pas abouti ; le serveur réessaie toutes les heures."
 
 La section renvoie aussi à **Gérer l'abonnement dans le portail client de Polar**, où vous gérez la clé elle-même et les activations par serveur.
+
+Tant que le serveur n'a aucune clé, ou que Polar ne l'accorde pas (les états Aucune clé et Non accordée ci-dessous), la section affiche aussi **S'abonner à Catena Pro** et **S'abonner à Catena Business**. Chaque bouton ouvre le paiement Polar de cette édition dans un nouvel onglet, dans la langue du panneau. La commande vous donne une clé d'abonnement : collez-la dans **Clé d'abonnement**, dans cette même section, puis appuyez sur **Enregistrer**. Les autres états n'affichent aucun bouton d'abonnement, car la clé qu'ils nomment appartient à un abonnement que vous avez déjà.
 
 ## Une clé, un serveur
 
@@ -60,11 +62,11 @@ La ligne **État** affiche l'une de ces phrases. Le texte entre accolades est re
 
 | Situation | Phrase | Que faire |
 |---|---|---|
-| Aucune clé | "Aucune clé d'abonnement n'est enregistrée. Les fonctions payantes sont désactivées." | Enregistrez une clé si vous voulez les fonctions payantes. |
+| Aucune clé | "Aucune clé d'abonnement n'est enregistrée. Les fonctions payantes sont désactivées." | Enregistrez une clé si vous voulez les fonctions payantes, ou appuyez sur **S'abonner à Catena Pro** ou **S'abonner à Catena Business** pour en obtenir une. |
 | En attente | "La clé est enregistrée et Polar n'a pas encore répondu à son sujet pour ce serveur. Les fonctions payantes restent désactivées jusqu'à sa réponse ; le serveur la demande toutes les heures, et l'enregistrement de la clé la demande aussitôt." | Attendez la prochaine vérification, ou enregistrez de nouveau la clé pour la demander aussitôt. |
 | Active | "Active. Polar a confirmé la clé sur ce serveur pour la dernière fois le {date}." | Rien. |
 | Délai de grâce | "Active pendant le délai de grâce : Polar est injoignable depuis le {date}. Les fonctions payantes restent activées jusqu'au {date}, et le serveur continue de vérifier toutes les heures." | Vérifiez le réseau sortant et le DNS du serveur. |
-| Non accordée | "Polar n'accorde pas cette clé sur ce serveur : l'abonnement a été annulé ou n'a pas été renouvelé, la clé a été révoquée ou remplacée, ou l'activation de ce serveur a été libérée dans le portail client. Les fonctions payantes sont désactivées. Une fois l'abonnement actif, l'enregistrement de la clé l'active de nouveau ici." | Renouvelez l'abonnement, ou enregistrez de nouveau la clé une fois l'abonnement actif. |
+| Non accordée | "Polar n'accorde pas cette clé sur ce serveur : l'abonnement a été annulé ou n'a pas été renouvelé, la clé a été révoquée ou remplacée, ou l'activation de ce serveur a été libérée dans le portail client. Les fonctions payantes sont désactivées. Une fois l'abonnement actif, l'enregistrement de la clé l'active de nouveau ici." | Renouvelez l'abonnement (**S'abonner à Catena Pro** ou **S'abonner à Catena Business** ouvre une nouvelle commande), ou enregistrez de nouveau la clé une fois l'abonnement actif. |
 | Refusée | "Polar a refusé d'activer cette clé sur ce serveur : elle est active sur un autre serveur (une clé n'est active que sur un serveur à la fois), ou elle est révoquée, désactivée ou expirée. Libérer l'autre activation dans le portail client de Polar, puis enregistrer de nouveau la clé ici, l'active sur ce serveur." | Libérez l'autre activation dans le portail, puis enregistrez de nouveau la clé. |
 | Aucune édition connue | "Polar accorde cette clé, mais elle n'appartient à aucune édition de Catena connue de ce panneau. Les fonctions payantes sont désactivées." | Vérifiez dans le portail pour quel produit la clé a été émise. |
 | Injoignable | "Polar est injoignable depuis le {date}, au-delà du délai de grâce de 48 heures. Les fonctions payantes sont désactivées jusqu'à ce que Polar réponde de nouveau ; le serveur continue de vérifier toutes les heures." | Rétablissez l'accès sortant vers Polar; les fonctions reviennent à la première vérification réussie. |
@@ -74,12 +76,12 @@ La ligne **État** affiche l'une de ces phrases. Le texte entre accolades est re
 
 Quand Polar cesse d'accorder la clé, ou que le délai de grâce est écoulé :
 
-- Les panneaux payants deviennent des entrées grisées sous **Catena Pro** ou **Catena Business**. Chacune ouvre une explication de la fonction, de l'édition qui la comprend et un bouton **S'abonner**.
+- Les panneaux payants que l'abonnement ne comprend plus restent à leur place dans le menu de gauche, grisés, avec un cadenas après leur nom. Chacun ouvre une explication de la fonction, de l'édition qui la comprend et un bouton **S'abonner**.
 - Tous les horaires sont désactivés, puisque l'activation d'un horaire exige une édition payante, sauf deux : la sauvegarde continue de s'exécuter une fois par semaine et la veille des vulnérabilités une fois par jour, à leur heure par défaut quand l'horaire enregistré était plus fréquent (voir [Lorsque l'abonnement prend fin](/fr/configuration/schedules/#lorsque-labonnement-prend-fin)). Les choix enregistrés sont conservés et reviennent avec l'abonnement.
 - Les actions payantes sont refusées, et les domaines supplémentaires au-delà du domaine principal cessent d'être servis (ils restent enregistrés).
 - Une bannière sur chaque page d'administration mène à la section **Abonnement** et en donne la raison, une entrée s'ajoute au **Journal**, et un courriel part vers votre adresse d'administrateur par le service de courriel configuré (en anglais puis en français). Sans service de courriel, la bannière et l'entrée du journal sont les seuls avis. Voir [Courriel sortant](/fr/configuration/email/).
 
-Ce qui ne se verrouille jamais : les applications et leurs données, la sauvegarde hebdomadaire, les alertes de sécurité (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)), les sauvegardes manuelles, les restaurations du serveur entier, les mises à jour lancées à la main, l'authentification unique et la supervision. Une clé absente, refusée ou non confirmée laisse le serveur sur Catena Communauté et n'empêche jamais une installation ni l'accès aux données.
+Ce qui ne se verrouille jamais : les applications et leurs données, la sauvegarde hebdomadaire, les alertes de sécurité, une vérification sur demande et le correctif d'urgence que vous lancez vous-même (voir [Vulnérabilités](/fr/configuration/vulnerabilities/)), les rapports d'erreurs (voir [Alertes](/fr/configuration/alerts/#envoyer-des-rapports-derreurs-au-soutien-de-catena)), les sauvegardes manuelles, les restaurations du serveur entier, les mises à jour lancées à la main, l'authentification unique et la supervision. Une clé absente, refusée ou non confirmée laisse le serveur sur Catena Communauté et n'empêche jamais une installation ni l'accès aux données.
 
 ## Dépannage
 

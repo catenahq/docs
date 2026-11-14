@@ -1,6 +1,6 @@
 ---
 title: "Domaine et Cloudflare"
-description: "Relier votre serveur à un domaine Cloudflare : le jeton d'API et ses permissions, l'application du domaine, le renommage des sous-domaines d'infrastructure et le rattachement de domaines supplémentaires."
+description: "Relier votre serveur à un domaine Cloudflare : le jeton d'API et ses permissions, l'application du domaine, le renommage des sous-domaines d'infrastructure et l'ajout ou le retrait de domaines supplémentaires."
 ---
 
 Chaque adresse publique du serveur est un nom sous un même domaine, servi par un tunnel Cloudflare. Tant que vous n'avez appliqué aucun domaine, le serveur fonctionne sans adresses publiques, et vous atteignez le panneau par le transfert de port SSH décrit dans [Installation](/fr/installation/).
@@ -33,9 +33,11 @@ Catena Communauté rattache un seul domaine. Un jeton qui atteint plusieurs doma
 
 Quand un jeton est déjà stocké, vous pouvez laisser le champ vide : le jeton stocké est utilisé.
 
-L'avertissement indique : "L'application remplace le tunnel Cloudflare de ce serveur par un nouveau : le tunnel actuel est abandonné, et les applications sont indisponibles quelques minutes pendant que le serveur est remis à niveau sous le domaine." L'application stocke le jeton et le domaine, remplace le tunnel, puis exécute une configuration complète du serveur. La section en suit le déroulement : "Application du domaine : le tunnel est remplacé, puis le serveur est remis à niveau sous ce domaine. Les adresses publiques sont injoignables quelques minutes, et cette section en suit le déroulement."
+L'avertissement indique : "L'application remplace le tunnel Cloudflare de ce serveur par un nouveau : le tunnel actuel est abandonné, et les applications sont indisponibles quelques minutes pendant que les paramètres enregistrés sont appliqués sous le domaine." L'application stocke le jeton et le domaine, remplace le tunnel, puis applique au serveur les paramètres enregistrés. La section en suit le déroulement : "Application du domaine : le tunnel est remplacé, puis les paramètres enregistrés sont appliqués sous ce domaine. Les adresses publiques sont injoignables quelques minutes, et cette section en suit le déroulement." Son étiquette passe d'elle-même à **Appliqué** à la fin de l'opération, sans rechargement.
 
 Le même bouton **Appliquer** répare un tunnel compromis ou défaillant : appuyez dessus avec le domaine déjà en usage pour créer un nouveau tunnel et abandonner l'ancien.
+
+Pendant qu'une application du domaine s'exécute, un deuxième **Appliquer** n'enregistre rien et la section indique : "Le serveur applique encore le dernier changement, affiché ci-dessous. Rien de nouveau n'a été enregistré." Appuyez de nouveau dessus une fois l'opération terminée.
 
 ### Ce qui passe au nouveau domaine
 
@@ -65,29 +67,57 @@ Après un changement de domaine, le nom affiché sur la page de connexion à `au
 |---|---|---|---|
 | **Keycloak (connexion)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (ce panneau)** | Ce panneau | `dash` | `dash.yourdomain.com` |
-| **Gatus (page d'état)** | Gatus | `gatus` | `gatus.yourdomain.com` |
-| **Healthchecks (moniteur de tâches planifiées)** | Healthchecks | `healthchecks` | `healthchecks.yourdomain.com` |
-| **Beszel (mesures du serveur)** | Beszel | `beszel` | `beszel.yourdomain.com` |
 
-Règles :
+Gatus (`gatus`), Healthchecks (`healthchecks`) et Beszel (`beszel`) sont installés par défaut comme applications : l'adresse de chacun est donc un paramètre de son application. Ouvrez **Applications**, puis la page de l'application avec l'engrenage de sa carte, et changez le nom à cet endroit. Le serveur déplace toutes les adresses de l'application vers le nouveau nom à sa prochaine application de la configuration (**Appliquer les paramètres enregistrés** dans [Paramètres du serveur](/fr/configuration/server/)).
+
+Règles, pour les champs ci-dessus et de même pour le nom d'une application :
 
 - Un seul nom par champ, sans le domaine : `auth`, et non `auth.yourdomain.com`. Sinon le message est "Un seul nom, par exemple auth : le domaine y est ajouté."
 - Lettres minuscules, chiffres et traits d'union; pas de trait d'union au début ni à la fin; 63 caractères au plus.
 - Un champ vide conserve le nom en usage. Pour revenir à une valeur par défaut, saisissez le nom par défaut.
-- La section se termine par **Enregistrer et appliquer** : le serveur est remis à niveau et les services derrière les adresses renommées redémarrent brièvement.
+- La section se termine par **Enregistrer et appliquer** : les paramètres enregistrés sont appliqués et les services derrière les adresses renommées redémarrent brièvement.
 
-Quand le nom du panneau lui-même change, **Configuration du serveur** affiche "Ce tableau de bord change d'adresse une fois la configuration appliquée. Il s'ouvrira tout seul à la nouvelle adresse dès qu'elle répondra ; d'ici là, l'adresse est :" suivi de l'ancienne adresse. Vos signets vers l'ancienne adresse cessent de fonctionner.
+Quand le nom du panneau lui-même change, **Configuration du serveur** affiche d'abord "Ce tableau de bord passe à {address} dès que le serveur sert le nouveau domaine. Le lien qui y mène s'affiche ici dès que c'est le cas.", la nouvelle adresse remplaçant `{address}`. Dès que le serveur sert le nouveau domaine, elle affiche "Ce tableau de bord change d'adresse une fois la configuration appliquée. Il s'ouvrira tout seul à la nouvelle adresse dès qu'elle répondra ; d'ici là, l'adresse est :" suivi d'un lien vers la nouvelle adresse, qui s'ouvre dès qu'elle répond. Vos signets vers l'ancienne adresse cessent de fonctionner.
 
 ## Domaines supplémentaires
 
-Un serveur sous Catena Pro ou Catena Business peut servir plusieurs domaines non liés. Chacun est un îlot de connexion distinct : les personnes d'un domaine ne voient jamais la connexion d'un autre domaine. Les tableaux de bord partagés restent sur le premier domaine (principal). Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).
+Catena Pro sert plusieurs domaines depuis un même serveur. **Paramètres** > **Domaine** liste le **Premier domaine**, que vous appliquez comme décrit plus haut, puis les **Autres domaines**. Chaque domaine a sa propre connexion : les personnes d'un domaine ne voient jamais la connexion d'un autre domaine. Les tableaux de bord partagés restent sur le premier domaine. Les éditions sont comparées sur [catena.run](https://catena.run/fr/#pricing).
 
-1. Dans Cloudflare, créez un jeton avec **Zone:DNS:Edit** limité au seul domaine à rattacher.
-2. Ouvrez le panneau **Domaines** dans le menu.
-3. Collez le jeton dans **Jeton d'API Cloudflare (un domaine)** et appuyez sur **Rattacher le domaine**.
-4. Les changements s'appliquent lors de la prochaine exécution de configuration : appuyez sur **Remettre ce serveur à niveau** dans [Paramètres du serveur](/fr/configuration/server/).
+### Ajouter un domaine
 
-Le jeton doit atteindre exactement un domaine, celui qui est rattaché. Le tableau liste chaque domaine avec son rôle, Principal ou Secondaire. Un domaine principal ne peut pas être retiré tant que des domaines secondaires existent ("retirez d'abord les autres"); chaque autre ligne a un bouton **Retirer**. Quand un abonnement prend fin, les domaines secondaires restent enregistrés mais ne sont plus servis. Voir [Abonnement](/fr/configuration/subscription/).
+Le domaine doit être dans le même compte Cloudflare que le premier domaine.
+
+1. Dans Cloudflare, créez un jeton avec **Zone:DNS:Edit** sur le domaine à ajouter.
+2. Ouvrez **Paramètres** > **Domaine**.
+3. Sous **Autres domaines**, collez le jeton dans **Jeton d'API Cloudflare de ce domaine**. Les domaines qu'il atteint remplissent la liste.
+4. Choisissez le domaine dans **Domaine**, puis appuyez sur **Ajouter le domaine**.
+
+Le serveur enregistre le domaine et applique la liste des domaines : "Enregistré. Le serveur applique la liste des domaines ; les services redémarrent brièvement." Le tunnel du premier domaine n'est pas remplacé.
+
+Si le domaine est dans un autre compte Cloudflare, le panneau le refuse : "Ce domaine est dans un autre compte Cloudflare. Ajoutez un domaine du même compte Cloudflare que le premier domaine."
+
+### Changer le jeton d'un domaine
+
+Chaque domaine supplémentaire a son propre jeton. Collez le nouveau jeton dans la ligne du domaine et appuyez sur **Remplacer le jeton**.
+
+### Retirer un domaine
+
+Appuyez sur **Retirer** dans la ligne du domaine. Cela fonctionne sur toutes les éditions. Le serveur retire le nom générique du domaine et garde son jeton jusqu'à ce que ce soit fait. Le premier domaine n'a pas de bouton **Retirer** : pour le changer, appliquez un autre domaine comme premier domaine.
+
+### L'état de chaque domaine
+
+Chaque ligne indique où en est le domaine :
+
+| Ligne | Sens |
+|---|---|
+| "Servi" | Le domaine est servi. |
+| "En attente de la prochaine exécution de la configuration" | Le domaine est enregistré et le serveur ne l'a pas encore appliqué. |
+| "Non servi : son jeton Cloudflare a été refusé" | Cloudflare a refusé le jeton du domaine. Le domaine est laissé de côté pendant que les autres domaines continuent de fonctionner. Appuyez sur **Remplacer le jeton** avec un jeton valide. |
+| "Non servi sans Catena Pro" | Le serveur n'a pas d'abonnement qui couvre plusieurs domaines. |
+
+### Sans abonnement
+
+Quand un abonnement prend fin, ou sans abonnement, les domaines supplémentaires restent enregistrés mais ne sont plus servis. À la place du formulaire d'ajout, la section indique "Passez à Pro pour déployer vos applications depuis plusieurs domaines." Vous pouvez seulement retirer les domaines supplémentaires : vous ne pouvez ni ajouter un domaine ni remplacer un jeton. Voir [Abonnement](/fr/configuration/subscription/).
 
 ## Dépannage
 

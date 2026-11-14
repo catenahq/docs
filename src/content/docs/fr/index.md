@@ -16,7 +16,7 @@ Aux petites et moyennes organisations qui veulent posséder les logiciels dont e
 | Tunnel Cloudflare | Achemine tout le trafic web vers le serveur : aucun port web n'est ouvert sur la machine. |
 | Traefik | Dirige chaque adresse vers la bonne application. |
 | Keycloak | Une seule connexion pour toutes les applications, des groupes décidant qui peut ouvrir quoi. |
-| catena-admin | Le panneau d'administration : applications (les ajouter, les configurer, les démarrer, les arrêter, les mettre à jour et les supprimer), état, actions, restauration, horaires et paramètres. |
+| catena-admin | Le panneau d'administration : applications (les ajouter, les configurer, les déployer, les retirer, les mettre à jour et les supprimer), état, actions, restauration, horaires et paramètres. |
 | Sauvegardes restic | Sauvegardes chiffrées envoyées vers un stockage S3 qui vous appartient. |
 | Gatus, Healthchecks, Beszel | Page d'état, alarmes de tâches manquées et graphiques de ressources du serveur. |
 | Tailnet (facultatif) | Un réseau privé pour l'administration. |
