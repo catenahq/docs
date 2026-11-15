@@ -100,7 +100,7 @@ Every update first holds the application: its address answers a bare 503 (servic
 
 After an update stands, Catena keeps the application's previous files and the copies of its data for 14 days and until a backup taken after the update has succeeded, whichever is later. While they exist, an administrator can put the application back as it was before the update, on every edition:
 
-1. On the **Apps** page, open the application's page with the gear on its card. While the copies exist, its **Update** part offers "Put back the previous version", with a note that the files and data go back to how they were before the update.
+1. On the **Apps** page, open the application's page. While the copies exist, its **Update** part offers "Put back the previous version", with a note that the files and data go back to how they were before the update.
 2. Tick "Put `<app>` back to what it ran before its last update".
 3. Press **Put back the previous version**.
 
@@ -210,7 +210,7 @@ The **Log** page records every update decision, among them:
 
 On every edition, Community included, you update an app added from a repository from its own page, at any time after its first start. The **Update** part is on the page of every app that has a folder on this server. Before the first start it holds **Version**, to choose the version the app starts with (see [Settings, deploy, take down and delete](/en/configure-apps/#settings-deploy-take-down-and-delete)). An app not added from a repository reads "It was not added from a repository, so Catena has no newer version to move it to." An app whose folder or settings cannot be read names the problem and reads "Catena cannot check for an update until this is fixed."
 
-1. Open **Apps** and the app's page with the gear on its card, then **Update**.
+1. Open **Apps** and the app's page, then **Update**.
 2. Read "Running: `<version>`" and "Update to: `<version>`". When the app must pass through other versions on the way, the part says how many.
 3. Tick the confirmation and press **Update to `<version>`**.
 
