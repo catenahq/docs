@@ -155,6 +155,19 @@ On the main address's service only; on any other service these labels are ignore
 | `vps.homepage.description`, `vps.homepage.description-fr` | Text | Tile subtitle, at most 300 characters; the second when the panel is in French. |
 | `vps.homepage.hidden` | `true`, `false` | Default `false`. Hides the tile from everyone except administrators. |
 
+The card's words come from `app.json`, beside the compose file in `blueprints/<app>/`, first. The labels above are a fallback, used field by field for whatever `app.json` leaves out. `app.json` is a JSON object of at most 64 KiB; any other key is ignored. It holds an `en` object and a `fr` object, and a `logo` object:
+
+| Key | Description |
+|---|---|
+| `en.display_name`, `fr.display_name` | Name of the card. Replaces `vps.homepage.name`. |
+| `en.summary`, `fr.summary` | One-line summary. Replaces `vps.homepage.description` and `vps.homepage.description-fr`. |
+| `en.what_it_is`, `fr.what_it_is` | What the app is, at most 1000 characters. |
+| `en.setup_steps`, `fr.setup_steps` | Setup steps, at most 8000 characters. |
+| `en.extra_notes`, `fr.extra_notes` | Longer notes, at most 8000 characters. |
+| `logo.notice` | Notice shown with the logo. |
+
+The three longer texts are written in Markdown. On a French panel, a French field is shown when it is filled in, and the English one otherwise.
+
 The logo of the app's card is `logo.png` or `logo.svg` beside the compose file, in `blueprints/<app>/`: a PNG at most 512 pixels a side, either kind at most 64 KiB.
 
 ### Updates
