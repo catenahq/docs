@@ -100,7 +100,7 @@ Chaque mise à jour commence par retenir l'application : son adresse répond un 
 
 Une fois qu'une mise à jour tient, Catena garde les fichiers précédents de l'application et les copies de ses données pendant 14 jours et jusqu'à ce qu'une sauvegarde faite après la mise à jour ait réussi, selon la dernière échéance. Tant qu'ils existent, un administrateur peut remettre l'application comme elle était avant la mise à jour, dans toutes les éditions :
 
-1. Sur la page **Applications**, ouvrez la page de l'application avec l'engrenage de sa carte. Tant que les copies existent, sa partie **Mise à jour** propose "Remettre la version précédente", avec une note disant que les fichiers et les données reviennent à leur état d'avant la mise à jour.
+1. Sur la page **Applications**, ouvrez la page de l'application. Tant que les copies existent, sa partie **Mise à jour** propose "Remettre la version précédente", avec une note disant que les fichiers et les données reviennent à leur état d'avant la mise à jour.
 2. Cochez "Remettre `<application>` comme elle tournait avant sa dernière mise à jour".
 3. Appuyez sur **Remettre la version précédente**.
 
@@ -210,7 +210,7 @@ La page **Journal** consigne chaque décision de mise à jour, notamment :
 
 Dans toutes les éditions, Communauté comprise, vous mettez à jour une application ajoutée depuis un dépôt depuis sa propre page, à tout moment après son premier démarrage. La partie **Mise à jour** se trouve sur la page de toute application qui a un dossier sur ce serveur. Avant le premier démarrage, elle contient **Version**, pour choisir la version avec laquelle l'application démarre (voir [Réglages, déploiement, retrait et suppression](/fr/configure-apps/#réglages-déploiement-retrait-et-suppression)). Une application non ajoutée depuis un dépôt indique "Elle n'a pas été ajoutée depuis un dépôt : Catena n'a donc aucune version plus récente vers laquelle la mettre à jour." Une application dont le dossier ou les réglages sont illisibles nomme le problème et indique "Catena ne peut pas chercher de mise à jour tant que ce problème n'est pas réglé."
 
-1. Ouvrez **Applications** puis la page de l'application avec l'engrenage de sa carte, puis **Mise à jour**.
+1. Ouvrez **Applications** puis la page de l'application, puis **Mise à jour**.
 2. Lisez "Version en service : `<version>`" et "Mise à jour vers : `<version>`". Quand l'application doit passer par d'autres versions en chemin, la partie indique combien.
 3. Cochez la confirmation et appuyez sur **Mettre à jour vers `<version>`**.
 
