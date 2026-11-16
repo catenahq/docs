@@ -155,6 +155,19 @@ Sur le service de l'adresse principale seulement; sur tout autre service, ces é
 | `vps.homepage.description`, `vps.homepage.description-fr` | Texte | Sous-titre de la tuile, au plus 300 caractères; le second quand le panneau est en français. |
 | `vps.homepage.hidden` | `true`, `false` | Défaut `false`. Masque la tuile pour tous sauf les administrateurs. |
 
+Les mots de la carte viennent d'abord de `app.json`, à côté du fichier compose dans `blueprints/<application>/`. Les étiquettes ci-dessus servent de repli, champ par champ, pour ce que `app.json` ne dit pas. `app.json` est un objet JSON d'au plus 64 Kio; toute autre clé est ignorée. Il contient un objet `en`, un objet `fr` et un objet `logo` :
+
+| Clé | Description |
+|---|---|
+| `en.display_name`, `fr.display_name` | Nom de la carte. Remplace `vps.homepage.name`. |
+| `en.summary`, `fr.summary` | Résumé d'une ligne. Remplace `vps.homepage.description` et `vps.homepage.description-fr`. |
+| `en.what_it_is`, `fr.what_it_is` | Ce qu'est l'application, au plus 1000 caractères. |
+| `en.setup_steps`, `fr.setup_steps` | Étapes de mise en place, au plus 8000 caractères. |
+| `en.extra_notes`, `fr.extra_notes` | Notes plus longues, au plus 8000 caractères. |
+| `logo.notice` | Avis affiché avec le logo. |
+
+Les trois textes plus longs s'écrivent en Markdown. Sur un panneau en français, un champ français est affiché quand il est rempli, sinon le champ anglais.
+
 Le logo de la carte de l'application est `logo.png` ou `logo.svg` à côté du fichier compose, dans `blueprints/<application>/` : un PNG fait au plus 512 pixels de côté, l'un ou l'autre type pèse au plus 64 Kio.
 
 ### Mises à jour
