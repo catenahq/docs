@@ -236,7 +236,6 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | <a id="k7"></a>K7 | warning, error | A warning for an access label with no effect: an unknown `vps.auth.mode`, `vps.auth.groups` on a public or admin-only address, `visitor` beside other groups, an unknown Keycloak group, or `vps.auth.public_paths` on a public address. An error for an inexact path, or more than 8. |
 | <a id="k8"></a>K8 | note | An image tag with no full version, or an invalid `vps.auto-update` value. |
 | <a id="k9"></a>K9 | error | A bind mount outside the apps area that is not listed under **Other folders to back up**: the backup fails. |
-| <a id="k10"></a>K10 | warning | The file matches a catalog app but is deployed under another name: catalog actions and restores do not find it. |
 | <a id="k11"></a>K11 | note | A `vps.*` label Catena does not read, such as one that names the app or the service. |
 | <a id="k12"></a>K12 | warning | A published port that no `vps.expose.tcp` or `vps.expose.udp` label declares (open to the internet), or a declared port the service does not publish with `mode: host`. |
 | <a id="k13"></a>K13 | note | A database that is not exported before each backup: its volume is copied while it runs. |
