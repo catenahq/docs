@@ -236,7 +236,6 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | <a id="k7"></a>K7 | avertissement, erreur | Un avertissement pour une étiquette d'accès sans effet : un `vps.auth.mode` inconnu, `vps.auth.groups` sur une adresse publique ou réservée aux administrateurs, `visitor` à côté d'autres groupes, un groupe Keycloak inconnu, ou `vps.auth.public_paths` sur une adresse publique. Une erreur pour un chemin inexact, ou plus de 8. |
 | <a id="k8"></a>K8 | note | Une étiquette d'image sans version complète, ou une valeur de `vps.auto-update` non valide. |
 | <a id="k9"></a>K9 | erreur | Un montage de dossier hors de la zone des applications, absent de **Autres dossiers à sauvegarder** : la sauvegarde échoue. |
-| <a id="k10"></a>K10 | avertissement | Le fichier correspond à une application du catalogue mais est déployé sous un autre nom : les actions du catalogue et les restaurations ne la trouvent pas. |
 | <a id="k11"></a>K11 | note | Une étiquette `vps.*` que Catena ne lit pas, comme une qui nomme l'application ou le service. |
 | <a id="k12"></a>K12 | avertissement | Un port publié qu'aucune étiquette `vps.expose.tcp` ou `vps.expose.udp` ne déclare (ouvert sur Internet), ou un port déclaré que le service ne publie pas avec `mode: host`. |
 | <a id="k13"></a>K13 | note | Une base de données qui n'est pas exportée avant chaque sauvegarde : son volume est copié pendant qu'elle tourne. |
