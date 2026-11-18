@@ -43,7 +43,7 @@ While an apply runs, a second **Apply** saves nothing and the section reads: "Th
 
 The panel and the applications whose address the panel manages move to the new domain. An application that has its address built in, typed in its own settings, stays on its old name until you move it.
 
-The mail server application is one of these. It keeps its own name until you move it, and its certificate and its DNS records stay with that name: its certificate is issued for it, and its address record (A) and its MTA-STS and TLS-RPT records are published under the zones of that name when the Cloudflare token reaches them. When the token does not reach a zone, Catena keeps the certificate or records that exist and reports the name it left alone. Webmail checks the mail server's certificate against this name, so it keeps working after the domain change.
+The mail server application is one of these. It keeps its own name until you move it, and its certificate and its DNS records stay with that name: its certificate is issued for it, and its address record (A) and its MTA-STS and TLS-RPT records are published under the zones of that name when the Cloudflare token reaches them. When the token does not reach a zone, Catena keeps the certificate or records that exist and reports the name it left alone. Webmail checks the mail server's certificate against this name, so it keeps working after the domain change. To move the mail server, follow the application's notes on its page under **Apps**.
 
 ### Messages
 

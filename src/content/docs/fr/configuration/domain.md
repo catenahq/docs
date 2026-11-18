@@ -43,7 +43,7 @@ Pendant qu'une application du domaine s'exécute, un deuxième **Appliquer** n'e
 
 Le panneau et les applications dont le panneau gère l'adresse passent au nouveau domaine. Une application dont l'adresse est intégrée, saisie dans ses propres réglages, reste sous son ancien nom jusqu'à ce que vous la déplaciez.
 
-Le serveur de courriel est de celles-là. Il garde son propre nom jusqu'à ce que vous le déplaciez, et son certificat comme ses enregistrements DNS restent associés à ce nom : son certificat est émis pour lui, et son enregistrement d'adresse (A) ainsi que ses enregistrements MTA-STS et TLS-RPT sont publiés dans les zones de ce nom lorsque le jeton Cloudflare les atteint. Quand le jeton n'atteint pas une zone, Catena conserve le certificat ou les enregistrements existants et signale le nom laissé de côté. Le webmail vérifie le certificat du serveur de courriel d'après ce nom : il continue donc de fonctionner après le changement de domaine.
+Le serveur de courriel est de celles-là. Il garde son propre nom jusqu'à ce que vous le déplaciez, et son certificat comme ses enregistrements DNS restent associés à ce nom : son certificat est émis pour lui, et son enregistrement d'adresse (A) ainsi que ses enregistrements MTA-STS et TLS-RPT sont publiés dans les zones de ce nom lorsque le jeton Cloudflare les atteint. Quand le jeton n'atteint pas une zone, Catena conserve le certificat ou les enregistrements existants et signale le nom laissé de côté. Le webmail vérifie le certificat du serveur de courriel d'après ce nom : il continue donc de fonctionner après le changement de domaine. Pour déplacer le serveur de courriel, suivez les notes de l'application sur sa page sous **Applications**.
 
 ### Messages
 
