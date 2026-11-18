@@ -222,6 +222,7 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | <a id="s2"></a>S2 | warning | A key that Swarm ignores, such as `depends_on`, `restart`, `container_name`, `expose`, `links`, `build`, `network_mode`, the short `tmpfs`. |
 | <a id="s3"></a>S3 | error | A port published through the routing mesh, which replaces each visitor's address. Use `mode: host`. |
 | <a id="s4"></a>S4 | error | A `configs` entry that takes its content from a file or inline text. Only `external: true` configs are accepted. |
+| <a id="s5"></a>S5 | error | An inline script in a service's `entrypoint` or `command` (`<interpreter> -c <script>`) that does not parse in its language. Fix the script, or move it into a file in the image. |
 
 ### What Catena reads from the file
 
@@ -259,7 +260,14 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | <a id="x9"></a>X9 | warning | A port published on the server, reachable without signing in. |
 | <a id="x10"></a>X10 | error | Traefik labels, which route nothing. Use `vps.route.host` and the access labels. |
 | <a id="x11"></a>X11 | warning | A service on `catena-network` that keeps raw network access, with which it could forge traffic to Catena's own services. The corrected file adds `cap_drop: [NET_RAW]`; an app that needs it adds `cap_add: [NET_RAW]` ([X7](#x7) then reports it). |
+| <a id="x12"></a>X12 | error | A mount of the folders Catena deploys apps from: an app that can write there chooses what the server runs as its administrator. Mount a folder of the app's own data instead. |
+| <a id="x13"></a>X13 | error | A mount, volume or bind path that still depends on a variable after the folder's `.env` is applied, so the server cannot tell which path it reaches. Write the path out, or set the variable in `.env`. |
+| <a id="x14"></a>X14 | error | A volume that is not the app's own: it is declared `external`, or with a name that does not start with the app's prefix, so a service reads and writes data of another app or of the server. Declare the volume without `external` and without a name, or with a name that starts with the app's prefix. |
+| <a id="x15"></a>X15 | error | A service on a network that belongs to Catena. Only an app of Catena's catalog whose block provides or reads that capability may join it. Remove the network from the file. |
+| <a id="x16"></a>X16 | error | An `x-catena` block that names a database for a service's data. That declaration belongs to Catena's own services: the server would dump and replay databases that are not the app's. Declare the volume the data lives in instead. |
 | <a id="x17"></a>X17 | error | A bind of a server folder outside the app's own data folder, unless it lies inside a folder listed under **Other folders to back up**; a bind of a listed folder itself is refused. Also reported: a bind of the app's whole data folder, binds that contain each other, and a volume that attaches its own filesystem. |
+| <a id="x18"></a>X18 | error | `cap_add` of capabilities that reach the server past the container, such as loading code into the kernel, tracing other processes, bypassing file permissions or reconfiguring the network or the clock. Remove them; only an app of Catena's catalog whose block declares them may add them. |
+| <a id="x19"></a>X19 | error | An `x-catena` block that provides or reads a capability Catena reserves, because a service on its network is trusted to sign visitors in. Remove the capability; only files of Catena's catalog may use it. |
 
 ## Troubleshooting
 
