@@ -222,6 +222,7 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | <a id="s2"></a>S2 | avertissement | Une clé que Swarm ignore, comme `depends_on`, `restart`, `container_name`, `expose`, `links`, `build`, `network_mode`, la forme courte de `tmpfs`. |
 | <a id="s3"></a>S3 | erreur | Un port publié par le maillage de routage, qui remplace l'adresse de chaque visiteur. Utilisez `mode: host`. |
 | <a id="s4"></a>S4 | erreur | Une entrée `configs` dont le contenu vient d'un fichier ou d'un texte en ligne. Seuls les `configs` `external: true` sont acceptés. |
+| <a id="s5"></a>S5 | erreur | Un script en ligne dans l'`entrypoint` ou le `command` d'un service (`<interpréteur> -c <script>`) qui ne s'analyse pas dans son langage. Corrigez le script, ou placez-le dans un fichier de l'image. |
 
 ### Ce que Catena lit dans le fichier
 
@@ -259,7 +260,14 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | <a id="x9"></a>X9 | avertissement | Un port publié sur le serveur, joignable sans connexion. |
 | <a id="x10"></a>X10 | erreur | Des étiquettes Traefik, qui n'acheminent rien. Utilisez `vps.route.host` et les étiquettes d'accès. |
 | <a id="x11"></a>X11 | avertissement | Un service de `catena-network` qui garde l'accès réseau brut, avec lequel il pourrait forger du trafic vers les services propres de Catena. Le fichier corrigé ajoute `cap_drop: [NET_RAW]`; une application qui en a besoin ajoute `cap_add: [NET_RAW]` ([X7](#x7) le signale alors). |
+| <a id="x12"></a>X12 | erreur | Un montage des dossiers d'où Catena déploie les applications : une application qui peut y écrire choisit ce que le serveur exécute en tant qu'administrateur. Montez plutôt un dossier de données propre à l'application. |
+| <a id="x13"></a>X13 | erreur | Un chemin de montage, de volume ou de montage lié qui dépend encore d'une variable une fois le `.env` du dossier appliqué : le serveur ne peut pas savoir quel chemin il atteint. Écrivez le chemin en clair, ou définissez la variable dans `.env`. |
+| <a id="x14"></a>X14 | erreur | Un volume qui n'est pas celui de l'application : il est déclaré `external`, ou avec un nom qui ne commence pas par le préfixe de l'application, si bien qu'un service lit et écrit des données d'une autre application ou du serveur. Déclarez le volume sans `external` et sans nom, ou avec un nom qui commence par le préfixe de l'application. |
+| <a id="x15"></a>X15 | erreur | Un service sur un réseau qui appartient à Catena. Seule une application du catalogue de Catena dont le bloc fournit ou lit cette capacité peut le rejoindre. Retirez le réseau du fichier. |
+| <a id="x16"></a>X16 | erreur | Un bloc `x-catena` qui nomme une base de données pour les données d'un service. Cette déclaration revient aux services propres de Catena : le serveur copierait et rejouerait des bases qui ne sont pas celles de l'application. Déclarez plutôt le volume où vivent les données. |
 | <a id="x17"></a>X17 | erreur | Un montage lié d'un dossier du serveur hors du dossier de données propre à l'application, sauf s'il se trouve dans un dossier inscrit sous **Autres dossiers à sauvegarder**; un montage lié d'un dossier inscrit lui-même est refusé. Sont aussi signalés : un montage lié de tout le dossier de données de l'application, des montages liés qui se contiennent l'un l'autre, et un volume qui attache son propre système de fichiers. |
+| <a id="x18"></a>X18 | erreur | Un `cap_add` de capacités qui atteignent le serveur au-delà du conteneur, comme charger du code dans le noyau, tracer d'autres processus, contourner les permissions de fichiers ou reconfigurer le réseau ou l'horloge. Retirez-les; seule une application du catalogue de Catena dont le bloc les déclare peut les ajouter. |
+| <a id="x19"></a>X19 | erreur | Un bloc `x-catena` qui fournit ou lit une capacité que Catena réserve, car un service de son réseau est digne de confiance pour connecter les visiteurs. Retirez la capacité; seuls les fichiers du catalogue de Catena peuvent l'utiliser. |
 
 ## Dépannage
 
