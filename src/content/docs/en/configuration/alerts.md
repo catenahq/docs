@@ -1,11 +1,11 @@
 ---
 title: "Alerts"
-description: "Choosing which alerts the server sends and where they go: email addresses and webhook addresses, the test alert, the Alerts page, the off-site heartbeat address, and how job and service alerts reach Healthchecks."
+description: "Choosing which alerts the server sends and where they go: email addresses and webhook addresses, the test alert, the Alerts page, the off-site heartbeat address, and how service, resource and job alerts reach you."
 ---
 
 The server tells you about its own events: an update available or failed, a vulnerability, a restart needed, a certificate not renewed, the paid features locking, and alerts that stop reaching a destination. Every alert is off until you turn it on, except **Paid features locked**. Each alert goes to the email addresses you list and to the webhook addresses you save, on every edition.
 
-Alerts about services and scheduled jobs come from three other on-server tools: Gatus (is each service answering), Healthchecks (did each scheduled job report in) and Beszel (are CPU, memory and disk healthy). The overview is in [Monitoring and alerts](/en/features/monitoring-alerts/). This page covers the settings and the first-time wiring.
+Alerts about services, scheduled jobs and resources come from three other on-server tools: Gatus (is each service answering), Healthchecks (did each scheduled job report in) and Beszel (are CPU, memory and disk healthy). Gatus and Beszel hand their alerts to the control panel, which sends them like every other alert, and you choose them in the same section. The overview is in [Monitoring and alerts](/en/features/monitoring-alerts/). This page covers the settings and the first-time wiring.
 
 ## Fields
 
@@ -40,6 +40,8 @@ Each alert has its own field, named as in the first column. A failure alert has 
 | **Paid features locked** | The subscription locks the paid features. See [Subscription](/en/configuration/subscription/). | The features unlocked, or the key was removed. | No |
 | **Subscription check failing** | The subscription service has not been reachable to confirm the key. The paid features stay unlocked during the grace period. | The service answered, the grace ended, or the key was removed. | No |
 | **Alerts not delivered** | A destination has failed for a day. | Delivery to it works again. | Yes |
+| **Service down** | The status monitor (Gatus) reports a service down. One alert, then one more when it is back if the message when it ends is on. | The status monitor reports the service back up. | Yes |
+| **Resource alert** | The resource monitor (Beszel) raises one of its rules: the server silent, or processor, memory or disk past its threshold. See [How service and job alerts flow](#how-service-and-job-alerts-flow). | The resource monitor reports the rule clear. | Yes |
 
 How an alert behaves:
 
@@ -113,13 +115,12 @@ A monitor on the server cannot report an outage that takes the whole server down
 
 ## How service and job alerts flow
 
-Healthchecks also sends alerts for services, scheduled jobs and the server's resources to your admin email, through the service chosen in [Outgoing email](/en/configuration/email/): while outgoing mail is set, the server keeps an email channel to your admin address in Healthchecks, attached to every check when the channel is created. A channel detached from a check in Healthchecks stays detached. With **No outgoing mail**, the channel is removed and these alerts reach only the channels you add in Healthchecks.
+Service and resource alerts are sent by the control panel, to the email addresses and webhook addresses of **Settings** > **Alerts**. Scheduled job alerts are sent by Healthchecks to your admin email, through the service chosen in [Outgoing email](/en/configuration/email/): while outgoing mail is set, the server keeps an email channel to your admin address in Healthchecks, attached to every check when the channel is created. A channel detached from a check in Healthchecks stays detached. With **No outgoing mail**, the channel is removed and job alerts reach only the channels you add in Healthchecks.
 
 1. Gatus probes the shared services (the admin panel, Healthchecks, Keycloak, Beszel, the Cloudflare tunnel and the reverse proxy) and every routed application on a fixed interval (about one to two minutes). After 3 consecutive failures it raises an alert, and after 2 successes it resolves it.
-2. Each Gatus alert is posted to Healthchecks as one check per service, named `gatus-<service>`, created on the first failure.
-3. Healthchecks sends each alert to your admin email and to the channels added in its own interface.
-4. Scheduled jobs (backup, offsite copy, maintenance, restart probe, off-site heartbeat) ping Healthchecks as they run. A missed ping is itself the alert. The checks of the backup, the offsite copy, the maintenance (**Maintenance**, told when a run starts, fails or ends) and the off-site heartbeat follow the schedules of the jobs that report to them; while none of those jobs is turned on, the check is paused, so it never goes late. The vulnerability watch has a check of its own (see [the second alert on the Vulnerabilities page](/en/configuration/vulnerabilities/#alerts)). The maintenance reports to the backup and offsite copy checks only while its backup and offsite copy steps are on (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
-5. Beszel watches the server with rules created once and never overwritten: status (agent silent) for 5 minutes, CPU at 90% for 10 minutes, memory at 90% for 10 minutes, disk at 85% for 10 minutes. Its alerts go through Healthchecks, so they reach the same channels.
+2. Gatus posts each alert to the control panel, which sends it as **Service down** when that alert is on.
+3. Beszel watches the server with rules created once and never overwritten: status (agent silent) for 5 minutes, CPU at 90% for 10 minutes, memory at 90% for 10 minutes, disk at 85% for 10 minutes. It posts each alert to the control panel, which sends it as **Resource alert** when that alert is on.
+4. Scheduled jobs (backup, offsite copy, maintenance, restart probe, off-site heartbeat) ping Healthchecks as they run. A missed ping is itself the alert. The checks of the backup, the offsite copy, the maintenance (**Maintenance**, told when a run starts, fails or ends) and the off-site heartbeat follow the schedules of the jobs that report to them; while none of those jobs is turned on, the check is paused, so it never goes late. The vulnerability watch has a check of its own (see [the second alert on the Vulnerabilities page](/en/configuration/vulnerabilities/#alerts)). The maintenance reports to the backup and offsite copy checks only while its backup and offsite copy steps are on (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). Healthchecks sends a job's alert to your admin email and to the channels added in its own interface.
 
 ## Send error reports to Catena support
 
@@ -145,11 +146,11 @@ Support tickets and replies come with Catena Pro and Catena Business, and suppor
 
 ## Add notification channels in Healthchecks
 
-Service and job alerts reach your admin email with no step here. You add more channels, for other people or other tools, in Healthchecks:
+Scheduled job alerts reach your admin email with no step here. You add more channels, for other people or other tools, in Healthchecks. Service and resource alerts use the email and webhook addresses of **Settings** > **Alerts**, not these channels.
 
 1. Open `https://healthchecks.yourdomain.com` and sign in (single sign-on).
 2. Open the project's integrations page and add a channel: email, Slack, ntfy, a webhook, or any other the page offers.
-3. Check that the channel is attached to the checks you want notified. New checks, including the `gatus-` ones, use the project's channels.
+3. Check that the channel is attached to the checks you want notified. New checks use the project's channels.
 
 Email channels need [Outgoing email](/en/configuration/email/).
 
@@ -158,7 +159,7 @@ Email channels need [Outgoing email](/en/configuration/email/).
 - `https://gatus.yourdomain.com`: the Gatus status page.
 - `https://healthchecks.yourdomain.com`: Healthchecks, with each job's last ping.
 - `https://beszel.yourdomain.com`: Beszel, with the server's resource graphs.
-- The **System** page of the admin panel opens these tools from the titles of its cards: **Resources** opens Beszel, **Monitoring** opens Gatus, and **Scheduled jobs** and **Alerts** open Healthchecks. The **Alerts** card lists what Healthchecks is warning about now, and "No alert" when there is nothing; the **Scheduled jobs** card names each job, with a grey dot for one that has not reported yet.
+- The **System** page of the admin panel opens these tools from the titles of its cards: **Resources** opens Beszel, **Monitoring** opens Gatus, and **Scheduled jobs** and **Alerts** open Healthchecks. The **Alerts** card lists what needs attention now (each scheduled job that failed or is late, a pending restart, and each resource alert, named by its key), and "No alert" when there is nothing; the services that are down are on the **Monitoring** card; the **Scheduled jobs** card names each job, with a grey dot for one that has not reported yet.
 
 You can change the subdomain names in [Domain and Cloudflare](/en/configuration/domain/).
 
