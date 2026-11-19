@@ -8,10 +8,11 @@ Tout ce qui, sur le serveur, envoie du courriel automatisé passe par un seul se
 ## Ce qui en dépend
 
 - Les courriels de réinitialisation de mot de passe et les invitations du service de connexion (Keycloak). Voir [Connexion et personnes](/fr/configuration/sign-in-and-people/).
-- Les alertes de surveillance envoyées au courriel de l'administrateur : une tâche planifiée comme la sauvegarde en retard ou en échec, un service qui ne répond plus, un serveur qui manque d'espace disque, de mémoire ou de processeur. Voir [Alertes](/fr/configuration/alerts/).
+- Les alertes que vous activez dans **Paramètres** > **Alertes** (une mise à jour disponible ou en échec, une vulnérabilité, un redémarrage nécessaire, un certificat non renouvelé, le verrouillage des fonctions payantes), envoyées aux adresses de courriel des alertes, ou à l'adresse de l'administrateur quand la liste est vide. Voir [Alertes](/fr/configuration/alerts/).
+- Les alertes de surveillance envoyées au courriel de l'administrateur : une tâche planifiée comme la sauvegarde en retard ou en échec, un service qui ne répond plus, un serveur qui manque d'espace disque, de mémoire ou de processeur. Voir [Alertes](/fr/configuration/alerts/#parcours-dune-alerte-de-service-ou-de-tâche).
 - Les alertes du moniteur de ressources envoyées aux autres adresses qui y sont ajoutées.
 - Les courriels des sites WordPress déployés depuis le catalogue, comme les formulaires de contact.
-- Le courriel unique qui vous est envoyé quand votre abonnement payant se verrouille. Voir [Abonnement](/fr/configuration/subscription/).
+- Le courriel qui vous est envoyé quand votre abonnement payant se verrouille, soit l'alerte **Fonctions payantes verrouillées**, activée tant que vous ne la désactivez pas. Voir [Abonnement](/fr/configuration/subscription/).
 
 Une application de messagerie déployée sur le serveur (un serveur de courriel) garde ses propres réglages, distincts. Son mot de passe de relais et sa clé Spamhaus se saisissent dans la partie **Réglages** de la page du serveur de courriel, sous **Applications**; la valeur stockée n'est jamais réaffichée.
 
@@ -26,7 +27,7 @@ Dans **Paramètres** > **Courriel sortant**, **Envoyer le courriel par** propose
 
 | Option | Sens |
 |---|---|
-| **Aucun courriel sortant** | Le courriel est désactivé. Cela désactive aussi les courriels de réinitialisation de mot de passe et les courriels d'alerte. |
+| **Aucun courriel sortant** | Le courriel est désactivé. Cela désactive aussi les courriels de réinitialisation de mot de passe et les courriels d'alerte; les alertes parviennent toujours aux adresses de webhook enregistrées. |
 | **Resend (clé d'API)** | Resend connaît son propre hôte et son port. |
 | **Brevo (clé d'API)** | Brevo connaît son propre hôte et son port. |
 | **Serveur SMTP personnalisé** | N'importe quel relais SMTP. |

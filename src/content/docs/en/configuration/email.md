@@ -8,10 +8,11 @@ Everything on the server that sends automated email goes through one outside mai
 ## What uses it
 
 - Password-reset emails and invitations from the sign-in service (Keycloak). See [Sign-in and people](/en/configuration/sign-in-and-people/).
-- Monitoring alerts to the admin email: a scheduled job such as the backup late or failed, a service that stops answering, the server short of disk, memory or processor. See [Alerts](/en/configuration/alerts/).
+- The alerts you turn on in **Settings** > **Alerts** (an update available or failed, a vulnerability, a restart needed, a certificate not renewed, the paid features locking), sent to the alert email addresses, or to the admin email when the list is empty. See [Alerts](/en/configuration/alerts/).
+- Monitoring alerts to the admin email: a scheduled job such as the backup late or failed, a service that stops answering, the server short of disk, memory or processor. See [Alerts](/en/configuration/alerts/#how-service-and-job-alerts-flow).
 - Alerts from the resource monitor to other addresses added in it.
 - Email from WordPress sites deployed from the catalog, such as contact forms.
-- The one-time email sent to you when your paid subscription locks. See [Subscription](/en/configuration/subscription/).
+- The email sent to you when your paid subscription locks, which is the **Paid features locked** alert, on until you turn it off. See [Subscription](/en/configuration/subscription/).
 
 A mailbox application deployed on the server (a mail server app) keeps its own separate settings. Its relay password and its Spamhaus key are set in the **Settings** part of the mail server's page under **Apps**; the stored value is never shown again.
 
@@ -26,7 +27,7 @@ In **Settings** > **Outgoing mail**, **Send mail through** offers:
 
 | Option | Meaning |
 |---|---|
-| **No outgoing mail** | Mail is off. This also turns off password-reset email and alert email. |
+| **No outgoing mail** | Mail is off. This also turns off password-reset email and alert email; alerts still reach the webhook addresses you saved. |
 | **Resend (API key)** | Resend knows its own host and port. |
 | **Brevo (API key)** | Brevo knows its own host and port. |
 | **Custom SMTP server** | Any SMTP relay. |

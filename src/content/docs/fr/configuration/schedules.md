@@ -180,4 +180,4 @@ La sauvegarde continue de s'exécuter une fois par semaine et la veille des vuln
 | "Ce serveur n'a pas accepté l'horaire." | La raison suit le message; le plus souvent, une expression qui ne s'interprète pas. Utilisez **Vérifier**. |
 | "Impossible de joindre ce serveur pour lire ou modifier l'horaire." | L'hôte n'a pas répondu; réessayez dans un instant. |
 | Une tâche n'a pas démarré à l'heure réglée | L'exécution précédente était encore en cours, ou le serveur était éteint. Une exécution manquée démarre quand le serveur redémarre. |
-| L'activation de **Signal de vie hors site** est refusée | L'adresse du signal de vie hors site dans **Paramètres** > **Alertes et signalement des tâches manquées** est vide ou n'est pas une adresse web (`http://` ou `https://`). Enregistrez-la d'abord. |
+| L'activation de **Signal de vie hors site** est refusée | L'adresse du signal de vie hors site dans **Paramètres** > **Alertes** est vide ou n'est pas une adresse web (`http://` ou `https://`). Enregistrez-la d'abord. |
