@@ -180,4 +180,4 @@ The backup keeps running once a week and the vulnerability watch once a day. Whe
 | "This server did not accept the schedule." | The reason follows the message; most often an expression that does not parse. Use **Check**. |
 | "Could not reach this server to read or change the schedule." | The host did not answer; retry in a moment. |
 | A job did not start at the set time | The previous run was still going, or the server was off. A missed run starts when the server starts again. |
-| Turning on **Off-site heartbeat** is refused | The off-site heartbeat address in **Settings** > **Alerts and missed-job reporting** is empty or not a web address (`http://` or `https://`). Save it there first. |
+| Turning on **Off-site heartbeat** is refused | The off-site heartbeat address in **Settings** > **Alerts** is empty or not a web address (`http://` or `https://`). Save it there first. |

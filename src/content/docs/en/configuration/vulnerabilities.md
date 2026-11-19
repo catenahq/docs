@@ -65,18 +65,18 @@ The rules for tags, labels and rollback are on the [Updates](/en/configuration/u
 
 Your server checks the software of every running application and service against a vulnerability database and CISA's list of vulnerabilities attackers are actively exploiting. The server downloads both as data and checks locally: no list of your software leaves it. The check is the **Vulnerability watch** job (see [Schedules](/en/configuration/schedules/)). It runs at most once a day without a paid subscription. A server without one that has never saved its schedules runs it at 1 AM each day.
 
-The watch raises one alert for each vulnerability that is:
+The watch alerts on each vulnerability that is:
 
 - listed by CISA as exploited, with or without a fixed version; or
 - critical or high, and fixed by an update on offer on this server: it has a fixed version in an image that the update on offer of an application moves (see [Known vulnerabilities card](#known-vulnerabilities-card)).
 
-A vulnerability that is not exploited stays silent when it is medium or low, when no fix is published, and when the fix exists only in the package with no update on offer to apply it. An alert lasts, whatever the age of the vulnerability, while anything on the server carries it and the rule above holds, and resolves when nothing does. It is one alert per vulnerability, however many applications carry it. A vulnerability that stops matching the rule, because the update that fixed it is no longer on offer, resolves too: Healthchecks sends one "resolved" email for it, and the **Log** records that the watch no longer alerts on it. On a server that alerted under an earlier rule, this happens once for each vulnerability that is neither exploited nor fixed by an update on offer.
+A vulnerability that is not exploited stays silent when it is medium or low, when no fix is published, and when the fix exists only in the package with no update on offer to apply it. An alert lasts, whatever the age of the vulnerability, while anything on the server carries it and the rule above holds, and ends when nothing does. The alert is kept for each application, and its message lists that application's vulnerabilities, at most 20. A vulnerability that stops matching the rule, because the update that fixed it is no longer on offer, ends too: the **Log** records that the watch no longer alerts on it.
 
 Every vulnerability the watch alerts on is on the [Vulnerabilities page](#vulnerabilities-page) in every edition.
 
-The alert email names the vulnerability, each application that carries it with its image, the package and installed version, and the version that fixes it, "or later". When no fix is published yet, it says so and tells you to limit access to the application or stop it until one is. A fix published after the alert sends no second email. Update the application to the fixed version (see [Updates](/en/configuration/updates/)): the alert resolves once the watch no longer finds the vulnerability.
+The message names each application that carries vulnerabilities and, for each vulnerability, its identifier, its severity ("exploited" when CISA lists it), the package and installed version, and the version that fixes it, "or later", or "no fix published yet". When an update on offer fixes them, it says so. An update that comes on offer after the message raises **Update fixes a vulnerability**, when that alert is on. Update the application to the fixed version (see [Updates](/en/configuration/updates/)): the alert ends once the watch no longer finds the vulnerability.
 
-The email goes to the admin address through the outgoing mail you set in **Settings** > **Outgoing mail** (see [Outgoing email](/en/configuration/email/)). With no outgoing mail, the alert shows in Healthchecks (installed by default as an application) and on the **Known vulnerabilities** card of **System** only, and the card reads "No email can be sent: set outgoing mail in Settings." You add other channels in Healthchecks (see [Alerts](/en/configuration/alerts/)).
+The message goes to the destinations of **Settings** > **Alerts**: the alert email addresses, or the admin email when the list is empty, through the outgoing mail you set in **Settings** > **Outgoing mail** (see [Outgoing email](/en/configuration/email/)), and the webhook addresses you saved. It is off until you turn on **Vulnerability in an application**, and **Lowest vulnerability level named in alerts** sets the threshold: exploited vulnerabilities only (the default), exploited plus critical ones fixed by an update on offer, or those plus high ones (see [Alerts](/en/configuration/alerts/)). With no outgoing mail and no webhook address, nothing is sent: the findings show on the **Known vulnerabilities** card of **System** and on the [Vulnerabilities page](#vulnerabilities-page) only, and when outgoing mail is off the card reads "No email can be sent: set outgoing mail in Settings."
 
 Once the watch has run, the **Known vulnerabilities** card of the **System** page shows what it found, on every edition: the number of applications to update, when the watch last checked and a link to the [Vulnerabilities page](#vulnerabilities-page) (see [Known vulnerabilities card](#known-vulnerabilities-card)).
 
@@ -106,9 +106,9 @@ On every edition, **Check now** runs the watch in the background: a fresh databa
 
 ### Alerts
 
-The alerts follow the rule in [Security alerts](#security-alerts-every-edition). They go to the admin email and to every channel set up in Healthchecks (see [Alerts](/en/configuration/alerts/)). A Healthchecks you removed is not installed again, and no alert is raised for it (see [Monitoring and alerts](/en/features/monitoring-alerts/)). The text of an alert is updated when another application comes to carry the vulnerability.
+The alerts follow the rule in [Security alerts](#security-alerts-every-edition). They go to the destinations set in **Settings** > **Alerts**, for the alerts you turned on there (see [Alerts](/en/configuration/alerts/)).
 
-A second alert, **CVE watch**, fires when the watch itself cannot check: the same causes the page warns about.
+A second alert, the **CVE watch** check in Healthchecks, fires when the watch itself cannot check: the same causes the page warns about. It goes to the admin email and to every channel set up in Healthchecks (see [Alerts](/en/configuration/alerts/#how-service-and-job-alerts-flow)). A Healthchecks you removed is not installed again, and no alert is raised for it (see [Monitoring and alerts](/en/features/monitoring-alerts/)).
 
 ### Patch a vulnerability
 

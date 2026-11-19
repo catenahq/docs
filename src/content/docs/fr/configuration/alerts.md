@@ -1,32 +1,124 @@
 ---
 title: "Alertes"
-description: "L'adresse du signal de vie hors site de la section des alertes, la façon dont les tâches manquées et les services défaillants déclenchent des alertes, la façon dont les alertes parviennent à votre courriel d'administrateur, et l'ajout d'autres canaux de notification dans Healthchecks."
+description: "Choisir les alertes que le serveur envoie et où elles vont : adresses de courriel et adresses de webhook, l'alerte de test, la page Alertes, l'adresse du signal de vie hors site, et la façon dont les alertes de tâches et de services parviennent à Healthchecks."
 ---
 
-Les alertes viennent de trois outils du serveur : Gatus (chaque service répond-il), Healthchecks (chaque tâche planifiée s'est-elle signalée) et Beszel (le processeur, la mémoire et le disque sont-ils sains). La vue d'ensemble se trouve dans [Supervision et alertes](/fr/features/monitoring-alerts/). Cette page couvre les réglages et le premier raccordement.
+Le serveur vous informe de ses propres événements : une mise à jour disponible ou en échec, une vulnérabilité, un redémarrage nécessaire, un certificat non renouvelé, le verrouillage des fonctions payantes, et les alertes qui n'atteignent plus une destination. Chaque alerte est désactivée tant que vous ne l'activez pas, sauf **Fonctions payantes verrouillées**. Chaque alerte va aux adresses de courriel de votre liste et aux adresses de webhook que vous enregistrez, dans toutes les éditions.
+
+Les alertes sur les services et les tâches planifiées viennent de trois autres outils du serveur : Gatus (chaque service répond-il), Healthchecks (chaque tâche planifiée s'est-elle signalée) et Beszel (le processeur, la mémoire et le disque sont-ils sains). La vue d'ensemble se trouve dans [Supervision et alertes](/fr/features/monitoring-alerts/). Cette page couvre les réglages et le premier raccordement.
 
 ## Champs
 
-**Paramètres** > **Alertes et signalement des tâches manquées** contient l'adresse du signal de vie hors site. Les tâches planifiées se signalent au Healthchecks du serveur, qui donne l'alerte quand un signal est en retard ou annonce un échec.
+**Paramètres** > **Alertes** contient ces champs, puis la carte **Adresses de webhook** dessous.
 
 | Champ | Rôle |
 |---|---|
-| **Adresse du signal de vie hors site** | L'adresse de signal d'une vérification auprès d'un service de surveillance externe, par exemple une vérification gratuite healthchecks.io. Utilisée par le signal de vie hors site (Catena Pro), que vous activez dans [Horaires](/fr/configuration/schedules/). |
+| **Adresses de courriel des alertes** | Dix adresses de courriel au plus, chacune seulement l'adresse, séparées par des virgules ou des espaces. Laissez vide pour envoyer à l'adresse de l'administrateur. |
+| Un champ par alerte | **Désactivé** ou **Activé**. Voir [Types d'alerte](#types-dalerte). |
+| **Plus bas niveau de vulnérabilité signalé dans les alertes** | Le seuil des alertes de vulnérabilité. **Seulement les vulnérabilités exploitées** nomme celles que la CISA signale comme exploitées. **Vulnérabilités exploitées et critiques** ajoute les critiques corrigées par une mise à jour proposée. **Vulnérabilités exploitées, critiques et élevées** ajoute les élevées corrigées par une mise à jour proposée. Le champ indique le premier choix tant que vous n'en faites pas un autre. |
+| **Adresse du signal de vie hors site** | L'adresse de signal d'une vérification auprès d'un service de surveillance externe, par exemple une vérification gratuite healthchecks.io. Utilisée par le signal de vie hors site (Catena Pro), que vous activez dans [Horaires](/fr/configuration/schedules/). Voir [Signal de vie hors site](#signal-de-vie-hors-site). |
+
+Un champ **Adresses de courriel des alertes** vide laisse la liste telle quelle. Pour vider la liste, cochez **Envoyer seulement à l'adresse de l'administrateur** sous le champ et enregistrez. Rien n'est enregistré tant qu'une adresse est refusée : le champ indique "Dix adresses de courriel au plus, chacune seulement l'adresse, séparées par des virgules ou des espaces."
+
+La section se termine par **Enregistrer**, **Envoyer un signal de vie de test** et **Envoyer une alerte de test**. L'enregistrement prend effet aussitôt et ne redémarre rien. Tout dans la section est gratuit sauf le signal de vie hors site : sans Catena Pro, son adresse et son bouton **Envoyer un signal de vie de test** sont affichés verrouillés, avec un avis.
+
+## Types d'alerte
+
+Chaque alerte a son propre champ, nommé comme dans la première colonne. Une alerte de panne a deux champs de plus, nommés comme elle suivie de " : message à la fin" et de " : rappel tous les sept jours". Une alerte qui vous demande d'agir a le premier des deux, et **Correctif d'urgence** n'a ni l'un ni l'autre. Chacun de ces champs est **Désactivé** tant que vous ne l'activez pas, sauf **Fonctions payantes verrouillées**, qui est **Activé**; son message à la fin est **Désactivé**.
+
+| Alerte | Déclenchée quand | Message à la fin | Rappel |
+|---|---|---|---|
+| **Mise à jour du panneau disponible** | Une version plus récente du panneau de contrôle est proposée. | Le panneau l'exécute maintenant. | Non |
+| **Mise à jour d'application disponible** | Une mise à jour est proposée pour une application. Une alerte par application. | Plus aucune mise à jour n'est proposée. | Non |
+| **Échec de mise à jour d'application** | Une mise à jour a échoué à ses vérifications et a été annulée, ou le déploiement de l'application a échoué. | Une mise à jour de l'application a réussi. | Oui |
+| **Vulnérabilité dans une application** | La veille des vulnérabilités alerte sur une application, selon la règle des [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions), au niveau choisi ou au-dessus. | Plus aucune vulnérabilité à ce niveau, ou l'application n'existe plus. | Non |
+| **Une mise à jour corrige une vulnérabilité** | Une mise à jour proposée remplace les images d'une application qui porte ces vulnérabilités. | La mise à jour a été appliquée, ou les vulnérabilités ont disparu. | Non |
+| **Correctif d'urgence** | Un correctif d'urgence s'est exécuté, ou a été refusé, avec son résultat. | Ne se termine jamais. | Non |
+| **Redémarrage nécessaire** | Les mises à jour installées ne prennent effet qu'après le redémarrage du serveur. | Le serveur a redémarré. | Non |
+| **Échec du redémarrage** | Un redémarrage par la maintenance n'a pas tout remis en marche. | Un redémarrage suivant a tout remis en marche. | Oui |
+| **Certificat non renouvelé** | Le certificat d'une application est absent, il lui reste un cinquième de sa durée, ou un certificat renouvelé n'a pas atteint l'application depuis plus d'un jour. | Le certificat a été renouvelé. | Oui |
+| **Fonctions payantes verrouillées** | L'abonnement verrouille les fonctions payantes. Voir [Abonnement](/fr/configuration/subscription/). | Les fonctions sont déverrouillées, ou la clé a été retirée. | Non |
+| **Vérification de l'abonnement en échec** | Le service d'abonnement est injoignable pour confirmer la clé. Les fonctions payantes restent déverrouillées pendant le délai de grâce. | Le service a répondu, le délai de grâce est écoulé, ou la clé a été retirée. | Non |
+| **Alertes non remises** | Une destination est en échec depuis un jour. | La remise vers elle fonctionne de nouveau. | Oui |
+
+Le comportement d'une alerte :
+
+- **Activer une alerte envoie ce qui est ouvert à cet instant,** une fois. Un correctif d'urgence exécuté pendant que son alerte était désactivée n'est pas envoyé plus tard.
+- **Un seul message par type d'alerte** porte tout ce qui est dû pour ce type à ce moment : plusieurs applications qui déclenchent la même alerte ensemble arrivent donc dans un message. Quand **Vulnérabilité dans une application** et **Une mise à jour corrige une vulnérabilité** sont toutes deux activées, un seul message nomme les vulnérabilités et la mise à jour.
+- **Un rappel** répète tous les sept jours une alerte encore ouverte.
+- **Rien n'est envoyé sans destination.** Sans courriel sortant ni adresse de webhook, une alerte activée reste muette. **Envoyer une alerte de test** l'indique.
+
+## Destinations
+
+### Courriel
+
+Chaque alerte part en un courriel vers chaque adresse de la liste, ou vers l'adresse de l'administrateur quand la liste est vide, par le service choisi dans [Courriel sortant](/fr/configuration/email/). Avec **Aucun courriel sortant**, aucun courriel n'est envoyé et seules les adresses de webhook servent.
+
+L'objet se lit `Catena yourdomain.com : panel update available / mise à jour du panneau disponible`. Le corps est en anglais, puis `--`, puis en français, et chaque langue se termine par l'endroit où désactiver l'alerte.
+
+### Adresses de webhook
+
+La carte **Adresses de webhook** envoie les alertes à des services de messagerie et de notification qui acceptent une adresse web. Collez dix adresses au plus, séparées par des espaces, dans **Adresses de webhook, séparées par des espaces, dix au plus**, puis appuyez sur **Enregistrer les adresses de webhook**.
+
+- **Seules les adresses https publiques sont acceptées.** Une adresse qui mène au serveur lui-même, à ses conteneurs, à un réseau privé ou à un réseau local est refusée, à l'enregistrement et à chaque envoi. Une redirection n'est pas suivie. Une adresse refusée est listée par sa position avec la raison, par exemple "Adresse 2 : l'adresse doit commencer par https://.", et rien n'est enregistré tant que chaque adresse n'est pas acceptée.
+- **L'enregistrement remplace toute la liste.** Les adresses restent sur le serveur et ne sont plus jamais affichées. La carte indique combien sont enregistrées, avec la position et l'hôte de chacune, par exemple "Adresse 1 : chat.example.net". Elle n'affiche jamais une adresse.
+- **Pour toutes les supprimer,** cochez **Supprimer toutes les adresses de webhook** et appuyez sur **Enregistrer les adresses de webhook**. Un champ vide sans la case n'enregistre rien.
+
+Chaque adresse reçoit un POST par message, avec `Content-Type: application/json`, et une réponse 2xx compte comme remise :
+
+```json
+{"title": "...", "text": "...", "content": "...", "allowed_mentions": {"parse": []}}
+```
+
+`text` et `content` contiennent les mêmes mots : le texte anglais, `--`, puis le français, au plus 2000 caractères, les listes les plus longues étant raccourcies par "et `<nombre>` autres". `allowed_mentions` demande aux services qui le lisent, comme Discord, de ne prévenir personne de ceux que le texte nomme. Chaque adresse est sa propre destination : une qui échoue ne retient pas les autres.
+
+| Service | Adresse à coller | Lit |
+|---|---|---|
+| Webhook entrant de Slack | L'adresse que donne Slack. | `text` |
+| Webhook de Discord | L'adresse que donne Discord. | `content` |
+| Matrix (webhook générique de hookshot) | L'adresse que donne hookshot. | `text` |
+| ntfy | `https://HOTE/SUJET?tpl=yes&t=%7B%7B.title%7D%7D&m=%7B%7B.text%7D%7D`, avec votre hôte et votre sujet ntfy à la place de `HOTE` et `SUJET`. | Le gabarit de l'adresse. |
+
+Après l'enregistrement, appuyez sur **Envoyer une alerte de test** pour voir si le service accepte le message.
+
+### Envoyer une alerte de test
+
+**Envoyer une alerte de test** envoie un message de test à toutes les destinations à la fois, quels que soient les interrupteurs des alertes, et répond à côté du bouton :
+
+- "Une alerte de test a été envoyée à chaque destination."
+- "L'alerte de test n'a pas atteint chaque destination." suivie de chaque destination en échec et de la raison.
+- "L'alerte de test n'a atteint aucune destination."
+- "Rien vers quoi envoyer pour l'instant : configurer le courrier sortant, ou ajouter une adresse de webhook."
+
+Le résultat met aussi à jour l'état de chaque destination sur la page Alertes.
+
+Une destination qui ne répond pas est essayée de nouveau après une attente plus longue chaque fois, jusqu'à une heure, puis abandonnée après 24 heures. La raison est toujours en mots : "le relais de courriel est injoignable", "aucune réponse n'est arrivée à temps", "la connexion sécurisée a échoué", "le relais de courriel l'a refusé (code `<numéro>`)", "le service a répondu par l'erreur `<numéro>`", "l'adresse mène à ce serveur ou à un réseau privé, où les alertes ne sont pas envoyées", ou "l'envoi a échoué".
+
+## La page Alertes
+
+**Alertes** dans le menu principal, pour un administrateur, montre ce que le serveur a signalé et où cela va. Son lien **Réglages des alertes** ouvre **Paramètres** > **Alertes**.
+
+- **Envoi** donne le moment de la dernière vérification, indique si les courriels vont à l'adresse de l'administrateur ou combien d'adresses la liste contient, et avertit quand le courrier sortant n'est pas configuré.
+- **Destinations** liste chaque destination par son type et sa position, et un webhook par son hôte, jamais par son adresse, avec son état : "Fonctionne. Dernière remise `<moment>`.", "Rien ne lui a encore été envoyé.", "La dernière tentative a échoué (`<moment>`) : `<raison>`." ou "En échec depuis `<moment>` : `<raison>`."
+- **Alertes en cours** liste ce qui est ouvert maintenant, depuis quand, si l'alerte a été envoyée ou attend d'être envoyée, et le moment du prochain rappel.
+- **Historique récent** liste ce qui s'est passé durant les 30 derniers jours : alerte déclenchée, situation terminée, message envoyé, message de fin envoyé, rappel envoyé, envoi abandonné et abandonnée.
+
+Quand une destination est en échec depuis un jour, une bannière sur chaque page d'administration indique "Les alertes n'atteignent pas l'une de leurs destinations. La page Alertes indique laquelle." et mène à la page. L'alerte **Alertes non remises**, quand elle est activée, vous en avertit par les autres destinations.
+
+## Signal de vie hors site
 
 Une surveillance installée sur le serveur ne peut pas signaler une panne qui emporte le serveur entier. Le signal de vie hors site comble cet écart : selon son horaire, le serveur vérifie que sa page d'état, son moniteur de tâches et son moniteur de ressources répondent, puis appelle l'adresse hors site. Un appel simple indique que tout va bien; un appel d'échec nomme les surveillances qui ne répondent plus; l'absence d'appel signifie que le serveur est hors service, et le service externe donne l'alerte. Enregistrer l'adresse seule n'envoie rien : le signal de vie s'exécute une fois que vous l'activez dans [Horaires](/fr/configuration/schedules/), où sa section indique la période et le délai de grâce à régler sur la vérification externe. À la fin de votre abonnement, les appels cessent : mettez alors la vérification externe en pause.
 
-**Envoyer un signal de vie de test** exécute le signal de vie une fois, maintenant, sur l'adresse enregistrée, et indique à côté du bouton si le service externe a reçu l'appel, ou quelle surveillance du serveur n'a pas répondu. Il exige Catena Pro : sans lui, l'adresse et le bouton sont affichés verrouillés, avec un avis, et le signal de vie ne s'exécute pas.
+**Envoyer un signal de vie de test** exécute le signal de vie une fois, maintenant, sur l'adresse enregistrée, et indique à côté du bouton si le service externe a reçu l'appel, ou quelle surveillance du serveur n'a pas répondu. Il exige Catena Pro.
 
-Les alertes parviennent aussi à votre courriel d'administrateur, par le service choisi dans [Courriel sortant](/fr/configuration/email/) : tant que le courriel sortant est réglé, le serveur garde dans Healthchecks un canal de courriel vers votre adresse d'administrateur, rattaché à toutes les vérifications au moment de sa création. Un canal détaché d'une vérification dans Healthchecks le reste. Avec **Aucun courriel sortant**, le canal est retiré et les alertes ne parviennent qu'aux canaux que vous ajoutez dans Healthchecks.
+## Parcours d'une alerte de service ou de tâche
 
-La section se termine par **Enregistrer et appliquer**; les services qui utilisent ces valeurs redémarrent brièvement.
-
-## Parcours d'une alerte
+Healthchecks envoie aussi les alertes sur les services, les tâches planifiées et les ressources du serveur à votre courriel d'administrateur, par le service choisi dans [Courriel sortant](/fr/configuration/email/) : tant que le courriel sortant est réglé, le serveur garde dans Healthchecks un canal de courriel vers votre adresse d'administrateur, rattaché à toutes les vérifications au moment de sa création. Un canal détaché d'une vérification dans Healthchecks le reste. Avec **Aucun courriel sortant**, le canal est retiré et ces alertes ne parviennent qu'aux canaux que vous ajoutez dans Healthchecks.
 
 1. Gatus sonde les services partagés (le panneau d'administration, Healthchecks, Keycloak, Beszel, le tunnel Cloudflare et le mandataire inverse) et chaque application exposée à intervalle fixe (environ une à deux minutes). Après 3 échecs consécutifs, il déclenche une alerte, et après 2 réussites, il la résout.
 2. Chaque alerte de Gatus est publiée dans Healthchecks sous la forme d'une vérification par service, nommée `gatus-<service>`, créée au premier échec.
 3. Healthchecks envoie chaque alerte à votre courriel d'administrateur et aux canaux ajoutés dans sa propre interface.
-4. Les tâches planifiées (sauvegarde, copie hors site, maintenance, sonde de redémarrage, signal de vie hors site) signalent leur passage à Healthchecks. Un signal manquant est en soi l'alerte. Les vérifications de la sauvegarde, de la copie hors site, de la maintenance (**Maintenance**, avertie quand une exécution commence, échoue ou se termine) et du signal de vie hors site suivent les horaires des tâches qui s'y signalent; tant qu'aucune de ces tâches n'est activée, la vérification est en pause et n'est donc jamais en retard. Dans toutes les éditions, la veille des vulnérabilités crée aussi une vérification par vulnérabilité sur laquelle elle alerte (voir [Alertes de sécurité](/fr/configuration/vulnerabilities/#alertes-de-sécurité-toutes-les-éditions)). La maintenance ne se signale aux vérifications de la sauvegarde et de la copie hors site que tant que ses étapes de sauvegarde et de copie hors site sont activées (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
+4. Les tâches planifiées (sauvegarde, copie hors site, maintenance, sonde de redémarrage, signal de vie hors site) signalent leur passage à Healthchecks. Un signal manquant est en soi l'alerte. Les vérifications de la sauvegarde, de la copie hors site, de la maintenance (**Maintenance**, avertie quand une exécution commence, échoue ou se termine) et du signal de vie hors site suivent les horaires des tâches qui s'y signalent; tant qu'aucune de ces tâches n'est activée, la vérification est en pause et n'est donc jamais en retard. La veille des vulnérabilités a sa propre vérification (voir [la seconde alerte de la page Vulnérabilités](/fr/configuration/vulnerabilities/#alertes)). La maintenance ne se signale aux vérifications de la sauvegarde et de la copie hors site que tant que ses étapes de sauvegarde et de copie hors site sont activées (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
 5. Beszel surveille le serveur avec des règles créées une seule fois et jamais écrasées : état (agent silencieux) pendant 5 minutes, processeur à 90 % pendant 10 minutes, mémoire à 90 % pendant 10 minutes, disque à 85 % pendant 10 minutes. Ses alertes passent par Healthchecks et parviennent donc aux mêmes canaux.
 
 ## Envoyer des rapports d'erreurs au soutien de Catena
@@ -49,11 +141,11 @@ Quand une tâche en échec a écrit un texte sur ce qui a mal tourné, ce texte 
 - **Télécharger le texte de la tâche** enregistre le texte tel quel.
 - **Relire et envoyer au soutien de Catena** ouvre le texte dans une zone. Retirez ce que vous ne voulez pas que le soutien voie, puis appuyez sur **Envoyer ce texte au soutien de Catena**. Seul le texte de la zone est envoyé, et la liste montre exactement ce que vous avez envoyé.
 
-Les billets de soutien et les réponses viennent avec Catena Pro et Catena Business, et le soutien répond du lundi au vendredi, de 8 h à 17 h. Les rapports d'erreurs ne forment pas une surveillance 24 heures sur 24, et un serveur éteint ou sans accès à Internet n'envoie rien : pour cela, utilisez le signal de vie hors site décrit plus haut.
+Les billets de soutien et les réponses viennent avec Catena Pro et Catena Business, et le soutien répond du lundi au vendredi, de 8 h à 17 h. Les rapports d'erreurs ne forment pas une surveillance 24 heures sur 24, et un serveur éteint ou sans accès à Internet n'envoie rien : pour cela, utilisez le [signal de vie hors site](#signal-de-vie-hors-site).
 
 ## Ajouter des canaux de notification dans Healthchecks
 
-Les alertes parviennent à votre courriel d'administrateur sans aucune étape ici. Vous ajoutez d'autres canaux, pour d'autres personnes ou d'autres outils, dans Healthchecks :
+Les alertes de services et de tâches parviennent à votre courriel d'administrateur sans aucune étape ici. Vous ajoutez d'autres canaux, pour d'autres personnes ou d'autres outils, dans Healthchecks :
 
 1. Ouvrez `https://healthchecks.yourdomain.com` et connectez-vous (authentification unique).
 2. Ouvrez la page des intégrations du projet et ajoutez un canal : courriel, Slack, ntfy, webhook, ou tout autre que la page propose.
@@ -72,7 +164,11 @@ Vous pouvez changer les noms de sous-domaines dans [Domaine et Cloudflare](/fr/c
 
 ## Dépannage
 
+- Une alerte que vous avez activée n'arrive jamais : vérifiez qu'une destination existe (courriel sortant réglé, ou adresse de webhook enregistrée), puis appuyez sur **Envoyer une alerte de test**. La page **Alertes** montre l'état de chaque destination et ce qui attend d'être envoyé.
+- Une alerte n'arrive qu'une fois : une alerte est envoyée une seule fois tant que sa situation dure. Activez son rappel pour en être averti de nouveau tous les sept jours.
+- Rien n'arrive par courriel, mais les webhooks fonctionnent : **Envoyer le courriel par** est réglé à **Aucun courriel sortant** dans **Paramètres** > **Courriel sortant**, ou le courriel est dans les pourriels.
+- Une adresse de webhook est refusée : elle doit être une adresse https publique, et non une adresse qui mène à ce serveur ou à un réseau privé. La carte liste chaque adresse refusée par sa position avec la raison.
 - Une tâche apparaît en retard ou en panne dans Healthchecks : la tâche a échoué ou ne s'est pas exécutée à son horaire. Consultez le **Journal** et [Horaires](/fr/configuration/schedules/).
-- Aucun courriel d'alerte : **Courriel sortant** est réglé à **Aucun courriel sortant**, votre canal de courriel d'administrateur a été détaché de cette vérification dans Healthchecks, ou le courriel est dans les pourriels.
-- Aucune notification sur un autre canal : ce canal n'est pas rattaché à la vérification. Rattachez-le comme ci-dessus.
-- Un canal que vous avez ajouté ne livre rien : comparez son adresse ou son sujet dans Healthchecks avec ceux du côté de la réception.
+- Aucun courriel d'alerte de Healthchecks : **Courriel sortant** est réglé à **Aucun courriel sortant**, votre canal de courriel d'administrateur a été détaché de cette vérification dans Healthchecks, ou le courriel est dans les pourriels.
+- Aucune notification sur un autre canal de Healthchecks : ce canal n'est pas rattaché à la vérification. Rattachez-le comme ci-dessus.
+- Un canal que vous avez ajouté dans Healthchecks ne livre rien : comparez son adresse ou son sujet dans Healthchecks avec ceux du côté de la réception.
