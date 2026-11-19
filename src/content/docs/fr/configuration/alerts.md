@@ -1,11 +1,11 @@
 ---
 title: "Alertes"
-description: "Choisir les alertes que le serveur envoie et où elles vont : adresses de courriel et adresses de webhook, l'alerte de test, la page Alertes, l'adresse du signal de vie hors site, et la façon dont les alertes de tâches et de services parviennent à Healthchecks."
+description: "Choisir les alertes que le serveur envoie et où elles vont : adresses de courriel et adresses de webhook, l'alerte de test, la page Alertes, l'adresse du signal de vie hors site, et la façon dont les alertes de services, de ressources et de tâches vous parviennent."
 ---
 
 Le serveur vous informe de ses propres événements : une mise à jour disponible ou en échec, une vulnérabilité, un redémarrage nécessaire, un certificat non renouvelé, le verrouillage des fonctions payantes, et les alertes qui n'atteignent plus une destination. Chaque alerte est désactivée tant que vous ne l'activez pas, sauf **Fonctions payantes verrouillées**. Chaque alerte va aux adresses de courriel de votre liste et aux adresses de webhook que vous enregistrez, dans toutes les éditions.
 
-Les alertes sur les services et les tâches planifiées viennent de trois autres outils du serveur : Gatus (chaque service répond-il), Healthchecks (chaque tâche planifiée s'est-elle signalée) et Beszel (le processeur, la mémoire et le disque sont-ils sains). La vue d'ensemble se trouve dans [Supervision et alertes](/fr/features/monitoring-alerts/). Cette page couvre les réglages et le premier raccordement.
+Les alertes sur les services, les tâches planifiées et les ressources viennent de trois autres outils du serveur : Gatus (chaque service répond-il), Healthchecks (chaque tâche planifiée s'est-elle signalée) et Beszel (le processeur, la mémoire et le disque sont-ils sains). Gatus et Beszel remettent leurs alertes au panneau de contrôle, qui les envoie comme toute autre alerte, et vous les choisissez dans la même section. La vue d'ensemble se trouve dans [Supervision et alertes](/fr/features/monitoring-alerts/). Cette page couvre les réglages et le premier raccordement.
 
 ## Champs
 
@@ -40,6 +40,8 @@ Chaque alerte a son propre champ, nommé comme dans la première colonne. Une al
 | **Fonctions payantes verrouillées** | L'abonnement verrouille les fonctions payantes. Voir [Abonnement](/fr/configuration/subscription/). | Les fonctions sont déverrouillées, ou la clé a été retirée. | Non |
 | **Vérification de l'abonnement en échec** | Le service d'abonnement est injoignable pour confirmer la clé. Les fonctions payantes restent déverrouillées pendant le délai de grâce. | Le service a répondu, le délai de grâce est écoulé, ou la clé a été retirée. | Non |
 | **Alertes non remises** | Une destination est en échec depuis un jour. | La remise vers elle fonctionne de nouveau. | Oui |
+| **Service en panne** | Le moniteur d'état (Gatus) signale un service en panne. Une alerte, puis une de plus au rétablissement si le message à la fin est activé. | Le moniteur d'état signale que le service est rétabli. | Oui |
+| **Alerte de ressources** | Le moniteur de ressources (Beszel) déclenche l'une de ses règles : serveur silencieux, ou processeur, mémoire ou disque au-delà de son seuil. Voir [Parcours d'une alerte de service ou de tâche](#parcours-dune-alerte-de-service-ou-de-tâche). | Le moniteur de ressources signale que la règle est revenue à la normale. | Oui |
 
 Le comportement d'une alerte :
 
@@ -113,13 +115,12 @@ Une surveillance installée sur le serveur ne peut pas signaler une panne qui em
 
 ## Parcours d'une alerte de service ou de tâche
 
-Healthchecks envoie aussi les alertes sur les services, les tâches planifiées et les ressources du serveur à votre courriel d'administrateur, par le service choisi dans [Courriel sortant](/fr/configuration/email/) : tant que le courriel sortant est réglé, le serveur garde dans Healthchecks un canal de courriel vers votre adresse d'administrateur, rattaché à toutes les vérifications au moment de sa création. Un canal détaché d'une vérification dans Healthchecks le reste. Avec **Aucun courriel sortant**, le canal est retiré et ces alertes ne parviennent qu'aux canaux que vous ajoutez dans Healthchecks.
+Les alertes de services et de ressources sont envoyées par le panneau de contrôle, aux adresses de courriel et aux adresses de webhook de **Paramètres** > **Alertes**. Les alertes de tâches planifiées sont envoyées par Healthchecks à votre courriel d'administrateur, par le service choisi dans [Courriel sortant](/fr/configuration/email/) : tant que le courriel sortant est réglé, le serveur garde dans Healthchecks un canal de courriel vers votre adresse d'administrateur, rattaché à toutes les vérifications au moment de sa création. Un canal détaché d'une vérification dans Healthchecks le reste. Avec **Aucun courriel sortant**, le canal est retiré et les alertes de tâches ne parviennent qu'aux canaux que vous ajoutez dans Healthchecks.
 
 1. Gatus sonde les services partagés (le panneau d'administration, Healthchecks, Keycloak, Beszel, le tunnel Cloudflare et le mandataire inverse) et chaque application exposée à intervalle fixe (environ une à deux minutes). Après 3 échecs consécutifs, il déclenche une alerte, et après 2 réussites, il la résout.
-2. Chaque alerte de Gatus est publiée dans Healthchecks sous la forme d'une vérification par service, nommée `gatus-<service>`, créée au premier échec.
-3. Healthchecks envoie chaque alerte à votre courriel d'administrateur et aux canaux ajoutés dans sa propre interface.
-4. Les tâches planifiées (sauvegarde, copie hors site, maintenance, sonde de redémarrage, signal de vie hors site) signalent leur passage à Healthchecks. Un signal manquant est en soi l'alerte. Les vérifications de la sauvegarde, de la copie hors site, de la maintenance (**Maintenance**, avertie quand une exécution commence, échoue ou se termine) et du signal de vie hors site suivent les horaires des tâches qui s'y signalent; tant qu'aucune de ces tâches n'est activée, la vérification est en pause et n'est donc jamais en retard. La veille des vulnérabilités a sa propre vérification (voir [la seconde alerte de la page Vulnérabilités](/fr/configuration/vulnerabilities/#alertes)). La maintenance ne se signale aux vérifications de la sauvegarde et de la copie hors site que tant que ses étapes de sauvegarde et de copie hors site sont activées (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
-5. Beszel surveille le serveur avec des règles créées une seule fois et jamais écrasées : état (agent silencieux) pendant 5 minutes, processeur à 90 % pendant 10 minutes, mémoire à 90 % pendant 10 minutes, disque à 85 % pendant 10 minutes. Ses alertes passent par Healthchecks et parviennent donc aux mêmes canaux.
+2. Gatus publie chaque alerte au panneau de contrôle, qui l'envoie comme **Service en panne** quand cette alerte est activée.
+3. Beszel surveille le serveur avec des règles créées une seule fois et jamais écrasées : état (agent silencieux) pendant 5 minutes, processeur à 90 % pendant 10 minutes, mémoire à 90 % pendant 10 minutes, disque à 85 % pendant 10 minutes. Il publie chaque alerte au panneau de contrôle, qui l'envoie comme **Alerte de ressources** quand cette alerte est activée.
+4. Les tâches planifiées (sauvegarde, copie hors site, maintenance, sonde de redémarrage, signal de vie hors site) signalent leur passage à Healthchecks. Un signal manquant est en soi l'alerte. Les vérifications de la sauvegarde, de la copie hors site, de la maintenance (**Maintenance**, avertie quand une exécution commence, échoue ou se termine) et du signal de vie hors site suivent les horaires des tâches qui s'y signalent; tant qu'aucune de ces tâches n'est activée, la vérification est en pause et n'est donc jamais en retard. La veille des vulnérabilités a sa propre vérification (voir [la seconde alerte de la page Vulnérabilités](/fr/configuration/vulnerabilities/#alertes)). La maintenance ne se signale aux vérifications de la sauvegarde et de la copie hors site que tant que ses étapes de sauvegarde et de copie hors site sont activées (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). Healthchecks envoie l'alerte d'une tâche à votre courriel d'administrateur et aux canaux ajoutés dans sa propre interface.
 
 ## Envoyer des rapports d'erreurs au soutien de Catena
 
@@ -145,11 +146,11 @@ Les billets de soutien et les réponses viennent avec Catena Pro et Catena Busin
 
 ## Ajouter des canaux de notification dans Healthchecks
 
-Les alertes de services et de tâches parviennent à votre courriel d'administrateur sans aucune étape ici. Vous ajoutez d'autres canaux, pour d'autres personnes ou d'autres outils, dans Healthchecks :
+Les alertes de tâches planifiées parviennent à votre courriel d'administrateur sans aucune étape ici. Vous ajoutez d'autres canaux, pour d'autres personnes ou d'autres outils, dans Healthchecks. Les alertes de services et de ressources utilisent les adresses de courriel et de webhook de **Paramètres** > **Alertes**, pas ces canaux :
 
 1. Ouvrez `https://healthchecks.yourdomain.com` et connectez-vous (authentification unique).
 2. Ouvrez la page des intégrations du projet et ajoutez un canal : courriel, Slack, ntfy, webhook, ou tout autre que la page propose.
-3. Vérifiez que le canal est rattaché aux vérifications que vous voulez notifier. Les nouvelles vérifications, y compris celles qui commencent par `gatus-`, utilisent les canaux du projet.
+3. Vérifiez que le canal est rattaché aux vérifications que vous voulez notifier. Les nouvelles vérifications utilisent les canaux du projet.
 
 Les canaux par courriel exigent [Courriel sortant](/fr/configuration/email/).
 
@@ -158,7 +159,7 @@ Les canaux par courriel exigent [Courriel sortant](/fr/configuration/email/).
 - `https://gatus.yourdomain.com` : la page d'état de Gatus.
 - `https://healthchecks.yourdomain.com` : Healthchecks, avec le dernier signal de chaque tâche.
 - `https://beszel.yourdomain.com` : Beszel, avec les graphiques de ressources du serveur.
-- La page **Système** du panneau d'administration ouvre ces outils depuis le titre de ses cartes : **Ressources** ouvre Beszel, **Surveillance** ouvre Gatus, et **Tâches planifiées** et **Alertes** ouvrent Healthchecks. La carte **Alertes** liste ce dont Healthchecks avertit en ce moment, et "Aucune alerte" quand il n'y a rien; la carte **Tâches planifiées** nomme chaque tâche, avec un point gris pour celle qui ne s'est pas encore signalée.
+- La page **Système** du panneau d'administration ouvre ces outils depuis le titre de ses cartes : **Ressources** ouvre Beszel, **Surveillance** ouvre Gatus, et **Tâches planifiées** et **Alertes** ouvrent Healthchecks. La carte **Alertes** liste ce qui demande attention maintenant (chaque tâche planifiée en échec ou en retard, un redémarrage en attente et chaque alerte de ressources, nommée par sa clé), et "Aucune alerte" quand il n'y a rien; les services tombés sont sur la carte **Surveillance**; la carte **Tâches planifiées** nomme chaque tâche, avec un point gris pour celle qui ne s'est pas encore signalée.
 
 Vous pouvez changer les noms de sous-domaines dans [Domaine et Cloudflare](/fr/configuration/domain/).
 
