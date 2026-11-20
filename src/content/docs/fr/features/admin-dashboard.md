@@ -46,7 +46,7 @@ Le panneau **Rapport mensuel** présente un mois civil de ce que le serveur a co
 - **Disponibilité** : pour chaque service surveillé, la part du temps où il a répondu, le nombre de fois où il a cessé de répondre et pendant combien de temps.
 - **Alertes et avertissements** levés par le moniteur de tâches et le journal de maintenance.
 
-Chaque chiffre est lu sur le serveur, et rien n'est envoyé ailleurs. Toutes les heures sont en UTC. Pour en garder une copie, appuyez sur **Télécharger en PDF** : le PDF contient le mois que la page affiche.
+Chaque chiffre est lu sur le serveur, et rien n'est envoyé ailleurs. Toutes les heures sont en UTC. Pour en garder une copie, appuyez sur **Télécharger en PDF** : le PDF contient le mois que la page affiche, et chacune de ses pages nomme le titulaire de la licence du serveur.
 
 Un chiffre que le serveur ne consigne pas n'est jamais estimé. Il apparaît sous **Non présenté pour cette période**, indiqué comme non présenté, avec la raison (par exemple, "Le journal de maintenance de ce serveur remonte au `<date>` : les sauvegardes, les mises à jour et les avertissements antérieurs ne sont donc pas présentés."). La section **Ce que ce serveur ne consigne pas** liste ce qui ne fait jamais partie du rapport, comme les mises à jour du système d'exploitation et le résultat de chaque test de restauration.
 
