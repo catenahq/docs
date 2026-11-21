@@ -16,7 +16,7 @@
     "postinstall": "node ../contracts/scripts/sync-brand-assets.mjs"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.42.0",
+    "@astrojs/starlight": "^0.43.0",
     "@astrojs/starlight-tailwind": "^5.0.0",
     "@catenahq/contracts": "file:../contracts",
     "@tailwindcss/vite": "^4.3.3",
