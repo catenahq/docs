@@ -5,6 +5,22 @@ description: "Putting data back from a backup, rebuilding a lost server on a new
 
 You handle three situations from the **Restore** page of the panel: your server runs but its data is wrong, your server is gone and a new machine replaces it, and you are replacing a working server with another. The first two use backups; the third copies a live server and has a way back until the last few minutes. Backups themselves are set up on the [Backups and S3 storage](/en/configuration/backups/) page.
 
+## The sections of the Restore page
+
+The **Restore** page shows one section at a time. Choose it from the **On this page** card at the right of the page (a list above the section on a narrow screen). In page order, the sections are:
+
+| Entry in **On this page** | What it holds | Shown |
+|---|---|---|
+| **Restore a previous version of this server** | **Restore status**, then this server's backups under **Choose a backup** | Always |
+| **Restore another server's backup** | The form for another server's backups, or this server's offsite copy, then those backups under **Choose a backup** | Once the server's installed components support it |
+| **Start the stopped applications** | **Applications left stopped after the restore** | While a restore has left applications stopped, or while they are being started |
+| **Choose how backups carry on** | **How the backups carry on** | While the backups wait after a restore |
+| **Put a bucket back** | **Put a bucket back from its offsite copy** | Once the server's installed components support it |
+| **Migrate a live server here** | **Migrate a live server here** | Always |
+| **Download the recovery files** | **Make a downloadable copy of the latest backup** and **Files ready to download** | Always |
+
+The page opens on the section whose work is under way: a restore, a bucket being put back or a migration. Otherwise it opens on **Restore a previous version of this server**, or on **Restore another server's backup** when the page lists another server's backups. An entry carries a badge on the state of its work: **Running**; **Stopped**, when it stopped before it finished; **Waiting**, for applications waiting to be started or backups waiting for a choice; or **Needs attention**, when the other server of a migration is out of service and the migration did not finish. The answer to a restore, a repair, a start of the applications or a migration you start shows at the top of the page, above the section.
+
 ## Prerequisites
 
 - A whole-server restore and the receiving side of a migration work in every edition.
@@ -16,7 +32,7 @@ You handle three situations from the **Restore** page of the panel: your server 
 The restore replaces data and nothing else. Applications are stopped while their data is put back, and they come back stopped: you start them yourself once you have checked them (see [Start the applications after a restore](#start-the-applications-after-a-restore)). The restore of a single application leaves that application stopped too. A [migration](#migrate-to-another-server) is the exception: its applications start with the server. The panel, the sign-in and the connection carrying the page stay up throughout, so you can follow the restore from start to finish. There is no rebuild and nothing for you to reconfigure afterwards.
 
 1. Open **Restore**.
-2. The page opens on **Restore a previous version of this server**, which lists this server's backups.
+2. In **On this page**, choose **Restore a previous version of this server**. The section lists this server's backups under **Choose a backup**, below **Restore status**.
 3. Under **Choose a backup**, select one row. Columns are **Taken**, **Server**, **Size** and **Labels**. Each row is a complete restore point; pick the most recent one taken before the problem started. When the repository holds backups from more than one server, the page warns that selecting by timestamp alone can restore another server's data over this one: the **Server** column says which server wrote each snapshot. A backup taken since the last passing repository check, while that check fails, is labelled "Taken while a backup health check was failing": it is kept, never deleted, and the label goes away for later backups once the check passes.
 4. Under **What to put back**, choose the scope:
    - **Everything on this server** returns every application to the selected backup.
@@ -34,13 +50,13 @@ The option "Copy the data only and start nothing. Use this to get ready for a mi
 
 ### Progress
 
-The **Restore status** section names the step in progress, in this order: Checks before anything is touched (this includes the version rule below), Recording what is running now, Stopping the applications, Copying data back, Downloading the applications, Loading the saved settings, Starting the core services, Leaving the applications stopped, Applying the saved settings to this server, Bringing the applications back, Restoring the databases, Bringing the applications up to date, Final checks, and Finished.
+**Restore status**, at the top of **Restore a previous version of this server**, names the step in progress, whichever backups the restore reads, in this order: Checks before anything is touched (this includes the version rule below), Recording what is running now, Stopping the applications, Copying data back, Downloading the applications, Loading the saved settings, Starting the core services, Leaving the applications stopped, Applying the saved settings to this server, Bringing the applications back, Restoring the databases, Bringing the applications up to date, Final checks, and Finished.
 
-A finished restore reads "The applications this restore brought back stay stopped until they are started.", with a link to the section below.
+A finished restore reads "The applications this restore brought back stay stopped until they are started.", and the sentence opens the section **Start the stopped applications** (see [Start the applications after a restore](#start-the-applications-after-a-restore)).
 
 ### A restore that stops part-way
 
-The section reads "The restore stopped at:" followed by the step. Every step can be run again, so there are two ways forward:
+**Restore status** reads "The restore stopped at:" followed by the step, and the entry **Restore a previous version of this server** carries the badge **Stopped**. Every step can be run again, so there are two ways forward:
 
 - **Carry on:** choose the same backup and start it again; it continues from where it stopped. A different backup or scope is refused.
 - **Start over:** press **Clear the stopped restore**, then start again from the beginning.
@@ -71,10 +87,10 @@ A backup that carries no such record gets no disk check. See [Keep an applicatio
 
 A restore cannot tell whether an application's data was compromised before the backup was taken, so the client applications it brought back stay stopped until you start them. A whole-server restore leaves every client application stopped, and a restore of a single application leaves that application stopped. Catena's own services (the panel, the sign-in and the connection) start as before. Starting the applications works in every edition. Until you start an application, it stays stopped through updates and restarts.
 
-While applications are left stopped, every panel page shows a banner: "Applications the restore of this server left stopped: {apps}. Start them on the Restore page once they are checked." It links to the **Applications left stopped after the restore** section of the **Restore** page.
+While applications are left stopped, every panel page shows a banner: "Applications the restore of this server left stopped: {apps}. Start them on the Restore page once they are checked." It opens the section **Start the stopped applications** of the **Restore** page, whose entry in **On this page** carries the badge **Waiting** while applications wait to be started and **Running** while they start.
 
 1. Decide whether each application can be trusted, for example that its backup predates the incident.
-2. Open **Restore** and go to **Applications left stopped after the restore**. Each application has a checkbox, ticked by default, reading "Stopped since" and the date. Untick an application to leave it stopped.
+2. Open **Restore** and, in **On this page**, choose **Start the stopped applications**. Under **Applications left stopped after the restore**, each application has a checkbox, ticked by default, reading "Stopped since" and the date. Untick an application to leave it stopped.
 3. Tick "I have checked these applications, or accept the risk of starting them".
 4. Press **Start the selected applications**.
 
@@ -92,19 +108,19 @@ Restore from backups that are not this server's own: the old server's backups wh
 
 You need the address of the backups, their password (the backup encryption password), and an access key and secret key that can read their bucket. To rebuild a lost server, all four are in the recovery keyset (see [Backups and S3 storage](/en/configuration/backups/#disaster-recovery-keyset)): first install Catena on the new server (see [Installation](/en/installation/)). The installer takes the newest release.
 
-1. Open **Restore** and go to **Restore another server's backup**. The section is offered once the server's installed components support it (see Troubleshooting).
+1. Open **Restore** and, in **On this page**, choose **Restore another server's backup**. The entry is offered once the server's installed components support it (see Troubleshooting).
 2. Fill in:
 
    | Field | Value |
    |---|---|
-   | **Backup address** | The address of the backups, `s3:https://<endpoint>/<bucket>`. The addresses of this server's offsite copies are suggested, and so are the repositories you [listed in a locked bucket](#list-the-repositories-in-a-locked-bucket). |
+   | **Backup address** | The address of the backups, `s3:https://<endpoint>/<bucket>`. The addresses of this server's offsite copies are suggested, and so are the backups you [listed in a locked bucket](#list-the-backups-in-a-locked-bucket). |
    | **Backup password** | The backup encryption password |
    | **Storage access key** | The S3 access key |
    | **Storage secret key** | The S3 secret key |
 
    Only the fields the storage provider issued need values, but the address and the password are always required ("Both a backup address and its password are needed.").
 3. Press **Save and show its backups**. They are held in memory only, and removed when a restore from them finishes, after 24 hours, or when the server restarts. A restore that stops part-way keeps them so you can start it again. A migration that has not finished 24 hours after you saved them needs them saved again. **Erase what I entered** erases them at once. The backups are then listed under **Choose a backup**, in the same section; **Show its backups** lists them again while they are saved.
-4. Select the backup (after ransomware or a compromise, one taken before the incident), then continue with steps 4 to 6 of [Restore on a running server](#restore-on-a-running-server). The answer to the restore shows in this section, beside its own button. The [version rule](#version-rule) applies.
+4. Select the backup (after ransomware or a compromise, one taken before the incident), then continue with steps 4 to 6 of [Restore on a running server](#restore-on-a-running-server). The answer to the restore shows at the top of the page, and the restore's steps under **Restore status**, in the section **Restore a previous version of this server**. The [version rule](#version-rule) applies.
 
 When the restore finishes, the server has the data and stored configuration of the selected backup. Its applications stay stopped until you start them (see [Start the applications after a restore](#start-the-applications-after-a-restore)).
 
@@ -118,7 +134,7 @@ While the backups wait:
 
 - No backup is taken, and each backup run reports a failed attempt. The offsite copy copies nothing and the restore test is skipped.
 - Every admin page shows a banner: "Backups are paused since this server was restored on {date}: a restore cannot tell whether the backup destination is safe to keep writing to. Confirm it, or save a new one, in Settings, under Backup repository."
-- The **Restore status** section reads "The backups wait until the backup destination is confirmed, or a new one saved, in Settings." and offers the choice described under [Choose how the backup repository carries on](#choose-how-the-backup-repository-carries-on).
+- **Restore status** reads "The backups wait until the backup destination is confirmed, or a new one saved, in Settings.", which opens **Settings** under **Backup repository**, then "Choose how the backups carry on.", which opens the section **Choose how backups carry on** (see [Choose how the backups carry on](#choose-how-the-backups-carry-on)). That entry in **On this page** carries the badge **Waiting**.
 
 To resume them:
 
@@ -129,22 +145,22 @@ To resume them:
 
 Saving checks that the destination answers and creates a repository there when it holds none. The backups resume only when the destination opens. They keep waiting, with the reason in the section, when it does not, when no destination is saved, or while a restore is running or stopped part-way on this server (finish it or clear it on the **Restore** page first).
 
-The backup password follows your choice on the **Restore** page:
+The backup password follows your choice in the section **Choose how backups carry on** of the **Restore** page:
 
-- With **A fresh repository**, or with no choice and a new destination, saving makes a new backup password, shown once under **Backup password** further down the section. Whoever compromised the server before the restore may know the old one.
-- With **Continuity**, the backup password stays the same.
+- With **Start new backups**, or with no choice and a new destination, saving makes a new backup password, shown once under **Backup password** further down the section. Whoever compromised the server before the restore may know the old one.
+- With **Carry on the same backups**, the backup password stays the same.
 - With no choice, confirming the same destination keeps the password.
 
-The offsite copy that copied the old destination follows the new one. With a fresh repository it copies into a folder of its own in the same locked bucket, named after the new repository, and what it copied of the old one stays where it is. With continuity it carries on in the same folder.
+The offsite copy that copied the old destination follows the new one. With new backups it copies into a folder of its own in the same locked bucket, named after the new repository, and what it copied of the old one stays where it is. When the same backups carry on, it carries on in the same folder.
 
-With continuity, saving first opens the offsite copy and checks that it holds the same repository as the new destination. The backups keep waiting, and the section names the copy and its address, in two cases:
+When the same backups carry on, saving first opens the offsite copy and checks that it holds the same repository as the new destination. The backups keep waiting, and the section names the copy and its address, in two cases:
 
-- The offsite copy holds another repository than the new destination. The reason ends "Put the offsite copy back into the new bucket, or choose a fresh start". Put the offsite copy back into the new bucket first (see [Put a bucket back from its offsite copy](#put-a-bucket-back-from-its-offsite-copy)) and save that bucket again, or choose **A fresh repository** under **How the backup repository carries on** and save again.
+- The offsite copy holds another repository than the new destination. The reason ends "Put the offsite copy back into the new bucket, or choose a fresh start". Put the offsite copy back into the new bucket first (see [Put a bucket back from its offsite copy](#put-a-bucket-back-from-its-offsite-copy)) and save that bucket again, or choose **Start new backups** in the section **Choose how backups carry on** of the **Restore** page and save again.
 - The offsite copy does not open, so it cannot be checked. Correct the cause the reason gives, such as the keys of the offsite copy in **Settings**, under **Offsite copies**, then save again.
 
 ## Turn the updates back on after a restore
 
-For the same reason, a whole-server restore switches the maintenance's **Updates** and **Docker engine upgrade** steps off, and the other steps keep the choice you made. Nothing changes on the server until you decide. Every admin page then shows a banner: "No automatic updates are configured on this server since the restore of {date}. Turn them back on in Schedules, under Maintenance." The **Restore status** section reads "The updates stay off until they are turned back on in Schedules."
+For the same reason, a whole-server restore switches the maintenance's **Updates** and **Docker engine upgrade** steps off, and the other steps keep the choice you made. Nothing changes on the server until you decide. Every admin page then shows a banner: "No automatic updates are configured on this server since the restore of {date}. Turn them back on in Schedules, under Maintenance." **Restore status** reads "The updates stay off until they are turned back on in Schedules."
 
 1. Open **Schedules** and go to **Maintenance**, under **Steps**.
 2. Tick **Updates**, **Docker engine upgrade**, or both (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
@@ -156,43 +172,43 @@ The banner goes once either step is on. Updates need Catena Pro or Catena Busine
 
 This copies a bucket's offsite copy back into the bucket it was copied from. It works for the backup repository and for any other bucket declared under **Offsite copies**, in every edition. The repair only adds: whatever is missing or different is copied back, and nothing is deleted on either side. The offsite copy is only read.
 
-1. Open **Restore** and go to **Put a bucket back from its offsite copy**. The section is shown once the server's installed components support it (see Troubleshooting). Without a declared copy it reads "No offsite copy is declared on this server. Offsite copies are declared in Settings, under Offsite copies."
+1. Open **Restore** and, in **On this page**, choose **Put a bucket back**. The entry is offered once the server's installed components support it (see Troubleshooting), and its section is headed **Put a bucket back from its offsite copy**. Without a declared copy it reads "No offsite copy is declared on this server. Offsite copies are declared in Settings, under Offsite copies."
 2. Under **Offsite copy to put back**, choose the copy. Each entry shows its name and the address of the bucket it puts back.
 3. Enter **Access key that reads the offsite copy** and **Secret key that reads the offsite copy**. They are used for this run only and kept nowhere.
-4. Optional: under **Into another bucket (optional)**, the fields start with the bucket the chosen copy is made from (**Address of the new bucket**) and its access key (**Access key that writes the new bucket**), so the files go back where they were. Leave **Secret key that writes the new bucket** blank to keep the secret the server holds. For the backup repository's copy the fields start empty, because the backup repository is never put back into its own bucket. To put the copy into another, empty bucket instead, replace the address, the access key and the secret key with that bucket's: a changed bucket or access key needs its secret. A bucket that holds anything is refused before the copy.
-5. Optional: under **As it was at (UTC, optional)**, enter a date and time to put back the files as the offsite copy held them at that moment, such as before they were encrypted or overwritten. The access key then needs the right to read earlier versions. Left blank, the latest versions are put back.
+4. Optional: under **As it was at (UTC, optional)**, enter a date and time to put back the files as the offsite copy held them at that moment, such as before they were encrypted or overwritten. The access key then needs the right to read earlier versions. Left blank, the latest versions are put back.
+5. Optional: under **Into another bucket (optional)**, the fields start with the bucket the chosen copy is made from (**Address of the new bucket**) and its access key (**Access key that writes the new bucket**), so the files go back where they were. Leave **Secret key that writes the new bucket** blank to keep the secret the server holds. For the backup repository's copy the fields start empty, because the backup repository is never put back into its own bucket. To put the copy into another, empty bucket instead, replace the address, the access key and the secret key with that bucket's: a changed bucket or access key needs its secret. A bucket that holds anything is refused before the copy.
 6. Tick "I understand the bucket is written to while it is put back." and press **Put the bucket back**.
 
 The section follows the repair step by step: Waiting for the backup, the offsite copy or an update to finish, Reaching both buckets, Checking the bucket can take the copy back, Copying the files back, Pointing the offsite copy at the new bucket, and Finished. At the pointing step, the offsite copy of another bucket is declared to copy the new bucket from then on. The backup repository's copy moves when you save the new bucket as the backup destination. When you named no new bucket, the pointing step passes without doing anything.
 
 The copy writes into the bucket while it runs. A large bucket takes hours, and the storage provider may charge for the data read.
 
-If the repair stops, the section reads "Putting the bucket back stopped at:" followed by the step. Press **Put the bucket back** again with the same entries: starting again copies only what is still missing. The backup repository is never put back into its own bucket: a request to do so is refused before anything is copied. Save a new backup destination in **Settings**, under **Backup repository**, or name a new empty bucket for the copy to go into under **Into another bucket (optional)** and save that bucket as the backup destination (see [Choose how the backup repository carries on](#choose-how-the-backup-repository-carries-on)).
+While the repair runs, the entry **Put a bucket back** in **On this page** carries the badge **Running**, and the page opens on its section. If the repair stops, the section reads "Putting the bucket back stopped at:" followed by the step, and the entry carries the badge **Stopped**. Press **Put the bucket back** again with the same entries: starting again copies only what is still missing. The backup repository is never put back into its own bucket: a request to do so is refused before anything is copied. Save a new backup destination in **Settings**, under **Backup repository**, or name a new empty bucket for the copy to go into under **Into another bucket (optional)** and save that bucket as the backup destination (see [Choose how the backups carry on](#choose-how-the-backups-carry-on)).
 
-### List the repositories in a locked bucket
+### List the backups in a locked bucket
 
 To find the backup repositories an offsite copy's locked bucket holds, such as the one a fresh start copies into its own folder:
 
-1. Below the repair form, under **Repositories in an offsite copy's bucket**, choose the copy under **Offsite copy to put back**.
+1. In the section **Put a bucket back**, below the repair form, under **Backups kept in an offsite copy's bucket**, choose the copy under **Offsite copy to put back**.
 2. Enter **Access key that reads the offsite copy** and **Secret key that reads the offsite copy**. They read the bucket for this request only and are kept nowhere.
-3. Press **List the repositories**.
+3. Press **Show the backups**.
 
-The page reads "Backup repositories in this bucket:" followed by the addresses, "This bucket holds no backup repository." or "The bucket could not be listed." with the reason. Each address is offered as a suggestion in **Backup address** under **Restore another server's backup** (see [Restore another server's backup](#restore-another-servers-backup)).
+The page reads "Backups in this bucket:" followed by the addresses, "This bucket holds no backups." or "The bucket could not be listed." with the reason. Each address is offered as a suggestion in **Backup address** in the section **Restore another server's backup** (see [Restore another server's backup](#restore-another-servers-backup)).
 
-### Choose how the backup repository carries on
+### Choose how the backups carry on
 
-After a restore, backups wait until you confirm the backup destination, or save a new one, in **Settings** (see [Resume the backups after a restore](#resume-the-backups-after-a-restore)). While they wait, the **Restore** page shows **How the backup repository carries on**, with two choices. Press **Save this choice** to record yours.
+After a restore, backups wait until you confirm the backup destination, or save a new one, in **Settings** (see [Resume the backups after a restore](#resume-the-backups-after-a-restore)). While they wait, **On this page** offers **Choose how backups carry on**, with the badge **Waiting**. Its section, **How the backups carry on**, has two choices. Press **Save this choice** to record yours.
 
-- **A fresh repository** (selected until you choose otherwise). The backups start a new repository under a new backup password, shown once when you save or confirm the destination in **Settings**. Its offsite copy goes into a new folder of the same locked bucket, beside the old one. Choose this after a suspected compromise.
-- **Continuity**. The backup repository comes back from its offsite copy into a new empty bucket that you name under **Put a bucket back from its offsite copy** (see the steps above, with **Address of the new bucket** filled). Then save that bucket as the backup destination in **Settings**: the backups carry on in it under the same backup password, and the offsite copy carries on in the same folder of the locked bucket, so nothing is stored twice. Choose this after an accident, such as a deleted bucket or a provider outage.
+- **Start new backups** (selected until you choose otherwise). The backups start a new repository under a new backup password, shown once when you save or confirm the destination in **Settings**. Its offsite copy goes into a new folder of the same locked bucket, beside the old one. Choose this after a suspected compromise.
+- **Carry on the same backups**. The backup repository comes back from its offsite copy into a new empty bucket that you name in the section **Put a bucket back** (see the steps above, with **Address of the new bucket** filled). Then save that bucket as the backup destination in **Settings**: the backups carry on in it under the same backup password, and the offsite copy carries on in the same folder of the locked bucket, so nothing is stored twice. Choose this after an accident, such as a deleted bucket or a provider outage.
 
-Continuity keeps the repository's master key. A new backup password only re-wraps that key, so anyone who holds the old password and a copy of the old key file can still read the data in the continued repository if they reach its files.
+Carrying on the same backups keeps the repository's master key. A new backup password only re-wraps that key, so anyone who holds the old password and a copy of the old key file can still read the data in the continued repository if they reach its files.
 
 Without a choice, saving a new destination makes a new backup password and confirming the same one does not. A repair and a restore do not run together: each is refused while the other runs.
 
 ## Restore report
 
-The **Restore report** panel (Catena Pro) shows evidence that backups restore: a local restore test with its recovery time, and the state of the offsite copy. The local test is off until you turn it on: it runs on its own **Restore test** schedule, or as a step of the maintenance (see [Schedules](/en/configuration/schedules/)). It downloads as much as the backup holds and needs as much free disk, so turn it on when the server has the room. **Verify my backup can be restored** under **Actions** runs it on demand. A link to the report appears in the **Restore status** section.
+The **Restore report** panel (Catena Pro) shows evidence that backups restore: a local restore test with its recovery time, and the state of the offsite copy. The local test is off until you turn it on: it runs on its own **Restore test** schedule, or as a step of the maintenance (see [Schedules](/en/configuration/schedules/)). It downloads as much as the backup holds and needs as much free disk, so turn it on when the server has the room. **Verify my backup can be restored** under **Actions** runs it on demand. **Open the restore report**, under **Restore status** in the section **Restore a previous version of this server**, links to the report.
 
 The test restores the newest backup into a separate folder on your server, checks what came back, then deletes the folder. Your running applications are not touched.
 
@@ -238,7 +254,7 @@ The window closes on its own after 4 hours, five wrong codes close it too, and *
 
 ### On the new server
 
-1. Open **Restore** and go to **Migrate a live server here**.
+1. Open **Restore** and, in **On this page**, choose **Migrate a live server here**.
 2. Paste the **Migration ticket**.
 3. Enter the **Pairing code**.
 4. Leave **The other server's address (optional)** empty to use the address in the ticket, or enter another IP address, for example the old server's private-network address once its public SSH is closed. Never use its web address: that is what moves at the end, so it cannot reach the old server during the migration.
@@ -255,6 +271,8 @@ The window closes on its own after 4 hours, five wrong codes close it too, and *
 6. Putting the data in place here, then Moving the web address here (the cut-over).
 7. Final checks.
 
+While the migration runs, the page opens on **Migrate a live server here**, and its entry in **On this page** carries the badge **Running**. The badge reads **Stopped** when the migration stopped before it finished, and **Needs attention** when the other server is out of service and the migration did not finish.
+
 A migration starts the applications with the server: nothing is left stopped.
 
 After the final checks the old server frees its activation of the subscription key, the new server activates it and then applies the saved settings, which turns on what the key unlocks (extra domains, schedules). Some services restart during that. **Settings** > **Subscription** shows the result. If freeing the old activation fails, free it in Polar's customer portal and save the key again on the new server.
@@ -263,10 +281,19 @@ After the final checks the old server frees its activation of the subscription k
 
 - Up to and including "Checking that backup", stopping the migration puts the old server back into service by itself. Nothing has started on the new server and the web address still points at the old one.
 - After "Taking the other server out of service", that no longer happens on its own, because the new server may already hold part of the data and starting both would have two servers writing to the same storage. The page reports that the old server is out of service and offers two ways: fix what failed and start the migration again (it continues without copying everything a second time), or put the old server back.
-- To put the old server back, use **Put it back into service** under **Put the other server back into service** on the new server's Restore page (enter the ticket, the pairing code and, if needed, the address again), or **Put this server back into service** in the old server's own **Migration** panel. Its web address still points there, so it serves again as soon as it comes up.
+- To put the old server back, use **Put it back into service** under **Put the other server back into service**, in the section **Migrate a live server here** of the new server's **Restore** page (enter the ticket, the pairing code and, if needed, the address again), or **Put this server back into service** in the old server's own **Migration** panel. Its web address still points there, so it serves again as soon as it comes up.
 - **Forget this migration** clears the record of an unfinished migration and changes nothing on either server.
 
 After a completed migration the old server is stopped, not erased. Its data and backups are untouched, so you can keep it until the new server has proven itself. Retiring it is a separate step that nothing in the migration performs.
+
+## Download a copy of the latest backup
+
+The section **Download the recovery files** keeps a copy of the data outside the server, as one file to download to a computer.
+
+1. Open **Restore** and, in **On this page**, choose **Download the recovery files**.
+2. Under **Make a downloadable copy of the latest backup**, on the card **Export latest snapshot (tar.gz)**, press **Make the file**.
+3. Wait until it finishes (up to 15 minutes), then reload the page.
+4. Under **Files ready to download**, press **Download** beside the file.
 
 ## Troubleshooting
 

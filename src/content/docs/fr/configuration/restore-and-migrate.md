@@ -5,6 +5,22 @@ description: "Remettre des données en place depuis une sauvegarde, reconstruire
 
 Vous traitez trois situations depuis la page **Restauration** du panneau : votre serveur fonctionne mais ses données sont mauvaises, votre serveur est perdu et une nouvelle machine le remplace, ou vous remplacez un serveur en bon état par un autre. Les deux premières utilisent des sauvegardes; la troisième copie un serveur en marche et garde une voie de retour jusqu'aux toutes dernières minutes. La configuration des sauvegardes elles-mêmes est décrite dans la page [Sauvegardes et stockage S3](/fr/configuration/backups/).
 
+## Les sections de la page Restauration
+
+La page **Restauration** n'affiche qu'une section à la fois. Choisissez-la dans la carte **Sur cette page**, à droite de la page (une liste au-dessus de la section sur un écran étroit). Dans l'ordre de la page, les sections sont :
+
+| Entrée de **Sur cette page** | Contenu | Affichée |
+|---|---|---|
+| **Restaurer une version précédente de ce serveur** | **État de la restauration**, puis les sauvegardes de ce serveur sous **Choisir une sauvegarde** | Toujours |
+| **Restaurer la sauvegarde d'un autre serveur** | Le formulaire des sauvegardes d'un autre serveur, ou de la copie hors site de ce serveur, puis ces sauvegardes sous **Choisir une sauvegarde** | Lorsque les composants installés du serveur la prennent en charge |
+| **Démarrer les applications arrêtées** | **Applications laissées à l'arrêt après la restauration** | Tant qu'une restauration a laissé des applications à l'arrêt, ou pendant leur démarrage |
+| **Choisir comment les sauvegardes se poursuivent** | **Comment les sauvegardes se poursuivent** | Tant que les sauvegardes attendent après une restauration |
+| **Remettre un seau en place** | **Remettre un seau en place depuis sa copie hors site** | Lorsque les composants installés du serveur la prennent en charge |
+| **Migrer ici un serveur en service** | **Migrer ici un serveur en service** | Toujours |
+| **Télécharger les fichiers de récupération** | **Créer une copie téléchargeable de la dernière sauvegarde** et **Fichiers prêts à télécharger** | Toujours |
+
+La page s'ouvre sur la section dont le travail est en cours : une restauration, la remise en place d'un seau ou une migration. Sinon, elle s'ouvre sur **Restaurer une version précédente de ce serveur**, ou sur **Restaurer la sauvegarde d'un autre serveur** lorsque la page liste les sauvegardes d'un autre serveur. Une entrée porte un badge sur l'état de son travail : **En cours**; **À l'arrêt**, lorsqu'il s'est arrêté avant la fin; **En attente**, pour des applications qui attendent d'être démarrées ou des sauvegardes qui attendent un choix; ou **À vérifier**, lorsque l'autre serveur d'une migration est hors service et que la migration n'est pas terminée. La réponse à une restauration, à une remise en place, à un démarrage des applications ou à une migration que vous lancez s'affiche en haut de la page, au-dessus de la section.
+
 ## Prérequis
 
 - Une restauration du serveur entier et le côté récepteur d'une migration fonctionnent dans toutes les éditions.
@@ -16,7 +32,7 @@ Vous traitez trois situations depuis la page **Restauration** du panneau : votre
 La restauration remplace les données et rien d'autre. Les applications sont arrêtées pendant que leurs données sont remises en place, et elles reviennent à l'arrêt : vous les démarrez vous-même une fois qu'elles sont vérifiées (voir [Démarrer les applications après une restauration](#démarrer-les-applications-après-une-restauration)). La restauration d'une seule application laisse aussi cette application à l'arrêt. Une [migration vers un autre serveur](#migrer-vers-un-autre-serveur) fait exception : ses applications démarrent avec le serveur. Le panneau, l'authentification et la connexion qui sert la page restent accessibles tout du long : vous pouvez donc suivre la restauration du début à la fin. Il n'y a ni reconstruction ni reconfiguration à faire ensuite.
 
 1. Ouvrez **Restauration**.
-2. La page s'ouvre sur **Restaurer une version précédente de ce serveur**, qui liste les sauvegardes de ce serveur.
+2. Dans **Sur cette page**, choisissez **Restaurer une version précédente de ce serveur**. La section liste les sauvegardes de ce serveur sous **Choisir une sauvegarde**, après **État de la restauration**.
 3. Sous **Choisir une sauvegarde**, sélectionnez une ligne. Les colonnes sont **Effectuée le**, **Serveur**, **Taille** et **Étiquettes**. Chaque ligne est un point de restauration complet; choisissez la plus récente prise avant le début du problème. Lorsque le dépôt contient les sauvegardes de plus d'un serveur, la page avertit que choisir par horodatage seul peut restaurer les données d'un autre serveur par-dessus celles-ci : la colonne **Serveur** indique lequel a écrit chaque instantané. Une sauvegarde effectuée depuis la dernière vérification réussie du dépôt, pendant que cette vérification échoue, porte l'étiquette "Effectuée pendant qu'un contrôle de santé des sauvegardes échouait" : elle est conservée, jamais supprimée, et l'étiquette disparaît pour les sauvegardes suivantes une fois la vérification réussie.
 4. Sous **Ce qu'il faut remettre**, choisissez la portée :
    - **Tout ce que contient ce serveur** ramène toutes les applications à la sauvegarde choisie.
@@ -34,13 +50,13 @@ L'option "Copier les données seulement, sans rien démarrer. Sert à préparer 
 
 ### Progression
 
-La section **État de la restauration** nomme l'étape en cours, dans cet ordre : Vérifications avant toute action (elles comprennent la règle de version ci-dessous), Enregistrement de ce qui fonctionne actuellement, Arrêt des applications, Copie des données, Téléchargement des applications, Reprise des réglages sauvegardés, Démarrage des services de base, Maintien des applications à l'arrêt, Application des réglages sauvegardés à ce serveur, Remise en service des applications, Restauration des bases de données, Mise à jour des applications, Vérifications finales, et Terminé.
+**État de la restauration**, en haut de **Restaurer une version précédente de ce serveur**, nomme l'étape en cours, quelles que soient les sauvegardes que lit la restauration, dans cet ordre : Vérifications avant toute action (elles comprennent la règle de version ci-dessous), Enregistrement de ce qui fonctionne actuellement, Arrêt des applications, Copie des données, Téléchargement des applications, Reprise des réglages sauvegardés, Démarrage des services de base, Maintien des applications à l'arrêt, Application des réglages sauvegardés à ce serveur, Remise en service des applications, Restauration des bases de données, Mise à jour des applications, Vérifications finales, et Terminé.
 
-Une restauration terminée indique que les applications qu'elle a ramenées restent à l'arrêt jusqu'à ce qu'elles soient démarrées, avec un lien vers la section ci-dessous.
+Une restauration terminée indique que les applications qu'elle a ramenées restent à l'arrêt jusqu'à ce qu'elles soient démarrées, et cette phrase ouvre la section **Démarrer les applications arrêtées** (voir [Démarrer les applications après une restauration](#démarrer-les-applications-après-une-restauration)).
 
 ### Restauration interrompue
 
-La section indique "La restauration s'est arrêtée à :" suivi de l'étape. Chaque étape peut être reprise, ce qui offre deux voies :
+**État de la restauration** indique "La restauration s'est arrêtée à :" suivi de l'étape, et l'entrée **Restaurer une version précédente de ce serveur** porte le badge **À l'arrêt**. Chaque étape peut être reprise, ce qui offre deux voies :
 
 - **Continuer :** choisissez la même sauvegarde et relancez-la; elle reprend là où elle s'est arrêtée. Une autre sauvegarde ou une autre portée est refusée.
 - **Repartir du début :** appuyez sur **Effacer la restauration arrêtée**, puis relancez depuis le début.
@@ -71,10 +87,10 @@ Une sauvegarde qui ne porte pas cette note n'a aucune vérification de disque. V
 
 Une restauration ne peut pas savoir si les données d'une application étaient compromises avant la sauvegarde; les applications clientes qu'elle a ramenées restent donc à l'arrêt jusqu'à ce que vous les démarriez. Une restauration du serveur entier laisse toutes les applications clientes à l'arrêt, et la restauration d'une seule application laisse cette application à l'arrêt. Les services propres à Catena (le panneau, l'authentification et la connexion) démarrent comme avant. Le démarrage des applications est offert dans toutes les éditions. Tant que vous n'avez pas démarré une application, elle reste à l'arrêt malgré les mises à jour et les redémarrages.
 
-Tant que des applications sont laissées à l'arrêt, chaque page du panneau affiche une bannière : "Applications laissées à l'arrêt par la restauration de ce serveur : {apps}. Les démarrer depuis la page Restauration une fois vérifiées." Elle renvoie à la section **Applications laissées à l'arrêt après la restauration** de la page **Restauration**.
+Tant que des applications sont laissées à l'arrêt, chaque page du panneau affiche une bannière : "Applications laissées à l'arrêt par la restauration de ce serveur : {apps}. Les démarrer depuis la page Restauration une fois vérifiées." Elle ouvre la section **Démarrer les applications arrêtées** de la page **Restauration**, dont l'entrée de **Sur cette page** porte le badge **En attente** tant que des applications attendent d'être démarrées, et **En cours** pendant leur démarrage.
 
 1. Décidez si chaque application est digne de confiance, par exemple si sa sauvegarde est antérieure à l'incident.
-2. Ouvrez **Restauration** et allez à **Applications laissées à l'arrêt après la restauration**. Chaque application a une case, cochée par défaut, qui indique "À l'arrêt depuis le" et la date. Décochez une application pour la laisser à l'arrêt.
+2. Ouvrez **Restauration** et, dans **Sur cette page**, choisissez **Démarrer les applications arrêtées**. Sous **Applications laissées à l'arrêt après la restauration**, chaque application a une case, cochée par défaut, qui indique "À l'arrêt depuis le" et la date. Décochez une application pour la laisser à l'arrêt.
 3. Cochez "J'ai vérifié ces applications, ou j'accepte le risque de les démarrer".
 4. Appuyez sur **Démarrer les applications sélectionnées**.
 
@@ -92,19 +108,19 @@ Restaurez depuis des sauvegardes qui ne sont pas celles de ce serveur : les sauv
 
 Il vous faut l'adresse des sauvegardes, leur mot de passe (le mot de passe de chiffrement des sauvegardes), et une clé d'accès et une clé secrète qui peuvent lire leur seau. Pour reconstruire un serveur perdu, les quatre se trouvent dans la trousse de reprise (voir [Sauvegardes et stockage S3](/fr/configuration/backups/#trousse-de-reprise-après-sinistre)) : installez d'abord Catena sur le nouveau serveur (voir [Installation](/fr/installation/)). L'installateur prend la version la plus récente.
 
-1. Ouvrez **Restauration** et allez à **Restaurer la sauvegarde d'un autre serveur**. La section est offerte lorsque les composants installés du serveur la prennent en charge (voir Dépannage).
+1. Ouvrez **Restauration** et, dans **Sur cette page**, choisissez **Restaurer la sauvegarde d'un autre serveur**. L'entrée est offerte lorsque les composants installés du serveur la prennent en charge (voir Dépannage).
 2. Remplissez :
 
    | Champ | Valeur |
    |---|---|
-   | **Adresse des sauvegardes** | L'adresse des sauvegardes, `s3:https://<point-d-acces>/<seau>`. Les adresses des copies hors site de ce serveur sont proposées, ainsi que les dépôts que vous avez [listés dans un seau verrouillé](#lister-les-dépôts-dun-seau-verrouillé). |
+   | **Adresse des sauvegardes** | L'adresse des sauvegardes, `s3:https://<point-d-acces>/<seau>`. Les adresses des copies hors site de ce serveur sont proposées, ainsi que les sauvegardes que vous avez [listées dans un seau verrouillé](#lister-les-sauvegardes-dun-seau-verrouillé). |
    | **Mot de passe des sauvegardes** | Le mot de passe de chiffrement des sauvegardes |
    | **Clé d'accès du stockage** | La clé d'accès S3 |
    | **Clé secrète du stockage** | La clé secrète S3 |
 
    Seuls les champs émis par le fournisseur de stockage exigent une valeur, mais l'adresse et le mot de passe sont toujours requis ("L'adresse des sauvegardes et leur mot de passe sont tous deux requis.").
 3. Appuyez sur **Enregistrer et afficher ses sauvegardes**. Elles sont conservées en mémoire seulement, et effacées lorsqu'une restauration depuis elles se termine, au bout de 24 heures ou au redémarrage du serveur. Une restauration qui s'arrête en cours de route les garde pour que vous puissiez la relancer. Une migration vers ce serveur qui n'est pas terminée 24 heures après leur enregistrement exige de les enregistrer de nouveau. **Effacer ce que j'ai saisi** les efface immédiatement. Les sauvegardes sont alors listées sous **Choisir une sauvegarde**, dans la même section; **Afficher ses sauvegardes** les liste de nouveau tant qu'elles sont enregistrées.
-4. Sélectionnez la sauvegarde (en cas de rançongiciel ou de compromission, une sauvegarde antérieure à l'incident), puis poursuivez avec les étapes 4 à 6 de [Restaurer sur un serveur en marche](#restaurer-sur-un-serveur-en-marche). La réponse à la restauration s'affiche dans cette section, à côté de son propre bouton. La [règle de version](#règle-de-version) s'applique.
+4. Sélectionnez la sauvegarde (en cas de rançongiciel ou de compromission, une sauvegarde antérieure à l'incident), puis poursuivez avec les étapes 4 à 6 de [Restaurer sur un serveur en marche](#restaurer-sur-un-serveur-en-marche). La réponse à la restauration s'affiche en haut de la page, et les étapes de la restauration sous **État de la restauration**, dans la section **Restaurer une version précédente de ce serveur**. La [règle de version](#règle-de-version) s'applique.
 
 Une fois la restauration terminée, le serveur possède les données et la configuration enregistrée de la sauvegarde choisie. Ses applications restent à l'arrêt jusqu'à ce que vous les démarriez (voir [Démarrer les applications après une restauration](#démarrer-les-applications-après-une-restauration)).
 
@@ -118,7 +134,7 @@ Tant que les sauvegardes attendent :
 
 - Aucune sauvegarde n'est faite, et chaque exécution de sauvegarde signale une tentative échouée. La copie hors site ne copie rien et le test de restauration est ignoré.
 - Chaque page d'administration affiche une bannière : "Les sauvegardes sont en pause depuis la restauration de ce serveur le {date} : une restauration ne peut pas savoir si la destination de sauvegarde peut encore recevoir des écritures sans risque. La confirmer, ou en enregistrer une nouvelle, dans Paramètres, sous Dépôt de sauvegarde."
-- La section **État de la restauration** indique "Les sauvegardes restent en attente jusqu'à ce que la destination de sauvegarde soit confirmée, ou qu'une nouvelle soit enregistrée, dans Paramètres." et propose le choix décrit sous [Choisir comment le dépôt de sauvegarde se poursuit](#choisir-comment-le-dépôt-de-sauvegarde-se-poursuit).
+- **État de la restauration** indique "Les sauvegardes restent en attente jusqu'à ce que la destination de sauvegarde soit confirmée, ou qu'une nouvelle soit enregistrée, dans Paramètres.", qui ouvre **Paramètres** sous **Dépôt de sauvegarde**, puis "Choisir comment les sauvegardes se poursuivent.", qui ouvre la section **Choisir comment les sauvegardes se poursuivent** (voir [Choisir comment les sauvegardes se poursuivent](#choisir-comment-les-sauvegardes-se-poursuivent)). Cette entrée de **Sur cette page** porte le badge **En attente**.
 
 Pour les reprendre :
 
@@ -129,22 +145,22 @@ Pour les reprendre :
 
 L'enregistrement vérifie que la destination répond et y crée un dépôt s'il n'y en a pas. Les sauvegardes ne reprennent que si la destination s'ouvre. Elles restent en attente, avec la raison dans la section, si elle ne s'ouvre pas, si aucune destination n'est enregistrée, ou pendant qu'une restauration est en cours ou arrêtée en cours de route sur ce serveur (terminez-la ou effacez-la d'abord sur la page **Restauration**).
 
-Le mot de passe de sauvegarde suit votre choix sur la page **Restauration** :
+Le mot de passe de sauvegarde suit votre choix dans la section **Choisir comment les sauvegardes se poursuivent** de la page **Restauration** :
 
-- Avec **Un dépôt neuf**, ou sans choix et avec une nouvelle destination, l'enregistrement crée un nouveau mot de passe de sauvegarde, affiché une seule fois sous **Mot de passe de sauvegarde**, plus bas dans la section. Quiconque a compromis le serveur avant la restauration peut connaître l'ancien.
-- Avec **Continuité**, le mot de passe de sauvegarde reste le même.
+- Avec **Recommencer de nouvelles sauvegardes**, ou sans choix et avec une nouvelle destination, l'enregistrement crée un nouveau mot de passe de sauvegarde, affiché une seule fois sous **Mot de passe de sauvegarde**, plus bas dans la section. Quiconque a compromis le serveur avant la restauration peut connaître l'ancien.
+- Avec **Poursuivre les mêmes sauvegardes**, le mot de passe de sauvegarde reste le même.
 - Sans choix, confirmer la même destination garde le mot de passe.
 
-La copie hors site qui copiait l'ancienne destination suit la nouvelle. Avec un dépôt neuf, elle copie dans un dossier qui lui est propre, dans le même seau verrouillé et nommé d'après le nouveau dépôt, et ce qu'elle avait copié de l'ancien reste en place. Avec la continuité, elle se poursuit dans le même dossier.
+La copie hors site qui copiait l'ancienne destination suit la nouvelle. Avec de nouvelles sauvegardes, elle copie dans un dossier qui lui est propre, dans le même seau verrouillé et nommé d'après le nouveau dépôt, et ce qu'elle avait copié de l'ancien reste en place. Lorsque les mêmes sauvegardes se poursuivent, elle se poursuit dans le même dossier.
 
-Avec la continuité, l'enregistrement ouvre d'abord la copie hors site et vérifie qu'elle contient le même dépôt que la nouvelle destination. Les sauvegardes restent en attente, et la section nomme la copie et son adresse, dans deux cas :
+Lorsque les mêmes sauvegardes se poursuivent, l'enregistrement ouvre d'abord la copie hors site et vérifie qu'elle contient le même dépôt que la nouvelle destination. Les sauvegardes restent en attente, et la section nomme la copie et son adresse, dans deux cas :
 
-- La copie hors site contient un autre dépôt que la nouvelle destination. La raison se termine par "Put the offsite copy back into the new bucket, or choose a fresh start" (en anglais). Remettez d'abord la copie hors site dans le nouveau seau (voir [Remettre un seau en place depuis sa copie hors site](#remettre-un-seau-en-place-depuis-sa-copie-hors-site)) et enregistrez de nouveau ce seau, ou choisissez **Un dépôt neuf** sous **Comment le dépôt de sauvegarde se poursuit** et enregistrez de nouveau.
+- La copie hors site contient un autre dépôt que la nouvelle destination. La raison se termine par "Put the offsite copy back into the new bucket, or choose a fresh start" (en anglais). Remettez d'abord la copie hors site dans le nouveau seau (voir [Remettre un seau en place depuis sa copie hors site](#remettre-un-seau-en-place-depuis-sa-copie-hors-site)) et enregistrez de nouveau ce seau, ou choisissez **Recommencer de nouvelles sauvegardes** dans la section **Choisir comment les sauvegardes se poursuivent** de la page **Restauration** et enregistrez de nouveau.
 - La copie hors site ne s'ouvre pas : elle ne peut donc pas être vérifiée. Corrigez la cause indiquée par la raison, par exemple les clés de la copie hors site dans **Paramètres**, sous **Copies hors site**, puis enregistrez de nouveau.
 
 ## Réactiver les mises à jour après une restauration
 
-Pour la même raison, une restauration du serveur entier désactive les étapes **Mises à jour** et **Mise à niveau du moteur Docker** de la maintenance, et les autres étapes gardent le choix que vous avez fait. Rien ne change sur le serveur tant que vous n'avez pas décidé. Chaque page d'administration affiche alors une bannière : "Aucune mise à jour automatique n'est configurée sur ce serveur depuis la restauration du {date}. Les réactiver dans Horaires, sous Maintenance." La section **État de la restauration** indique "Les mises à jour restent désactivées jusqu'à ce qu'elles soient réactivées dans Horaires."
+Pour la même raison, une restauration du serveur entier désactive les étapes **Mises à jour** et **Mise à niveau du moteur Docker** de la maintenance, et les autres étapes gardent le choix que vous avez fait. Rien ne change sur le serveur tant que vous n'avez pas décidé. Chaque page d'administration affiche alors une bannière : "Aucune mise à jour automatique n'est configurée sur ce serveur depuis la restauration du {date}. Les réactiver dans Horaires, sous Maintenance." **État de la restauration** indique "Les mises à jour restent désactivées jusqu'à ce qu'elles soient réactivées dans Horaires."
 
 1. Ouvrez **Horaires** et allez à **Maintenance**, sous **Étapes**.
 2. Cochez **Mises à jour**, **Mise à niveau du moteur Docker**, ou les deux (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)).
@@ -156,43 +172,43 @@ La bannière disparaît dès que l'une des deux étapes est activée. Les mises 
 
 Cette opération recopie la copie hors site d'un seau dans le seau dont elle provient. Elle vaut pour le dépôt de sauvegarde et pour tout autre seau déclaré sous **Copies hors site**, dans toutes les éditions. L'opération ne fait qu'ajouter : ce qui manque ou diffère est recopié, et rien n'est supprimé, d'un côté comme de l'autre. La copie hors site n'est que lue.
 
-1. Ouvrez **Restauration** et allez à **Remettre un seau en place depuis sa copie hors site**. La section est affichée lorsque les composants installés du serveur la prennent en charge (voir Dépannage). Sans copie déclarée, elle indique "Aucune copie hors site n'est déclarée sur ce serveur. Les copies hors site se déclarent dans Paramètres, sous Copies hors site."
+1. Ouvrez **Restauration** et, dans **Sur cette page**, choisissez **Remettre un seau en place**. L'entrée est offerte lorsque les composants installés du serveur la prennent en charge (voir Dépannage), et sa section a pour titre **Remettre un seau en place depuis sa copie hors site**. Sans copie déclarée, elle indique "Aucune copie hors site n'est déclarée sur ce serveur. Les copies hors site se déclarent dans Paramètres, sous Copies hors site."
 2. Sous **Copie hors site à remettre en place**, choisissez la copie. Chaque entrée indique son nom et l'adresse du seau qu'elle remet en place.
 3. Saisissez **Clé d'accès qui lit la copie hors site** et **Clé secrète qui lit la copie hors site**. Elles servent à cette opération seulement et ne sont conservées nulle part.
-4. Facultatif : sous **Dans un autre seau (facultatif)**, les champs commencent par le seau dont provient la copie choisie (**Adresse du nouveau seau**) et sa clé d'accès (**Clé d'accès qui écrit dans le nouveau seau**), de sorte que les fichiers retournent là où ils étaient. Laissez **Clé secrète qui écrit dans le nouveau seau** vide pour garder celle que le serveur détient. Pour la copie du dépôt de sauvegarde, les champs commencent vides, car le dépôt de sauvegarde n'est jamais remis dans son propre seau. Pour mettre plutôt la copie dans un autre seau vide, remplacez l'adresse, la clé d'accès et la clé secrète par celles de ce seau : un seau ou une clé d'accès modifié exige sa clé secrète. Un seau qui contient quoi que ce soit est refusé avant la copie.
-5. Facultatif : sous **Tel qu'il était le (UTC, facultatif)**, saisissez une date et une heure pour remettre les fichiers tels que la copie hors site les contenait à ce moment, par exemple avant qu'ils soient chiffrés ou écrasés. La clé d'accès doit alors avoir le droit de lire les versions antérieures. Laissé vide, les versions les plus récentes sont remises en place.
+4. Facultatif : sous **Tel qu'il était le (UTC, facultatif)**, saisissez une date et une heure pour remettre les fichiers tels que la copie hors site les contenait à ce moment, par exemple avant qu'ils soient chiffrés ou écrasés. La clé d'accès doit alors avoir le droit de lire les versions antérieures. Laissé vide, les versions les plus récentes sont remises en place.
+5. Facultatif : sous **Dans un autre seau (facultatif)**, les champs commencent par le seau dont provient la copie choisie (**Adresse du nouveau seau**) et sa clé d'accès (**Clé d'accès qui écrit dans le nouveau seau**), de sorte que les fichiers retournent là où ils étaient. Laissez **Clé secrète qui écrit dans le nouveau seau** vide pour garder celle que le serveur détient. Pour la copie du dépôt de sauvegarde, les champs commencent vides, car le dépôt de sauvegarde n'est jamais remis dans son propre seau. Pour mettre plutôt la copie dans un autre seau vide, remplacez l'adresse, la clé d'accès et la clé secrète par celles de ce seau : un seau ou une clé d'accès modifié exige sa clé secrète. Un seau qui contient quoi que ce soit est refusé avant la copie.
 6. Cochez "Je comprends que le seau est modifié pendant sa remise en place." et appuyez sur **Remettre le seau en place**.
 
 La section suit l'opération étape par étape : Attente de la fin de la sauvegarde, de la copie hors site ou d'une mise à jour, Prise de contact avec les deux seaux, Vérification que le seau peut reprendre la copie, Recopie des fichiers, Réglage de la copie hors site sur le nouveau seau, et Terminé. À l'étape de réglage, la copie hors site d'un autre seau est déclarée pour copier désormais le nouveau seau. La copie du dépôt de sauvegarde se déplace lorsque vous enregistrez le nouveau seau comme destination de sauvegarde. Lorsque vous n'avez nommé aucun nouveau seau, l'étape de réglage passe sans rien faire.
 
 La copie écrit dans le seau pendant qu'elle s'exécute. Un gros seau prend des heures, et le fournisseur de stockage peut facturer les données lues.
 
-Si l'opération s'arrête, la section indique "La remise en place du seau s'est arrêtée à :" suivi de l'étape. Appuyez de nouveau sur **Remettre le seau en place** avec les mêmes valeurs : relancer ne recopie que ce qui manque encore. Le dépôt de sauvegarde n'est jamais remis dans son propre seau : une demande en ce sens est refusée avant que quoi que ce soit soit copié. Enregistrez une nouvelle destination de sauvegarde dans **Paramètres**, sous **Dépôt de sauvegarde**, ou nommez un nouveau seau vide où mettre la copie sous **Dans un autre seau (facultatif)**, puis enregistrez ce seau comme destination de sauvegarde (voir [Choisir comment le dépôt de sauvegarde se poursuit](#choisir-comment-le-dépôt-de-sauvegarde-se-poursuit)).
+Pendant l'opération, l'entrée **Remettre un seau en place** de **Sur cette page** porte le badge **En cours**, et la page s'ouvre sur sa section. Si l'opération s'arrête, la section indique "La remise en place du seau s'est arrêtée à :" suivi de l'étape, et l'entrée porte le badge **À l'arrêt**. Appuyez de nouveau sur **Remettre le seau en place** avec les mêmes valeurs : relancer ne recopie que ce qui manque encore. Le dépôt de sauvegarde n'est jamais remis dans son propre seau : une demande en ce sens est refusée avant que quoi que ce soit soit copié. Enregistrez une nouvelle destination de sauvegarde dans **Paramètres**, sous **Dépôt de sauvegarde**, ou nommez un nouveau seau vide où mettre la copie sous **Dans un autre seau (facultatif)**, puis enregistrez ce seau comme destination de sauvegarde (voir [Choisir comment les sauvegardes se poursuivent](#choisir-comment-les-sauvegardes-se-poursuivent)).
 
-### Lister les dépôts d'un seau verrouillé
+### Lister les sauvegardes d'un seau verrouillé
 
 Pour trouver les dépôts de sauvegarde que contient le seau verrouillé d'une copie hors site, comme celui qu'un nouveau départ recopie dans son propre dossier :
 
-1. Sous le formulaire de remise en place, sous **Dépôts du seau d'une copie hors site**, choisissez la copie sous **Copie hors site à remettre en place**.
+1. Dans la section **Remettre un seau en place**, sous le formulaire de remise en place, sous **Sauvegardes gardées dans le seau d'une copie hors site**, choisissez la copie sous **Copie hors site à remettre en place**.
 2. Saisissez **Clé d'accès qui lit la copie hors site** et **Clé secrète qui lit la copie hors site**. Elles lisent le seau pour cette demande seulement et ne sont conservées nulle part.
-3. Appuyez sur **Lister les dépôts**.
+3. Appuyez sur **Afficher les sauvegardes**.
 
-La page indique "Dépôts de sauvegarde de ce seau :" suivi des adresses, "Ce seau ne contient aucun dépôt de sauvegarde." ou "Le seau n'a pas pu être listé." avec la raison. Chaque adresse est proposée en suggestion sous **Adresse des sauvegardes** de **Restaurer la sauvegarde d'un autre serveur** (voir [Restaurer la sauvegarde d'un autre serveur](#restaurer-la-sauvegarde-dun-autre-serveur)).
+La page indique "Sauvegardes de ce seau :" suivi des adresses, "Ce seau ne contient aucune sauvegarde." ou "Le seau n'a pas pu être listé." avec la raison. Chaque adresse est proposée en suggestion sous **Adresse des sauvegardes**, dans la section **Restaurer la sauvegarde d'un autre serveur** (voir [Restaurer la sauvegarde d'un autre serveur](#restaurer-la-sauvegarde-dun-autre-serveur)).
 
-### Choisir comment le dépôt de sauvegarde se poursuit
+### Choisir comment les sauvegardes se poursuivent
 
-Après une restauration, les sauvegardes attendent que vous confirmiez la destination de sauvegarde, ou que vous en enregistriez une nouvelle, dans **Paramètres** (voir [Reprendre les sauvegardes après une restauration](#reprendre-les-sauvegardes-après-une-restauration)). Pendant qu'elles attendent, la page **Restauration** affiche **Comment le dépôt de sauvegarde se poursuit**, avec deux choix. Appuyez sur **Enregistrer ce choix** pour retenir le vôtre.
+Après une restauration, les sauvegardes attendent que vous confirmiez la destination de sauvegarde, ou que vous en enregistriez une nouvelle, dans **Paramètres** (voir [Reprendre les sauvegardes après une restauration](#reprendre-les-sauvegardes-après-une-restauration)). Pendant qu'elles attendent, **Sur cette page** propose **Choisir comment les sauvegardes se poursuivent**, avec le badge **En attente**. Sa section, **Comment les sauvegardes se poursuivent**, offre deux choix. Appuyez sur **Enregistrer ce choix** pour retenir le vôtre.
 
-- **Un dépôt neuf** (sélectionné tant que vous ne choisissez pas autre chose). Les sauvegardes démarrent un nouveau dépôt sous un nouveau mot de passe de sauvegarde, affiché une seule fois lorsque vous enregistrez ou confirmez la destination dans **Paramètres**. Sa copie hors site va dans un nouveau dossier du même seau verrouillé, à côté de l'ancien. Choisissez ce mode après une compromission soupçonnée.
-- **Continuité**. Le dépôt de sauvegarde revient de sa copie hors site dans un nouveau seau vide que vous nommez sous **Remettre un seau en place depuis sa copie hors site** (voir les étapes ci-dessus, avec **Adresse du nouveau seau** remplie). Enregistrez ensuite ce seau comme destination de sauvegarde dans **Paramètres** : les sauvegardes s'y poursuivent sous le même mot de passe de sauvegarde, et la copie hors site se poursuit dans le même dossier du seau verrouillé, donc rien n'est stocké deux fois. Choisissez ce mode après un accident, comme un seau supprimé ou une panne du fournisseur.
+- **Recommencer de nouvelles sauvegardes** (sélectionné tant que vous ne choisissez pas autre chose). Les sauvegardes démarrent un nouveau dépôt sous un nouveau mot de passe de sauvegarde, affiché une seule fois lorsque vous enregistrez ou confirmez la destination dans **Paramètres**. Sa copie hors site va dans un nouveau dossier du même seau verrouillé, à côté de l'ancien. Choisissez ce mode après une compromission soupçonnée.
+- **Poursuivre les mêmes sauvegardes**. Le dépôt de sauvegarde revient de sa copie hors site dans un nouveau seau vide que vous nommez dans la section **Remettre un seau en place** (voir les étapes ci-dessus, avec **Adresse du nouveau seau** remplie). Enregistrez ensuite ce seau comme destination de sauvegarde dans **Paramètres** : les sauvegardes s'y poursuivent sous le même mot de passe de sauvegarde, et la copie hors site se poursuit dans le même dossier du seau verrouillé, donc rien n'est stocké deux fois. Choisissez ce mode après un accident, comme un seau supprimé ou une panne du fournisseur.
 
-La continuité conserve la clé maîtresse du dépôt. Un nouveau mot de passe de sauvegarde ne fait que réenvelopper cette clé : quiconque détient l'ancien mot de passe et une copie de l'ancien fichier de clé peut encore lire les données du dépôt poursuivi s'il atteint ses fichiers.
+Poursuivre les mêmes sauvegardes conserve la clé maîtresse du dépôt. Un nouveau mot de passe de sauvegarde ne fait que réenvelopper cette clé : quiconque détient l'ancien mot de passe et une copie de l'ancien fichier de clé peut encore lire les données du dépôt poursuivi s'il atteint ses fichiers.
 
 Sans choix, enregistrer une nouvelle destination crée un nouveau mot de passe de sauvegarde, et confirmer la même n'en crée pas. Une remise en place et une restauration ne s'exécutent pas ensemble : chacune est refusée pendant que l'autre est en cours.
 
 ## Rapport de restauration
 
-Le panneau **Rapport de restauration** (Catena Pro) montre la preuve que les sauvegardes se restaurent : un test de restauration local avec son temps de récupération, et l'état de la copie hors site. Le test local est désactivé tant que vous ne l'activez pas : il s'exécute selon son propre horaire **Test de restauration**, ou comme étape de la maintenance (voir [Horaires](/fr/configuration/schedules/)). Il télécharge autant que la sauvegarde contient et demande autant d'espace disque libre : activez-le lorsque le serveur a la place. **Vérifier que ma sauvegarde est restaurable**, dans **Actions**, l'exécute sur demande. Un lien vers le rapport figure dans la section **État de la restauration**.
+Le panneau **Rapport de restauration** (Catena Pro) montre la preuve que les sauvegardes se restaurent : un test de restauration local avec son temps de récupération, et l'état de la copie hors site. Le test local est désactivé tant que vous ne l'activez pas : il s'exécute selon son propre horaire **Test de restauration**, ou comme étape de la maintenance (voir [Horaires](/fr/configuration/schedules/)). Il télécharge autant que la sauvegarde contient et demande autant d'espace disque libre : activez-le lorsque le serveur a la place. **Vérifier que ma sauvegarde est restaurable**, dans **Actions**, l'exécute sur demande. **Ouvrir le rapport de restauration**, sous **État de la restauration** dans la section **Restaurer une version précédente de ce serveur**, mène au rapport.
 
 Le test restaure la sauvegarde la plus récente dans un dossier séparé de votre serveur, vérifie ce qui est revenu, puis supprime le dossier. Vos applications en cours d'exécution ne sont pas touchées.
 
@@ -238,7 +254,7 @@ La fenêtre se referme d'elle-même après 4 heures; cinq codes erronés la ferm
 
 ### Sur le nouveau serveur
 
-1. Ouvrez **Restauration** et allez à **Migrer ici un serveur en service**.
+1. Ouvrez **Restauration** et, dans **Sur cette page**, choisissez **Migrer ici un serveur en service**.
 2. Collez le **Billet de migration**.
 3. Saisissez le **Code d'appairage**.
 4. Laissez **Adresse de l'autre serveur (facultative)** vide pour utiliser l'adresse du billet, ou saisissez une autre adresse IP, par exemple l'adresse de l'ancien serveur sur le réseau privé une fois son SSH public fermé. N'utilisez jamais son adresse web : elle migre à la fin, elle ne peut donc pas servir à joindre l'ancien serveur pendant la migration.
@@ -255,6 +271,8 @@ La fenêtre se referme d'elle-même après 4 heures; cinq codes erronés la ferm
 6. Mise en place des données ici, puis Bascule de l'adresse web vers ce serveur.
 7. Vérifications finales.
 
+Pendant la migration, la page s'ouvre sur **Migrer ici un serveur en service**, et son entrée de **Sur cette page** porte le badge **En cours**. Le badge indique **À l'arrêt** lorsque la migration s'est arrêtée avant la fin, et **À vérifier** lorsque l'autre serveur est hors service et que la migration n'est pas terminée.
+
 Une migration démarre les applications avec le serveur : rien n'est laissé à l'arrêt.
 
 Après les vérifications finales, l'ancien serveur libère son activation de la clé d'abonnement, et le nouveau serveur l'active puis applique les paramètres enregistrés, ce qui active ce que la clé débloque (domaines supplémentaires, horaires). Certains services redémarrent pendant l'opération. **Paramètres** > **Abonnement** en indique le résultat. Si la libération de l'ancienne activation échoue, libérez-la dans le portail client de Polar et enregistrez de nouveau la clé sur le nouveau serveur.
@@ -263,10 +281,19 @@ Après les vérifications finales, l'ancien serveur libère son activation de la
 
 - Jusqu'à "Vérification de cette sauvegarde" inclusivement, l'arrêt de la migration remet l'ancien serveur en service de lui-même. Rien n'a démarré sur le nouveau serveur et l'adresse web pointe toujours vers l'ancien.
 - Après "Retrait de l'autre serveur du service", ce n'est plus automatique, parce que le nouveau serveur peut déjà détenir une partie des données et que démarrer les deux ferait écrire deux serveurs dans le même stockage. La page indique que l'ancien serveur est retiré du service et propose deux voies : corriger ce qui a échoué et relancer la migration (elle reprend sans tout recopier), ou remettre l'ancien serveur en service.
-- Pour remettre l'ancien serveur en service, utilisez **Le remettre en service** sous **Remettre l'autre serveur en service** dans la page Restauration du nouveau serveur (saisissez de nouveau le billet, le code d'appairage et, au besoin, l'adresse), ou **Remettre ce serveur en service** dans le panneau **Migration** de l'ancien serveur. Son adresse web pointe toujours vers lui, il sert donc de nouveau dès qu'il redémarre.
+- Pour remettre l'ancien serveur en service, utilisez **Le remettre en service** sous **Remettre l'autre serveur en service**, dans la section **Migrer ici un serveur en service** de la page **Restauration** du nouveau serveur (saisissez de nouveau le billet, le code d'appairage et, au besoin, l'adresse), ou **Remettre ce serveur en service** dans le panneau **Migration** de l'ancien serveur. Son adresse web pointe toujours vers lui, il sert donc de nouveau dès qu'il redémarre.
 - **Oublier cette migration** efface la trace d'une migration inachevée et ne modifie rien sur l'un ou l'autre serveur.
 
 Après une migration terminée, l'ancien serveur est arrêté, pas effacé. Ses données et ses sauvegardes sont intactes : vous pouvez le garder jusqu'à ce que le nouveau serveur ait fait ses preuves. Le retirer est une étape distincte que rien dans la migration n'exécute.
+
+## Télécharger une copie de la dernière sauvegarde
+
+La section **Télécharger les fichiers de récupération** garde une copie des données hors du serveur, dans un seul fichier à télécharger sur un ordinateur.
+
+1. Ouvrez **Restauration** et, dans **Sur cette page**, choisissez **Télécharger les fichiers de récupération**.
+2. Sous **Créer une copie téléchargeable de la dernière sauvegarde**, sur la carte **Exporter le dernier snapshot (tar.gz)**, appuyez sur **Créer le fichier**.
+3. Attendez la fin (jusqu'à 15 minutes), puis rechargez la page.
+4. Sous **Fichiers prêts à télécharger**, appuyez sur **Télécharger** à côté du fichier.
 
 ## Dépannage
 
