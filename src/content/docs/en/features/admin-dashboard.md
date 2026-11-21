@@ -46,7 +46,7 @@ The **Monthly report** panel shows one calendar month of what the server recorde
 - **Availability**: for each watched service, the share of the time it answered, how many times it stopped answering and for how long.
 - **Alerts and warnings** raised by the job monitor and the maintenance log.
 
-Every figure is read on the server, and nothing is sent elsewhere. All times are UTC. To keep a copy, press **Download as PDF**: the PDF holds the month the page shows.
+Every figure is read on the server, and nothing is sent elsewhere. All times are UTC. To keep a copy, press **Download as PDF**: the PDF holds the month the page shows, and each of its pages names who the server is licensed to.
 
 A figure the server does not record is never estimated. It appears under **Not shown for this period** as not shown, with the reason (for example, "The maintenance log on this server goes back to `<date>`, so the backups, updates and warnings before that date are not shown."). The section **What this server does not record** lists what is never part of the report, such as operating-system updates and the result of each restore test.
 
