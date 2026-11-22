@@ -4,9 +4,11 @@ Astro + Starlight client wiki for the catena stack. Public-facing
 docs (EN + FR), served at `docs.catena.run`.
 
 Standalone build (`npm run build` -> `dist/`); deployed to GitHub
-Pages via `.github/workflows/deploy-pages.yml` on push to `release`: the
-deploy builds the site from the pushed commit. A merge into `main` does not
-deploy. No chained-build coupling with the marketing site.
+Pages via `.github/workflows/deploy-pages.yml` on push to `main`. The deploy
+looks for the `ci.yml` push run of the same tree (it waits up to 30 minutes
+for a run still going), does not publish a tree whose CI failed, and builds the
+site itself unless that run holds a `site` artifact.
+No chained-build coupling with the marketing site.
 
 ## Develop
 

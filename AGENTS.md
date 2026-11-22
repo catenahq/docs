@@ -2,7 +2,7 @@
 
 Astro + Starlight. Client-facing documentation served at
 `docs.catena.run` via GitHub Pages (`.github/workflows/
-deploy-pages.yml`, deploys on push to `release`). Builds standalone
+deploy-pages.yml`, deploys on push to `main`). Builds standalone
 (`npm run build` -> `dist/`).
 
 ## Build flow

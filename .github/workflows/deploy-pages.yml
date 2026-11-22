@@ -2,18 +2,23 @@
 #
 # Static Astro + Starlight build (npm run build -> dist/) published to
 # GitHub Pages. The custom domain docs.catena.run is set via public/CNAME
-# (persisted on deploy). Runs on push to release (the protected deploy
-# branch); a merge into main does not deploy.
+# (persisted on deploy). Runs on push to main (the protected deploy
+# branch); dev is the active-edit branch and does not deploy.
 #
 # @catenahq/contracts is consumed via sibling read (file:../contracts);
 # the build checks out catenahq/contracts alongside. contracts is
 # public, so no token is needed.
+#
+# A first step looks for the push run of ci.yml on the same tree (waiting up to
+# 30 minutes for one still going). Its site artifact is published as it is; a
+# tree whose CI failed fails the job and is not published; with no run, or no
+# site artifact on the run, the site is built here.
 
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [release]
+    branches: [main]
   workflow_dispatch:
 
 # Least privilege: no permissions by default; each job grants only what
@@ -31,26 +36,57 @@ jobs:
     runs-on: ubuntu-26.04
     permissions:
       contents: read
+      actions: read
     steps:
+      - name: The CI run of this tree
+        id: tree
+        uses: catenahq/contracts/.github/actions/same-tree@ede5b1277e10a673fd5ff7791e4abfd20dbd3738 # main
+        with:
+          name: ci
+          workflow: .github/workflows/ci.yml
+          siblings: catenahq/contracts
+          source-events: push
+          record: false
+          wait-minutes: 30
+      - name: The run that built the site
+        id: source
+        if: steps.tree.outputs.state == 'success'
+        env:
+          SOURCE: ${{ steps.tree.outputs.source }}
+        run: echo "run-id=${SOURCE##*/}" >> "$GITHUB_OUTPUT"
+      - name: Download the site CI built
+        id: site
+        if: steps.source.outputs.run-id != ''
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: site
+          path: docs/dist
+          run-id: ${{ steps.source.outputs.run-id }}
+          github-token: ${{ github.token }}
       - name: Check out docs
+        if: steps.site.outcome != 'success'
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           path: docs
           persist-credentials: false
       - name: Check out sibling contracts
-        uses: catenahq/contracts/.github/actions/checkout-sibling@b1a900783044f4453a2c7af1289501da0c086590 # main
+        if: steps.site.outcome != 'success'
+        uses: catenahq/contracts/.github/actions/checkout-sibling@ede5b1277e10a673fd5ff7791e4abfd20dbd3738 # main
         with:
           repository: catenahq/contracts
           path: contracts
           lock: docs/.github/catenahq.lock
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+      - if: steps.site.outcome != 'success'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
-          node-version: "26.13.1"
-          package-manager-cache: false
+          node-version: "26"
       - name: Install
+        if: steps.site.outcome != 'success'
         working-directory: ./docs
         run: npm ci
       - name: Build
+        if: steps.site.outcome != 'success'
         working-directory: ./docs
         env:
           PUBLIC_UMAMI_SCRIPT_URL: ${{ vars.UMAMI_SCRIPT_URL }}
