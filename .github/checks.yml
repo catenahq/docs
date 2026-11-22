@@ -1,0 +1,7 @@
+gates:
+  duplication: true
+checks:
+  site:
+    tools: {node: 26.13.1}
+    siblings: {contracts: {}}
+scan: {}

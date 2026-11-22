@@ -2,7 +2,7 @@
 
 Astro + Starlight. Client-facing documentation served at
 `docs.catena.run` via GitHub Pages (`.github/workflows/
-deploy-pages.yml`, deploys on push to `main`). Builds standalone
+deploy-pages.yml`, deploys on push to `release`). Builds standalone
 (`npm run build` -> `dist/`).
 
 ## Build flow
@@ -21,10 +21,10 @@ checkout. Edits in `contracts/` are visible immediately on the next
 `npm run dev` / `npm run build`.
 
 Local dev assumes the standard `catena/docs/` + `catena/contracts/`
-sibling layout. CI mirrors this: the docs job checks out docs into
-`docs/` and catenahq/contracts into `contracts/` under
-`$GITHUB_WORKSPACE`, then runs npm install + build with
-`working-directory: ./docs`.
+sibling layout. CI mirrors this: the `site` check runs with docs in
+`ws/docs` and catenahq/contracts in `ws/contracts`, and the deploy
+checks out docs into `docs/` and catenahq/contracts into `contracts/`
+under `$GITHUB_WORKSPACE`.
 
 catenahq/contracts is public: the sibling-checkout steps need no
 token.
