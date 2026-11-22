@@ -221,7 +221,8 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | <a id="s1"></a>S1 | erreur | Une clé qui fait refuser tout le fichier par Swarm : `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Les limites vont dans `deploy.resources.limits`, le nombre de répliques dans `deploy.replicas`. |
 | <a id="s2"></a>S2 | avertissement | Une clé que Swarm ignore, comme `depends_on`, `restart`, `container_name`, `expose`, `links`, `build`, `network_mode`, la forme courte de `tmpfs`. |
 | <a id="s3"></a>S3 | erreur | Un port publié par le maillage de routage, qui remplace l'adresse de chaque visiteur. Utilisez `mode: host`. |
-| <a id="s4"></a>S4 | erreur | Une entrée `configs` dont le contenu vient d'un fichier ou d'un texte en ligne. Seuls les `configs` `external: true` sont acceptés. |
+| <a id="s4"></a>S4 | erreur | Une entrée `configs` dont le contenu vient d'un fichier ou d'un texte en ligne. Seuls les `configs` `external: true` sont acceptés. Il en va de même d'une entrée `secrets` dont le contenu vient d'un fichier et d'un `env_file` : le serveur les lit avec les droits d'administrateur. |
+| <a id="s5"></a>S5 | erreur | Le script d'un `entrypoint` ou d'un `command` en ligne (`python -c`, `sh -c`, `bash -c`) n'est pas valide dans son langage. |
 
 ### Ce que Catena lit dans le fichier
 
@@ -259,7 +260,16 @@ Un constat est une **erreur** quand le déploiement échoue, que des données so
 | <a id="x9"></a>X9 | avertissement | Un port publié sur le serveur, joignable sans connexion. |
 | <a id="x10"></a>X10 | erreur | Des étiquettes Traefik, qui n'acheminent rien. Utilisez `vps.route.host` et les étiquettes d'accès. |
 | <a id="x11"></a>X11 | avertissement | Un service de `catena-network` qui garde l'accès réseau brut, avec lequel il pourrait forger du trafic vers les services propres de Catena. Le fichier corrigé ajoute `cap_drop: [NET_RAW]`; une application qui en a besoin ajoute `cap_add: [NET_RAW]` ([X7](#x7) le signale alors). |
+| <a id="x12"></a>X12 | erreur | Un montage du dossier qui contient les dossiers d'où Catena déploie les applications : une application qui peut y écrire choisit ce que le serveur exécute avec les droits d'administrateur. |
+| <a id="x13"></a>X13 | erreur | Une valeur qui dépend encore d'une variable une fois le `.env` du dossier de l'application appliqué : le serveur ne peut pas savoir quel chemin du serveur elle atteint. Écrivez le chemin en toutes lettres, ou définissez la variable dans `.env`. |
+| <a id="x14"></a>X14 | erreur | Un volume qui n'est pas celui de l'application : un volume déclaré `external`, ou nommé autrement qu'avec le nom de l'application suivi d'un trait de soulignement. Un service qui le monte lit et écrit les données d'une autre application ou du serveur. Un fichier du catalogue de Catena dont le bloc le déclare passe. |
+| <a id="x15"></a>X15 | erreur | Un réseau qui appartient à Catena (`catena-` suivi d'un nom, autre que `catena-network`) : un service qui s'y trouve atteint ce que le serveur y garde, comme un analyseur qui accepte des commandes sans connexion. Seul un fichier du catalogue de Catena dont le bloc fournit ou lit cette capacité peut le joindre. |
+| <a id="x16"></a>X16 | erreur | Un bloc `x-catena` qui nomme une base de données pour les données d'un service. Seuls les services propres de Catena en déclarent une : le serveur exporterait puis rejouerait, avec les mises à jour de l'application, toutes les bases de ce service. Déclarez plutôt le volume où les données se trouvent. |
 | <a id="x17"></a>X17 | erreur | Un montage lié d'un dossier du serveur hors du dossier de données propre à l'application, sauf s'il se trouve dans un dossier inscrit sous **Autres dossiers à sauvegarder**; un montage lié d'un dossier inscrit lui-même est refusé. Sont aussi signalés : un montage lié de tout le dossier de données de l'application, des montages liés qui se contiennent l'un l'autre, et un volume qui attache son propre système de fichiers. |
+| <a id="x18"></a>X18 | erreur | `cap_add` de capacités qui atteignent le serveur au-delà du conteneur : charger du code dans son noyau, lire ou tracer d'autres processus, contourner les permissions de fichiers, ou changer le réseau ou l'horloge. Un fichier du catalogue de Catena dont le bloc les déclare sous `capabilities` passe. |
+| <a id="x19"></a>X19 | erreur | Un bloc `x-catena` qui fournit ou lit une capacité que Catena réserve : un service sur son réseau est cru pour connecter les visiteurs. Seuls des fichiers du catalogue de Catena peuvent l'utiliser. |
+| <a id="x20"></a>X20 | erreur | Un alias réseau sur `catena-network` qui est un nom auquel répondent les services propres de Catena : Docker enverrait à l'application une partie de ce qui est destiné à Catena. Retirez l'alias. |
+| <a id="x21"></a>X21 | erreur | Un secret stocké qui ouvre le serveur lui-même (ses sauvegardes, ses accès d'administrateur, sa licence ou sa connexion), listé dans `secrets` ou lu dans le bloc. Aucune application ne peut le lire. |
 
 ## Dépannage
 
