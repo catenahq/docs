@@ -221,7 +221,8 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | <a id="s1"></a>S1 | error | A key that makes Swarm refuse the whole file: `mem_limit`, `memswap_limit`, `cpus`, `cpu_shares`, `volumes_from`, `profiles`, `scale`. Limits move to `deploy.resources.limits`, the replica count to `deploy.replicas`. |
 | <a id="s2"></a>S2 | warning | A key that Swarm ignores, such as `depends_on`, `restart`, `container_name`, `expose`, `links`, `build`, `network_mode`, the short `tmpfs`. |
 | <a id="s3"></a>S3 | error | A port published through the routing mesh, which replaces each visitor's address. Use `mode: host`. |
-| <a id="s4"></a>S4 | error | A `configs` entry that takes its content from a file or inline text. Only `external: true` configs are accepted. |
+| <a id="s4"></a>S4 | error | A `configs` entry that takes its content from a file or inline text. Only `external: true` configs are accepted. The same goes for a `secrets` entry that takes its content from a file, and for an `env_file`: the server reads them with its administrator's rights. |
+| <a id="s5"></a>S5 | error | The script of an inline `entrypoint` or `command` (`python -c`, `sh -c`, `bash -c`) does not parse in its language. |
 
 ### What Catena reads from the file
 
@@ -259,7 +260,16 @@ A finding is an **error** when the deploy fails, data is lost, the app cannot be
 | <a id="x9"></a>X9 | warning | A port published on the server, reachable without signing in. |
 | <a id="x10"></a>X10 | error | Traefik labels, which route nothing. Use `vps.route.host` and the access labels. |
 | <a id="x11"></a>X11 | warning | A service on `catena-network` that keeps raw network access, with which it could forge traffic to Catena's own services. The corrected file adds `cap_drop: [NET_RAW]`; an app that needs it adds `cap_add: [NET_RAW]` ([X7](#x7) then reports it). |
+| <a id="x12"></a>X12 | error | A mount of the folder that holds the folders Catena deploys apps from: an app that can write there chooses what the server runs as its administrator. |
+| <a id="x13"></a>X13 | error | A value that still depends on a variable once the app folder's `.env` is applied, so the server cannot tell which server path it reaches. Write the path out, or set the variable in `.env`. |
+| <a id="x14"></a>X14 | error | A volume that is not the app's own: one declared `external`, or named otherwise than with the app's name and an underscore. A service that mounts it reads and writes the data of another app or of the server. A file of Catena's catalog whose block declares it passes. |
+| <a id="x15"></a>X15 | error | A network that belongs to Catena (`catena-` and a name, other than `catena-network`): a service on it reaches what the server keeps there, such as a scanner that takes commands without signing in. Only a file of Catena's catalog whose block provides or reads that capability may join it. |
+| <a id="x16"></a>X16 | error | An `x-catena` block that names a database for the data of a service. Only Catena's own services declare one: the server would export and replay every database of that service with the app's updates. Declare the volume the data lives in instead. |
 | <a id="x17"></a>X17 | error | A bind of a server folder outside the app's own data folder, unless it lies inside a folder listed under **Other folders to back up**; a bind of a listed folder itself is refused. Also reported: a bind of the app's whole data folder, binds that contain each other, and a volume that attaches its own filesystem. |
+| <a id="x18"></a>X18 | error | `cap_add` of capabilities that reach the server past the container: loading code into its kernel, reading or tracing other processes, bypassing file permissions, or changing the network or the clock. A file of Catena's catalog whose block declares them under `capabilities` passes. |
+| <a id="x19"></a>X19 | error | An `x-catena` block that provides or reads a capability Catena reserves: a service on its network is trusted to sign visitors in. Only files of Catena's catalog may use it. |
+| <a id="x20"></a>X20 | error | A network alias on `catena-network` that is a name Catena's own services answer to: Docker would send part of what is meant for Catena to the app. Remove the alias. |
+| <a id="x21"></a>X21 | error | A stored secret that opens the server itself (its backups, its administrator logins, its licence or its sign-in), listed in `secrets` or read in the block. No app may read them. |
 
 ## Troubleshooting
 
