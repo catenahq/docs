@@ -7,7 +7,7 @@
 # Behavior: gitleaks runs against the staged diff before every
 # commit (~1s). Blocks the commit if a leaked secret is detected.
 # Pinned to v8.30.1 below; CI's gitleaks runs via the bundled
-# catenahq/scanctl gate in security.yml, a separate fetch.
+# catenahq/scanctl scan (the shared `ci / scan` job), a separate fetch.
 #
 # Bypass (use sparingly, only for documented false positives):
 #   git commit --no-verify

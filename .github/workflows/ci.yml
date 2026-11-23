@@ -1,132 +1,23 @@
-# catenahq/docs -- CI.
-#
-# catenahq/contracts is consumed via sibling read: package.json
-# declares `"@catenahq/contracts": "file:../contracts"`, so the
-# checkout step puts contracts at $GITHUB_WORKSPACE/contracts and the
-# docs job at $GITHUB_WORKSPACE/docs. Local dev mirrors this layout.
-# catenahq/contracts is public, so the checkout needs no token.
-#
-# A push to the default branch keeps the absolute gate. A pull request is judged on what
-# it introduces: the docs job and the duplication ratchet run through
-# contracts' new-failures-only action, which passes when the base commit fails
-# them too.
-
-name: CI
-
+name: ci
 on:
-  # A change is checked once, on its pull request, Renovate's included. A push
-  # runs the checks only on the default branch.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [dev]
-  pull_request:
-
-permissions:
-  contents: read
-
-# A newer push to the branch, or a newer commit of the pull request, cancels the
-# run it supersedes.
+  schedule:
+    - cron: '17 6 * * *'
+permissions: {}
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  group: ci-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-  same-tree:
-    # Reuses the result of an earlier run on the same tree; every job below
-    # needs it.
-    name: same tree (ci)
-    runs-on: ubuntu-26.04
+  ci:
+    uses: catenahq/contracts/.github/workflows/pr.yml@ede5b1277e10a673fd5ff7791e4abfd20dbd3738 # main
     permissions:
       contents: read
       actions: read
-    outputs:
-      run: ${{ steps.tree.outputs.run }}
-    steps:
-      - id: tree
-        uses: catenahq/contracts/.github/actions/same-tree@main
-        with:
-          siblings: catenahq/contracts
-
-  docs:
-    name: docs (typecheck + build)
-    needs: same-tree
-    if: needs.same-tree.outputs.run != 'false'
-    runs-on: ubuntu-26.04
-    steps:
-      - name: Check out docs
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-        with:
-          path: docs
-          persist-credentials: false
-      - name: Check out sibling contracts
-        uses: catenahq/contracts/.github/actions/checkout-sibling@main
-        with:
-          repository: catenahq/contracts
-          path: contracts
-          lock: docs/.github/catenahq.lock
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: "26"
-      # Pinned in contracts/.vale-version, which check-prose.mjs also
-      # reads and enforces: the grammars decide which comments are
-      # visible, so a different version is a different gate.
-      - name: Install vale
-        run: |
-          version="$(cat contracts/.vale-version)"
-          mkdir -p "$RUNNER_TEMP/bin"
-          curl -fsSL "https://github.com/errata-ai/vale/releases/download/v${version}/vale_${version}_Linux_64-bit.tar.gz" \
-            | tar -xz -C "$RUNNER_TEMP/bin" vale
-          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
-      - name: Install, hygiene, versions, prose, typecheck and build
-        # Install is part of the gate: an update may change the lock.
-        # Unicode hygiene (no em dashes / smart quotes / decorative symbols),
-        # repo rules (no tracked env file; .gitignore carries the env rule),
-        # versions (the documentation names no product version), prose
-        # (comments describe the code, not its history).
-        uses: catenahq/contracts/.github/actions/new-failures-only@main
-        env:
-          PUBLIC_UMAMI_SCRIPT_URL: ${{ vars.UMAMI_SCRIPT_URL }}
-          PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
-        with:
-          working-directory: ${{ github.workspace }}/docs
-          repo-path: ${{ github.workspace }}/docs
-          run: |
-            npm ci
-            npm run check:unicode
-            node ../contracts/scripts/check-repo-rules.mjs
-            npm run check:versions
-            npm run check:prose
-            npm run check
-            npm run build
-      # Only a push keeps the site: on a pull request a failing gate is run
-      # again at the base, which can leave the base's build in dist. The deploy
-      # publishes this artifact for the same tree.
-      - name: Keep the built site for the deploy
-        if: github.event_name == 'push'
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: site
-          path: docs/dist
-          retention-days: 30
-          if-no-files-found: ignore
-
-  duplication:
-    # Copy-paste ratchet: .jscpd.json carries the baseline threshold;
-    # exceeding it fails. Lower the threshold as duplication is paid
-    # down, never raise it to admit new copy-paste.
-    name: Duplication (jscpd)
-    needs: same-tree
-    if: needs.same-tree.outputs.run != 'false'
-    runs-on: ubuntu-26.04
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: "26"
-      - name: jscpd (threshold in .jscpd.json)
-        uses: catenahq/contracts/.github/actions/new-failures-only@main
-        with:
-          working-directory: ${{ github.workspace }}
-          repo-path: ${{ github.workspace }}
-          run: npx --yes jscpd@4 --silent
+      pull-requests: write
+      security-events: write
+      issues: write
+    with:
+      runner: ubuntu-26.04

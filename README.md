@@ -5,9 +5,9 @@ docs (EN + FR), served at `docs.catena.run`.
 
 Standalone build (`npm run build` -> `dist/`); deployed to GitHub
 Pages via `.github/workflows/deploy-pages.yml` on push to `main`. The deploy
-publishes the site that the `ci.yml` push run of the same tree built (it waits
-up to 30 minutes for a run still going), builds only when there is none, and
-does not publish a tree whose CI failed.
+looks for the `ci.yml` push run of the same tree (it waits up to 30 minutes
+for a run still going), does not publish a tree whose CI failed, and builds the
+site itself unless that run holds a `site` artifact.
 No chained-build coupling with the marketing site.
 
 ## Develop
@@ -64,18 +64,25 @@ sibling-directory read (`file:../contracts` in `package.json`). Edit
 `catena/contracts/` and the change shows up on the next build. CI
 checks out catenahq/contracts as a sibling before running npm install.
 
-## CI gates
+## CI
 
-- unicode hygiene (`npm run check:unicode` -- no em dashes, smart
-  quotes, decorative Unicode per workspace CLAUDE.md, plus a scan for
-  the names of systems Catena stopped shipping)
-- versions (`npm run check:versions` -- the documentation names no
-  product version, with placeholder versions allowed in examples)
-- comment prose (`npm run check:prose` -- comments describe the code as
-  it stands, with its history in the commit message)
-- Astro typecheck + Starlight build (catches broken internal links)
+`.github/workflows/ci.yml` calls the shared PR workflow of catenahq/contracts,
+which reads `.github/checks.yml`. `ci/run <name>` runs one check, the same in CI
+and on a workstation.
 
-The first and third live in catenahq/contracts and run from the sibling
-checkout, so this repo holds no copy of either. What it owns is the
-prose debt list, `.github/prose-debt.txt`. An entry that has become
-clean FAILS the gate and must be deleted.
+- the `gates` of the shared workflow: unicode hygiene (no em dashes, smart
+  quotes, decorative Unicode, plus a scan for the names of systems Catena
+  stopped shipping), repo rules, comment prose (comments describe the code as
+  it stands, with its history in the commit message) and duplication
+  (`.jscpd.json`)
+- `site` (`bash ci/run site`): `npm ci`, versions (`npm run check:versions` --
+  the documentation names no product version, with placeholder versions
+  allowed in examples), Astro typecheck (`npm run check`) and the Starlight
+  build (catches broken internal links)
+- `scan`: the scanctl security scan, configured by `scanctl.yml` and
+  `.scanctl/`
+
+The gates live in catenahq/contracts and run from the sibling checkout, so
+this repo holds no copy of them. What it owns is the prose debt list,
+`.github/prose-debt.txt`. An entry that has become clean FAILS the gate and
+must be deleted.

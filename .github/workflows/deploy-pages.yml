@@ -40,7 +40,7 @@ jobs:
     steps:
       - name: The CI run of this tree
         id: tree
-        uses: catenahq/contracts/.github/actions/same-tree@main
+        uses: catenahq/contracts/.github/actions/same-tree@ede5b1277e10a673fd5ff7791e4abfd20dbd3738 # main
         with:
           name: ci
           workflow: .github/workflows/ci.yml
@@ -72,7 +72,7 @@ jobs:
           persist-credentials: false
       - name: Check out sibling contracts
         if: steps.site.outcome != 'success'
-        uses: catenahq/contracts/.github/actions/checkout-sibling@main
+        uses: catenahq/contracts/.github/actions/checkout-sibling@ede5b1277e10a673fd5ff7791e4abfd20dbd3738 # main
         with:
           repository: catenahq/contracts
           path: contracts
