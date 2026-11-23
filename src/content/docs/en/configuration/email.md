@@ -71,7 +71,7 @@ Enter the relay's host and port, its username and password, and a sender address
 
 Press **Send a test email** in **Settings** > **Outgoing mail**. If nothing arrives at the admin address, check the spam folder, then the sender domain's verification state at the provider. A refusal by the service is shown beside the button in the service's own words.
 
-To test the sign-in service's own use of the mail service, **Forgot password** on the sign-in page at `auth.yourdomain.com` sends a reset email to an existing account. If nothing arrives, check the spam folder, then the sender domain's verification state at the provider. The **Test** button of the admin email integration in Healthchecks (`healthchecks.yourdomain.com` > **Integrations**) sends a test alert.
+To test the sign-in service's own use of the mail service, **Forgot password** on the sign-in page at `auth.yourdomain.com` sends a reset email to an existing account. If nothing arrives, check the spam folder, then the sender domain's verification state at the provider. **Send a test alert** in **Settings** > **Alerts** sends a test alert to your alert addresses (see [Alerts](/en/configuration/alerts/)).
 
 ## Troubleshooting
 

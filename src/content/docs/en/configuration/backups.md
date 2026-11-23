@@ -155,7 +155,7 @@ The copies run on the **Offsite copy** job of the [Schedules](/en/configuration/
 
 Included:
 
-- the data of every application, including its Docker volumes and the folders kept under the server's application storage, and the history kept by the status page, the heartbeat monitor and the resource monitor;
+- the data of every application, including its Docker volumes and the folders kept under the server's application storage, and the history kept by the status page and the resource monitor;
 - an export of each database taken just before the snapshot (below);
 - the server's own configuration: system files, SSH and firewall settings, the settings and secrets stored by Catena, and the administrative log;
 - every folder listed under **Other folders to back up**.

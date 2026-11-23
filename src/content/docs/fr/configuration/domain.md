@@ -68,7 +68,7 @@ Après un changement de domaine, le nom affiché sur la page de connexion à `au
 | **Keycloak (connexion)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (ce panneau)** | Ce panneau | `dash` | `dash.yourdomain.com` |
 
-Gatus (`gatus`), Healthchecks (`healthchecks`) et Beszel (`beszel`) sont installés par défaut comme applications : l'adresse de chacun est donc un paramètre de son application. Ouvrez **Applications**, puis la page de l'application avec l'engrenage de sa carte, et changez le nom à cet endroit. Le serveur déplace toutes les adresses de l'application vers le nouveau nom à sa prochaine application de la configuration (**Appliquer les paramètres enregistrés** dans [Paramètres du serveur](/fr/configuration/server/)).
+Gatus (`gatus`) et Beszel (`beszel`) sont installés par défaut comme applications : l'adresse de chacun est donc un paramètre de son application. Ouvrez **Applications**, puis la page de l'application avec l'engrenage de sa carte, et changez le nom à cet endroit. Le serveur déplace toutes les adresses de l'application vers le nouveau nom à sa prochaine application de la configuration (**Appliquer les paramètres enregistrés** dans [Paramètres du serveur](/fr/configuration/server/)).
 
 Règles, pour les champs ci-dessus et de même pour le nom d'une application :
 

@@ -18,7 +18,7 @@ Small and mid-size organizations that want to own the software they depend on, w
 | Keycloak | One sign-on for every app, with groups deciding who can open what. |
 | catena-admin | The admin panel: apps (add, configure, deploy, take down, update and remove them), status, actions, restore, schedules and settings. |
 | restic backups | Encrypted backups sent to S3 storage you own. |
-| Gatus, Healthchecks, Beszel | Status page, missed-job alarms, and server resource graphs. |
+| Gatus, Beszel | Status page and server resource graphs. Their alerts, and those of the scheduled jobs, reach you through the panel's alerts. |
 | Tailnet (optional) | A private network for administration. |
 
 ## Addresses the server publishes
@@ -30,7 +30,6 @@ Once you apply a domain, each service answers on its own subdomain of `yourdomai
 | `auth.yourdomain.com` | Keycloak sign-in |
 | `dash.yourdomain.com` | The admin panel |
 | `gatus.yourdomain.com` | Gatus status page |
-| `healthchecks.yourdomain.com` | Healthchecks |
 | `beszel.yourdomain.com` | Beszel resource graphs |
 
 You can change each name in **Settings** > **Infrastructure app subdomains**. Until you apply a domain, nothing is published and you reach the panel through an SSH forward (see [Installation](/en/installation/)).

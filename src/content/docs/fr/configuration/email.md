@@ -71,7 +71,7 @@ Saisissez l'hôte et le port du relais, son nom d'utilisateur et son mot de pass
 
 Appuyez sur **Envoyer un courriel de test** dans **Paramètres** > **Courriel sortant**. Si rien n'arrive à l'adresse de l'administrateur, vérifiez le dossier des pourriels, puis l'état de vérification du domaine d'envoi chez le fournisseur. Un refus du service s'affiche à côté du bouton, dans les mots du service.
 
-Pour essayer l'usage du service de courriel par le service de connexion lui-même, le lien de mot de passe oublié de la page de connexion, sur `auth.yourdomain.com`, envoie un courriel de réinitialisation à un compte existant. Si rien n'arrive, vérifiez le dossier des pourriels, puis l'état de vérification du domaine d'envoi chez le fournisseur. Le bouton **Test** de l'intégration de courriel de l'administrateur dans Healthchecks (`healthchecks.yourdomain.com` > **Integrations**) envoie une alerte d'essai.
+Pour essayer l'usage du service de courriel par le service de connexion lui-même, le lien de mot de passe oublié de la page de connexion, sur `auth.yourdomain.com`, envoie un courriel de réinitialisation à un compte existant. Si rien n'arrive, vérifiez le dossier des pourriels, puis l'état de vérification du domaine d'envoi chez le fournisseur. **Envoyer une alerte de test** dans **Paramètres** > **Alertes** envoie une alerte de test à vos adresses d'alerte (voir [Alertes](/fr/configuration/alerts/)).
 
 ## Dépannage
 
