@@ -5,7 +5,7 @@ description: "Choosing which alerts the server sends and where they go: email ad
 
 The server tells you about its own events: an update available or failed, a vulnerability, a restart needed, a certificate not renewed, the paid features locking, and alerts that stop reaching a destination. Every alert is off until you turn it on, except **Paid features locked**. Each alert goes to the email addresses you list and to the webhook addresses you save, on every edition.
 
-Alerts about services, scheduled jobs and resources come from three other on-server tools: Gatus (is each service answering), Healthchecks (did each scheduled job report in) and Beszel (are CPU, memory and disk healthy). Gatus and Beszel hand their alerts to the control panel, which sends them like every other alert, and you choose them in the same section. The overview is in [Monitoring and alerts](/en/features/monitoring-alerts/). This page covers the settings and the first-time wiring.
+Alerts about services and resources come from two other on-server tools: Gatus (is each service answering) and Beszel (are CPU, memory and disk healthy). They hand their alerts to the control panel, which sends them like every other alert, and you choose them in the same section. The scheduled jobs report each run to the control panel itself, which raises a job that failed or did not run. The overview is in [Monitoring and alerts](/en/features/monitoring-alerts/). This page covers the settings and the first-time wiring.
 
 ## Fields
 
@@ -42,12 +42,18 @@ Each alert has its own field, named as in the first column. A failure alert has 
 | **Alerts not delivered** | A destination has failed for a day. | Delivery to it works again. | Yes |
 | **Service down** | The status monitor (Gatus) reports a service down. One alert, then one more when it is back if the message when it ends is on. | The status monitor reports the service back up. | Yes |
 | **Resource alert** | The resource monitor (Beszel) raises one of its rules: the server silent, or processor, memory or disk past its threshold. See [How service and job alerts flow](#how-service-and-job-alerts-flow). | The resource monitor reports the rule clear. | Yes |
+| **Backup failed** | A backup run failed. A backup held after a restore raises this alert only: the offsite copy and the restore test record a skipped run. | A later backup succeeded. | Yes |
+| **Restore test failed** | A run of the restore test failed. | A later restore test succeeded. | Yes |
+| **Offsite copy failed** | A run of the offsite copy failed. | A later offsite copy succeeded. | Yes |
+| **Backup repository check failed** | A run of the backup repository check failed. | A later backup repository check passed. | Yes |
+| **Scheduled job late** | A job reported no run by its schedule plus a margin (see the rule below), or the maintenance, the vulnerability watch or the off-site heartbeat ended a run failed. | The job reported a run that passed. | Yes |
 
 How an alert behaves:
 
 - **Turning an alert on sends what is open now,** once. An emergency patch that ran while its alert was off is not sent later.
 - **One message for each alert type** carries everything due for it at that moment, so several applications raising the same alert together arrive as one message. When **Vulnerability in an application** and **Update fixes a vulnerability** are both on, one message names the vulnerabilities and the update.
 - **A reminder** repeats an alert that is still open every seven days.
+- **A job is late** when it reports no run by its schedule plus a margin. A job that is turned off, or that your edition does not run, is never late.
 - **Nothing is sent without a destination.** With no outgoing mail and no webhook address, an alert that is on stays quiet. **Send a test alert** says so.
 
 ## Destinations
@@ -109,18 +115,18 @@ When a destination has failed for a day, a banner on every admin page reads "Ale
 
 ## Off-site heartbeat
 
-A monitor on the server cannot report an outage that takes the whole server down. The off-site heartbeat closes that gap: on its schedule, the server checks that its status page, job monitor and resource monitor answer, then calls the off-site address. A plain call means all is well; a failure call names the monitors that stopped answering; no call at all means the server is down, and the outside service raises the alert. Saving the address alone sends nothing: the heartbeat runs once you turn it on in [Schedules](/en/configuration/schedules/), where its section shows the period and grace time to set on the outside check. When your subscription ends, the calls stop, so pause the outside check then.
+A monitor on the server cannot report an outage that takes the whole server down. The off-site heartbeat closes that gap: on its schedule, the server checks that its status monitor, resource monitor and alert intake answer and that the control panel's alerts ran in the last 3 minutes, then calls the off-site address. A plain call means all is well; a failure call names the monitors that stopped answering; no call at all means the server is down, and the outside service raises the alert. Saving the address alone sends nothing: the heartbeat runs once you turn it on in [Schedules](/en/configuration/schedules/), where its section shows the period and grace time to set on the outside check. When your subscription ends, the calls stop, so pause the outside check then.
 
 **Send a test heartbeat** runs the heartbeat once now, on the saved address, and shows beside the button whether the outside service took the call, or which monitor on the server did not answer. It needs Catena Pro.
 
 ## How service and job alerts flow
 
-Service and resource alerts are sent by the control panel, to the email addresses and webhook addresses of **Settings** > **Alerts**. Scheduled job alerts are sent by Healthchecks to your admin email, through the service chosen in [Outgoing email](/en/configuration/email/): while outgoing mail is set, the server keeps an email channel to your admin address in Healthchecks, attached to every check when the channel is created. A channel detached from a check in Healthchecks stays detached. With **No outgoing mail**, the channel is removed and job alerts reach only the channels you add in Healthchecks.
+Service, resource and scheduled job alerts are all sent by the control panel, to the email addresses and webhook addresses of **Settings** > **Alerts**, through the service chosen in [Outgoing email](/en/configuration/email/).
 
 1. Gatus probes the shared services (the admin panel, Healthchecks, Keycloak, Beszel, the Cloudflare tunnel and the reverse proxy) and every routed application on a fixed interval (about one to two minutes). After 3 consecutive failures it raises an alert, and after 2 successes it resolves it.
 2. Gatus posts each alert to the control panel, which sends it as **Service down** when that alert is on.
 3. Beszel watches the server with rules created once and never overwritten: status (agent silent) for 5 minutes, CPU at 90% for 10 minutes, memory at 90% for 10 minutes, disk at 85% for 10 minutes. It posts each alert to the control panel, which sends it as **Resource alert** when that alert is on.
-4. Scheduled jobs (backup, offsite copy, maintenance, restart probe, off-site heartbeat) ping Healthchecks as they run. A missed ping is itself the alert. The checks of the backup, the offsite copy, the maintenance (**Maintenance**, told when a run starts, fails or ends) and the off-site heartbeat follow the schedules of the jobs that report to them; while none of those jobs is turned on, the check is paused, so it never goes late. The vulnerability watch has a check of its own (see [the second alert on the Vulnerabilities page](/en/configuration/vulnerabilities/#alerts)). The maintenance reports to the backup and offsite copy checks only while its backup and offsite copy steps are on (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). Healthchecks sends a job's alert to your admin email and to the channels added in its own interface.
+4. Scheduled jobs (backup, repository check, restore test, offsite copy, maintenance, vulnerability watch, off-site heartbeat, restart probe) report each run to the control panel. A run that failed raises the job's own alert (**Backup failed**, **Restore test failed**, **Offsite copy failed**, **Backup repository check failed**) or, for the others, **Scheduled job late**. The control panel itself notices a job that missed its run, by its schedule plus a margin. The maintenance reports to the backup and offsite copy only while its backup and offsite copy steps are on (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). The vulnerability watch also raises **Scheduled job late** when it cannot run (see [the second alert on the Vulnerabilities page](/en/configuration/vulnerabilities/#alerts)).
 
 ## Send error reports to Catena support
 
@@ -133,7 +139,7 @@ To turn it on:
 
 To turn it off, press **Turn error reports off**. The server stops sending at once and signs off.
 
-A report names the check, whether it is failing, since when, the application it concerns, your Catena version and your edition. It never holds what is inside your applications: no files, log lines, user accounts, email or network addresses, or domain names. A report is sent only when the list of failing checks changes or a one-off event happens.
+A report names each open alert and failing check, since when, the application it concerns, your Catena version and your edition. It never names a vulnerability. It never holds what is inside your applications: no files, log lines, user accounts, email or network addresses, or domain names. A report is sent only when the list of failing checks changes or a one-off event happens.
 
 Below the switch, the section lists the last 100 reports sent, newest first, each with the exact text that left the server and whether Catena support received it.
 
@@ -144,22 +150,11 @@ When a failed job wrote text about what went wrong, that text stays on your serv
 
 Support tickets and replies come with Catena Pro and Catena Business, and support answers Monday to Friday, 08:00 to 17:00. Error reports are not round-the-clock monitoring, and a server that is switched off or cannot reach the internet sends nothing: for that, use the [off-site heartbeat](#off-site-heartbeat).
 
-## Add notification channels in Healthchecks
-
-Scheduled job alerts reach your admin email with no step here. You add more channels, for other people or other tools, in Healthchecks. Service and resource alerts use the email and webhook addresses of **Settings** > **Alerts**, not these channels.
-
-1. Open `https://healthchecks.yourdomain.com` and sign in (single sign-on).
-2. Open the project's integrations page and add a channel: email, Slack, ntfy, a webhook, or any other the page offers.
-3. Check that the channel is attached to the checks you want notified. New checks use the project's channels.
-
-Email channels need [Outgoing email](/en/configuration/email/).
-
 ## Where to look
 
 - `https://gatus.yourdomain.com`: the Gatus status page.
-- `https://healthchecks.yourdomain.com`: Healthchecks, with each job's last ping.
 - `https://beszel.yourdomain.com`: Beszel, with the server's resource graphs.
-- The **System** page of the admin panel opens these tools from the titles of its cards: **Resources** opens Beszel, **Monitoring** opens Gatus, and **Scheduled jobs** and **Alerts** open Healthchecks. The **Alerts** card lists what needs attention now (each scheduled job that failed or is late, a pending restart, and each resource alert, named by its key), and "No alert" when there is nothing; the services that are down are on the **Monitoring** card; the **Scheduled jobs** card names each job, with a grey dot for one that has not reported yet.
+- The **System** page of the admin panel: the title of **Resources** opens Beszel, the title of **Monitoring** opens Gatus, and the title of **Alerts** opens the **Alerts** page. The **Alerts** card lists what needs attention now (each scheduled job that failed or is late, a pending restart, and each resource alert, named by its key), and "No alert" when there is nothing; the services that are down are on the **Monitoring** card; the **Scheduled jobs** card names each job that is turned on, with a grey dot and "not reporting yet" for one that has not reported.
 
 You can change the subdomain names in [Domain and Cloudflare](/en/configuration/domain/).
 
@@ -169,7 +164,5 @@ You can change the subdomain names in [Domain and Cloudflare](/en/configuration/
 - An alert arrives only once: an alert is sent once while its condition lasts. Turn on its reminder to hear about it again every seven days.
 - Nothing arrives by email, but webhooks work: **Send mail through** is set to **No outgoing mail** in **Settings** > **Outgoing mail**, or the mail went to the spam folder.
 - A webhook address is refused: it must be a public https address, and not one that leads to this server or a private network. The card lists each refused address by its position with the reason.
-- A job shows late or down in Healthchecks: the job failed, or did not run at its schedule. Check the **Log** and [Schedules](/en/configuration/schedules/).
-- No Healthchecks alert email arrived: **Outgoing mail** is set to **No outgoing mail**, your admin email channel was detached from that check in Healthchecks, or the mail went to the spam folder.
-- No notification on another Healthchecks channel: that channel is not attached to the check. Attach it as above.
-- A channel you added in Healthchecks never delivers: check its address or topic in Healthchecks against the receiving side.
+- A job shows failed or late on the **System** page: the job failed, or did not run at its schedule. Check the **Log** and [Schedules](/en/configuration/schedules/).
+- A failed or late job sent no message: turn on its alert in **Settings** > **Alerts** (**Backup failed**, **Restore test failed**, **Offsite copy failed**, **Backup repository check failed** or **Scheduled job late**). Every one is off until you do.

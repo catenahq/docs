@@ -1,9 +1,9 @@
 ---
 title: "Monitoring and alerts"
-description: "Status page, missed-job alarms and resource alerts hosted on your own server, plus an optional off-site heartbeat."
+description: "Status page, failed and late job alerts and resource alerts hosted on your own server, plus an optional off-site heartbeat."
 ---
 
-The server hosts its own monitoring: a status page, resource graphs and push alerts when a service goes down, a scheduled job goes quiet, or disk, CPU or memory run hot. Service and resource alerts reach you by email, through the server's outgoing mail, and by webhook, as you choose in [Alerts](/en/configuration/alerts/). Missed-job alerts reach the admin email, and anyone else through channels you add in Healthchecks.
+The server hosts its own monitoring: a status page, resource graphs and push alerts when a service goes down, a scheduled job goes quiet, or disk, CPU or memory run hot. Service, resource and scheduled job alerts reach you by email, through the server's outgoing mail, and by webhook, as you choose in [Alerts](/en/configuration/alerts/).
 
 ## How it works
 
@@ -11,10 +11,11 @@ Gatus, Healthchecks and Beszel are installed by default as applications, and eac
 
 **Gatus** (`gatus.yourdomain.com`) is the status page. Infrastructure services are probed every 60 to 120 seconds, and each routed, running app gets one public check every 120 seconds, regenerated every 10 minutes. An app's own `vps.health.path` and `vps.health.expect` labels are used when present; otherwise the check reads the app's front page: an app behind sign-in is healthy when it sends the visitor to sign in, and a public app when its front page answers with a page or a redirect rather than an error (see [Configure an app for Catena](/en/configure-apps/)). An alert fires after 3 consecutive failures and resolves after 2 successes, so a short outage takes a few minutes to show. Gatus hands the alert to the control panel, which sends it as the **Service down** alert of [Alerts](/en/configuration/alerts/#alert-types).
 
-**Healthchecks** (`healthchecks.yourdomain.com`) receives a ping from each scheduled job (backup, offsite copy, maintenance, restart probe, off-site heartbeat); a missed ping is the alarm. Alerts reach the admin email by default, through the mail service chosen in **Settings** > **Outgoing mail**; you add more notification channels (email, Slack and many others) in Healthchecks' own interface.
+**Scheduled jobs.** Each scheduled job (backup, repository check, restore test, offsite copy, maintenance, vulnerability watch, off-site heartbeat, restart probe) reports its runs to the control panel's alerts, which notices a job that failed or missed its run (its schedule plus a margin). A job that is turned off, or that your edition does not run, is never late. **Healthchecks** (`healthchecks.yourdomain.com`) stays installed and no longer receives Catena's jobs.
+
 **Beszel** (`beszel.yourdomain.com`) graphs server resources through its agent on the host, part of the Beszel application, with the history and the usage of each container; the **System** tab's CPU and RAM gauges are read from the server itself and do not depend on it. Alert rules are created once for the server: status (agent silent) after 5 minutes, CPU and memory at 90 percent and disk at 85 percent, each sustained for 10 minutes. Beszel hands its alerts to the control panel, which sends them as the **Resource alert** of [Alerts](/en/configuration/alerts/#alert-types). Rules are never overwritten after creation, so later edits in Beszel stay.
 
-**Off-site heartbeat.** The Healthchecks on the server cannot report an outage that takes the whole server down. With Catena Pro, the off-site heartbeat calls a check at an outside monitoring service on the schedule you set in [Schedules](/en/configuration/schedules/); you save its address in **Settings** > **Alerts and missed-job reporting**. When the calls stop, the outside service raises the alarm, and a call that names a silent monitor reports the monitor that stopped.
+**Off-site heartbeat.** The monitors on the server cannot report an outage that takes the whole server down. With Catena Pro, the off-site heartbeat calls a check at an outside monitoring service on the schedule you set in [Schedules](/en/configuration/schedules/); you save its address in **Settings** > **Alerts**. When the calls stop, the outside service raises the alarm, and a call that names a silent monitor reports the monitor that stopped.
 
 **Other signals.** The panel shows tiles for monitoring status and exposed ports, a banner for missing backups and pending restarts, and a **System** page with active alerts and jobs that have not yet reported. Antivirus watch and mail delivery canaries run as timers.
 
@@ -25,7 +26,7 @@ Gatus, Healthchecks, Beszel, the status page and on-host alerts work on every ed
 ## Limits
 
 - On-server monitors cannot report an outage of the server itself, which is why the off-site heartbeat exists.
-- Alerting needs a channel: with **No outgoing mail**, nothing is sent by email, so add a webhook address in [Alerts](/en/configuration/alerts/#webhook-addresses), and add a channel in Healthchecks for missed jobs.
+- Alerting needs a channel: with **No outgoing mail**, nothing is sent by email, so add a webhook address in [Alerts](/en/configuration/alerts/#webhook-addresses).
 - Alert latency is the probe interval times the 3-failure threshold.
 
 ## Configuration

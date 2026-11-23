@@ -1,9 +1,9 @@
 ---
 title: "Supervision et alertes"
-description: "Page d'état, alarmes de tâches manquées et alertes de ressources hébergées sur votre propre serveur, avec un signal de vie hors site facultatif."
+description: "Page d'état, alertes de tâches en échec ou en retard et alertes de ressources hébergées sur votre propre serveur, avec un signal de vie hors site facultatif."
 ---
 
-Le serveur héberge sa propre supervision : une page d'état, des graphiques de ressources et des alertes lorsqu'un service tombe, qu'une tâche planifiée se tait ou que le disque, le CPU ou la mémoire s'emballent. Les alertes de services et de ressources vous parviennent par courriel, grâce au courriel sortant du serveur, et par webhook, selon votre choix dans [Alertes](/fr/configuration/alerts/). Les alertes de tâches manquées parviennent au courriel de l'administrateur, et aux autres personnes par les canaux que vous ajoutez dans Healthchecks.
+Le serveur héberge sa propre supervision : une page d'état, des graphiques de ressources et des alertes lorsqu'un service tombe, qu'une tâche planifiée se tait ou que le disque, le CPU ou la mémoire s'emballent. Les alertes de services, de ressources et de tâches planifiées vous parviennent par courriel, grâce au courriel sortant du serveur, et par webhook, selon votre choix dans [Alertes](/fr/configuration/alerts/).
 
 ## Fonctionnement
 
@@ -11,10 +11,11 @@ Gatus, Healthchecks et Beszel sont installés par défaut comme applications, et
 
 **Gatus** (`gatus.yourdomain.com`) est la page d'état. Les services d'infrastructure sont sondés toutes les 60 à 120 secondes, et chaque application routée en marche reçoit un contrôle public toutes les 120 secondes, régénéré toutes les 10 minutes. Les étiquettes `vps.health.path` et `vps.health.expect` de l'application sont utilisées si elles existent; sinon, le contrôle lit la page d'accueil de l'application : une application derrière la connexion est saine quand elle renvoie le visiteur vers la connexion, et une application publique quand sa page d'accueil répond par une page ou une redirection plutôt que par une erreur (voir [Configurer une application pour Catena](/fr/configure-apps/)). Une alerte se déclenche après 3 échecs consécutifs et se résout après 2 réussites : une courte panne met donc quelques minutes à apparaître. Gatus remet l'alerte au panneau de contrôle, qui l'envoie comme l'alerte **Service en panne** de [Alertes](/fr/configuration/alerts/#types-dalerte).
 
-**Healthchecks** (`healthchecks.yourdomain.com`) reçoit un signal de chaque tâche planifiée (sauvegarde, copie hors site, maintenance, sonde de redémarrage, signal de vie hors site); un signal manquant déclenche l'alarme. Les alertes parviennent par défaut au courriel de l'administrateur, par le service choisi dans **Paramètres** > **Courriel sortant**; vous ajoutez d'autres canaux de notification (courriel, Slack et bien d'autres) dans l'interface propre à Healthchecks.
+**Tâches planifiées.** Chaque tâche planifiée (sauvegarde, vérification du dépôt, test de restauration, copie hors site, maintenance, veille des vulnérabilités, signal de vie hors site, sonde de redémarrage) signale ses exécutions aux alertes du panneau de contrôle, qui remarque une tâche en échec ou qui a manqué son exécution (son horaire plus une marge). Une tâche désactivée, ou que votre édition n'exécute pas, n'est jamais en retard. **Healthchecks** (`healthchecks.yourdomain.com`) reste installé et ne reçoit plus les tâches de Catena.
+
 **Beszel** (`beszel.yourdomain.com`) trace les ressources du serveur grâce à son agent sur l'hôte, qui fait partie de l'application Beszel, avec l'historique et l'utilisation de chaque conteneur; les jauges de CPU et de RAM de l'onglet **Système** sont lues sur le serveur lui-même et n'en dépendent pas. Les règles d'alerte sont créées une fois pour le serveur : état (agent silencieux) après 5 minutes, CPU et mémoire à 90 pour cent et disque à 85 pour cent, chacun maintenu 10 minutes. Beszel remet ses alertes au panneau de contrôle, qui les envoie comme l'alerte **Alerte de ressources** de [Alertes](/fr/configuration/alerts/#types-dalerte). Les règles ne sont jamais écrasées après leur création : les modifications faites ensuite dans Beszel restent.
 
-**Signal de vie hors site.** Le Healthchecks du serveur ne peut pas signaler une panne qui emporte le serveur entier. Avec Catena Pro, le signal de vie hors site appelle une vérification auprès d'un service de surveillance externe, selon l'horaire que vous réglez dans [Horaires](/fr/configuration/schedules/); vous enregistrez son adresse dans **Paramètres** > **Alertes et signalement des tâches manquées**. Quand les appels cessent, le service externe donne l'alerte, et un appel qui nomme une surveillance muette signale celle qui s'est arrêtée.
+**Signal de vie hors site.** Les moniteurs du serveur ne peuvent pas signaler une panne qui emporte le serveur entier. Avec Catena Pro, le signal de vie hors site appelle une vérification auprès d'un service de surveillance externe, selon l'horaire que vous réglez dans [Horaires](/fr/configuration/schedules/); vous enregistrez son adresse dans **Paramètres** > **Alertes**. Quand les appels cessent, le service externe donne l'alerte, et un appel qui nomme une surveillance muette signale celle qui s'est arrêtée.
 
 **Autres signaux.** Le panneau affiche des tuiles pour l'état de la surveillance et les ports exposés, une bannière pour les sauvegardes manquantes et les redémarrages en attente, et une page **Système** avec les alertes actives et les tâches qui n'ont pas encore signalé. La veille antivirus et les canaris de livraison du courriel tournent comme minuteries.
 
@@ -25,7 +26,7 @@ Gatus, Healthchecks, Beszel, la page d'état et les alertes sur l'hôte fonction
 ## Limites
 
 - Les moniteurs du serveur ne peuvent pas signaler une panne du serveur lui-même, d'où le signal de vie hors site.
-- L'alerte exige un canal : avec **Aucun courriel sortant**, aucun courriel n'est envoyé : ajoutez une adresse de webhook dans [Alertes](/fr/configuration/alerts/#adresses-de-webhook), et un canal dans Healthchecks pour les tâches manquées.
+- L'alerte exige un canal : avec **Aucun courriel sortant**, aucun courriel n'est envoyé : ajoutez une adresse de webhook dans [Alertes](/fr/configuration/alerts/#adresses-de-webhook).
 - Le délai d'alerte est l'intervalle de sondage multiplié par le seuil de 3 échecs.
 
 ## Configuration

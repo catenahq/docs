@@ -5,7 +5,7 @@ description: "Choisir les alertes que le serveur envoie et où elles vont : adre
 
 Le serveur vous informe de ses propres événements : une mise à jour disponible ou en échec, une vulnérabilité, un redémarrage nécessaire, un certificat non renouvelé, le verrouillage des fonctions payantes, et les alertes qui n'atteignent plus une destination. Chaque alerte est désactivée tant que vous ne l'activez pas, sauf **Fonctions payantes verrouillées**. Chaque alerte va aux adresses de courriel de votre liste et aux adresses de webhook que vous enregistrez, dans toutes les éditions.
 
-Les alertes sur les services, les tâches planifiées et les ressources viennent de trois autres outils du serveur : Gatus (chaque service répond-il), Healthchecks (chaque tâche planifiée s'est-elle signalée) et Beszel (le processeur, la mémoire et le disque sont-ils sains). Gatus et Beszel remettent leurs alertes au panneau de contrôle, qui les envoie comme toute autre alerte, et vous les choisissez dans la même section. La vue d'ensemble se trouve dans [Supervision et alertes](/fr/features/monitoring-alerts/). Cette page couvre les réglages et le premier raccordement.
+Les alertes sur les services et les ressources viennent de deux autres outils du serveur : Gatus (chaque service répond-il) et Beszel (le processeur, la mémoire et le disque sont-ils sains). Ils remettent leurs alertes au panneau de contrôle, qui les envoie comme toute autre alerte, et vous les choisissez dans la même section. Les tâches planifiées signalent chaque exécution au panneau de contrôle lui-même, qui déclenche une alerte pour une tâche en échec ou qui ne s'est pas exécutée. La vue d'ensemble se trouve dans [Supervision et alertes](/fr/features/monitoring-alerts/). Cette page couvre les réglages et le premier raccordement.
 
 ## Champs
 
@@ -42,12 +42,18 @@ Chaque alerte a son propre champ, nommé comme dans la première colonne. Une al
 | **Alertes non remises** | Une destination est en échec depuis un jour. | La remise vers elle fonctionne de nouveau. | Oui |
 | **Service en panne** | Le moniteur d'état (Gatus) signale un service en panne. Une alerte, puis une de plus au rétablissement si le message à la fin est activé. | Le moniteur d'état signale que le service est rétabli. | Oui |
 | **Alerte de ressources** | Le moniteur de ressources (Beszel) déclenche l'une de ses règles : serveur silencieux, ou processeur, mémoire ou disque au-delà de son seuil. Voir [Parcours d'une alerte de service ou de tâche](#parcours-dune-alerte-de-service-ou-de-tâche). | Le moniteur de ressources signale que la règle est revenue à la normale. | Oui |
+| **Échec de la sauvegarde** | Une exécution de la sauvegarde a échoué. Une sauvegarde retenue après une restauration ne déclenche que cette alerte : la copie hors site et le test de restauration consignent une exécution sautée. | Une sauvegarde suivante a réussi. | Oui |
+| **Échec du test de restauration** | Une exécution du test de restauration a échoué. | Un test de restauration suivant a réussi. | Oui |
+| **Échec de la copie hors site** | Une exécution de la copie hors site a échoué. | Une copie hors site suivante a réussi. | Oui |
+| **Échec de la vérification du dépôt de sauvegarde** | Une exécution de la vérification du dépôt de sauvegarde a échoué. | Une vérification suivante du dépôt de sauvegarde a réussi. | Oui |
+| **Tâche planifiée en retard** | Une tâche n'a signalé aucune exécution à son horaire plus une marge (voir la règle ci-dessous), ou la maintenance, la veille des vulnérabilités ou le signal de vie hors site a terminé une exécution en échec. | La tâche a signalé une exécution réussie. | Oui |
 
 Le comportement d'une alerte :
 
 - **Activer une alerte envoie ce qui est ouvert à cet instant,** une fois. Un correctif d'urgence exécuté pendant que son alerte était désactivée n'est pas envoyé plus tard.
 - **Un seul message par type d'alerte** porte tout ce qui est dû pour ce type à ce moment : plusieurs applications qui déclenchent la même alerte ensemble arrivent donc dans un message. Quand **Vulnérabilité dans une application** et **Une mise à jour corrige une vulnérabilité** sont toutes deux activées, un seul message nomme les vulnérabilités et la mise à jour.
 - **Un rappel** répète tous les sept jours une alerte encore ouverte.
+- **Une tâche est en retard** quand elle ne signale aucune exécution à son horaire plus une marge. Une tâche désactivée, ou que votre édition n'exécute pas, n'est jamais en retard.
 - **Rien n'est envoyé sans destination.** Sans courriel sortant ni adresse de webhook, une alerte activée reste muette. **Envoyer une alerte de test** l'indique.
 
 ## Destinations
@@ -109,18 +115,18 @@ Quand une destination est en échec depuis un jour, une bannière sur chaque pag
 
 ## Signal de vie hors site
 
-Une surveillance installée sur le serveur ne peut pas signaler une panne qui emporte le serveur entier. Le signal de vie hors site comble cet écart : selon son horaire, le serveur vérifie que sa page d'état, son moniteur de tâches et son moniteur de ressources répondent, puis appelle l'adresse hors site. Un appel simple indique que tout va bien; un appel d'échec nomme les surveillances qui ne répondent plus; l'absence d'appel signifie que le serveur est hors service, et le service externe donne l'alerte. Enregistrer l'adresse seule n'envoie rien : le signal de vie s'exécute une fois que vous l'activez dans [Horaires](/fr/configuration/schedules/), où sa section indique la période et le délai de grâce à régler sur la vérification externe. À la fin de votre abonnement, les appels cessent : mettez alors la vérification externe en pause.
+Une surveillance installée sur le serveur ne peut pas signaler une panne qui emporte le serveur entier. Le signal de vie hors site comble cet écart : selon son horaire, le serveur vérifie que son moniteur d'état, son moniteur de ressources et sa réception d'alertes répondent et que les alertes du panneau de contrôle se sont exécutées dans les 3 dernières minutes, puis appelle l'adresse hors site. Un appel simple indique que tout va bien; un appel d'échec nomme les surveillances qui ne répondent plus; l'absence d'appel signifie que le serveur est hors service, et le service externe donne l'alerte. Enregistrer l'adresse seule n'envoie rien : le signal de vie s'exécute une fois que vous l'activez dans [Horaires](/fr/configuration/schedules/), où sa section indique la période et le délai de grâce à régler sur la vérification externe. À la fin de votre abonnement, les appels cessent : mettez alors la vérification externe en pause.
 
 **Envoyer un signal de vie de test** exécute le signal de vie une fois, maintenant, sur l'adresse enregistrée, et indique à côté du bouton si le service externe a reçu l'appel, ou quelle surveillance du serveur n'a pas répondu. Il exige Catena Pro.
 
 ## Parcours d'une alerte de service ou de tâche
 
-Les alertes de services et de ressources sont envoyées par le panneau de contrôle, aux adresses de courriel et aux adresses de webhook de **Paramètres** > **Alertes**. Les alertes de tâches planifiées sont envoyées par Healthchecks à votre courriel d'administrateur, par le service choisi dans [Courriel sortant](/fr/configuration/email/) : tant que le courriel sortant est réglé, le serveur garde dans Healthchecks un canal de courriel vers votre adresse d'administrateur, rattaché à toutes les vérifications au moment de sa création. Un canal détaché d'une vérification dans Healthchecks le reste. Avec **Aucun courriel sortant**, le canal est retiré et les alertes de tâches ne parviennent qu'aux canaux que vous ajoutez dans Healthchecks.
+Les alertes de services, de ressources et de tâches planifiées sont toutes envoyées par le panneau de contrôle, aux adresses de courriel et aux adresses de webhook de **Paramètres** > **Alertes**, par le service choisi dans [Courriel sortant](/fr/configuration/email/).
 
 1. Gatus sonde les services partagés (le panneau d'administration, Healthchecks, Keycloak, Beszel, le tunnel Cloudflare et le mandataire inverse) et chaque application exposée à intervalle fixe (environ une à deux minutes). Après 3 échecs consécutifs, il déclenche une alerte, et après 2 réussites, il la résout.
 2. Gatus publie chaque alerte au panneau de contrôle, qui l'envoie comme **Service en panne** quand cette alerte est activée.
 3. Beszel surveille le serveur avec des règles créées une seule fois et jamais écrasées : état (agent silencieux) pendant 5 minutes, processeur à 90 % pendant 10 minutes, mémoire à 90 % pendant 10 minutes, disque à 85 % pendant 10 minutes. Il publie chaque alerte au panneau de contrôle, qui l'envoie comme **Alerte de ressources** quand cette alerte est activée.
-4. Les tâches planifiées (sauvegarde, copie hors site, maintenance, sonde de redémarrage, signal de vie hors site) signalent leur passage à Healthchecks. Un signal manquant est en soi l'alerte. Les vérifications de la sauvegarde, de la copie hors site, de la maintenance (**Maintenance**, avertie quand une exécution commence, échoue ou se termine) et du signal de vie hors site suivent les horaires des tâches qui s'y signalent; tant qu'aucune de ces tâches n'est activée, la vérification est en pause et n'est donc jamais en retard. La veille des vulnérabilités a sa propre vérification (voir [la seconde alerte de la page Vulnérabilités](/fr/configuration/vulnerabilities/#alertes)). La maintenance ne se signale aux vérifications de la sauvegarde et de la copie hors site que tant que ses étapes de sauvegarde et de copie hors site sont activées (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). Healthchecks envoie l'alerte d'une tâche à votre courriel d'administrateur et aux canaux ajoutés dans sa propre interface.
+4. Les tâches planifiées (sauvegarde, vérification du dépôt, test de restauration, copie hors site, maintenance, veille des vulnérabilités, signal de vie hors site, sonde de redémarrage) signalent chaque exécution au panneau de contrôle. Une exécution en échec déclenche l'alerte propre à la tâche (**Échec de la sauvegarde**, **Échec du test de restauration**, **Échec de la copie hors site**, **Échec de la vérification du dépôt de sauvegarde**) ou, pour les autres, **Tâche planifiée en retard**. Le panneau de contrôle remarque lui-même une tâche qui a manqué son exécution, selon son horaire plus une marge. La maintenance ne se signale à la sauvegarde et à la copie hors site que tant que ses étapes de sauvegarde et de copie hors site sont activées (voir [Choisir les étapes](/fr/configuration/schedules/#choisir-les-étapes)). La veille des vulnérabilités déclenche aussi **Tâche planifiée en retard** quand elle ne peut pas s'exécuter (voir [la seconde alerte de la page Vulnérabilités](/fr/configuration/vulnerabilities/#alertes)).
 
 ## Envoyer des rapports d'erreurs au soutien de Catena
 
@@ -133,7 +139,7 @@ Pour l'activer :
 
 Pour la désactiver, appuyez sur **Désactiver les rapports d'erreurs**. Le serveur cesse aussitôt d'envoyer et se désinscrit.
 
-Un rapport nomme le contrôle, indique s'il échoue et depuis quand, l'application concernée, votre version de Catena et votre édition. Il ne contient jamais ce qui se trouve dans vos applications : ni fichiers, ni lignes de journal, ni comptes d'utilisateurs, ni adresses courriel ou réseau, ni noms de domaine. Un rapport n'est envoyé que lorsque la liste des contrôles en échec change ou qu'un événement ponctuel survient.
+Un rapport nomme chaque alerte ouverte et chaque contrôle en échec, depuis quand, l'application concernée, votre version de Catena et votre édition. Il ne nomme jamais une vulnérabilité. Il ne contient jamais ce qui se trouve dans vos applications : ni fichiers, ni lignes de journal, ni comptes d'utilisateurs, ni adresses courriel ou réseau, ni noms de domaine. Un rapport n'est envoyé que lorsque la liste des contrôles en échec change ou qu'un événement ponctuel survient.
 
 Sous l'interrupteur, la section liste les 100 derniers rapports envoyés, du plus récent au plus ancien, chacun avec le texte exact qui a quitté le serveur et l'indication que le soutien de Catena l'a reçu ou non.
 
@@ -144,22 +150,11 @@ Quand une tâche en échec a écrit un texte sur ce qui a mal tourné, ce texte 
 
 Les billets de soutien et les réponses viennent avec Catena Pro et Catena Business, et le soutien répond du lundi au vendredi, de 8 h à 17 h. Les rapports d'erreurs ne forment pas une surveillance 24 heures sur 24, et un serveur éteint ou sans accès à Internet n'envoie rien : pour cela, utilisez le [signal de vie hors site](#signal-de-vie-hors-site).
 
-## Ajouter des canaux de notification dans Healthchecks
-
-Les alertes de tâches planifiées parviennent à votre courriel d'administrateur sans aucune étape ici. Vous ajoutez d'autres canaux, pour d'autres personnes ou d'autres outils, dans Healthchecks. Les alertes de services et de ressources utilisent les adresses de courriel et de webhook de **Paramètres** > **Alertes**, pas ces canaux :
-
-1. Ouvrez `https://healthchecks.yourdomain.com` et connectez-vous (authentification unique).
-2. Ouvrez la page des intégrations du projet et ajoutez un canal : courriel, Slack, ntfy, webhook, ou tout autre que la page propose.
-3. Vérifiez que le canal est rattaché aux vérifications que vous voulez notifier. Les nouvelles vérifications utilisent les canaux du projet.
-
-Les canaux par courriel exigent [Courriel sortant](/fr/configuration/email/).
-
 ## Où regarder
 
 - `https://gatus.yourdomain.com` : la page d'état de Gatus.
-- `https://healthchecks.yourdomain.com` : Healthchecks, avec le dernier signal de chaque tâche.
 - `https://beszel.yourdomain.com` : Beszel, avec les graphiques de ressources du serveur.
-- La page **Système** du panneau d'administration ouvre ces outils depuis le titre de ses cartes : **Ressources** ouvre Beszel, **Surveillance** ouvre Gatus, et **Tâches planifiées** et **Alertes** ouvrent Healthchecks. La carte **Alertes** liste ce qui demande attention maintenant (chaque tâche planifiée en échec ou en retard, un redémarrage en attente et chaque alerte de ressources, nommée par sa clé), et "Aucune alerte" quand il n'y a rien; les services tombés sont sur la carte **Surveillance**; la carte **Tâches planifiées** nomme chaque tâche, avec un point gris pour celle qui ne s'est pas encore signalée.
+- La page **Système** du panneau d'administration : le titre de **Ressources** ouvre Beszel, le titre de **Surveillance** ouvre Gatus, et le titre d'**Alertes** ouvre la page **Alertes**. La carte **Alertes** liste ce qui demande attention maintenant (chaque tâche planifiée en échec ou en retard, un redémarrage en attente et chaque alerte de ressources, nommée par sa clé), et "Aucune alerte" quand il n'y a rien; les services tombés sont sur la carte **Surveillance**; la carte **Tâches planifiées** nomme chaque tâche activée, avec un point gris et "aucun signalement encore" pour celle qui ne s'est pas signalée.
 
 Vous pouvez changer les noms de sous-domaines dans [Domaine et Cloudflare](/fr/configuration/domain/).
 
@@ -169,7 +164,5 @@ Vous pouvez changer les noms de sous-domaines dans [Domaine et Cloudflare](/fr/c
 - Une alerte n'arrive qu'une fois : une alerte est envoyée une seule fois tant que sa situation dure. Activez son rappel pour en être averti de nouveau tous les sept jours.
 - Rien n'arrive par courriel, mais les webhooks fonctionnent : **Envoyer le courriel par** est réglé à **Aucun courriel sortant** dans **Paramètres** > **Courriel sortant**, ou le courriel est dans les pourriels.
 - Une adresse de webhook est refusée : elle doit être une adresse https publique, et non une adresse qui mène à ce serveur ou à un réseau privé. La carte liste chaque adresse refusée par sa position avec la raison.
-- Une tâche apparaît en retard ou en panne dans Healthchecks : la tâche a échoué ou ne s'est pas exécutée à son horaire. Consultez le **Journal** et [Horaires](/fr/configuration/schedules/).
-- Aucun courriel d'alerte de Healthchecks : **Courriel sortant** est réglé à **Aucun courriel sortant**, votre canal de courriel d'administrateur a été détaché de cette vérification dans Healthchecks, ou le courriel est dans les pourriels.
-- Aucune notification sur un autre canal de Healthchecks : ce canal n'est pas rattaché à la vérification. Rattachez-le comme ci-dessus.
-- Un canal que vous avez ajouté dans Healthchecks ne livre rien : comparez son adresse ou son sujet dans Healthchecks avec ceux du côté de la réception.
+- Une tâche apparaît en échec ou en retard sur la page **Système** : la tâche a échoué ou ne s'est pas exécutée à son horaire. Consultez le **Journal** et [Horaires](/fr/configuration/schedules/).
+- Une tâche en échec ou en retard n'a envoyé aucun message : activez son alerte dans **Paramètres** > **Alertes** (**Échec de la sauvegarde**, **Échec du test de restauration**, **Échec de la copie hors site**, **Échec de la vérification du dépôt de sauvegarde** ou **Tâche planifiée en retard**). Chacune est désactivée tant que vous ne l'activez pas.

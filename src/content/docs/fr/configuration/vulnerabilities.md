@@ -108,7 +108,7 @@ Dans toutes les éditions, **Vérifier maintenant** lance la veille en arrière-
 
 Les alertes suivent la règle des [Alertes de sécurité](#alertes-de-sécurité-toutes-les-éditions). Elles vont aux destinations réglées dans **Paramètres** > **Alertes**, pour les alertes que vous y avez activées (voir [Alertes](/fr/configuration/alerts/)).
 
-Une seconde alerte, la vérification **Veille des vulnérabilités** dans Healthchecks, se déclenche lorsque la veille elle-même ne peut pas vérifier : les mêmes causes que celles dont la page avertit. Elle va au courriel administrateur et à chaque canal configuré dans Healthchecks (voir [Alertes](/fr/configuration/alerts/#parcours-dune-alerte-de-service-ou-de-tâche)). Un Healthchecks que vous avez retiré n'est pas réinstallé et ne lève aucune alerte (voir [Supervision et alertes](/fr/features/monitoring-alerts/)).
+Une seconde alerte, **Tâche planifiée en retard**, est déclenchée lorsque la veille elle-même ne peut pas vérifier : les mêmes causes que celles dont la page avertit. Elle va aux destinations réglées dans **Paramètres** > **Alertes**, quand vous avez activé cette alerte (voir [Alertes](/fr/configuration/alerts/#parcours-dune-alerte-de-service-ou-de-tâche)).
 
 ### Corriger une vulnérabilité
 
