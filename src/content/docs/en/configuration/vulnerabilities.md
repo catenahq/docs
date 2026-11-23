@@ -108,7 +108,7 @@ On every edition, **Check now** runs the watch in the background: a fresh databa
 
 The alerts follow the rule in [Security alerts](#security-alerts-every-edition). They go to the destinations set in **Settings** > **Alerts**, for the alerts you turned on there (see [Alerts](/en/configuration/alerts/)).
 
-A second alert, the **CVE watch** check in Healthchecks, fires when the watch itself cannot check: the same causes the page warns about. It goes to the admin email and to every channel set up in Healthchecks (see [Alerts](/en/configuration/alerts/#how-service-and-job-alerts-flow)). A Healthchecks you removed is not installed again, and no alert is raised for it (see [Monitoring and alerts](/en/features/monitoring-alerts/)).
+A second alert, **Scheduled job late**, is raised when the watch itself cannot check: the same causes the page warns about. It goes to the destinations set in **Settings** > **Alerts**, when you turned that alert on (see [Alerts](/en/configuration/alerts/#how-service-and-job-alerts-flow)).
 
 ### Patch a vulnerability
 

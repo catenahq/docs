@@ -22,10 +22,10 @@ Every job ships switched off, except the **Vulnerability watch** on a server tha
 | **Maintenance** | Backs up, checks the backup, copies it offsite, then moves the server's own components and the deployed applications to newer versions behind those checks. You choose which steps it runs (see [Choosing the steps](#choosing-the-steps)). |
 | **Offsite copy** | Copies every declared bucket to the write-once storage at the second provider (see [Offsite copies](/en/configuration/backups/#offsite-copies)). Needs Catena Business. |
 | **Backup integrity check** | Reads a sample of the backup repository end to end, which catches silent storage corruption between snapshots. |
-| **Restore test** | Restores the latest backup into a scratch area and checks what came back, which proves a backup can be restored. It downloads as much as the backup holds and needs as much free disk, so it ships off. Turn it on when the server has the room; it then runs on Sundays at 5 AM until you set another time. It reports to its own Healthchecks check, so a test that fails or does not run raises an alert (see [Alerts](/en/configuration/alerts/)). Needs Catena Pro. It can instead run as a step of the maintenance (see [Choosing the steps](#choosing-the-steps)). |
+| **Restore test** | Restores the latest backup into a scratch area and checks what came back, which proves a backup can be restored. It downloads as much as the backup holds and needs as much free disk, so it ships off. Turn it on when the server has the room; it then runs on Sundays at 5 AM until you set another time. A test that fails raises **Restore test failed**, and one that does not run raises **Scheduled job late** (see [Alerts](/en/configuration/alerts/)). Needs Catena Pro. It can instead run as a step of the maintenance (see [Choosing the steps](#choosing-the-steps)). |
 | **Control panel updates** | Moves the control panel to a newer version, and puts the previous one back if the new one makes the server less healthy. The panel is unavailable for about a minute. |
 | **Server configuration** | Applies the saved settings to the server on a schedule and puts back anything that changed on the server since. |
-| **Off-site heartbeat** | Checks that the status page, job monitor and resource monitor answer, then calls the off-site heartbeat address saved in **Settings** > **Alerts and missed-job reporting** (see [Alerts](/en/configuration/alerts/)). Needs that address and Catena Pro. Its section shows the period and grace time to set on the outside check. |
+| **Off-site heartbeat** | Checks that the status monitor, resource monitor and alert intake answer and that the control panel's alerts ran in the last 3 minutes, then calls the off-site heartbeat address saved in **Settings** > **Alerts** (see [Alerts](/en/configuration/alerts/)). Needs that address and Catena Pro. Its section shows the period and grace time to set on the outside check. |
 | **Vulnerability watch** | Checks the software of every application and service against a fresh vulnerability database and CISA's list of exploited vulnerabilities, and alerts on each one that is exploited, or critical or high and fixed by an update on offer (see [Security alerts](/en/configuration/vulnerabilities/#security-alerts-every-edition)). Available on every edition: without a paid subscription it runs at most once a day. On Catena Pro or Catena Business it can instead run inside the maintenance, after its updates (see [Choosing the steps](#choosing-the-steps)). |
 
 A job that needs Catena Pro or Catena Business carries a **Pro** or **Business** badge beside its name, in the index at the right of the page and in its own section. The badge is gray while the subscription does not include the job and green once it does; selecting a gray badge opens the page that explains the edition. A gray job stays visible with its controls greyed out.
@@ -113,7 +113,7 @@ The **Log** records the result of each run, and each warning once, when its comb
 
 The step named in a failed run is the one that stopped it, or else the first that failed.
 
-The maintenance also has its own Healthchecks check, **Maintenance**. It is told when each run starts, when a step fails and when the run ends, so a run that fails or does not run raises an alert (see [Alerts](/en/configuration/alerts/)). The maintenance reports to the backup checks only while **Backup** is a step, and to the offsite copy checks only while **Offsite copy** is.
+The maintenance reports each run to the dashboard's alerts, so a run that fails or does not run raises **Scheduled job late** (see [Alerts](/en/configuration/alerts/)). It reports to the backup only while **Backup** is a step, and to the offsite copy only while **Offsite copy** is.
 
 ### Offsite copy and the restore test
 
@@ -145,7 +145,7 @@ Under **Check a schedule**, type an expression and press **Check**. The panel re
 2. In the job's section, edit **Schedule** if the default does not suit, and tick **Run on this schedule**.
 3. Press **Save schedules**. The page confirms with "Schedules saved and applied to this server." A refusal reads "This server did not accept the schedule." followed by the reason.
 
-Saving also sets the Healthchecks checks of the backup, the backup integrity check, the restore test, the offsite copy, the maintenance and the off-site heartbeat to the new schedules; a check that no turned-on job reports to is paused. When Healthchecks does not answer, the page reads "Schedules saved and applied to this server. Healthchecks did not answer, so the checks that watch these jobs take the new schedules the next time the schedules are saved or the saved settings are applied to this server." A check turned back on shows "new" in Healthchecks until its job next runs.
+Saving also sets when the dashboard expects each job to report: a job is late when it reports no run by its new schedule plus a margin (see [Alerts](/en/configuration/alerts/)). A job that is turned off, or that your edition does not run, is never late.
 
 When no backup is scheduled, the page warns "Nothing is scheduled on this server, so no backup will run. Turn on the backup schedule below."
 
