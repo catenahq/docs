@@ -37,7 +37,7 @@ Each job starts at its set time. A run still going at the next set time is not d
 The maintenance runs its steps in a fixed order. It resumes by itself if a restart interrupts it.
 
 1. **Preflight.** Checks that at least 5 GiB of disk is free.
-2. **Maintenance mode and scripts around the backup.** A catalog application whose entry asks for it, such as Nextcloud, is put in maintenance mode while the backup runs and taken out of it afterwards, even when the backup fails. Optional pre- and post-backup scripts run when such scripts exist on the server. Nothing else is paused unless a script does it, and a failing script only logs a warning.
+2. **Maintenance mode and scripts around the backup.** An application is stopped during the backup only when it has to be: its files changed during the backup, cannot be watched, or its entry asks for it (see [What a backup contains](/en/configuration/backups/#what-a-backup-contains)). Optional pre- and post-backup scripts run when such scripts exist on the server. Nothing else is paused unless a script does it, and a failing script only logs a warning.
 3. **Backup.**
 4. **Restore test.** Restores the latest snapshot into a scratch area and checks it. Off by default, because the restore test has its own schedule (see [The jobs](#the-jobs)).
 5. **Backup repository check.** Verifies the repository's metadata.
