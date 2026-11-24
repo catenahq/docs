@@ -37,7 +37,7 @@ Chaque tâche démarre à son heure réglée. Une exécution encore en cours à 
 La maintenance exécute ses étapes dans un ordre fixe. Elle reprend d'elle-même si un redémarrage l'interrompt.
 
 1. **Vérifications préalables.** Contrôle qu'au moins 5 Gio de disque sont libres.
-2. **Mode maintenance et scripts autour de la sauvegarde.** Une application du catalogue dont l'entrée le demande, comme Nextcloud, est placée en mode maintenance le temps de la sauvegarde et en est sortie ensuite, même quand la sauvegarde échoue. Des scripts facultatifs s'exécutent avant et après la sauvegarde lorsqu'il en existe sur le serveur. Rien d'autre n'est mis en pause sauf si un script le fait, et un script en échec ne produit qu'un avertissement.
+2. **Mode maintenance et scripts autour de la sauvegarde.** Une application n'est arrêtée pendant la sauvegarde que si elle doit l'être : ses fichiers ont changé pendant la sauvegarde, ils ne peuvent pas être surveillés, ou son entrée le demande (voir [Ce que contient une sauvegarde](/fr/configuration/backups/#ce-que-contient-une-sauvegarde)). Des scripts facultatifs s'exécutent avant et après la sauvegarde lorsqu'il en existe sur le serveur. Rien d'autre n'est mis en pause sauf si un script le fait, et un script en échec ne produit qu'un avertissement.
 3. **Sauvegarde.**
 4. **Test de restauration.** Restaure le dernier instantané dans une zone temporaire et le contrôle. Désactivée par défaut, parce que le test de restauration a son propre horaire (voir [Les tâches](#les-tâches)).
 5. **Vérification du dépôt de sauvegarde.** Vérifie les métadonnées du dépôt.
