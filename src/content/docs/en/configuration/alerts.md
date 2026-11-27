@@ -5,7 +5,7 @@ description: "Choosing which alerts the server sends and where they go: email ad
 
 The server tells you about its own events: an update available or failed, a vulnerability, a restart needed, a certificate not renewed, the paid features locking, and alerts that stop reaching a destination. Every alert is off until you turn it on, except **Paid features locked**. Each alert goes to the email addresses you list and to the webhook addresses you save, on every edition.
 
-Alerts about services and resources come from two other on-server tools: Gatus (is each service answering) and Beszel (are CPU, memory and disk healthy). They hand their alerts to the control panel, which sends them like every other alert, and you choose them in the same section. The scheduled jobs report each run to the control panel itself, which raises a job that failed or did not run. The overview is in [Monitoring and alerts](/en/features/monitoring-alerts/). This page covers the settings and the first-time wiring.
+Alerts about services and resources come from two other on-server tools: the server's own uptime check (is each service and address answering) and Beszel (are CPU, memory and disk healthy). They hand their alerts to the control panel, which sends them like every other alert, and you choose them in the same section. The scheduled jobs report each run to the control panel itself, which raises a job that failed or did not run. The overview is in [Monitoring and alerts](/en/features/monitoring-alerts/). This page covers the settings and the first-time wiring.
 
 ## Fields
 
@@ -40,7 +40,7 @@ Each alert has its own field, named as in the first column. A failure alert has 
 | **Paid features locked** | The subscription locks the paid features. See [Subscription](/en/configuration/subscription/). | The features unlocked, or the key was removed. | No |
 | **Subscription check failing** | The subscription service has not been reachable to confirm the key. The paid features stay unlocked during the grace period. | The service answered, the grace ended, or the key was removed. | No |
 | **Alerts not delivered** | A destination has failed for a day. | Delivery to it works again. | Yes |
-| **Service down** | The status monitor (Gatus) reports a service down. One alert, then one more when it is back if the message when it ends is on. | The status monitor reports the service back up. | Yes |
+| **Service down** | The uptime check finds a service or an address down: Catena's own services, an application, or an address you added under [Uptime check](#uptime-check). One alert, then one more when it is back if the message when it ends is on. | The uptime check finds the address answering again. | Yes |
 | **Resource alert** | The resource monitor (Beszel) raises one of its rules: the server silent, or processor, memory or disk past its threshold. See [How service and job alerts flow](#how-service-and-job-alerts-flow). | The resource monitor reports the rule clear. | Yes |
 | **Backup failed** | A backup run failed. A backup held after a restore raises this alert only: the offsite copy and the restore test record a skipped run. | A later backup succeeded. | Yes |
 | **Restore test failed** | A run of the restore test failed. | A later restore test succeeded. | Yes |
@@ -113,9 +113,19 @@ A destination that does not answer is tried again after a longer wait each time,
 
 When a destination has failed for a day, a banner on every admin page reads "Alerts are not reaching one of their destinations. The Alerts page shows which." and links to the page. The **Alerts not delivered** alert, when it is on, tells you through the other destinations.
 
+## Uptime check
+
+The server checks its own services and every address of its applications by itself (see [Monitoring and alerts](/en/features/monitoring-alerts/)). **Monitoring** > **Uptime** also holds the **Uptime check** section, where you list other web addresses to check the same way, such as a device at home or on your tailnet. Private and local addresses are allowed.
+
+| Field | Purpose |
+|---|---|
+| **Other addresses to check** | Up to 20 web addresses, http or https, separated by commas or spaces, with no user name or password in the address. |
+
+The field reads "Each address is checked every minute, like the applications. It is up when it answers without an error; a redirect counts as an answer." To empty the list, tick **Check no other address** and save. An address that cannot be checked is listed by its position with the reason, for example "Address 2: holds a user name or password", under "These addresses cannot be checked:". The other reasons are "not a web address (http or https)", "no server name", "longer than 2048 characters" and "more than 20 addresses". Each address you add is listed under **Other addresses** on the **Uptime** tab, and raises **Service down** like any other address (see [Alert types](#alert-types)); it never holds back the updates of the maintenance (see [Schedules](/en/configuration/schedules/)).
+
 ## Off-site heartbeat
 
-A monitor on the server cannot report an outage that takes the whole server down. The off-site heartbeat closes that gap: on its schedule, the server checks that its status monitor, resource monitor and alert intake answer and that the control panel's alerts ran in the last 3 minutes, then calls the off-site address. A plain call means all is well; a failure call names the monitors that stopped answering; no call at all means the server is down, and the outside service raises the alert. Saving the address alone sends nothing: the heartbeat runs once you turn it on in [Schedules](/en/configuration/schedules/), where its section shows the period and grace time to set on the outside check. When your subscription ends, the calls stop, so pause the outside check then.
+A monitor on the server cannot report an outage that takes the whole server down. The off-site heartbeat closes that gap: on its schedule, the server checks that its uptime check, resource monitor, alert intake and alert sending work, then calls the off-site address. A plain call means all is well; a failure call names the monitors that stopped answering; no call at all means the server is down, and the outside service raises the alert. Saving the address alone sends nothing: the heartbeat runs once you turn it on in [Schedules](/en/configuration/schedules/), where its section shows the period and grace time to set on the outside check. When your subscription ends, the calls stop, so pause the outside check then.
 
 **Send a test heartbeat** runs the heartbeat once now, on the saved address, and shows beside the button whether the outside service took the call, or which monitor on the server did not answer. It needs Catena Pro.
 
@@ -123,8 +133,8 @@ A monitor on the server cannot report an outage that takes the whole server down
 
 Service, resource and scheduled job alerts are all sent by the control panel, to the email addresses and webhook addresses of **Settings** > **Alerts**, through the service chosen in [Outgoing email](/en/configuration/email/).
 
-1. Gatus probes the shared services (the admin panel, Keycloak, Beszel, the Cloudflare tunnel and the reverse proxy) and every routed application on a fixed interval (about one to two minutes). After 3 consecutive failures it raises an alert, and after 2 successes it resolves it.
-2. Gatus posts each alert to the control panel, which sends it as **Service down** when that alert is on.
+1. The uptime check checks Catena's own services (the admin panel, Keycloak, Beszel and, once a domain is set, the Cloudflare tunnel), every address of every application and the addresses you added, every minute. After 3 failed checks in a row it raises an alert, and after 2 good answers it resolves it.
+2. The uptime check posts each alert to the control panel, which sends it as **Service down** when that alert is on.
 3. Beszel watches the server with rules created once and never overwritten: status (agent silent) for 5 minutes, CPU at 90% for 10 minutes, memory at 90% for 10 minutes, disk at 85% for 10 minutes. It posts each alert to the control panel, which sends it as **Resource alert** when that alert is on.
 4. Scheduled jobs (backup, repository check, restore test, offsite copy, maintenance, vulnerability watch, off-site heartbeat, restart probe) report each run to the control panel. A run that failed raises the job's own alert (**Backup failed**, **Restore test failed**, **Offsite copy failed**, **Backup repository check failed**) or, for the others, **Scheduled job late**. The control panel itself notices a job that missed its run, by its schedule plus a margin. The maintenance reports to the backup and offsite copy only while its backup and offsite copy steps are on (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)). The vulnerability watch also raises **Scheduled job late** when it cannot run (see [the second alert on the Vulnerabilities page](/en/configuration/vulnerabilities/#alerts)).
 
@@ -152,9 +162,9 @@ Support tickets and replies come with Catena Pro and Catena Business, and suppor
 
 ## Where to look
 
-- `https://gatus.yourdomain.com`: the Gatus status page.
+- **Monitoring** > **Uptime** in the admin panel: the state of every checked service and address, with its share of the last 24 hours, 7, 30 or 90 days.
 - `https://beszel.yourdomain.com`: Beszel, with the server's resource graphs.
-- The **System** page of the admin panel: the title of **Resources** opens Beszel, the title of **Monitoring** opens Gatus, and the title of **Alerts** opens the **Alerts** page. The **Alerts** card lists what needs attention now (each scheduled job that failed or is late, a pending restart, and each resource alert, named by its key), and "No alert" when there is nothing; the services that are down are on the **Monitoring** card; the **Scheduled jobs** card names each job that is turned on, with a grey dot and "not reporting yet" for one that has not reported.
+- The **System** page of the admin panel: the title of **Resources** opens Beszel, the title of **Monitoring** opens the **Uptime** tab, and the title of **Alerts** opens the **Alerts** page. The **Alerts** card lists what needs attention now (each scheduled job that failed or is late, a pending restart, and each resource alert, named by its key), and "No alert" when there is nothing; the services that are down are on the **Monitoring** card; the **Scheduled jobs** card names each job that is turned on, with a grey dot and "not reporting yet" for one that has not reported.
 
 You can change the subdomain names in [Domain and Cloudflare](/en/configuration/domain/).
 

@@ -155,7 +155,7 @@ Les copies s'exécutent selon la tâche **Copie hors site** de la page [Horaires
 
 Inclus :
 
-- les données de chaque application, y compris ses volumes Docker et les dossiers rangés dans l'espace de stockage des applications du serveur, et l'historique de la page d'état et du moniteur de ressources;
+- les données de chaque application, y compris ses volumes Docker et les dossiers rangés dans l'espace de stockage des applications du serveur, et l'historique de la vérification de disponibilité et du moniteur de ressources;
 - un export de chaque serveur de bases de données et une copie entière de chaque fichier de base de données qu'une application déclare, faits juste avant l'instantané (voir plus bas);
 - la configuration propre au serveur : fichiers système, réglages SSH et pare-feu, réglages et secrets conservés par Catena, et journal administratif;
 - chaque dossier listé sous **Autres dossiers à sauvegarder (séparés par des virgules)**.

@@ -18,7 +18,7 @@ Aux petites et moyennes organisations qui veulent posséder les logiciels dont e
 | Keycloak | Une seule connexion pour toutes les applications, des groupes décidant qui peut ouvrir quoi. |
 | catena-admin | Le panneau d'administration : applications (les ajouter, les configurer, les déployer, les retirer, les mettre à jour et les supprimer), état, actions, restauration, horaires et paramètres. |
 | Sauvegardes restic | Sauvegardes chiffrées envoyées vers un stockage S3 qui vous appartient. |
-| Gatus, Beszel | Page d'état et graphiques de ressources du serveur. Leurs alertes, et celles des tâches planifiées, vous parviennent par les alertes du panneau. |
+| Vérification de disponibilité, Beszel | Le serveur vérifie ses propres services et chaque adresse d'application, et Beszel trace les ressources du serveur. Leurs alertes, et celles des tâches planifiées, vous parviennent par les alertes du panneau. |
 | Tailnet (facultatif) | Un réseau privé pour l'administration. |
 
 ## Adresses publiées par le serveur
@@ -29,7 +29,6 @@ Une fois votre domaine appliqué, chaque service répond sur son propre sous-dom
 |---|---|
 | `auth.yourdomain.com` | Connexion Keycloak |
 | `dash.yourdomain.com` | Le panneau d'administration |
-| `gatus.yourdomain.com` | Page d'état Gatus |
 | `beszel.yourdomain.com` | Graphiques de ressources Beszel |
 
 Vous pouvez changer chaque nom dans **Paramètres** > **Sous-domaines des applications d'infrastructure**. Tant que vous n'avez appliqué aucun domaine, rien n'est publié et vous atteignez le panneau par un transfert de port SSH (voir [Installation](/fr/installation/)).
