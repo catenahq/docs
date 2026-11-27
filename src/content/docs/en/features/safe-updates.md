@@ -11,7 +11,7 @@ Debian's unattended upgrades is the only thing that applies OS packages: securit
 
 ## Maintenance
 
-On Catena Pro and Catena Business, **Schedules** > **Maintenance** (off by default, 03:00 when turned on) runs its steps in order: a free-disk check, a backup, a restore check, a check of the backup repository, the offsite copy, a Gatus health gate, container updates, a vulnerability scan, the Docker engine upgrade and the restart if due. The maintenance stops before any update when the disk floor, the backup, its verification or the health gate fails, and it resumes after a reboot. Without a configured backup, updates still run and a warning banner says there is nothing to return to. You choose which steps run, and a warning appears when a combination is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
+On Catena Pro and Catena Business, **Schedules** > **Maintenance** (off by default, 03:00 when turned on) runs its steps in order: a free-disk check, a backup, a restore check, a check of the backup repository, the offsite copy, an uptime health gate, container updates, a vulnerability scan, the Docker engine upgrade and the restart if due. The maintenance stops before any update when the disk floor, the backup, its verification or the health gate fails, and it resumes after a reboot. Without a configured backup, updates still run and a warning banner says there is nothing to return to. You choose which steps run, and a warning appears when a combination is unsafe (see [Choosing the steps](/en/configuration/schedules/#choosing-the-steps)).
 
 ## App updates
 

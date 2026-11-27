@@ -68,7 +68,7 @@ After a domain change, the name shown on the sign-in page at `auth.yourdomain.co
 | **Keycloak (sign-in)** | Keycloak | `auth` | `auth.yourdomain.com` |
 | **Catena admin (this panel)** | This panel | `dash` | `dash.yourdomain.com` |
 
-Gatus (`gatus`) and Beszel (`beszel`) are installed by default as applications, so each one's address is a setting of its application: open **Apps**, then the application's page with the gear on its card, and change the name there. The server moves every address of the application to the new name when it next applies its configuration (**Apply the saved settings** in [Server settings](/en/configuration/server/)).
+Beszel (`beszel`) is installed by default as an application, so its address is a setting of its application, as is the address of Gatus if you add it from the catalog: open **Apps**, then the application's page with the gear on its card, and change the name there. The server moves every address of the application to the new name when it next applies its configuration (**Apply the saved settings** in [Server settings](/en/configuration/server/)).
 
 Rules, for the fields above and the same for an application's name:
 
